@@ -1,12 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Parser.Events;
+using Parser.Images;
 
 namespace Parser
 {
-    class PenTracker
+    internal class PenTracker
     {
+        public static PenPositionEventArgs GetPenPosition(ThreeChannelBitmap image)
+        {
+            return new PenPositionEventArgs{Confidance = 0, Point = new Point()};
+        }
     }
 }

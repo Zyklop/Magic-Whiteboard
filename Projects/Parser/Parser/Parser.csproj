@@ -39,14 +39,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Bitmap.cs" />
+    <Compile Include="Colorfilter.cs" />
+    <Compile Include="Events\PenPositionEventArgs.cs" />
+    <Compile Include="Images\OneChannelBitmap.cs" />
     <Compile Include="Calibrator.cs" />
     <Compile Include="CameraConnector.cs" />
     <Compile Include="Events\NewImageEventArgs.cs" />
     <Compile Include="Grid.cs" />
-    <Compile Include="ImageParser.cs" />
+    <Compile Include="Images\ThreeChannelBitmap.cs" />
     <Compile Include="Parser.cs" />
     <Compile Include="PenTracker.cs" />
+    <Compile Include="Point.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />

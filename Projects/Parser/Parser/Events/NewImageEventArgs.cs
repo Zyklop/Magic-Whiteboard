@@ -1,9 +1,10 @@
 using System;
+using Parser.Images;
 
 namespace Parser.Events
 {
-    public class NewImageEventArgs:EventArgs
+    internal class NewImageEventArgs:EventArgs
     {
-        public Bitmap NewImage { get; set; } 
+        public ThreeChannelBitmap NewImage { get; set; } 
     }
 }

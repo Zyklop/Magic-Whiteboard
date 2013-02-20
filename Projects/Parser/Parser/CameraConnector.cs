@@ -1,8 +1,9 @@
 using System;
+using Parser.Events;
 
 namespace Parser
 {
-    class CameraConnector
+    internal class CameraConnector
     {
         public CameraConnector(Camera camera)
         {
