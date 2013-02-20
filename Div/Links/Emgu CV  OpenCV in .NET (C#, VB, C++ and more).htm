@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html dir="ltr" class="client-js" lang="en"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<title>Emgu CV: OpenCV in .NET (C#, VB, C++ and more)</title>
+<meta charset="UTF-8">
+<meta name="generator" content="MediaWiki 1.19.2">
+<link rel="shortcut icon" href="http://www.emgu.com/favicon.ico">
+<link rel="search" type="application/opensearchdescription+xml" href="http://www.emgu.com/wiki/opensearch_desc.php" title="Emgu CV: OpenCV in .NET (C#, VB, C++ and more) (en)">
+<link rel="EditURI" type="application/rsd+xml" href="http://www.emgu.com/wiki/api.php?action=rsd">
+<link rel="copyright" href="http://www.gnu.org/copyleft/fdl.html">
+<link rel="alternate" type="application/atom+xml" title="Emgu CV: OpenCV in .NET (C#, VB, C++ and more) Atom feed" href="http://www.emgu.com/wiki/index.php?title=Special:RecentChanges&amp;feed=atom">
+<link rel="stylesheet" href="Emgu%20CV%20%20OpenCV%20in%20.NET%20%28C%23,%20VB,%20C++%20and%20more%29_files/load.css">
+<style type="text/css" media="all">.js-messagebox{margin:1em 5%;padding:0.5em 2.5%;border:1px solid #ccc;background-color:#fcfcfc;font-size:0.8em}.js-messagebox .js-messagebox-group{margin:1px;padding:0.5em 2.5%;border-bottom:1px solid #ddd}.js-messagebox .js-messagebox-group:last-child{border-bottom:thin none transparent}
+
+/* cache key: wikidb-mw_:resourceloader:filter:minify-css:7:8b08bdc91c52a9ffba396dccfb5b473c */
+
+
+.mw-collapsible-toggle{float:right} li .mw-collapsible-toggle{float:none} .mw-collapsible-toggle-li{list-style:none}
+
+/* cache key: wikidb-mw_:resourceloader:filter:minify-css:7:4250852ed2349a0d4d0fc6509a3e7d4c */
+</style><meta name="ResourceLoaderDynamicStyles" content="">
+<style>a:lang(ar),a:lang(ckb),a:lang(fa),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}a.new,#quickbar a.new{color:#ba0000}
+
+/* cache key: wikidb-mw_:resourceloader:filter:minify-css:7:c88e2bcd56513749bec09a7e29cb3ffa */
+</style>
+
+<script src="Emgu%20CV%20%20OpenCV%20in%20.NET%20%28C%23,%20VB,%20C++%20and%20more%29_files/load_003.php"></script><script src="Emgu%20CV%20%20OpenCV%20in%20.NET%20%28C%23,%20VB,%20C++%20and%20more%29_files/load_004.php"></script>
+<script>if(window.mw){
+mw.config.set({"wgCanonicalNamespace":"","wgCanonicalSpecialPageName":false,"wgNamespaceNumber":0,"wgPageName":"Main_Page","wgTitle":"Main Page","wgCurRevisionId":1543,"wgArticleId":1,"wgIsArticle":true,"wgAction":"view","wgUserName":null,"wgUserGroups":["*"],"wgCategories":[],"wgBreakFrames":false,"wgPageContentLanguage":"en","wgSeparatorTransformTable":["",""],"wgDigitTransformTable":["",""],"wgRelevantPageName":"Main_Page","wgRestrictionEdit":[],"wgRestrictionMove":[],"wgIsMainPage":true});
+}</script><script>if(window.mw){
+mw.loader.implement("user.options",function($){mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":0,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":5,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"vector","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,
+"watchlistdays":3,"watchlisthideanons":0,"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;},{},{});mw.loader.implement("user.tokens",function($){mw.user.tokens.set({"editToken":"+\\","watchToken":false});;},{},{});
+
+/* cache key: wikidb-mw_:resourceloader:filter:minify-js:7:e3fdd01d7820d579275baf4c686e71ea */
+}</script>
+<script>if(window.mw){
+mw.loader.load(["mediawiki.page.startup","mediawiki.legacy.wikibits","mediawiki.legacy.ajax"]);
+}</script><script type="text/javascript" src="Emgu%20CV%20%20OpenCV%20in%20.NET%20%28C%23,%20VB,%20C++%20and%20more%29_files/load_002.php"></script>
+<!--[if lt IE 7]><style type="text/css">body{behavior:url("/wiki/skins/vector/csshover.min.htc")}</style><![endif]--></head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-Main_Page skin-vector action-view">
+		<div id="mw-page-base" class="noprint"></div>
+		<div id="mw-head-base" class="noprint"></div>
+		<!-- content -->
+		<div id="content" class="mw-body">
+			<a id="top"></a>
+			<div class="js-messagebox" id="mw-js-message" style="display:none;"></div>
+						<!-- firstHeading -->
+			<h1 id="firstHeading" class="firstHeading">
+				<span dir="auto">Main Page</span>
+			</h1>
+			<!-- /firstHeading -->
+			<!-- bodyContent -->
+			<div id="bodyContent">
+								<!-- tagline -->
+				<div id="siteSub">From Emgu CV: OpenCV in .NET (C#, VB, C++ and more)</div>
+				<!-- /tagline -->
+								<!-- subtitle -->
+				<div id="contentSub"></div>
+				<!-- /subtitle -->
+																<!-- jumpto -->
+				<div id="jump-to-nav" class="mw-jump">
+					Jump to: <a href="#mw-head">navigation</a>,
+					<a href="#p-search">search</a>
+				</div>
+				<!-- /jumpto -->
+								<!-- bodycontent -->
+				<div id="mw-content-text" dir="ltr" class="mw-content-ltr" lang="en"><p><big><b><a href="http://www.emgu.com/wiki/index.php/Emgu_CV" title="Emgu CV" class="mw-redirect">Emgu CV</a></b> is a cross platform .Net wrapper to the <a href="http://www.emgu.com/wiki/index.php/OpenCV" title="OpenCV">OpenCV</a> image processing library. Allowing <a href="http://www.emgu.com/wiki/index.php/OpenCV" title="OpenCV">OpenCV</a> functions to be called from .NET compatible languages such as C#, VB, VC++, IronPython etc. The wrapper can be <a href="http://www.emgu.com/wiki/index.php/Compiling_with_Monodevelop" title="Compiling with Monodevelop">compiled in Mono</a> and run on Windows, Linux, Mac OS X, iPhone, iPad and Android devices.</big>
+</p>
+<table id="toc" class="toc"><tbody><tr><td><div id="toctitle"><h2>Contents</h2><span class="toctoggle">&nbsp;[<a href="#" class="internal" id="togglelink">hide</a>]&nbsp;</span></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Latest_News"><span class="tocnumber">1</span> <span class="toctext">Latest News</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#A_Comparison_of_Emgu_CV_Versions"><span class="tocnumber">2</span> <span class="toctext">A Comparison of Emgu CV Versions</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#Advantage_of_Emgu_CV"><span class="tocnumber">3</span> <span class="toctext">Advantage of Emgu CV</span></a>
+<ul>
+<li class="toclevel-2 tocsection-4"><a href="#Cross_Platform"><span class="tocnumber">3.1</span> <span class="toctext">Cross Platform</span></a></li>
+<li class="toclevel-2 tocsection-5"><a href="#Cross_Language_and_comes_with_example_code"><span class="tocnumber">3.2</span> <span class="toctext">Cross Language and comes with example code</span></a></li>
+<li class="toclevel-2 tocsection-6"><a href="#Other_Advantages"><span class="tocnumber">3.3</span> <span class="toctext">Other Advantages</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-7"><a href="#Architecture_Overview"><span class="tocnumber">4</span> <span class="toctext">Architecture Overview</span></a></li>
+</ul>
+</td></tr></tbody></table>
+<h2> <span class="mw-headline" id="Latest_News"> Latest News </span></h2>
+<ul><li> 2012-09-16 <a href="http://www.emgu.com/wiki/index.php/Version_History#Emgu.CV-2.4.2" title="Version History">Emgu.CV-2.4.2</a> is available in <a href="http://www.emgu.com/wiki/index.php/Sourceforge-url" title="Sourceforge-url"> sourceforge</a>. See <a href="http://www.emgu.com/wiki/index.php/Version_History#Emgu.CV-2.4.2" title="Version History">change log and known issues</a>. 
+</li><li> 2012-05-26 <a href="http://www.emgu.com/wiki/index.php/Version_History#Emgu.CV-2.4.0" title="Version History">Emgu.CV-2.4.0</a> is available in <a href="http://www.emgu.com/wiki/index.php/Sourceforge-url" title="Sourceforge-url"> sourceforge</a>. <b>This version adds support for <a href="http://www.emgu.com/wiki/index.php/Emgu_CV_for_iOS" title="Emgu CV for iOS"> iOS</a> and <a href="http://www.emgu.com/wiki/index.php/Emgu_CV_for_Android" title="Emgu CV for Android"> Android</a></b>. See <a href="http://www.emgu.com/wiki/index.php/Version_History#Emgu.CV-2.4.0" title="Version History">change log and known issues</a>. 
+</li><li> 2011-08-20 <a href="http://www.emgu.com/wiki/index.php/Version_History#Emgu.CV-2.3.0" title="Version History">Emgu.CV-2.3.0</a> is available in <a href="http://www.emgu.com/wiki/index.php/Sourceforge-url" title="Sourceforge-url"> sourceforge</a>. See <a href="http://www.emgu.com/wiki/index.php/Version_History#Emgu.CV-2.3.0" title="Version History">change log and known issues</a>.
+</li><li> 2011-02-05 <a href="http://www.emgu.com/wiki/index.php/Version_History#Emgu.CV-2.2.1" title="Version History">Emgu.CV-2.2.1.1150</a> is available in <a href="http://www.emgu.com/wiki/index.php/Sourceforge-url" title="Sourceforge-url"> sourceforge</a>. See <a href="http://www.emgu.com/wiki/index.php/Version_History#Emgu.CV-2.2.1" title="Version History">change log and known issues</a>.
+</li><li> 2010-12-15 <a href="http://www.emgu.com/wiki/index.php/Version_History#Emgu.CV-2.2.0.0" title="Version History">Emgu.CV-2.2.0.1010</a> is available in <a href="http://www.emgu.com/wiki/index.php/Sourceforge-url" title="Sourceforge-url"> sourceforge</a>. See <a href="http://www.emgu.com/wiki/index.php/Version_History#Emgu.CV-2.2.0.0" title="Version History">change log and known issues</a>.
+</li><li> 2010-04-06 <a href="http://www.emgu.com/wiki/index.php/Version_History#Emgu.CV-2.1.0.0" title="Version History">Emgu.CV-2.1.0.0</a> is available in <a href="http://www.emgu.com/wiki/index.php/Sourceforge-url" title="Sourceforge-url"> sourceforge</a>.
+ It is released on the same day as OpenCV 2.1! In this release we have 
+keep up our cross platform promise and release binaries for 64-bit 
+windows, as well as 32 &amp; 64 bit debian package for Unbuntu and 32 
+bit rpm package for Fedora 12! See <a href="http://www.emgu.com/wiki/index.php/Version_History#Emgu.CV-2.1.0.0" title="Version History">change log and known issues</a>.
+</li></ul>
+<ul><li> 2009-10-25 <a href="http://www.emgu.com/wiki/index.php/Version_History#Emgu.CV-2.0.1.0" title="Version History">Emgu.CV-2.0.1.0</a> is available in <a href="http://www.emgu.com/wiki/index.php/Sourceforge-url" title="Sourceforge-url"> sourceforge</a>. Welcome to the first .NET wrapper that is compatible with OpenCV 2.0! See <a href="http://www.emgu.com/wiki/index.php/Version_History#Emgu.CV-2.0.1.0" title="Version History">change log and known issues</a>.
+</li></ul>
+<ul><li> 2009-07-12 <a href="http://www.emgu.com/wiki/index.php/Version_History#Emgu.CV-2.0.0.0_Alpha" title="Version History">Emgu.CV-2.0.0.0 Alpha</a> is available in <a href="http://www.emgu.com/wiki/index.php/Sourceforge-url" title="Sourceforge-url"> sourceforge</a>. This version is built with OpenCV SVN 1918 and is not recommend for production environment. See  <a href="http://www.emgu.com/wiki/index.php/Version_History#Emgu.CV-2.0.0.0_Alpha" title="Version History">change log and known issues</a>.
+</li></ul>
+<ul><li> 2009-02-25 <a href="http://www.emgu.com/wiki/index.php/Version_History#Emgu.CV-1.5.0.0" title="Version History">Emgu.CV-1.5.0.0</a> is available in <a href="http://www.emgu.com/wiki/index.php/Sourceforge-url" title="Sourceforge-url"> sourceforge</a>. See <a href="http://www.emgu.com/wiki/index.php/Version_History#Emgu.CV-1.5.0.0" title="Version History">change log and known issues</a>.
+</li></ul>
+<ul><li> 2008-11-24 <a href="http://www.emgu.com/wiki/index.php/Version_History#Emgu.CV-1.4.0.0" title="Version History">Emgu.CV-1.4.0.0</a> is available in <a href="http://www.emgu.com/wiki/index.php/Sourceforge-url" title="Sourceforge-url"> sourceforge</a>. See <a href="http://www.emgu.com/wiki/index.php/Version_History#Emgu.CV-1.4.0.0" title="Version History">change log and known issues</a>.
+</li></ul>
+<ul><li> 2008-09-02 <a href="http://www.emgu.com/wiki/index.php/Version_History#Emgu.CV-1.3.0.0" title="Version History">Emgu.CV-1.3.0.0</a> is available in <a href="http://www.emgu.com/wiki/index.php/Sourceforge-url" title="Sourceforge-url"> sourceforge</a>. See <a href="http://www.emgu.com/wiki/index.php/Version_History#Emgu.CV-1.3.0.0" title="Version History">change log</a>.
+</li></ul>
+<ul><li> 2008-05-24 <a href="http://www.emgu.com/wiki/index.php/Version_History#Emgu.CV-1.2.2.0" title="Version History">Emgu.CV-1.2.2.0</a> is available in <a href="http://www.emgu.com/wiki/index.php/Sourceforge-url" title="Sourceforge-url"> sourceforge</a>. See <a href="http://www.emgu.com/wiki/index.php/Version_History#Emgu.CV-1.2.2.0" title="Version History">change log</a>.
+</li></ul>
+<ul><li> 2008-05-10 <a rel="nofollow" class="external text" href="http://www.emgu.com/forum">Emgu CV Discussion Forum</a> is available at <a rel="nofollow" class="external free" href="http://www.emgu.com/forum">http://www.emgu.com/forum</a>
+</li></ul>
+<h2> <span class="mw-headline" id="A_Comparison_of_Emgu_CV_Versions"> A Comparison of Emgu CV Versions </span></h2>
+<table style="text-align:center" border="1px" cellpadding="5" cellspacing="0">
+<tbody><tr>
+<th>Name </th>
+<th> Emgu CV (Open Source) </th>
+<th> Emgu CV (<a href="http://www.emgu.com/wiki/index.php/Licensing:#Commercial_License" title="Licensing:">Commercial Optimized</a>) </th>
+<th> <a href="http://www.emgu.com/wiki/index.php/Emgu_CV_for_iOS" title="Emgu CV for iOS"> Emgu CV for iOS (Commercial)</a> </th>
+<th> <a href="http://www.emgu.com/wiki/index.php/Emgu_CV_for_Android" title="Emgu CV for Android"> Emgu CV for Android (Beta)</a>
+</th></tr>
+<tr>
+<th> OS </th>
+<th> Windows, Linux, Mac OSX </th>
+<th> Windows </th>
+<th> iOS (iPhone, IPad, IPod Touch) </th>
+<th> Android
+</th></tr>
+<tr>
+<th> Supported CPU Architecture </th>
+<th> i386, x64 </th>
+<th> i386, x64 </th>
+<th> armeabi, armeabi-v7, i386 (Simulator) </th>
+<th> armeabi, armeabi-v7a, x86
+</th></tr>
+<tr>
+<th> GPU Processing </th>
+<th> <img class="tex" alt="\checkmark" src="Emgu%20CV%20%20OpenCV%20in%20.NET%20%28C%23,%20VB,%20C++%20and%20more%29_files/1cdb1337c64b47c7a10dfbf05868974f.png"> </th>
+<th> <img class="tex" alt="\checkmark" src="Emgu%20CV%20%20OpenCV%20in%20.NET%20%28C%23,%20VB,%20C++%20and%20more%29_files/1cdb1337c64b47c7a10dfbf05868974f.png"> </th>
+<th> X </th>
+<th> X
+</th></tr>
+<tr>
+<th> <a href="http://www.emgu.com/wiki/index.php/Tutorial#Machine_Learning_Examples" title="Tutorial"> Machine Learning</a> </th>
+<th> <img class="tex" alt="\checkmark" src="Emgu%20CV%20%20OpenCV%20in%20.NET%20%28C%23,%20VB,%20C++%20and%20more%29_files/1cdb1337c64b47c7a10dfbf05868974f.png"> </th>
+<th> <img class="tex" alt="\checkmark" src="Emgu%20CV%20%20OpenCV%20in%20.NET%20%28C%23,%20VB,%20C++%20and%20more%29_files/1cdb1337c64b47c7a10dfbf05868974f.png"> </th>
+<th> <img class="tex" alt="\checkmark" src="Emgu%20CV%20%20OpenCV%20in%20.NET%20%28C%23,%20VB,%20C++%20and%20more%29_files/1cdb1337c64b47c7a10dfbf05868974f.png"> </th>
+<th> <img class="tex" alt="\checkmark" src="Emgu%20CV%20%20OpenCV%20in%20.NET%20%28C%23,%20VB,%20C++%20and%20more%29_files/1cdb1337c64b47c7a10dfbf05868974f.png">
+</th></tr>
+<tr>
+<th> <a rel="nofollow" class="external text" href="http://code.google.com/p/tesseract-ocr/">Tesseract OCR</a> </th>
+<th> <img class="tex" alt="\checkmark" src="Emgu%20CV%20%20OpenCV%20in%20.NET%20%28C%23,%20VB,%20C++%20and%20more%29_files/1cdb1337c64b47c7a10dfbf05868974f.png"> </th>
+<th> <img class="tex" alt="\checkmark" src="Emgu%20CV%20%20OpenCV%20in%20.NET%20%28C%23,%20VB,%20C++%20and%20more%29_files/1cdb1337c64b47c7a10dfbf05868974f.png"> </th>
+<th> <img class="tex" alt="\checkmark" src="Emgu%20CV%20%20OpenCV%20in%20.NET%20%28C%23,%20VB,%20C++%20and%20more%29_files/1cdb1337c64b47c7a10dfbf05868974f.png"> </th>
+<th> <img class="tex" alt="\checkmark" src="Emgu%20CV%20%20OpenCV%20in%20.NET%20%28C%23,%20VB,%20C++%20and%20more%29_files/1cdb1337c64b47c7a10dfbf05868974f.png">
+</th></tr>
+<tr>
+<th> <a rel="nofollow" class="external text" href="http://threadingbuildingblocks.org/">Intel TBB</a> (multi-thread) </th>
+<th> X </th>
+<th> <img class="tex" alt="\checkmark" src="Emgu%20CV%20%20OpenCV%20in%20.NET%20%28C%23,%20VB,%20C++%20and%20more%29_files/1cdb1337c64b47c7a10dfbf05868974f.png"> </th>
+<th> X  </th>
+<th> X
+</th></tr>
+<tr>
+<th> <a rel="nofollow" class="external text" href="http://software.intel.com/en-us/articles/intel-ipp/">Intel IPP</a> (high performance) </th>
+<th> X </th>
+<th> <img class="tex" alt="\checkmark" src="Emgu%20CV%20%20OpenCV%20in%20.NET%20%28C%23,%20VB,%20C++%20and%20more%29_files/1cdb1337c64b47c7a10dfbf05868974f.png"> </th>
+<th> X </th>
+<th> X
+</th></tr>
+<tr>
+<th> <a rel="nofollow" class="external text" href="http://software.intel.com/en-us/articles/intel-parallel-studio-xe/">Intel C++ Compiler</a> (fast code) </th>
+<th> X </th>
+<th> <img class="tex" alt="\checkmark" src="Emgu%20CV%20%20OpenCV%20in%20.NET%20%28C%23,%20VB,%20C++%20and%20more%29_files/1cdb1337c64b47c7a10dfbf05868974f.png"> </th>
+<th> X </th>
+<th> X
+</th></tr>
+<tr>
+<th> <a href="http://www.emgu.com/wiki/index.php/Tutorial#Error_Handling" title="Tutorial"> Exception Handling</a> </th>
+<th> <img class="tex" alt="\checkmark" src="Emgu%20CV%20%20OpenCV%20in%20.NET%20%28C%23,%20VB,%20C++%20and%20more%29_files/1cdb1337c64b47c7a10dfbf05868974f.png"> </th>
+<th> <img class="tex" alt="\checkmark" src="Emgu%20CV%20%20OpenCV%20in%20.NET%20%28C%23,%20VB,%20C++%20and%20more%29_files/1cdb1337c64b47c7a10dfbf05868974f.png"> </th>
+<th> <img class="tex" alt="\checkmark" src="Emgu%20CV%20%20OpenCV%20in%20.NET%20%28C%23,%20VB,%20C++%20and%20more%29_files/1cdb1337c64b47c7a10dfbf05868974f.png"> </th>
+<th> <img class="tex" alt="\checkmark" src="Emgu%20CV%20%20OpenCV%20in%20.NET%20%28C%23,%20VB,%20C++%20and%20more%29_files/1cdb1337c64b47c7a10dfbf05868974f.png">
+</th></tr>
+<tr>
+<th> <a href="http://www.emgu.com/wiki/index.php/Debugger_Visualizer" title="Debugger Visualizer">Debugger Visualizer</a> </th>
+<th> <img class="tex" alt="\checkmark" src="Emgu%20CV%20%20OpenCV%20in%20.NET%20%28C%23,%20VB,%20C++%20and%20more%29_files/1cdb1337c64b47c7a10dfbf05868974f.png"> </th>
+<th> <img class="tex" alt="\checkmark" src="Emgu%20CV%20%20OpenCV%20in%20.NET%20%28C%23,%20VB,%20C++%20and%20more%29_files/1cdb1337c64b47c7a10dfbf05868974f.png"> </th>
+<th> X  </th>
+<th> X
+</th></tr>
+<tr>
+<th> Emgu.CV.UI </th>
+<th> <img class="tex" alt="\checkmark" src="Emgu%20CV%20%20OpenCV%20in%20.NET%20%28C%23,%20VB,%20C++%20and%20more%29_files/1cdb1337c64b47c7a10dfbf05868974f.png"> </th>
+<th> <img class="tex" alt="\checkmark" src="Emgu%20CV%20%20OpenCV%20in%20.NET%20%28C%23,%20VB,%20C++%20and%20more%29_files/1cdb1337c64b47c7a10dfbf05868974f.png"> </th>
+<th> X </th>
+<th> X
+</th></tr>
+<tr>
+<th><a href="http://www.emgu.com/wiki/index.php/Licensing:" title="Licensing:"> License</a> </th>
+<th> <a href="http://www.emgu.com/wiki/index.php/Licensing:#Open_Source_License" title="Licensing:"> GPL</a> </th>
+<th> <a href="http://www.emgu.com/wiki/index.php/Licensing:#Commercial_License" title="Licensing:"> Commercial License</a> </th>
+<th> <a href="http://www.emgu.com/wiki/index.php/Licensing:#Commercial_License" title="Licensing:"> Commercial License</a> </th>
+<th> <a href="http://www.emgu.com/wiki/index.php/Licensing:#Commercial_License" title="Licensing:"> Commercial License</a>
+</th></tr></tbody></table>
+<h2> <span class="mw-headline" id="Advantage_of_Emgu_CV"> Advantage of <a href="http://www.emgu.com/wiki/index.php/Emgu_CV" title="Emgu CV" class="mw-redirect">Emgu CV</a> </span></h2>
+<h3> <span class="mw-headline" id="Cross_Platform"> Cross Platform </span></h3>
+<p><a href="http://www.emgu.com/wiki/index.php/Emgu_CV" title="Emgu CV" class="mw-redirect">Emgu CV</a> is written entirely in C#. The benefit is that it can be <a href="http://www.emgu.com/wiki/index.php/Compiling_with_Monodevelop" title="Compiling with Monodevelop">compiled in Mono</a>
+ and therefore is able to run on any platform Mono supports, including 
+Linux, Mac OS X, iOS and Android. A lot of efforts has been spend to 
+have a pure C# implementation since the headers have to be ported, 
+compared with managed C++ implementation where header files can simply 
+be included. But it is well worth it if you see <a href="http://www.emgu.com/wiki/index.php/Compiling_with_Monodevelop" title="Compiling with Monodevelop">Emgu CV running on Fedora 10</a>! Plus it always gives you the comfort knowing that your code is cross-platform.
+</p>
+<h3> <span class="mw-headline" id="Cross_Language_and_comes_with_example_code"> Cross Language and comes with example code</span></h3>
+<p><a href="http://www.emgu.com/wiki/index.php/Emgu_CV" title="Emgu CV" class="mw-redirect">Emgu CV</a> can be used from several different languages, including C#, VB.NET, C++ and IronPython. On this wiki, we provide <a href="http://www.emgu.com/wiki/index.php/Tutorial#Examples" title="Tutorial">examples</a> for all those languages, which are available from the <a href="http://www.emgu.com/wiki/index.php/Tutorial#Examples" title="Tutorial">Examples section on Tutorial page</a>. Our <a rel="nofollow" class="external text" href="http://www.emgu.com/forum">Discussion Forum</a> is also available if you have any questions related to your favourite programming language.
+</p>
+<h3> <span class="mw-headline" id="Other_Advantages"> Other Advantages </span></h3>
+<ul><li> <a href="http://www.emgu.com/wiki/index.php/Working_with_Images#Depth_and_Color_as_Generic_Parameter" title="Working with Images"> Image class with Generic Color and Depth</a>
+</li><li> <a href="http://www.emgu.com/wiki/index.php/Working_with_Images#Automatic_Garbage_Collection" title="Working with Images"> Automatic garbage collection</a>
+</li><li> <a href="http://www.emgu.com/wiki/index.php/Working_with_Images#XML_Serialization" title="Working with Images"> XML Serializable Image</a>
+</li><li> <a href="http://www.emgu.com/wiki/index.php/Tutorial#Intellisense_in_Visual_Studio" title="Tutorial"> XML Documentation and intellisense support</a>
+</li><li> The choice to either use the <a href="http://www.emgu.com/wiki/index.php/Tutorial#Working_with_images" title="Tutorial"> Image class</a> or <a href="http://www.emgu.com/wiki/index.php/Tutorial#Function_Mapping_-_Emgu.CV.CvInvoke" title="Tutorial"> direct invoke functions</a> from <a href="http://www.emgu.com/wiki/index.php/OpenCV" title="OpenCV">OpenCV</a>
+</li><li> <a href="http://www.emgu.com/wiki/index.php/Working_with_Images#Generic_Operation" title="Working with Images"> Generic operations </a> on image pixels
+</li></ul>
+<h2> <span class="mw-headline" id="Architecture_Overview"> Architecture Overview </span></h2>
+<p><a href="http://www.emgu.com/wiki/index.php/Emgu_CV" title="Emgu CV" class="mw-redirect">Emgu CV</a> has two layers of wrapper as shown below
+</p>
+<ul><li>The basic layer (<i><b>layer 1</b></i>) contains <a href="http://www.emgu.com/wiki/index.php/Tutorial#Function_Mapping_-_Emgu.CV.CvInvoke" title="Tutorial"> function</a>, <a href="http://www.emgu.com/wiki/index.php/Tutorial#Structure_Mapping_-_Emgu.CV.Mxxx" title="Tutorial"> structure</a> and <a href="http://www.emgu.com/wiki/index.php/Tutorial#Enumeration_Mapping_-_Emgu.CV.CvEnum" title="Tutorial"> enumeration</a> mappings which directly reflect those in <a href="http://www.emgu.com/wiki/index.php/OpenCV" title="OpenCV">OpenCV</a>.
+</li><li>The second layer (<i><b>layer 2</b></i>) contains classes that mix in <a href="http://www.emgu.com/wiki/index.php/Main_Page#Advantage_of_Emgu_CV" title="Main Page"> advantanges</a> from the .NET world.
+</li></ul>
+<p><a href="http://www.emgu.com/wiki/index.php/File:EmguCVArchitecture.png" class="image"><img alt="EmguCVArchitecture.png" src="Emgu%20CV%20%20OpenCV%20in%20.NET%20%28C%23,%20VB,%20C++%20and%20more%29_files/EmguCVArchitecture.png" height="672" width="708"></a>
+</p>
+<!-- 
+NewPP limit report
+Preprocessor node count: 216/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key wikidb-mw_:pcache:idhash:1-0!0!0!!en!2!* and timestamp 20130218222312 -->
+</div>				<!-- /bodycontent -->
+								<!-- printfooter -->
+				<div class="printfooter">
+				Retrieved from "<a href="http://www.emgu.com/wiki/index.php?title=Main_Page&amp;oldid=1543">http://www.emgu.com/wiki/index.php?title=Main_Page&amp;oldid=1543</a>"				</div>
+				<!-- /printfooter -->
+												<!-- catlinks -->
+				<div id="catlinks" class="catlinks catlinks-allhidden"></div>				<!-- /catlinks -->
+												<div class="visualClear"></div>
+				<!-- debughtml -->
+								<!-- /debughtml -->
+			</div>
+			<!-- /bodyContent -->
+		</div>
+		<!-- /content -->
+		<!-- header -->
+		<div id="mw-head" class="noprint">
+			
+<!-- 0 -->
+<div id="p-personal" class="">
+	<h5>Personal tools</h5>
+	<ul>
+		<li id="pt-login"><a href="http://www.emgu.com/wiki/index.php?title=Special:UserLogin&amp;returnto=Main+Page" title="You are encouraged to log in; however, it is not mandatory [alt-shift-o]" accesskey="o">Log in / create account</a></li>
+	</ul>
+</div>
+
+<!-- /0 -->
+			<div id="left-navigation">
+				
+<!-- 0 -->
+<div id="p-namespaces" class="vectorTabs">
+	<h5>Namespaces</h5>
+	<ul>
+					<li id="ca-nstab-main" class="selected"><span><a href="http://www.emgu.com/wiki/index.php/Main_Page" title="View the content page [alt-shift-c]" accesskey="c">Page</a></span></li>
+					<li id="ca-talk"><span><a href="http://www.emgu.com/wiki/index.php/Talk:Main_Page" title="Discussion about the content page [alt-shift-t]" accesskey="t">Discussion</a></span></li>
+			</ul>
+</div>
+
+<!-- /0 -->
+
+<!-- 1 -->
+<div id="p-variants" class="vectorMenu emptyPortlet">
+	<h4>
+		</h4>
+	<h5><span>Variants</span><a href="#"></a></h5>
+	<div class="menu">
+		<ul>
+					</ul>
+	</div>
+</div>
+
+<!-- /1 -->
+			</div>
+			<div id="right-navigation">
+				
+<!-- 0 -->
+<div id="p-views" class="vectorTabs">
+	<h5>Views</h5>
+	<ul>
+					<li id="ca-view" class="selected"><span><a href="http://www.emgu.com/wiki/index.php/Main_Page">Read</a></span></li>
+					<li id="ca-viewsource"><span><a href="http://www.emgu.com/wiki/index.php?title=Main_Page&amp;action=edit" title="This page is protected.
+You can view its source [alt-shift-e]" accesskey="e">View source</a></span></li>
+					<li id="ca-history" class="collapsible"><span><a href="http://www.emgu.com/wiki/index.php?title=Main_Page&amp;action=history" title="Past revisions of this page [alt-shift-h]" accesskey="h">View history</a></span></li>
+			</ul>
+</div>
+
+<!-- /0 -->
+
+<!-- 1 -->
+<div id="p-cactions" class="vectorMenu emptyPortlet">
+	<h5><span>Actions</span><a href="#"></a></h5>
+	<div class="menu">
+		<ul>
+					</ul>
+	</div>
+</div>
+
+<!-- /1 -->
+
+<!-- 2 -->
+<div id="p-search">
+	<h5><label for="searchInput">Search</label></h5>
+	<form action="/wiki/index.php" id="searchform">
+				<div>
+			<input name="search" title="Search Emgu CV: OpenCV in .NET (C#, VB, C++ and more) [alt-shift-f]" accesskey="f" id="searchInput" type="search">			<input name="go" value="Go" title="Go to a page with this exact name if exists" id="searchGoButton" class="searchButton" type="submit">			<input name="fulltext" value="Search" title="Search the pages for this text" id="mw-searchButton" class="searchButton" type="submit">					<input name="title" value="Special:Search" type="hidden">
+		</div>
+	</form>
+</div>
+
+<!-- /2 -->
+			</div>
+		</div>
+		<!-- /header -->
+		<!-- panel -->
+			<div id="mw-panel" class="noprint">
+				<!-- logo -->
+					<div id="p-logo"><a style="background-image: url(http://www.emgu.com/wiki/files/EmguCVLogo.gif);" href="http://www.emgu.com/wiki/index.php/Main_Page" title="Visit the main page"></a></div>
+				<!-- /logo -->
+				
+<!-- Navigation -->
+<div class="portal" id="p-Navigation">
+	<h5>Navigation</h5>
+	<div class="body">
+		<ul>
+			<li id="n-mainpage"><a href="http://www.emgu.com/wiki/index.php/Main_Page" title="Visit the main page [alt-shift-z]" accesskey="z">Main Page</a></li>
+			<li id="n-Tutorial"><a href="http://www.emgu.com/wiki/index.php/Tutorial">Tutorial</a></li>
+			<li id="n-API-Documentation"><a href="http://www.emgu.com/wiki/index.php/Documentation">API Documentation</a></li>
+			<li id="n-Version-History"><a href="http://www.emgu.com/wiki/index.php/Version_History">Version History</a></li>
+			<li id="n-Download-and-Installation"><a href="http://www.emgu.com/wiki/index.php/Download_And_Installation">Download and Installation</a></li>
+			<li id="n-Support-and-Services"><a href="http://www.emgu.com/wiki/index.php/Support_and_Services">Support and Services</a></li>
+			<li id="n-Discussion-Forum"><a href="http://www.emgu.com/forum" rel="nofollow">Discussion Forum</a></li>
+			<li id="n-Bug-Tracking"><a href="http://www.emgu.com/bugs" rel="nofollow">Bug Tracking</a></li>
+			<li id="n-Code-Gallery"><a href="http://www.emgu.com/wiki/index.php/Code_Gallery">Code Gallery</a></li>
+			<li id="n-License"><a href="http://www.emgu.com/wiki/index.php/Licensing:">Licensing:</a></li>
+		</ul>
+	</div>
+</div>
+
+<!-- /Navigation -->
+
+<!-- Others -->
+<div class="portal" id="p-Others">
+	<h5>others</h5>
+	<div class="body">
+		<ul>
+			<li id="n-GIT"><a href="http://www.emgu.com/wiki/index.php/GIT">GIT</a></li>
+			<li id="n-SourceForge"><a href="http://www.emgu.com/wiki/index.php/Sourceforge-url">SourceForge</a></li>
+			<li id="n-Recent-Changes"><a href="http://www.emgu.com/wiki/index.php/Special:RecentChanges">Recent Changes</a></li>
+		</ul>
+	</div>
+</div>
+
+<!-- /Others -->
+
+<!-- SEARCH -->
+
+<!-- /SEARCH -->
+
+<!-- TOOLBOX -->
+<div class="portal" id="p-tb">
+	<h5>Toolbox</h5>
+	<div class="body">
+		<ul>
+			<li id="t-whatlinkshere"><a href="http://www.emgu.com/wiki/index.php/Special:WhatLinksHere/Main_Page" title="A list of all wiki pages that link here [alt-shift-j]" accesskey="j">What links here</a></li>
+			<li id="t-recentchangeslinked"><a href="http://www.emgu.com/wiki/index.php/Special:RecentChangesLinked/Main_Page" title="Recent changes in pages linked from this page [alt-shift-k]" accesskey="k">Related changes</a></li>
+			<li id="t-specialpages"><a href="http://www.emgu.com/wiki/index.php/Special:SpecialPages" title="A list of all special pages [alt-shift-q]" accesskey="q">Special pages</a></li>
+			<li><a href="http://www.emgu.com/wiki/index.php?title=Main_Page&amp;printable=yes" rel="alternate">Printable version</a></li>
+			<li id="t-permalink"><a href="http://www.emgu.com/wiki/index.php?title=Main_Page&amp;oldid=1543" title="Permanent link to this revision of the page">Permanent link</a></li>
+		</ul>
+	</div>
+</div>
+
+<!-- /TOOLBOX -->
+
+<!-- LANGUAGES -->
+
+<!-- /LANGUAGES -->
+			</div>
+		<!-- /panel -->
+		<!-- footer -->
+		<div id="footer">
+							<ul id="footer-info">
+											<li id="footer-info-lastmod"> This page was last modified on 16 September 2012, at 14:09.</li>
+											<li id="footer-info-viewcount">This page has been accessed 682,984 times.</li>
+											<li id="footer-info-copyright">Content is available under <a class="external" href="http://www.gnu.org/copyleft/fdl.html">GNU Free Documentation License 1.2</a>.</li>
+									</ul>
+							<ul id="footer-places">
+											<li id="footer-places-privacy"><a href="http://www.emgu.com/wiki/index.php/Emgu_CV:_OpenCV_in_.NET_%28C%23,_VB,_C%2B%2B_and_more%29:Privacy_policy" title="Emgu CV: OpenCV in .NET (C#, VB, C++ and more):Privacy policy">Privacy policy</a></li>
+											<li id="footer-places-about"><a href="http://www.emgu.com/wiki/index.php/Emgu_CV:_OpenCV_in_.NET_%28C%23,_VB,_C%2B%2B_and_more%29:About" title="Emgu CV: OpenCV in .NET (C#, VB, C++ and more):About">About Emgu CV: OpenCV in .NET (C#, VB, C++ and more)</a></li>
+											<li id="footer-places-disclaimer"><a href="http://www.emgu.com/wiki/index.php/Emgu_CV:_OpenCV_in_.NET_%28C%23,_VB,_C%2B%2B_and_more%29:General_disclaimer" title="Emgu CV: OpenCV in .NET (C#, VB, C++ and more):General disclaimer">Disclaimers</a></li>
+									</ul>
+										<ul id="footer-icons" class="noprint">
+					<li id="footer-copyrightico">
+						<a href="http://www.gnu.org/copyleft/fdl.html"><img src="Emgu%20CV%20%20OpenCV%20in%20.NET%20%28C%23,%20VB,%20C++%20and%20more%29_files/gnu-fdl.png" alt="GNU Free Documentation License 1.2" height="31" width="88"></a>
+					</li>
+					<li id="footer-poweredbyico">
+						<a href="http://www.mediawiki.org/"><img src="Emgu%20CV%20%20OpenCV%20in%20.NET%20%28C%23,%20VB,%20C++%20and%20more%29_files/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" height="31" width="88"></a>
+					</li>
+				</ul>
+						<div style="clear:both"></div>
+		</div>
+		<!-- /footer -->
+		<script src="Emgu%20CV%20%20OpenCV%20in%20.NET%20%28C%23,%20VB,%20C++%20and%20more%29_files/load.php"></script>
+<script>if(window.mw){
+mw.loader.load(["mediawiki.user","mediawiki.page.ready"], null, true);
+}</script><script type="text/javascript" src="Emgu%20CV%20%20OpenCV%20in%20.NET%20%28C%23,%20VB,%20C++%20and%20more%29_files/load_005.php"></script>
+<!-- Served in 0.193 secs. -->
+	
+
+</body></html>
