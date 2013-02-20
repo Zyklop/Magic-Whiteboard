@@ -1,0 +1,9 @@
+bin/
+obj/
+*.bak
+*.Ink
+thumbs.db
+*.suo
+~*.*
+*.tmp
+*.log
