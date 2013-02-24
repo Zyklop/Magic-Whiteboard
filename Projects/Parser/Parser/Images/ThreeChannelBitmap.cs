@@ -1,4 +1,4 @@
-namespace Parser.Images
+namespace HSR.PresentationWriter.Parser.Images
 {
     internal struct ThreeChannelBitmap
     {

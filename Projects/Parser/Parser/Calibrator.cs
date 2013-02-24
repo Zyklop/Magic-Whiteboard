@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Parser
+namespace HSR.PresentationWriter.Parser
 {
     internal class Calibrator
     {
@@ -29,7 +29,8 @@ namespace Parser
 
         public int CheckCalibration()
         {
-            
+            // TODO dummy
+            return 0;
         }
 
         public Grid Grid { get; private set; }

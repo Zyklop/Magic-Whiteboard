@@ -1,7 +1,7 @@
 using System;
-using Parser.Images;
+using HSR.PresentationWriter.Parser.Images;
 
-namespace Parser.Events
+namespace HSR.PresentationWriter.Parser.Events
 {
     internal class NewImageEventArgs:EventArgs
     {

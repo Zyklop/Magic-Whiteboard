@@ -1,7 +1,7 @@
 ﻿using HSR.PresentationWriter.DataSources;
 using System.Threading;
 
-namespace Tester
+namespace HSR.PresentationWriter.Tester
 {
     class Program
     {
