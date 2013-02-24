@@ -5,3 +5,7 @@ http://msdn.microsoft.com/en-us/library/windows/desktop/dd797852%28v=vs.85%29.as
 http://www.metricam.net/
 OpenCV:
 http://www.emgu.com/wiki/index.php/Emgu_CV
+
+Camera Code:
+http://www.Planet-Source-Code.com/vb/scripts/ShowCode.asp?txtCodeId=1339&lngWId=10
+http://ycouriel.blogspot.ch/2009/12/c-clipboard-in-console.html
