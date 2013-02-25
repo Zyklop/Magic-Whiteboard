@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media.Imaging;
+using HSR.PresentationWriter.Parser.Events;
+using HSR.PresentationWriter.Parser.Images;
 using Parser;
 using Parser.Mock;
 
@@ -12,11 +16,24 @@ namespace MockTester
     {
         static void Main(string[] args)
         {
-            var parser = new DataParser(new MockCameraConnector());
+            int i = 0;
+            ThreeChannelBitmap tci = new ThreeChannelBitmap();
+            var cameraConnector = new MockCameraConnector();
+            var parser = new DataParser(cameraConnector);
             parser.Initialize();
+            parser.Start(); parser.Initialize();
             parser.Start();
-            parser.PenPositionChanged += delegate { Console.WriteLine("new image"); };
-            while(true)
+            cameraConnector.NewImage += delegate(object sender, NewImageEventArgs e)
+                {
+                    if (i>0)
+                    {
+                        (tci - e.NewImage).GetVisual().Save(@"C:\temp\gach" + i + ".jpg");
+                    }
+                    
+                    tci = e.NewImage;
+                    i++;
+                };
+            while(i<5)
                 System.Threading.Thread.Sleep(5);
         }
     }

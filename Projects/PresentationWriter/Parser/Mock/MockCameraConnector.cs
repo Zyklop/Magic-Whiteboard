@@ -21,11 +21,14 @@ namespace Parser.Mock
         private List<ThreeChannelBitmap> imagelist;
         private int index=0;
 
-        public MockCameraConnector() : base()
+        public MockCameraConnector()
         {
-            imagelist = new List<ThreeChannelBitmap>();
-            imagelist.Add(new ThreeChannelBitmap(new Bitmap(@"Images/Raumsetup.jpg")));
-            imagelist.Add(new ThreeChannelBitmap(new Bitmap(@"Images/Raumsetup-ohne-Licht.jpg")));
+            imagelist = new List<ThreeChannelBitmap>
+                {
+                    new ThreeChannelBitmap(new Bitmap(@"Images/Raumsetup.jpg")),
+                    new ThreeChannelBitmap(new Bitmap(@"Images/Raumsetup-ohne-Licht.jpg")),
+                    new ThreeChannelBitmap(new Bitmap(@"Images/Raumsetup-ohne-Licht.jpg"))
+                };
             Start();
         }
 
