@@ -1,6 +1,6 @@
 ﻿using System;
-using Parser.Events;
-using Parser.Mock;
+using HSR.PresentationWriter.Parser;
+using HSR.PresentationWriter.Parser.Events;
 
 namespace Parser
 {

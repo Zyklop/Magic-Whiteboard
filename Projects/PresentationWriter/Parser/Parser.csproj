@@ -48,7 +48,6 @@
     <Compile Include="Events\NewImageEventArgs.cs" />
     <Compile Include="Grid.cs" />
     <Compile Include="Images\ThreeChannelBitmap.cs" />
-    <Compile Include="Mock\Camera.cs" />
     <Compile Include="Mock\MockCameraConnector.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>

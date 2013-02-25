@@ -6,9 +6,9 @@ using System.Text;
 using System.Timers;
 using System.Threading;
 using System.Threading.Tasks;
-using Parser;
-using Parser.Events;
-using Parser.Images;
+using HSR.PresentationWriter.Parser;
+using HSR.PresentationWriter.Parser.Events;
+using HSR.PresentationWriter.Parser.Images;
 using System.Drawing;
 using Timer = System.Timers.Timer;
 
@@ -42,6 +42,6 @@ namespace Parser.Mock
             tim.Start();
         }
 
-        public override event EventHandler<Events.NewImageEventArgs> NewImage;
+        public override event EventHandler<NewImageEventArgs> NewImage;
     }
 }
