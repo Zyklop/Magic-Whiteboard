@@ -7,6 +7,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Camera", "Camera\Camera.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tester", "Tester\Tester.csproj", "{872C77F5-1164-4F03-8972-29D9D5582A3B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MockTester", "Parser\MockTester\MockTester.csproj", "{F08E2CF6-88D3-4024-80D7-FB525F76E445}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImageChecker", "Parser\ImageChecker\ImageChecker.csproj", "{B674234B-A753-4956-A5BC-0DC053D57915}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -25,6 +29,14 @@ Global
 		{872C77F5-1164-4F03-8972-29D9D5582A3B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{872C77F5-1164-4F03-8972-29D9D5582A3B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{872C77F5-1164-4F03-8972-29D9D5582A3B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F08E2CF6-88D3-4024-80D7-FB525F76E445}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F08E2CF6-88D3-4024-80D7-FB525F76E445}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F08E2CF6-88D3-4024-80D7-FB525F76E445}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F08E2CF6-88D3-4024-80D7-FB525F76E445}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B674234B-A753-4956-A5BC-0DC053D57915}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B674234B-A753-4956-A5BC-0DC053D57915}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B674234B-A753-4956-A5BC-0DC053D57915}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B674234B-A753-4956-A5BC-0DC053D57915}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -95,7 +95,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Parser\Parser.csproj">
+    <ProjectReference Include="..\Parser.csproj">
       <Project>{c9d79db6-72b8-461a-b725-8fee1dc05eb6}</Project>
       <Name>Parser</Name>
     </ProjectReference>
