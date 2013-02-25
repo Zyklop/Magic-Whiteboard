@@ -1,4 +1,4 @@
-namespace Parser
+namespace HSR.PresentationWriter.Parser
 {
     public struct Point
     {

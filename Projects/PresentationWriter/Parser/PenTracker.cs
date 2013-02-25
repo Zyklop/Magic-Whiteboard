@@ -1,7 +1,7 @@
-﻿using Parser.Events;
-using Parser.Images;
+﻿using HSR.PresentationWriter.Parser.Events;
+using HSR.PresentationWriter.Parser.Images;
 
-namespace Parser
+namespace HSR.PresentationWriter.Parser
 {
     internal class PenTracker
     {

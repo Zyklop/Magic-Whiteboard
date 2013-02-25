@@ -1,6 +1,6 @@
 using System;
 
-namespace Parser.Events
+namespace HSR.PresentationWriter.Parser.Events
 {
     public class PenPositionEventArgs:EventArgs
     {

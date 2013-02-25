@@ -1,7 +1,7 @@
+
 using System;
 using System.Drawing;
-
-namespace Parser.Images
+namespace HSR.PresentationWriter.Parser.Images
 {
     public struct ThreeChannelBitmap
     {

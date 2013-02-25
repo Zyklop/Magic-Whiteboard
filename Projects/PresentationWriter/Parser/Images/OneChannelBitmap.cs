@@ -1,6 +1,6 @@
 using System;
 
-namespace Parser.Images
+namespace HSR.PresentationWriter.Parser.Images
 {
     public struct OneChannelBitmap
     {

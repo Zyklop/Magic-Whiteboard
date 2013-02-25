@@ -1,8 +1,10 @@
 using System;
 using Parser.Events;
 using Parser.Mock;
+using HSR.PresentationWriter.DataSources;
+using HSR.PresentationWriter.Parser.Events;
 
-namespace Parser
+namespace HSR.PresentationWriter.Parser
 {
     public class CameraConnector
     {
