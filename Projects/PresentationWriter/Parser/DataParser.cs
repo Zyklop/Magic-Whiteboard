@@ -1,8 +1,7 @@
 ﻿using System;
-using HSR.PresentationWriter.Parser;
 using HSR.PresentationWriter.Parser.Events;
 
-namespace Parser
+namespace HSR.PresentationWriter.Parser
 {
     public class DataParser
     {

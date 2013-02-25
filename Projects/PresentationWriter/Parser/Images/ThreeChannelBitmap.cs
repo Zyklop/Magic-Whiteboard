@@ -3,11 +3,18 @@ using System;
 using System.Drawing;
 namespace HSR.PresentationWriter.Parser.Images
 {
-    public struct ThreeChannelBitmap
+    public class ThreeChannelBitmap
     {
         private OneChannelBitmap _r;
         private OneChannelBitmap _g;
         private OneChannelBitmap _b;
+
+        public ThreeChannelBitmap()
+        {
+            _r = new OneChannelBitmap();
+            _g = new OneChannelBitmap();
+            _b = new OneChannelBitmap();
+        }
 
         public ThreeChannelBitmap(int width, int height)
         {

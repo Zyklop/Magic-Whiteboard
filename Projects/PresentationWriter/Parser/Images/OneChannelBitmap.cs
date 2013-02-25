@@ -2,9 +2,14 @@ using System;
 
 namespace HSR.PresentationWriter.Parser.Images
 {
-    public struct OneChannelBitmap
+    public class OneChannelBitmap
     {
         private byte[,] _c;
+
+        public OneChannelBitmap()
+        {
+            _c = new byte[0,0];
+        }
 
         public OneChannelBitmap(int width, int height)
         {

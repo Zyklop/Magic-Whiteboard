@@ -16,6 +16,7 @@ namespace HSR.PresentationWriter.Parser
 
         protected CameraConnector()
         {
+            //for mocking, no other use
         }
 
         public virtual event EventHandler<NewImageEventArgs> NewImage;

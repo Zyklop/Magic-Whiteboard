@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
+using HSR.PresentationWriter.Parser;
 using HSR.PresentationWriter.Parser.Events;
 using HSR.PresentationWriter.Parser.Images;
 using Parser;
