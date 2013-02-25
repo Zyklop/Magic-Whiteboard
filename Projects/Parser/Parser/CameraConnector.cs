@@ -1,14 +1,19 @@
 using System;
 using Parser.Events;
+using Parser.Mock;
 
 namespace Parser
 {
-    internal class CameraConnector
+    public class CameraConnector
     {
         public CameraConnector(Camera camera)
         {
         }
 
-        public event EventHandler<NewImageEventArgs> NewImage;
+        protected CameraConnector()
+        {
+        }
+
+        public virtual event EventHandler<NewImageEventArgs> NewImage;
     }
 }

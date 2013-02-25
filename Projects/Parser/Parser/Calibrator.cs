@@ -19,17 +19,15 @@ namespace Parser
 
         public void CalibrateColors()
         {
-            throw new NotImplementedException();
         }
 
         public void Calibrate()
         {
-            throw new NotImplementedException();
         }
 
         public int CheckCalibration()
         {
-            
+            return 0;
         }
 
         public Grid Grid { get; private set; }

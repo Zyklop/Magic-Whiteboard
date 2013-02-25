@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Parser", "Parser\Parser.csproj", "{C9D79DB6-72B8-461A-B725-8FEE1DC05EB6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImageChecker", "ImageChecker\ImageChecker.csproj", "{B674234B-A753-4956-A5BC-0DC053D57915}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -13,6 +15,10 @@ Global
 		{C9D79DB6-72B8-461A-B725-8FEE1DC05EB6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C9D79DB6-72B8-461A-B725-8FEE1DC05EB6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C9D79DB6-72B8-461A-B725-8FEE1DC05EB6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B674234B-A753-4956-A5BC-0DC053D57915}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B674234B-A753-4956-A5BC-0DC053D57915}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B674234B-A753-4956-A5BC-0DC053D57915}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B674234B-A753-4956-A5BC-0DC053D57915}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

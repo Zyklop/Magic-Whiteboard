@@ -4,15 +4,16 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{C9D79DB6-72B8-461A-B725-8FEE1DC05EB6}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <ProjectGuid>{F08E2CF6-88D3-4024-80D7-FB525F76E445}</ProjectGuid>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Parser</RootNamespace>
-    <AssemblyName>Parser</AssemblyName>
+    <RootNamespace>MockTester</RootNamespace>
+    <AssemblyName>MockTester</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -22,6 +23,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -32,7 +34,6 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -40,33 +41,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Colorfilter.cs" />
-    <Compile Include="Events\PenPositionEventArgs.cs" />
-    <Compile Include="Images\OneChannelBitmap.cs" />
-    <Compile Include="Calibrator.cs" />
-    <Compile Include="CameraConnector.cs" />
-    <Compile Include="Events\NewImageEventArgs.cs" />
-    <Compile Include="Grid.cs" />
-    <Compile Include="Images\ThreeChannelBitmap.cs" />
-    <Compile Include="Mock\Camera.cs" />
-    <Compile Include="Mock\MockCameraConnector.cs">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Compile>
-    <Compile Include="DataParser.cs" />
-    <Compile Include="PenTracker.cs" />
-    <Compile Include="Point.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Mock\Images\" />
+    <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Images\Raumsetup-ohne-Licht.jpg">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Images\Raumsetup.jpg">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    <ProjectReference Include="..\Parser\Parser.csproj">
+      <Project>{c9d79db6-72b8-461a-b725-8fee1dc05eb6}</Project>
+      <Name>Parser</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

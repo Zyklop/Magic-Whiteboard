@@ -1,17 +1,18 @@
 ﻿using System;
 using Parser.Events;
+using Parser.Mock;
 
 namespace Parser
 {
-    public class Parser
+    public class DataParser
     {
         private readonly CameraConnector _cc;
         private Grid _grid;
         private int _gridcheck=1000;
 
-        public Parser(Camera camera)
+        public DataParser(CameraConnector camera)
         {
-            _cc = new CameraConnector(camera);
+            _cc = camera;
         }
 
         public void Initialize()
@@ -26,7 +27,7 @@ namespace Parser
 
         private void NewImage(object sender, NewImageEventArgs e)
         {
-            PenPositionChanged(this, PenTracker.GetPenPosition(e.NewImage));
+            if (PenPositionChanged != null) PenPositionChanged(this, PenTracker.GetPenPosition(e.NewImage));
             _gridcheck--;
             if (_gridcheck == 0)
             {
