@@ -56,10 +56,11 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Camera.cs" />
-    <Compile Include="CameraProperties.cs" />
+    <Compile Include="AvicapCamera.cs" />
     <Compile Include="CurrentMillis.cs" />
+    <Compile Include="DirectShowCamera.cs" />
     <Compile Include="Frame.cs" />
+    <Compile Include="Camera.cs" />
     <Compile Include="NativeMethods.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -6,9 +6,9 @@ namespace HSR.PresentationWriter.Parser
 {
     public class CameraConnector
     {
-        private Camera _camera;
+        private AvicapCamera _camera;
 
-        public CameraConnector(Camera camera)
+        public CameraConnector(AvicapCamera camera)
         {
             _camera = camera;
             _camera.Start();
