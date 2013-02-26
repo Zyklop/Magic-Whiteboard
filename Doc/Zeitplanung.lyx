@@ -69,93 +69,69 @@ Zeiplanung Ablauf
 \end_layout
 
 \begin_layout Enumerate
-Tools aufsetzen + Informationsbeschaffung W1-2 
+W1: 
 \begin_inset Newline newline
 \end_inset
 
-Visual Studio, Git, Repo,
+Tools aufsetzen + Informationsbeschaffung
 \begin_inset Newline newline
 \end_inset
 
-In LyX einarbeiten,
+Visual Studio, Git, Repo
 \begin_inset Newline newline
 \end_inset
 
-Externe Libraries anschauen,
-\begin_inset Newline newline
-\end_inset
-
-Analyse des Setups generell, Dokumentation der UseCases
+erste Versuche mit Webcam und mit Differenzbildern
 \end_layout
 
 \begin_layout Enumerate
-Grobe Prototypen entwickeln und sich über die Architektur klar werden W2-4
-\end_layout
-
-\begin_deeper
-\begin_layout Enumerate
-Parser Architekturprototyp fertig
+W2-3:
 \begin_inset Newline newline
 \end_inset
 
-wie bekommen wir Differenzbilder?, 
+Externe Libraries anschauen (z.B.: OpenCV), Analyse des Setups generell, Dokumenta
+tion der UseCases
 \begin_inset Newline newline
 \end_inset
 
-wie werden Parser/Filter möglichst einheitlich definiert? 
+Kern-Probleme lösen: 
 \begin_inset Newline newline
 \end_inset
 
-Wie werden sie gequeued?
-\end_layout
+- Analyse der erforderlichen Techniken (z.B.: Mapping Bild -> Grid, Stift
+ erkennen, Zeithandling)
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Enumerate
-Camera Prototyp fertig
+- Einzelne Kernprobleme in den Ansätzen gelöst
 \end_layout
 
 \begin_layout Enumerate
-Libraries fixiert
-\end_layout
-
-\end_deeper
-\begin_layout Enumerate
-Prototyp Grid final W4-6
+W4-7:
 \begin_inset Newline newline
 \end_inset
 
-Architektur Design und API für Integration
+Kernprobleme gut lösen
 \begin_inset Newline newline
 \end_inset
 
-Gridparser verfeinern
-\begin_inset Newline newline
-\end_inset
-
-Camera verfeinern
-\begin_inset Newline newline
-\end_inset
-
-Architektur Prototyp fertig
-\begin_inset Newline newline
-\end_inset
-
-Punkt 1 der Anforderungen erfüllt (grob)
+Stift-Werkzeug wählen
 \end_layout
 
 \begin_layout Enumerate
-Position des Stiftes erfassen W6-8
+W7-9:
 \begin_inset Newline newline
 \end_inset
 
-Analyse Requirements für den Stift
-\end_layout
-
-\begin_layout Enumerate
-Genauigkeit überarbeiten W9
+Archtitekturprototyp fertig.
 \begin_inset Newline newline
 \end_inset
 
-Übereinstimmung Grid mit Stiftposition
+Toolchain arbeitet zusammen.
+\begin_inset Newline newline
+\end_inset
+
+Punkt 1,2 & 3 der Anforderungen erfüllt
 \end_layout
 
 \begin_layout Enumerate
