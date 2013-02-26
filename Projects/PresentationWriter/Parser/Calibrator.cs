@@ -111,9 +111,9 @@ namespace HSR.PresentationWriter.Parser
         private bool CheckBlock(OneChannelBitmap diff, int p, int j)
         {
             int sum = 0;
-            for (int i = p; i <= p+Blocksize; i++)
+            for (int i = p; i <= p+Blocksize && i < diff.Width; i++)
             {
-                for (int k = j; k <= j+Blocksize; k++)
+                for (int k = j; k <= j+Blocksize && k < diff.Height; k++)
                 {
                     if (diff.Channel[p,j]>=GreyDiff)
                     {

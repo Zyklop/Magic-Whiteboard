@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using HSR.PresentationWriter.Parser;
@@ -23,19 +24,19 @@ namespace MockTester
             var parser = new DataParser(cameraConnector);
             parser.Initialize();
             parser.Start(); parser.Initialize();
-            parser.Start();
-            cameraConnector.NewImage += delegate(object sender, NewImageEventArgs e)
-                {
-                    if (i>0)
-                    {
-                        (tci - e.NewImage).GetVisual().Save(@"C:\temp\gach" + i + ".jpg");
-                    }
+            Thread.Sleep(10000);
+            //cameraConnector.NewImage += delegate(object sender, NewImageEventArgs e)
+            //    {
+            //        if (i>0)
+            //        {
+            //            (tci - e.NewImage).GetVisual().Save(@"C:\temp\gach" + i + ".jpg");
+            //        }
                     
-                    tci = e.NewImage;
-                    i++;
-                };
-            while(i<5)
-                System.Threading.Thread.Sleep(5);
+            //        tci = e.NewImage;
+            //        i++;
+            //    };
+            Console.Write(parser.Topl.X + " "+parser.Topl.Y);
+            Console.Read();
         }
     }
 }

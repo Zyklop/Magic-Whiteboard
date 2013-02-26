@@ -6,7 +6,7 @@ namespace HSR.PresentationWriter.Parser
     public class DataParser
     {
         private readonly CameraConnector _cc;
-        private Grid _grid;
+        private Calibrator _calibrator;
         private int _gridcheck=1000;
 
         public DataParser(CameraConnector camera)
@@ -16,7 +16,7 @@ namespace HSR.PresentationWriter.Parser
 
         public void Initialize()
         {
-            var c = new Calibrator(_cc);
+            _calibrator = new Calibrator(_cc);
         }
 
         public void Start()
@@ -45,6 +45,8 @@ namespace HSR.PresentationWriter.Parser
         {
             _cc.NewImage -= NewImage;
         }
+
+        public Point Topl { get { return _calibrator.Grid.TopLeft; } }
 
         internal Calibrator Calibrator { get; set; }
 
