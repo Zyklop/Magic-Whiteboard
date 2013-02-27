@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using HSR.PresentationWriter.Parser.Images;
+using ImageVisualizer;
 
 namespace HSR.PresentationWriter.Parser
 {
@@ -14,11 +15,13 @@ namespace HSR.PresentationWriter.Parser
         private const int Blocksize = 10;
         private const int Blockfill = 80; // Number of pixels needed for a Block to be valid. Depends on Blocksize.
         private ThreeChannelBitmap _lastImage;
+        private CalibratorWindow _cw;
 
         public Calibrator(CameraConnector cc)
         {
             _cc = cc;
             Grid = new Grid();
+            _cw = new CalibratorWindow();
             Calibrate();
             CalibrateColors();
         }
@@ -41,69 +44,70 @@ namespace HSR.PresentationWriter.Parser
             else
             {
                 var diff = (_lastImage - e.NewImage).GetGrayscale();
-                //top left corner
-                var b = false;
-                for (int i = 0; i < diff.Height; i++)
+                SetTopLeftCorner(diff);
+                SetTopRightCorner(diff);
+                SetBottomLeftCorner(diff);
+                SetBottomRightCorner(diff);
+                _cc.NewImage -= BaseCalibration;
+            }
+        }
+
+        private void SetBottomRightCorner(OneChannelBitmap diff)
+        {
+            for (int i = diff.Width; i > diff.Width - diff.Height; i--)
+            {
+                for (int j = 1; j <= i; j++)
                 {
-                    for (int j = 0; j <= i; j++)
+                    if (CheckBlock(diff, i + j - Blocksize, diff.Height - j - Blocksize))
                     {
-                        if (CheckBlock(diff,i-j,j))
-                        {
-                            b = true;
-                            Grid.TopLeft = new Point{X = i-j, Y = j};
-                            break;
-                        }
+                        Grid.BottomRight = new Point {X = i + j, Y = diff.Height - j};
+                        break;
                     }
-                    if (b) break;
                 }
-                //top right corner
-                b = false;
-                for (int i = diff.Width-1; i > diff.Width - diff.Height; i--)
+            }
+        }
+
+        private void SetBottomLeftCorner(OneChannelBitmap diff)
+        {
+            for (int i = 0; i < diff.Height; i++)
+            {
+                for (int j = 1; j <= i; j++)
                 {
-                    for (int j = 0; j < diff.Width-i; j++)
+                    if (CheckBlock(diff, i - j, diff.Height - j - Blocksize))
                     {
-                        if (CheckBlock(diff, i + j - Blocksize, j))
-                        {
-                            b = true;
-                            Grid.TopRight = new Point{X = i+j, Y = j};
-                            break;
-                        }
+                        Grid.BotttomLeft = new Point {X = i - j, Y = diff.Height - j};
+                        break;
                     }
-                    if (b) break;
                 }
-                //bottom left corner
-                b = false;
-                for (int i = 0; i < diff.Height; i++)
+            }
+        }
+
+        private void SetTopRightCorner(OneChannelBitmap diff)
+        {
+            for (int i = diff.Width - 1; i > diff.Width - diff.Height; i--)
+            {
+                for (int j = 0; j < diff.Width - i; j++)
                 {
-                    for (int j = 1; j <= i; j++)
+                    if (CheckBlock(diff, i + j - Blocksize, j))
                     {
-                        if (CheckBlock(diff, i - j, diff.Height - j - Blocksize))
-                        {
-                            b = true;
-                            Grid.BotttomLeft = new Point { X = i - j, Y = diff.Height - j };
-                            break;
-                        }
+                        Grid.TopRight = new Point {X = i + j, Y = j};
+                        return;
                     }
-                    if (b) break;
                 }
-                //bottom right corner
-                b = false;
-                for (int i = diff.Width; i > diff.Width - diff.Height; i--)
+            }
+        }
+
+        private void SetTopLeftCorner(OneChannelBitmap diff)
+        {
+            for (int i = 0; i < diff.Height; i++)
+            {
+                for (int j = 0; j <= i; j++)
                 {
-                    for (int j = 1; j <= i; j++)
+                    if (CheckBlock(diff, i - j, j))
                     {
-                        if (CheckBlock(diff, i + j - Blocksize, diff.Height - j - Blocksize))
-                        {
-                            b = true;
-                            Grid.BottomRight = new Point { X = i + j, Y = diff.Height - j };
-                            break;
-                        }
+                        Grid.TopLeft = new Point {X = i - j, Y = j};
+                        return;
                     }
-                    if (b) break;
-                }
-                if (b)
-                {
-                    _cc.NewImage -= BaseCalibration;
                 }
             }
         }
