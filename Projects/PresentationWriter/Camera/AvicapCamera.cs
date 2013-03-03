@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using System.Threading;
 
 namespace HSR.PresentationWriter.DataSources
@@ -18,6 +19,7 @@ namespace HSR.PresentationWriter.DataSources
 
         public const int WM_CAP_START = WM_USER;
 
+        public const int WM_CAP_SET_CALLBACK_FRAME = WM_CAP_START + 5;
         public const int WM_CAP_DLG_VIDEOFORMAT = WM_CAP_START + 41;
         public const int WM_CAP_DLG_VIDEOSOURCE = WM_CAP_START + 42;
         public const int WM_CAP_DLG_VIDEODISPLAY = WM_CAP_START + 43;
@@ -30,6 +32,8 @@ namespace HSR.PresentationWriter.DataSources
 
         private int currentFrame = 0;
         private int mCapHwnd;
+
+        public event EventHandler<FrameReadyEventArgs> FrameReady;
 
         /// <summary>
         /// Creates a camera instance. Device must be started, before
@@ -47,6 +51,7 @@ namespace HSR.PresentationWriter.DataSources
             // Setup a virtual capture window
             mCapHwnd = NativeMethods.capCreateCaptureWindowA("WebCap", 0, 0, 0, 0, 0, 0, 0);
             // Connect to the device
+            //NativeMethods.SendMessage(mCapHwnd, WM_CAP_SET_CALLBACK_FRAME, 0, delegate() { frameCallback(); });
             NativeMethods.SendMessage(mCapHwnd, WM_CAP_CONNECT, 0, 0);
             NativeMethods.SendMessage(mCapHwnd, WM_CAP_SET_PREVIEW, 0, 0);
         }
@@ -118,6 +123,11 @@ namespace HSR.PresentationWriter.DataSources
         public void Dispose()
         {
             this.Stop();
+        }
+
+        private void frameCallback()
+        {
+
         }
     }
 }
