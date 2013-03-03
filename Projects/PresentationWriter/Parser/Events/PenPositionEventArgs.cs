@@ -1,4 +1,5 @@
 using System;
+using System.Windows;
 
 namespace HSR.PresentationWriter.Parser.Events
 {

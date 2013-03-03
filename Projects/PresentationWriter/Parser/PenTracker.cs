@@ -1,4 +1,5 @@
-﻿using HSR.PresentationWriter.Parser.Events;
+﻿using System.Windows;
+using HSR.PresentationWriter.Parser.Events;
 using HSR.PresentationWriter.Parser.Images;
 
 namespace HSR.PresentationWriter.Parser

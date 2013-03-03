@@ -62,6 +62,12 @@ namespace HSR.PresentationWriter.Parser.Images
 
         public byte[,] B { get { return _b.Channel; } set { _b.Channel = value; } }
 
+        public OneChannelBitmap RChannelBitmap { get { return _r; } set { _r = value; } }
+
+        public OneChannelBitmap GChannelBitmap { get { return _g; } set { _g = value; } }
+
+        public OneChannelBitmap BChannelBitmap { get { return _b; } set { _b = value; } }
+
         public int Width {
             get { return _r.Channel.GetLength(0); }
         }
