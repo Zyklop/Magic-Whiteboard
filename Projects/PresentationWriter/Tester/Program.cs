@@ -1,4 +1,5 @@
 ﻿using HSR.PresentationWriter.DataSources;
+using System;
 using System.Threading;
 
 namespace HSR.PresentationWriter.Tester
@@ -7,12 +8,21 @@ namespace HSR.PresentationWriter.Tester
     {
         static void Main(string[] args)
         {
-            AvicapCamera cam = new AvicapCamera();
+            AForgeCamera cam = new AForgeCamera();
+            cam.FrameReady += cam_FrameReady;
             cam.Start();
-            cam.GetLastFrame().Image.Save(@"C:\temp\gach1.jpg");
-            Thread.Sleep(500); 
-            cam.GetLastFrame().Image.Save(@"C:\temp\gach2.jpg");
+
+            Thread.Sleep(1000);
+            cam.GetLastFrame().Image.Save(@"C:\temp\special.jpg");
+            Thread.Sleep(1000);
+            cam.GetLastFrame().Image.Save(@"C:\temp\special2.jpg");
+
             cam.Stop();
+        }
+
+        private static void cam_FrameReady(object sender, FrameReadyEventArgs e)
+        {
+            e.Frame.Image.Save(@"C:\temp\gach" + e.Frame.Number + ".jpg");
         }
     }
 }

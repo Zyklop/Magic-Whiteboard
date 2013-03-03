@@ -6,11 +6,12 @@ using System.Threading.Tasks;
 
 namespace HSR.PresentationWriter.DataSources
 {
-    public interface ICamera : IDisposable
+    public class FrameReadyEventArgs
     {
-        void Start();
-        void Stop();
-        event EventHandler<FrameReadyEventArgs> FrameReady;
-        Frame GetLastFrame();
+        public readonly Frame Frame;
+        public FrameReadyEventArgs(Frame frame)
+        {
+            this.Frame = frame;
+        }
     }
 }
