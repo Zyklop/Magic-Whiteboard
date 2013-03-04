@@ -100,6 +100,12 @@ namespace HSR.PresentationWriter.Parser
             AddRefPoints(screenX, screenY);
         }
 
+        public void AddPoint(Point screen, Point img)
+        {
+            _calibratorData[(int) img.X, (int) img.Y].Add(new Point { X = screen.X, Y = screen.Y });
+            AddRefPoints((int) screen.X, (int) screen.Y);
+        }
+
         private void AddRefPoints(int screenX, int screenY)
         {
             if (_refPoints.ContainsKey(screenX))

@@ -56,5 +56,10 @@ namespace ImageVisualizer
                 };
             MainGrid.Children.Add(r);
         }
+
+        public void AddRect(Rect rect, Color c)
+        {
+            AddRect(rect.TopLeft,rect.BottomRight,c);
+        }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Media;
 using System.Linq;
@@ -55,15 +56,17 @@ namespace HSR.PresentationWriter.Parser
                 Grid.Calculate();
                 _cw.Close();
             }
-            else if (_calibrationStep > CalibrationFrames/2)
-            {
+            //else if (_calibrationStep > CalibrationFrames/2)
+            //{
                 
-            }
+            //}
             else if (_calibrationStep > 2)
             {
+                _cw.ClearRects();
+                FillRandomRects();
                 for (int j = 0; j < 3; j++)
                 {
-                    OneChannelBitmap diff;
+                    OneChannelBitmap diff = new OneChannelBitmap();
                     switch (j)
                     {
                         case 0:
@@ -76,17 +79,20 @@ namespace HSR.PresentationWriter.Parser
                             diff = _blackImage.GChannelBitmap - e.NewImage.GChannelBitmap;
                             break;
                     }
-
+                    Grid.AddPoint(rects[j].TopLeft,GetTopLeftCorner(diff));
+                    Grid.AddPoint(rects[j].TopRight,GetTopRightCorner(diff));
+                    Grid.AddPoint(rects[j].BottomLeft,GetBottomLeftCorner(diff));
+                    Grid.AddPoint(rects[j].BottomRight,GetBottomRightCorner(diff));
                 }
             }
             else switch (_calibrationStep)
             {
                 case 2:
                     var diff = (_blackImage - e.NewImage).GetGrayscale();
-                    Grid.TopLeft = SetTopLeftCorner(diff);
-                    Grid.TopRight = SetTopRightCorner(diff);
-                    Grid.BottomLeft = SetBottomLeftCorner(diff);
-                    Grid.BottomRight = SetBottomRightCorner(diff);
+                    Grid.TopLeft = GetTopLeftCorner(diff);
+                    Grid.TopRight = GetTopRightCorner(diff);
+                    Grid.BottomLeft = GetBottomLeftCorner(diff);
+                    Grid.BottomRight = GetBottomRightCorner(diff);
                     if (Grid.TopLeft.X < Grid.TopRight.X && Grid.TopLeft.X < Grid.BottomRight.X &&
                         Grid.BottomLeft.X < Grid.TopRight.X && Grid.BottomLeft.X < Grid.BottomRight.X &&
                         Grid.TopLeft.Y < Grid.BottomLeft.Y && Grid.TopLeft.Y < Grid.BottomRight.Y &&
@@ -128,9 +134,32 @@ namespace HSR.PresentationWriter.Parser
             _cw.AddRect(rects[0].TopLeft, rects[0].BottomRight, Color.FromRgb(255, 0, 0));
             _cw.AddRect(rects[1].TopLeft, rects[1].BottomRight, Color.FromRgb(0, 255, 0));
             _cw.AddRect(rects[2].TopLeft, rects[2].BottomRight, Color.FromRgb(0, 0, 255));
+            CheckIntersections();
         }
 
-        private Point SetBottomRightCorner(OneChannelBitmap diff)
+        private void CheckIntersections()
+        {
+            if (rects[0].IntersectsWith(rects[1]))
+            {
+                var rect = rects[1];
+                rect.Intersect(rects[0]);
+                _cw.AddRect(rect,Color.FromRgb(255,255,0));
+            }
+            if (rects[0].IntersectsWith(rects[2]))
+            {
+                var rect = rects[2];
+                rect.Intersect(rects[0]);
+                _cw.AddRect(rect, Color.FromRgb(255, 0, 255));
+            }
+            if (rects[1].IntersectsWith(rects[2]))
+            {
+                var rect = rects[2];
+                rect.Intersect(rects[1]);
+                _cw.AddRect(rect, Color.FromRgb(0, 255, 255));
+            }
+        }
+
+        private Point GetBottomRightCorner(OneChannelBitmap diff)
         {
             for (int i = diff.Width; i >= 0; i--)
             {
@@ -145,7 +174,7 @@ namespace HSR.PresentationWriter.Parser
             return new Point();
         }
 
-        private Point SetBottomLeftCorner(OneChannelBitmap diff)
+        private Point GetBottomLeftCorner(OneChannelBitmap diff)
         {
             for (int i = 0; i < diff.Width; i++)
             {
@@ -160,7 +189,7 @@ namespace HSR.PresentationWriter.Parser
             return new Point();
         }
 
-        private Point SetTopRightCorner(OneChannelBitmap diff)
+        private Point GetTopRightCorner(OneChannelBitmap diff)
         {
             for (int i = diff.Width - 1; i >= 0; i--)
             {
@@ -175,7 +204,7 @@ namespace HSR.PresentationWriter.Parser
             return new Point();
         }
 
-        private Point SetTopLeftCorner(OneChannelBitmap diff)
+        private Point GetTopLeftCorner(OneChannelBitmap diff)
         {
             for (int i = 0; i < diff.Width; i++)
             {
