@@ -79,10 +79,25 @@ namespace HSR.PresentationWriter.Parser
                             diff = _blackImage.GChannelBitmap - e.NewImage.GChannelBitmap;
                             break;
                     }
-                    Grid.AddPoint(rects[j].TopLeft,GetTopLeftCorner(diff));
-                    Grid.AddPoint(rects[j].TopRight,GetTopRightCorner(diff));
-                    Grid.AddPoint(rects[j].BottomLeft,GetBottomLeftCorner(diff));
-                    Grid.AddPoint(rects[j].BottomRight,GetBottomRightCorner(diff));
+                    var topLeftCorner = GetTopLeftCorner(diff);
+                    var topRightCorner = GetTopRightCorner(diff);
+                    var bottomLeftCorner = GetBottomLeftCorner(diff);
+                    var bottomRightCorner = GetBottomRightCorner(diff);
+                    if (topLeftCorner.X < topRightCorner.X && topLeftCorner.Y > bottomLeftCorner.Y
+                        && topRightCorner.Y < bottomRightCorner.Y && topRightCorner.Y < bottomLeftCorner.Y
+                        && topLeftCorner.Y < bottomRightCorner.Y && bottomLeftCorner.X < bottomRightCorner.X
+                        && topLeftCorner.X < bottomRightCorner.X && bottomLeftCorner.X < topRightCorner.X
+                        && IsValid(topLeftCorner) && IsValid(topRightCorner) && IsValid(bottomLeftCorner) && IsValid(bottomRightCorner))
+                    {
+                        Grid.AddPoint(rects[j].TopLeft, topLeftCorner);
+                        Grid.AddPoint(rects[j].TopRight,topRightCorner);
+                        Grid.AddPoint(rects[j].BottomLeft,bottomLeftCorner);
+                        Grid.AddPoint(rects[j].BottomRight,bottomRightCorner);
+                    }
+                    else
+                    {
+                        _errors++;
+                    }
                 }
             }
             else switch (_calibrationStep)
@@ -96,7 +111,8 @@ namespace HSR.PresentationWriter.Parser
                     if (Grid.TopLeft.X < Grid.TopRight.X && Grid.TopLeft.X < Grid.BottomRight.X &&
                         Grid.BottomLeft.X < Grid.TopRight.X && Grid.BottomLeft.X < Grid.BottomRight.X &&
                         Grid.TopLeft.Y < Grid.BottomLeft.Y && Grid.TopLeft.Y < Grid.BottomRight.Y &&
-                        Grid.TopRight.Y < Grid.BottomLeft.Y && Grid.TopRight.Y < Grid.BottomRight.Y)
+                        Grid.TopRight.Y < Grid.BottomLeft.Y && Grid.TopRight.Y < Grid.BottomRight.Y &&
+                        IsValid(Grid.TopLeft) && IsValid(Grid.TopRight) && IsValid(Grid.BottomLeft) && IsValid(Grid.BottomRight))
                     {
                         _calibrationStep++;
                         _cw.ClearRects();
@@ -120,6 +136,11 @@ namespace HSR.PresentationWriter.Parser
                     _calibrationStep++;
                     break;
             }
+        }
+
+        private bool IsValid(Point point)
+        {
+            return point.X > 0 && point.Y > 0;
         }
 
         private void FillRandomRects()
@@ -216,7 +237,7 @@ namespace HSR.PresentationWriter.Parser
                     }
                 }
             }
-            return new Point(-1, -1);
+            return new Point();
         }
 
         private bool CheckBlock(OneChannelBitmap diff, int p, int j)

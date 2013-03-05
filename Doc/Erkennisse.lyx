@@ -94,5 +94,27 @@ Belichtungskorrektur überbelichtet die Beamerprojektion, Lichtquellen darauf
 \end_layout
 
 \end_deeper
+\begin_layout Enumerate
+Kalibration:
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+Alle Punkte zu kalibrieren, dauert zu lange
+\end_layout
+
+\begin_layout Enumerate
+Datenzuordnung am bessten vorher oder on the fly?
+\end_layout
+
+\begin_layout Enumerate
+Farbkalibration nötig?
+\end_layout
+
+\begin_layout Enumerate
+Random oder mit definiertem Muster?
+\end_layout
+
+\end_deeper
 \end_body
 \end_document
