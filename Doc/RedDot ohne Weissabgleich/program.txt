@@ -3,6 +3,7 @@ using HSR.PresentationWriter.DataSources;
 using System;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Threading;
 
 namespace HSR.PresentationWriter.Tester
@@ -14,17 +15,31 @@ namespace HSR.PresentationWriter.Tester
             Bitmap backgroundFrame = new Bitmap(@"c:\temp\images\1_source16.bmp");
             Bitmap currentFrame = new Bitmap(@"c:\temp\images\2_overlay16.bmp");
 
-            Difference differenceFilter = new Difference(backgroundFrame);
-            Bitmap diffImage = differenceFilter.Apply(currentFrame);
-            diffImage.Save(@"c:\temp\images\3_diff16.bmp");
+            TextWriter tw = new StreamWriter(@"c:\temp\gach.csv");
 
-            Grayscale grayFilter = new Grayscale(1, 0, 0);
-            Bitmap grayImage = grayFilter.Apply(diffImage);
-            grayImage.Save(@"c:\temp\images\4_grey16.bmp");
+            for(int i = 0; i<300; i++)
+            {
+                long time1, time2;
+                time1 = CurrentMillis.Millis;
 
-            IFilter thresholdFilter = new Threshold(50);
-            Bitmap tresholdImage = thresholdFilter.Apply(grayImage);
-            tresholdImage.Save(@"c:\temp\images\5_treshold16.bmp");
+                Difference differenceFilter = new Difference(backgroundFrame);
+                Bitmap diffImage = differenceFilter.Apply(currentFrame);
+                //diffImage.Save(@"c:\temp\images\3_diff16.bmp");
+
+                Grayscale grayFilter = new Grayscale(1, 0, 0);
+                Bitmap grayImage = grayFilter.Apply(diffImage);
+                //grayImage.Save(@"c:\temp\images\4_grey16.bmp");
+
+                IFilter thresholdFilter = new Threshold(50);
+                Bitmap tresholdImage = thresholdFilter.Apply(grayImage);
+
+                time2 = CurrentMillis.Millis;
+                tw.WriteLine("{0}; {1}", time1, time2);
+
+                tresholdImage.Save(@"c:\temp\images\5_treshold16.bmp");
+            }
+
+            tw.Close();
         }
     }
 }
