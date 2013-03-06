@@ -1,5 +1,11 @@
-﻿using HSR.PresentationWriter.DataSources;
+﻿using AForge.Imaging;
+using AForge.Imaging.Filters;
+using HSR.PresentationWriter.DataSources;
+using HSR.PresentationWriter.Parser;
 using System;
+using System.Diagnostics;
+using System.Drawing;
+using System.IO;
 using System.Threading;
 
 namespace HSR.PresentationWriter.Tester
@@ -8,21 +14,12 @@ namespace HSR.PresentationWriter.Tester
     {
         static void Main(string[] args)
         {
-            AForgeCamera cam = new AForgeCamera();
-            cam.FrameReady += cam_FrameReady;
-            cam.Start();
-
-            Thread.Sleep(1000);
-            cam.GetLastFrame().Image.Save(@"C:\temp\special.jpg");
-            Thread.Sleep(1000);
-            cam.GetLastFrame().Image.Save(@"C:\temp\special2.jpg");
-
-            cam.Stop();
-        }
-
-        private static void cam_FrameReady(object sender, FrameReadyEventArgs e)
-        {
-            e.Frame.Image.Save(@"C:\temp\gach" + e.Frame.Number + ".jpg");
+            AForgePenTracker t = new AForgePenTracker();
+            Frame f1 = new Frame(1, new Bitmap(@"c:\temp\images\1_source16.bmp"));
+            Frame f2 = new Frame(2, new Bitmap(@"c:\temp\images\2_overlay16.bmp"));
+            t.Feed(f1);
+            t.Feed(f2);
+            t.Process();
         }
     }
 }

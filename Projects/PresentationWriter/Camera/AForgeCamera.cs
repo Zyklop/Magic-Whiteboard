@@ -28,6 +28,7 @@ namespace HSR.PresentationWriter.DataSources
 
         public void Start()
         {
+            // Take first
             finalVideo = new VideoCaptureDevice(videoCaptureDevices[0].MonikerString);
             finalVideo.NewFrame += new NewFrameEventHandler(finalVideo_NewFrame);
             finalVideo.Start();

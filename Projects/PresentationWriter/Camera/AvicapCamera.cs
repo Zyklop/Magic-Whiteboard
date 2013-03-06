@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Drawing;
+using System.Runtime.InteropServices;
 using System.Threading;
 
 namespace HSR.PresentationWriter.DataSources
@@ -51,9 +53,9 @@ namespace HSR.PresentationWriter.DataSources
             // Setup a virtual capture window
             mCapHwnd = NativeMethods.capCreateCaptureWindowA("WebCap", 0, 0, 0, 0, 0, 0, 0);
             // Connect to the device
-            //NativeMethods.SendMessage(mCapHwnd, WM_CAP_SET_CALLBACK_FRAME, 0, delegate() { frameCallback(); });
             NativeMethods.SendMessage(mCapHwnd, WM_CAP_CONNECT, 0, 0);
             NativeMethods.SendMessage(mCapHwnd, WM_CAP_SET_PREVIEW, 0, 0);
+            NativeMethods.SendMessage(mCapHwnd, WM_CAP_SET_CALLBACK_FRAME, 0, FrameCallback);
         }
 
         /// <summary>
@@ -125,9 +127,21 @@ namespace HSR.PresentationWriter.DataSources
             this.Stop();
         }
 
-        private void frameCallback()
+        void FrameCallback(IntPtr hWnd, ref NativeMethods.VIDEOHDR vhdr)
         {
+            if (hWnd == IntPtr.Zero) return;
 
+            long timestamp = CurrentMillis.Millis;
+            NativeMethods.SendMessage(mCapHwnd, WM_CAP_COPY, 0, 0);
+
+            if (FrameReady != null)
+            {
+                //IntPtr data = vhdr.lpData;
+                //NativeMethods.BITMAPINFO binfo = NativeMethods.BITMAPINFO.Default;
+                //Bitmap bmp = new Bitmap(binfo.biWidth, binfo.biHeight, binfo.biWidth * binfo.biBitCount / 8, System.Drawing.Imaging.PixelFormat.Format24bppRgb, data);
+                Frame f = new Frame(++currentFrame, GetClipboardImage(), timestamp);
+                FrameReady(this, new FrameReadyEventArgs(f));
+            }
         }
     }
 }

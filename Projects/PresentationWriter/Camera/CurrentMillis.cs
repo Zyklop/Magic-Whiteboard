@@ -4,7 +4,7 @@ namespace HSR.PresentationWriter.DataSources
 {
     /// <summary>
     /// Class to get current timestamp with enough precision</summary>
-    static class CurrentMillis
+    public static class CurrentMillis
     {
         private static readonly DateTime Jan1St1970 = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         /// <summary>
