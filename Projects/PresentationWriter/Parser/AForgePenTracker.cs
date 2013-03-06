@@ -59,6 +59,7 @@ namespace HSR.PresentationWriter.Parser
             Bitmap previousBitmap = new Bitmap(previousFrame.Image);
             Bitmap currentBitmap = new Bitmap(currentFrame.Image);
 
+            // get intermediate point between diff image
             Point p = findPen(previousBitmap, currentBitmap);
             if (!p.IsEmpty)
             {
@@ -68,14 +69,17 @@ namespace HSR.PresentationWriter.Parser
 
         private Point findPen(Bitmap a, Bitmap b)
         {
+            // calculate difference
             Difference differenceFilter = new Difference(a);
             Bitmap diffImage = differenceFilter.Apply(b);
             diffImage.Save(@"c:\temp\images\r1_diff16.bmp");
 
+            // translate red parts to gray image
             Grayscale grayFilter = new Grayscale(1, 0, 0);
             Bitmap grayImage = grayFilter.Apply(diffImage);
             grayImage.Save(@"c:\temp\images\r2_grey16.bmp");
 
+            // treshold the gray image
             IFilter thresholdFilter = new Threshold(50);
             Bitmap tresholdImage = thresholdFilter.Apply(grayImage);
             tresholdImage.Save(@"c:\temp\images\r3_treshold16.bmp");
@@ -85,6 +89,7 @@ namespace HSR.PresentationWriter.Parser
             bc.ProcessImage(tresholdImage);
             Rectangle[] r = bc.GetObjectsRectangles();
 
+            // Return intermediate point
             switch (r.Length)
             {
                 case 0:
@@ -127,6 +132,11 @@ namespace HSR.PresentationWriter.Parser
             return null;
         }
 
+        /// <summary>
+        /// Estimates the pen position on a certain time.
+        /// </summary>
+        /// <param name="timestamp"></param>
+        /// <returns></returns>
         public Point GetPenPoint(long timestamp)
         {
             LinkedListNode<PointFrame> current = this.penPoints.First;

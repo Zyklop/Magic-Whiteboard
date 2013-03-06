@@ -62,6 +62,7 @@
     </Compile>
     <Compile Include="DataParser.cs" />
     <Compile Include="IPenTracker.cs" />
+    <Compile Include="PointTools.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

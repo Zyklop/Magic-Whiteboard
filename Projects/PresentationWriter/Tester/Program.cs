@@ -13,6 +13,8 @@ namespace HSR.PresentationWriter.Tester
     {
         static void Main(string[] args)
         {
+            AForgeCamera c = new AForgeCamera();
+
             List<VideoFrame> l = new List<VideoFrame>() {
                 new VideoFrame(1, new Bitmap(@"c:\temp\images\1_frame16.bmp"), 100),
                 new VideoFrame(2, new Bitmap(@"c:\temp\images\2_frame16.bmp"), 900),
