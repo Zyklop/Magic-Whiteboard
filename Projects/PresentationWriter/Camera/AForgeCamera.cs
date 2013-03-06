@@ -40,13 +40,13 @@ namespace HSR.PresentationWriter.DataSources
             finalVideo.Stop();
         }
 
-        public Frame GetLastFrame()
+        public VideoFrame GetLastFrame()
         {
             if (lastBitmap != null)
             {
                 lock (lastBitmap)
                 {
-                    return new Frame(lastFrameNumber, (Bitmap)lastBitmap.Clone(), lastTimestamp);
+                    return new VideoFrame(lastFrameNumber, (Bitmap)lastBitmap.Clone(), lastTimestamp);
                 }
             }
             return null;

@@ -8,9 +8,9 @@ namespace HSR.PresentationWriter.Parser
 {
     public interface IPenTracker
     {
-        void Feed(Frame frame);
-        Nullable<Point> GetLastPenPosition();
-        Nullable<Point> GetPenPosition(long timestamp);
+        void Feed(VideoFrame frame);
+        PointFrame GetLastFrame();
+        Point GetPenPoint(long timestamp);
         event EventHandler<PenPositionEventArgs> PenMoved;
         event EventHandler<PenPositionEventArgs> PenDetected;
         event EventHandler<PenPositionEventArgs> PenLost;

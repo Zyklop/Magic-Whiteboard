@@ -16,93 +16,109 @@ namespace HSR.PresentationWriter.Parser
     {
         /// <summary>
         /// Max count of frames to be included in pen discovering process.</summary>
-        private const int MAX_FRAMEBUFFER_LENGTH = 2;
-        private const int SAME_POINT_TRESHOLD = 2;
-        private LinkedList<Frame> frameBuffer;
-        /// <summary>
-        /// TODO No threshold for size. Must be fixed eventually</summary>
-        private Dictionary<long, Point> penPoints;
+        private const int MAX_FRAMEBUFFER_LENGTH = 3;
+        private const int MAX_POINTBUFFER_LENGTH = 3;
+        private LinkedList<VideoFrame> frameBuffer;
+        private LinkedList<PointFrame> penPoints;
+        private int currentFrameNumber;
 
         public AForgePenTracker()
         {
-            this.frameBuffer = new LinkedList<Frame>();
-            this.penPoints = new Dictionary<long, Point>();
+            this.frameBuffer = new LinkedList<VideoFrame>();
+            this.penPoints = new LinkedList<PointFrame>();
+            this.currentFrameNumber = 0;
         }
 
+        /// <summary>
+        /// Process newest two frames
+        /// </summary>
         public void Process()
         {
-            Bitmap previousImage;
-            Bitmap currentImage;
-
-            lock (this.frameBuffer) // lock, while accessing pictures
+            // if we have less than 2 images, we cant do anything
+            if (this.frameBuffer.Count < 2)
             {
-                Frame previousFrame = this.frameBuffer.Last.Previous.Value;
-                Frame currentFrame = this.frameBuffer.Last.Value;
-                previousImage = new Bitmap(previousFrame.Image);
-                currentImage = new Bitmap(currentFrame.Image);
+                return;
             }
 
-            // diff both images
-            Difference differenceFilter = new Difference(previousImage);
-            Bitmap diffImage = differenceFilter.Apply(currentImage);
-            diffImage.Save(@"c:\temp\images\3_diff16.bmp");
+            VideoFrame previousFrame;
+            VideoFrame currentFrame;
 
-            // convert to grayscale with focus on red parts
+            lock (this.frameBuffer)
+            {
+                previousFrame = this.frameBuffer.Last.Previous.Value;
+                currentFrame = this.frameBuffer.Last.Value;
+            }
+            // interpolate timestamp
+            long timestamp = previousFrame.Timestamp;
+            timestamp += (currentFrame.Timestamp - previousFrame.Timestamp) / 2;
+
+            Bitmap previousBitmap = new Bitmap(previousFrame.Image);
+            Bitmap currentBitmap = new Bitmap(currentFrame.Image);
+
+            Point p = findPen(previousBitmap, currentBitmap);
+            if (!p.IsEmpty)
+            {
+                if (this.penPoints.Count >= MAX_POINTBUFFER_LENGTH)
+                {
+                    this.penPoints.RemoveFirst();
+                }
+                this.penPoints.AddLast(new PointFrame(++currentFrameNumber, p, timestamp));
+            }
+        }
+
+        private Point findPen(Bitmap a, Bitmap b)
+        {
+            Difference differenceFilter = new Difference(a);
+            Bitmap diffImage = differenceFilter.Apply(b);
+            diffImage.Save(@"c:\temp\images\r1_diff16.bmp");
+
             Grayscale grayFilter = new Grayscale(1, 0, 0);
             Bitmap grayImage = grayFilter.Apply(diffImage);
-            grayImage.Save(@"c:\temp\images\4_grey16.bmp");
+            grayImage.Save(@"c:\temp\images\r2_grey16.bmp");
 
-            // make monochrome picture without noisy red parts
             IFilter thresholdFilter = new Threshold(50);
             Bitmap tresholdImage = thresholdFilter.Apply(grayImage);
-            tresholdImage.Save(@"c:\temp\images\5_grey16.bmp");
+            tresholdImage.Save(@"c:\temp\images\r3_treshold16.bmp");
 
             // count white blobs
             BlobCounter bc = new BlobCounter();
             bc.ProcessImage(tresholdImage);
-            Rectangle[] rects = bc.GetObjectsRectangles();
+            Rectangle[] r = bc.GetObjectsRectangles();
 
-            // only save found points if there are two of them
-            if (rects.Length == 2)
+            switch (r.Length)
             {
-                lock (penPoints)
-                {
-                    Point previousPoint = penPoints.Values.Last();
-                    Point newA = new Point(rects[0].X, rects[0].Y);
-                    Point newB = new Point(rects[1].X, rects[1].Y);
-                    double distanceA = getDistance(newA, previousPoint);
-                    double distanceB = getDistance(newB, previousPoint);
-
-                    if (distanceA < SAME_POINT_TRESHOLD)
-                    {
-                        Point currentPoint = newA;
-                    }
-                    if (distanceB < SAME_POINT_TRESHOLD)
-
-                    {
-                        Point currentPoint = newB;
-                    }
-
-                    if (distanceA > SAME_POINT_TRESHOLD && distanceB > SAME_POINT_TRESHOLD)
-                    {
-                        throw new Exception("previous point lost");
-                    }
-                }
-            }
-
-            // debug out
-            foreach (Rectangle rect in rects)
-            {
-                Debug.WriteLine("{0}, {1}", rect.X, rect.Y);
+                case 0:
+                    return Point.Empty;
+                case 1:
+                    return getCenterPoint(r[0]);
+                case 2:
+                    return getCenterPoint(getCenterPoint(r[0]), getCenterPoint(r[1]));
+                default:
+                    throw new Exception("TODO: Error Handling: more than two points are bad!");
             }
         }
 
-        private double getDistance(Point p, Point q)
+        private Point getCenterPoint(Rectangle r)
         {
-            return Math.Sqrt(Math.Pow(q.X - p.X, 2) + Math.Pow(q.Y - p.Y, 2));
+            return new Point(r.X + r.Width / 2, r.Y + r.Height);
         }
 
-        public void Feed(Frame frame)
+        private Point getCenterPoint(Point a, Point b)
+        {
+            // Always floor the results, thats conservative
+            int x = a.X + ((b.X - a.X) / 2);
+            int y = a.Y + ((b.Y - a.Y) / 2);
+            return new Point(x, y);
+        }
+
+        private Point getIntermediatePoint(Point a, Point b, double ratio = 0.5)
+        {
+            int x = (int)Math.Round(a.X + ((b.X - a.X) * ratio));
+            int y = (int)Math.Round(a.Y + ((b.Y - a.Y) * ratio));
+            return new Point(x, y);
+        }
+
+        public void Feed(VideoFrame frame)
         {
             if (frameBuffer.Count >= MAX_FRAMEBUFFER_LENGTH)
             {
@@ -111,22 +127,36 @@ namespace HSR.PresentationWriter.Parser
             frameBuffer.AddLast(frame);
         }
 
-        public Nullable<Point> GetLastPenPosition()
+        public PointFrame GetLastFrame()
         {
             if (penPoints.Count > 0)
             {
-                return penPoints.Values.Last();
+                return penPoints.Last.Value;
             }
             return null;
         }
 
-        public Nullable<Point> GetPenPosition(long timestamp)
+        public Point GetPenPoint(long timestamp)
         {
-            if (penPoints.Count <= 0)
+            LinkedListNode<PointFrame> current = this.penPoints.First;
+            while (current != null)
             {
-                return null;
+                if (timestamp == current.Value.Timestamp)
+                {
+                    return current.Value.Point;
+                }
+                if (timestamp > current.Value.Timestamp && current.Next != null)
+                {
+                    Point currentPoint = current.Value.Point;
+                    long currentTime = current.Value.Timestamp;
+                    Point nextPoint = current.Next.Value.Point;
+                    long nextTime = current.Next.Value.Timestamp;
+                    long ratio = currentTime / nextTime;
+                    return getIntermediatePoint(currentPoint, nextPoint, ratio);
+                }
+                current = current.Next;
             }
-            return null;
+            return Point.Empty;
         }
 
         public event EventHandler<PenPositionEventArgs> PenMoved;

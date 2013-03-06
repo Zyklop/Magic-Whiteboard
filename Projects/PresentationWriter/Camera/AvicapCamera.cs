@@ -71,7 +71,7 @@ namespace HSR.PresentationWriter.DataSources
         /// There is no streaming mechanism or 
         /// </summary>
         /// <returns>Last captured frame</returns>
-        public Frame GetLastFrame()
+        public VideoFrame GetLastFrame()
         {
             // Get next frame from camera with avicap
             NativeMethods.SendMessage(mCapHwnd, WM_CAP_GET_FRAME, 0, 0);
@@ -88,7 +88,7 @@ namespace HSR.PresentationWriter.DataSources
             // Save it in clipboard
             NativeMethods.SendMessage(mCapHwnd, WM_CAP_COPY, 0, 0);
 
-            return new Frame(++currentFrame, GetClipboardImage(), timestamp);
+            return new VideoFrame(++currentFrame, GetClipboardImage(), timestamp);
         }
 
         /// <summary>
@@ -139,7 +139,7 @@ namespace HSR.PresentationWriter.DataSources
                 //IntPtr data = vhdr.lpData;
                 //NativeMethods.BITMAPINFO binfo = NativeMethods.BITMAPINFO.Default;
                 //Bitmap bmp = new Bitmap(binfo.biWidth, binfo.biHeight, binfo.biWidth * binfo.biBitCount / 8, System.Drawing.Imaging.PixelFormat.Format24bppRgb, data);
-                Frame f = new Frame(++currentFrame, GetClipboardImage(), timestamp);
+                VideoFrame f = new VideoFrame(++currentFrame, GetClipboardImage(), timestamp);
                 FrameReady(this, new FrameReadyEventArgs(f));
             }
         }
