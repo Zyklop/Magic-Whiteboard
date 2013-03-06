@@ -23,8 +23,7 @@ namespace HSR.PresentationWriter.Tester
             AForgePenTracker t = new AForgePenTracker();
             foreach(VideoFrame f in l)
             {
-                t.Feed(f);
-                t.Process();
+                t.Process(f);
                 PointFrame p = t.GetLastFrame();
                 if (p == null)
                 {

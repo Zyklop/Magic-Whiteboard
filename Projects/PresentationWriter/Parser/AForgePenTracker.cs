@@ -30,10 +30,13 @@ namespace HSR.PresentationWriter.Parser
         }
 
         /// <summary>
-        /// Process newest two frames
+        /// Process a new frame.
+        /// That means queuing it an finding a new 
         /// </summary>
-        public void Process()
+        public void Process(VideoFrame frame)
         {
+            queue(frame);
+
             // if we have less than 2 images, we cant do anything
             if (this.frameBuffer.Count < 2)
             {
@@ -48,7 +51,8 @@ namespace HSR.PresentationWriter.Parser
                 previousFrame = this.frameBuffer.Last.Previous.Value;
                 currentFrame = this.frameBuffer.Last.Value;
             }
-            // interpolate timestamp
+
+            // interpolate timestamps
             long timestamp = previousFrame.Timestamp;
             timestamp += (currentFrame.Timestamp - previousFrame.Timestamp) / 2;
 
@@ -58,11 +62,7 @@ namespace HSR.PresentationWriter.Parser
             Point p = findPen(previousBitmap, currentBitmap);
             if (!p.IsEmpty)
             {
-                if (this.penPoints.Count >= MAX_POINTBUFFER_LENGTH)
-                {
-                    this.penPoints.RemoveFirst();
-                }
-                this.penPoints.AddLast(new PointFrame(++currentFrameNumber, p, timestamp));
+                queue(new PointFrame(++currentFrameNumber, p, timestamp));
             }
         }
 
@@ -90,41 +90,32 @@ namespace HSR.PresentationWriter.Parser
                 case 0:
                     return Point.Empty;
                 case 1:
-                    return getCenterPoint(r[0]);
+                    return PointTools.CalculateCenterPoint(r[0]);
                 case 2:
-                    return getCenterPoint(getCenterPoint(r[0]), getCenterPoint(r[1]));
+                    return PointTools.CalculateCenterPoint(
+                        PointTools.CalculateCenterPoint(r[0]), 
+                        PointTools.CalculateCenterPoint(r[1]));
                 default:
                     throw new Exception("TODO: Error Handling: more than two points are bad!");
             }
         }
 
-        private Point getCenterPoint(Rectangle r)
-        {
-            return new Point(r.X + r.Width / 2, r.Y + r.Height);
-        }
-
-        private Point getCenterPoint(Point a, Point b)
-        {
-            // Always floor the results, thats conservative
-            int x = a.X + ((b.X - a.X) / 2);
-            int y = a.Y + ((b.Y - a.Y) / 2);
-            return new Point(x, y);
-        }
-
-        private Point getIntermediatePoint(Point a, Point b, double ratio = 0.5)
-        {
-            int x = (int)Math.Round(a.X + ((b.X - a.X) * ratio));
-            int y = (int)Math.Round(a.Y + ((b.Y - a.Y) * ratio));
-            return new Point(x, y);
-        }
-
-        public void Feed(VideoFrame frame)
+        private void queue(VideoFrame frame)
         {
             if (frameBuffer.Count >= MAX_FRAMEBUFFER_LENGTH)
             {
                 frameBuffer.RemoveFirst();
             }
             frameBuffer.AddLast(frame);
+        }
+
+        private void queue(PointFrame frame)
+        {
+            if (this.penPoints.Count >= MAX_POINTBUFFER_LENGTH)
+            {
+                this.penPoints.RemoveFirst();
+            }
+            this.penPoints.AddLast(frame);
         }
 
         public PointFrame GetLastFrame()
@@ -152,7 +143,7 @@ namespace HSR.PresentationWriter.Parser
                     Point nextPoint = current.Next.Value.Point;
                     long nextTime = current.Next.Value.Timestamp;
                     long ratio = currentTime / nextTime;
-                    return getIntermediatePoint(currentPoint, nextPoint, ratio);
+                    return PointTools.CalculateIntermediatePoint(currentPoint, nextPoint, ratio);
                 }
                 current = current.Next;
             }
