@@ -27,7 +27,7 @@ namespace HSR.PresentationWriter.Parser
 
         private void NewImage(object sender, NewImageEventArgs e)
         {
-            if (PenPositionChanged != null) PenPositionChanged(this, PenTracker.GetPenPosition(e.NewImage));
+            //if (PenPositionChanged != null) PenPositionChanged(this, PenTracker.GetPenPosition(e.NewImage));
             _gridcheck--;
             if (_gridcheck == 0)
             {
