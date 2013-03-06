@@ -37,8 +37,9 @@ namespace HSR.PresentationWriter.Parser.Images
             _b = b;
         }
 
-        public ThreeChannelBitmap(Bitmap bitmap)
+        public ThreeChannelBitmap(Image bitmap)
         {
+            var bm = new Bitmap(bitmap);
             var width = bitmap.Width;
             var height = bitmap.Height;
             _r = new OneChannelBitmap(width, height);
@@ -48,7 +49,7 @@ namespace HSR.PresentationWriter.Parser.Images
             {
                 for (int j = 0; j < bitmap.Height; j++)
                 {
-                    var c = bitmap.GetPixel(i,j);
+                    var c = bm.GetPixel(i,j);
                     _r.Channel[i, j] = c.R;
                     _g.Channel[i, j] = c.G;
                     _b.Channel[i, j] = c.B;
