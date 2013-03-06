@@ -38,12 +38,18 @@ namespace ImageVisualizer
 
         public static void Show()
         {
-            _cw.Show();
+            _cw.Dispatcher.Invoke(()=> _cw.Show());
         }
 
-        public static int Width { get { return (int) _cw.Width; } }
+        public static int Width { get
+        {
+            int i = -1;
+            _cw.Dispatcher.Invoke(() => i = (int) _cw.ActualWidth);
+            Debug.WriteLine(i);
+            return i;
+        } }
 
-        public static int Height { get { return (int) _cw.Height; } }
+        public static int Height { get { return (int) _cw.ActualHeight; } }
 
         public static void AddRect(int topLeft, int bottomRight, int fromRgb, int height, Color color)
         {
