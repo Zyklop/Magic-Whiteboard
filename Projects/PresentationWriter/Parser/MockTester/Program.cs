@@ -22,8 +22,7 @@ namespace MockTester
             ThreeChannelBitmap tci = new ThreeChannelBitmap();
             var cameraConnector = new MockCameraConnector();
             var parser = new DataParser(cameraConnector);
-            parser.Initialize();
-            parser.Start(); parser.Initialize();
+            parser.Start();
             Thread.Sleep(10000);
             //cameraConnector.NewImage += delegate(object sender, NewImageEventArgs e)
             //    {

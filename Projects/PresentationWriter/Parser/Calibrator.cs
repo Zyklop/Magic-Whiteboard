@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading;
 using System.Windows;
 using System.Windows.Media;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Threading;
+using HSR.PresentationWriter.Parser.Events;
 using HSR.PresentationWriter.Parser.Images;
 using ImageVisualizer;
 
@@ -19,7 +22,7 @@ namespace HSR.PresentationWriter.Parser
         private const int Blockfill = 80; // Number of pixels needed for a Block to be valid. Depends on Blocksize.
         private const int CalibrationFrames = 300; // Number of Frames used for calibration. Divide by 10 to get Time for calibration.
         private ThreeChannelBitmap _blackImage;
-        private CalibratorWindow _cw;
+        //private CalibratorWindow _cw;
         private int _calibrationStep;
         private int _errors = 0;
         private Rect[] rects = new Rect[3];
@@ -27,7 +30,11 @@ namespace HSR.PresentationWriter.Parser
         public Calibrator(CameraConnector cc)
         {
             _cc = cc;
-            _cw = new CalibratorWindow();
+            this.Grid = new Grid(0,0);
+            //var thread = new Thread(() => _cw = new CalibratorWindow());
+            //thread.SetApartmentState(ApartmentState.STA);
+            //thread.Start();
+            //thread.Join();
             Calibrate();
             CalibrateColors();
         }
@@ -45,6 +52,23 @@ namespace HSR.PresentationWriter.Parser
 
         private void BaseCalibration(object sender, Events.NewImageEventArgs e)
         {
+            //var thread = new Thread(() => CalibThread(e));
+            //thread.SetApartmentState(ApartmentState.STA);
+            //thread.Start();
+            //thread.Join();
+            //_cw.Dispatcher.Invoke(() => CalibThread(e));
+            //_cw.Dispatcher.InvokeAsync(() => 
+            //Debug.WriteLine("Calibrating"),DispatcherPriority.Send);
+            //Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle,
+            //           new Action(() => { }));
+            //_cw.Dispatcher.InvokeAsync(() => CalibThread(e));
+            CalibThread(e);
+        }
+
+
+        private void CalibThread(NewImageEventArgs e)
+        {
+            Debug.WriteLine("Calibrating");
             if (_errors > 100)
             {
                 //calibration not possible
@@ -54,15 +78,15 @@ namespace HSR.PresentationWriter.Parser
             {
                 _cc.NewImage -= BaseCalibration;
                 Grid.Calculate();
-                _cw.Close();
+                VisualizerControl.Close();
             }
-            //else if (_calibrationStep > CalibrationFrames/2)
-            //{
+                //else if (_calibrationStep > CalibrationFrames/2)
+                //{
                 
-            //}
+                //}
             else if (_calibrationStep > 2)
             {
-                _cw.ClearRects();
+                VisualizerControl.ClearRects();
                 FillRandomRects();
                 for (int j = 0; j < 3; j++)
                 {
@@ -87,12 +111,13 @@ namespace HSR.PresentationWriter.Parser
                         && topRightCorner.Y < bottomRightCorner.Y && topRightCorner.Y < bottomLeftCorner.Y
                         && topLeftCorner.Y < bottomRightCorner.Y && bottomLeftCorner.X < bottomRightCorner.X
                         && topLeftCorner.X < bottomRightCorner.X && bottomLeftCorner.X < topRightCorner.X
-                        && IsValid(topLeftCorner) && IsValid(topRightCorner) && IsValid(bottomLeftCorner) && IsValid(bottomRightCorner))
+                        && IsValid(topLeftCorner) && IsValid(topRightCorner) && IsValid(bottomLeftCorner) &&
+                        IsValid(bottomRightCorner))
                     {
                         Grid.AddPoint(rects[j].TopLeft, topLeftCorner);
-                        Grid.AddPoint(rects[j].TopRight,topRightCorner);
-                        Grid.AddPoint(rects[j].BottomLeft,bottomLeftCorner);
-                        Grid.AddPoint(rects[j].BottomRight,bottomRightCorner);
+                        Grid.AddPoint(rects[j].TopRight, topRightCorner);
+                        Grid.AddPoint(rects[j].BottomLeft, bottomLeftCorner);
+                        Grid.AddPoint(rects[j].BottomRight, bottomRightCorner);
                     }
                     else
                     {
@@ -100,42 +125,45 @@ namespace HSR.PresentationWriter.Parser
                     }
                 }
             }
-            else switch (_calibrationStep)
-            {
-                case 2:
-                    var diff = (_blackImage - e.NewImage).GetGrayscale();
-                    Grid.TopLeft = GetTopLeftCorner(diff);
-                    Grid.TopRight = GetTopRightCorner(diff);
-                    Grid.BottomLeft = GetBottomLeftCorner(diff);
-                    Grid.BottomRight = GetBottomRightCorner(diff);
-                    if (Grid.TopLeft.X < Grid.TopRight.X && Grid.TopLeft.X < Grid.BottomRight.X &&
-                        Grid.BottomLeft.X < Grid.TopRight.X && Grid.BottomLeft.X < Grid.BottomRight.X &&
-                        Grid.TopLeft.Y < Grid.BottomLeft.Y && Grid.TopLeft.Y < Grid.BottomRight.Y &&
-                        Grid.TopRight.Y < Grid.BottomLeft.Y && Grid.TopRight.Y < Grid.BottomRight.Y &&
-                        IsValid(Grid.TopLeft) && IsValid(Grid.TopRight) && IsValid(Grid.BottomLeft) && IsValid(Grid.BottomRight))
-                    {
+            else
+                switch (_calibrationStep)
+                {
+                    case 2:
+                        var diff = (_blackImage - e.NewImage).GetGrayscale();
+                        Grid.TopLeft = GetTopLeftCorner(diff);
+                        Grid.TopRight = GetTopRightCorner(diff);
+                        Grid.BottomLeft = GetBottomLeftCorner(diff);
+                        Grid.BottomRight = GetBottomRightCorner(diff);
+                        if (Grid.TopLeft.X < Grid.TopRight.X && Grid.TopLeft.X < Grid.BottomRight.X &&
+                            Grid.BottomLeft.X < Grid.TopRight.X && Grid.BottomLeft.X < Grid.BottomRight.X &&
+                            Grid.TopLeft.Y < Grid.BottomLeft.Y && Grid.TopLeft.Y < Grid.BottomRight.Y &&
+                            Grid.TopRight.Y < Grid.BottomLeft.Y && Grid.TopRight.Y < Grid.BottomRight.Y &&
+                            IsValid(Grid.TopLeft) && IsValid(Grid.TopRight) && IsValid(Grid.BottomLeft) &&
+                            IsValid(Grid.BottomRight))
+                        {
+                            _calibrationStep++;
+                            VisualizerControl.ClearRects();
+                            FillRandomRects();
+                        }
+                        else
+                        {
+                            _calibrationStep = 0;
+                            _errors ++;
+                        }
+                        break;
+                    case 1:
+                        _blackImage = e.NewImage;
+                        VisualizerControl.AddRect(0, 0, (int) VisualizerControl.Width, (int) VisualizerControl.Height, Color.FromRgb(255, 255, 255));
                         _calibrationStep++;
-                        _cw.ClearRects();
-                        FillRandomRects();
-                    }
-                    else
-                    {
-                        _calibrationStep = 0;
-                        _errors ++;
-                    }
-                    break;
-                case 1:
-                    _blackImage = e.NewImage;
-                    _cw.AddRect(0,0,(int) _cw.Width,(int) _cw.Height, Color.FromRgb(255,255,255));
-                    _calibrationStep++;
-                    break;
-                case 0:
-                    Grid = new Grid(e.NewImage.Width,e.NewImage.Height);
-                    _cw.AddRect(0,0,(int) _cw.Width,(int) _cw.Height, Color.FromRgb(0,0,0));
-                    _cw.Show();
-                    _calibrationStep++;
-                    break;
-            }
+                        break;
+                    case 0:
+                        Grid = new Grid(e.NewImage.Width, e.NewImage.Height);
+                        VisualizerControl.AddRect(0, 0, (int) VisualizerControl.Width, (int) VisualizerControl.Height, Color.FromRgb(0, 0, 0));
+                        VisualizerControl.Show();
+                        _calibrationStep++;
+                        break;
+                }
+            return;
         }
 
         private bool IsValid(Point point)
@@ -145,39 +173,39 @@ namespace HSR.PresentationWriter.Parser
 
         private void FillRandomRects()
         {
-            var r = new Random();
-            var tl = new Point(r.Next((int) _cw.Width), r.Next((int) _cw.Height));
-            rects[0] = new Rect(tl, new Point(r.Next((int) tl.X,(int) _cw.Width), r.Next((int) tl.Y, (int)_cw.Height)));
-            tl = new Point(r.Next((int)_cw.Width), r.Next((int)_cw.Height));
-            rects[1] = new Rect(tl, new Point(r.Next((int) tl.X, (int)_cw.Width), r.Next((int) tl.Y, (int)_cw.Height)));
-            tl = new Point(r.Next((int)_cw.Width), r.Next((int)_cw.Height));
-            rects[2] = new Rect(tl, new Point(r.Next((int) tl.X, (int)_cw.Width), r.Next((int) tl.Y, (int)_cw.Height)));
-            _cw.AddRect(rects[0].TopLeft, rects[0].BottomRight, Color.FromRgb(255, 0, 0));
-            _cw.AddRect(rects[1].TopLeft, rects[1].BottomRight, Color.FromRgb(0, 255, 0));
-            _cw.AddRect(rects[2].TopLeft, rects[2].BottomRight, Color.FromRgb(0, 0, 255));
-            CheckIntersections();
+            //var r = new Random();
+            //var tl = new Point(r.Next((int) _cw.Width), r.Next((int) _cw.Height));
+            //rects[0] = new Rect(tl, new Point(r.Next((int) tl.X,(int) _cw.Width), r.Next((int) tl.Y, (int)_cw.Height)));
+            //tl = new Point(r.Next((int)_cw.Width), r.Next((int)_cw.Height));
+            //rects[1] = new Rect(tl, new Point(r.Next((int) tl.X, (int)_cw.Width), r.Next((int) tl.Y, (int)_cw.Height)));
+            //tl = new Point(r.Next((int)_cw.Width), r.Next((int)_cw.Height));
+            //rects[2] = new Rect(tl, new Point(r.Next((int) tl.X, (int)_cw.Width), r.Next((int) tl.Y, (int)_cw.Height)));
+            //_cw.AddRect(rects[0].TopLeft, rects[0].BottomRight, Color.FromRgb(255, 0, 0));
+            //_cw.AddRect(rects[1].TopLeft, rects[1].BottomRight, Color.FromRgb(0, 255, 0));
+            //_cw.AddRect(rects[2].TopLeft, rects[2].BottomRight, Color.FromRgb(0, 0, 255));
+            //CheckIntersections();
         }
 
         private void CheckIntersections()
         {
-            if (rects[0].IntersectsWith(rects[1]))
-            {
-                var rect = rects[1];
-                rect.Intersect(rects[0]);
-                _cw.AddRect(rect,Color.FromRgb(255,255,0));
-            }
-            if (rects[0].IntersectsWith(rects[2]))
-            {
-                var rect = rects[2];
-                rect.Intersect(rects[0]);
-                _cw.AddRect(rect, Color.FromRgb(255, 0, 255));
-            }
-            if (rects[1].IntersectsWith(rects[2]))
-            {
-                var rect = rects[2];
-                rect.Intersect(rects[1]);
-                _cw.AddRect(rect, Color.FromRgb(0, 255, 255));
-            }
+            //if (rects[0].IntersectsWith(rects[1]))
+            //{
+            //    var rect = rects[1];
+            //    rect.Intersect(rects[0]);
+            //    _cw.AddRect(rect,Color.FromRgb(255,255,0));
+            //}
+            //if (rects[0].IntersectsWith(rects[2]))
+            //{
+            //    var rect = rects[2];
+            //    rect.Intersect(rects[0]);
+            //    _cw.AddRect(rect, Color.FromRgb(255, 0, 255));
+            //}
+            //if (rects[1].IntersectsWith(rects[2]))
+            //{
+            //    var rect = rects[2];
+            //    rect.Intersect(rects[1]);
+            //    _cw.AddRect(rect, Color.FromRgb(0, 255, 255));
+            //}
         }
 
         private Point GetBottomRightCorner(OneChannelBitmap diff)

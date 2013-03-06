@@ -18,7 +18,7 @@ namespace ImageVisualizer
     /// <summary>
     /// Interaction logic for CalibratorWindow.xaml
     /// </summary>
-    public partial class CalibratorWindow : Window
+    partial class CalibratorWindow : Window
     {
 
         public CalibratorWindow()

@@ -15,13 +15,14 @@ namespace HSR.PresentationWriter.Parser
             _cc = camera;
         }
 
-        public void Initialize()
+        private void Initialize()
         {
             _calibrator = new Calibrator(_cc);
         }
 
         public void Start()
         {
+            Initialize();
             _cc.NewImage += NewImage;
         }
 
@@ -32,7 +33,7 @@ namespace HSR.PresentationWriter.Parser
             if (_gridcheck == 0)
             {
                 _gridcheck = 1000;
-                switch (Calibrator.CheckCalibration())
+                switch (_calibrator.CheckCalibration())
                 {
                     case 1: Calibrator.Calibrate();
                         break;

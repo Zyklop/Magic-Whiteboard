@@ -52,6 +52,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Camera\Camera.csproj">
+      <Project>{c7bc83d8-ddff-4b93-b747-22c8c2ccd812}</Project>
+      <Name>Camera</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Parser.csproj">
       <Project>{c9d79db6-72b8-461a-b725-8fee1dc05eb6}</Project>
       <Name>Parser</Name>

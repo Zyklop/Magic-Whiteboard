@@ -31,7 +31,6 @@ namespace ImageChecker
             InitializeComponent();
             CameraConnector cameraConnector = new MockCameraConnector();
             var parser = new DataParser(cameraConnector);
-            parser.Initialize();
             parser.Start();
             cameraConnector.NewImage += delegate(object sender, NewImageEventArgs args)
                 {
