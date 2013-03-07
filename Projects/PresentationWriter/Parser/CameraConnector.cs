@@ -20,7 +20,7 @@ namespace HSR.PresentationWriter.Parser
 
         private void NewFrame(object sender, DataSources.FrameReadyEventArgs e)
         {
-            NewImage(this, new NewImageEventArgs{NewImage = new ThreeChannelBitmap(e.Frame.Image)});
+            NewImage(this, new NewImageEventArgs{NewImage = new ThreeChannelBitmap((Image)e.Frame.Bitmap)});
         }
 
         protected CameraConnector()

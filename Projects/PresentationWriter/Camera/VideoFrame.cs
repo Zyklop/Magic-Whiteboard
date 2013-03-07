@@ -11,7 +11,7 @@ namespace HSR.PresentationWriter.DataSources
     {
         /// <summary>
         /// Linked Picture</summary>
-        public readonly Image Image;
+        public readonly Bitmap Bitmap;
 
         /// <summary>
         /// Initializing a frame.
@@ -22,10 +22,10 @@ namespace HSR.PresentationWriter.DataSources
         /// Linked Picture</param>
         /// <param name="timestamp">
         /// Time when the object was captured in milliseconds</param>
-        public VideoFrame(int number, Image image, long timestamp = 0)
+        public VideoFrame(int number, Bitmap image, long timestamp = 0)
             : base(number, timestamp)
         {
-            this.Image = image;
+            this.Bitmap = image;
         }
     }
 }

@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -27,8 +28,10 @@ namespace HSR.PresentationWriter.Parser
             this.frameBuffer = new LinkedList<VideoFrame>();
             this.penPoints = new LinkedList<PointFrame>();
             this.currentFrameNumber = 0;
+            this.initFilters();
         }
 
+        private Bitmap previousBitmap, currentBitmap;
         /// <summary>
         /// Process a new frame.
         /// That means queuing it an finding a new 
@@ -43,51 +46,75 @@ namespace HSR.PresentationWriter.Parser
                 return;
             }
 
-            VideoFrame previousFrame;
-            VideoFrame currentFrame;
-
-            lock (this.frameBuffer)
-            {
-                previousFrame = this.frameBuffer.Last.Previous.Value;
-                currentFrame = this.frameBuffer.Last.Value;
-            }
+            VideoFrame previousFrame = this.frameBuffer.Last.Previous.Value;
+            VideoFrame currentFrame = this.frameBuffer.Last.Value;
 
             // interpolate timestamps
             long timestamp = previousFrame.Timestamp;
             timestamp += (currentFrame.Timestamp - previousFrame.Timestamp) / 2;
 
-            Bitmap previousBitmap = new Bitmap(previousFrame.Image);
-            Bitmap currentBitmap = new Bitmap(currentFrame.Image);
+            previousBitmap = (Bitmap)previousFrame.Bitmap.Clone();
+            currentBitmap = (Bitmap)currentFrame.Bitmap.Clone();
 
             // get intermediate point between diff image
-            Point p = findPen(previousBitmap, currentBitmap);
-            if (!p.IsEmpty)
+            try
             {
-                queue(new PointFrame(++currentFrameNumber, p, timestamp));
+                Point p = findPen(previousBitmap, currentBitmap);
+                if (!p.IsEmpty)
+                {
+                    queue(new PointFrame(++currentFrameNumber, p, timestamp));
+                }
             }
+            catch (Exception ex)
+            { }
+        }
+
+        private Difference differenceFilter;
+        private Grayscale grayFilter;
+        private Threshold thresholdFilter;
+        private BlobCounter blobCounter;
+        private void initFilters()
+        {
+            differenceFilter = new Difference();
+            grayFilter = new Grayscale(1, 0, 0);
+            thresholdFilter = new Threshold(50);
+            blobCounter = new BlobCounter();
         }
 
         private Point findPen(Bitmap a, Bitmap b)
         {
+            //long time1 = CurrentMillis.Millis;
+
             // calculate difference
-            Difference differenceFilter = new Difference(a);
-            Bitmap diffImage = differenceFilter.Apply(b);
-            diffImage.Save(@"c:\temp\images\r1_diff16.bmp");
+            differenceFilter.OverlayImage = a;
+            differenceFilter.ApplyInPlace(b);
+            b.Save(@"c:\temp\images\r1_diff16.bmp");
 
             // translate red parts to gray image
-            Grayscale grayFilter = new Grayscale(1, 0, 0);
-            Bitmap grayImage = grayFilter.Apply(diffImage);
-            grayImage.Save(@"c:\temp\images\r2_grey16.bmp");
+            a = grayFilter.Apply(b);
+            a.Save(@"c:\temp\images\r2_grey16.bmp");
 
             // treshold the gray image
-            IFilter thresholdFilter = new Threshold(50);
-            Bitmap tresholdImage = thresholdFilter.Apply(grayImage);
-            tresholdImage.Save(@"c:\temp\images\r3_treshold16.bmp");
+            thresholdFilter.ApplyInPlace(a);
 
-            // count white blobs
-            BlobCounter bc = new BlobCounter();
-            bc.ProcessImage(tresholdImage);
-            Rectangle[] r = bc.GetObjectsRectangles();
+#if DEBUG
+            if (DebugPicture != null)
+            {
+                DebugPicture(this, new DebugPictureEventArgs(new List<Bitmap>() { b, a }));
+            }
+#endif
+
+            //tresholdImage.Save(@"c:\temp\images\r3_treshold16.bmp");
+
+            // count white blobs (ev. kann man den thresholdFilter wegschmeissen, siehe ctr parameter)
+            blobCounter.ProcessImage(a);
+            Rectangle[] r = blobCounter.GetObjectsRectangles();
+
+            //long time2 = CurrentMillis.Millis;
+
+            //StreamWriter streamWriter = new StreamWriter(@"c:\temp\gach.csv", true);
+            //streamWriter.WriteLine("{0};{1}", time1, time2);
+            //streamWriter.Close();
 
             // Return intermediate point
             switch (r.Length)
@@ -165,5 +192,21 @@ namespace HSR.PresentationWriter.Parser
         public event EventHandler<PenPositionEventArgs> PenDetected;
 
         public event EventHandler<PenPositionEventArgs> PenLost;
+
+
+#if DEBUG
+        public event EventHandler<DebugPictureEventArgs> DebugPicture;
+#endif
     }
+
+#if DEBUG
+    public class DebugPictureEventArgs : EventArgs
+    {
+        public List<Bitmap> Pictures { get; private set; }
+        public DebugPictureEventArgs(List<Bitmap> pics)
+        {
+            Pictures = pics;
+        }
+    }
+#endif
 }

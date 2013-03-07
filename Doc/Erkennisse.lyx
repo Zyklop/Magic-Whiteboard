@@ -72,6 +72,14 @@ Webcam Implementiereung:
 Nur mit Direct Show erkennbar
 \end_layout
 
+\begin_layout Enumerate
+12 Ansätze durchprobiert: Gangbar: AviCap & AForge
+\end_layout
+
+\begin_layout Enumerate
+Konfiguration nur über DirectShow
+\end_layout
+
 \end_deeper
 \begin_layout Enumerate
 Parsing:
@@ -91,6 +99,10 @@ Webcam-Bild:
 \begin_layout Enumerate
 Belichtungskorrektur überbelichtet die Beamerprojektion, Lichtquellen darauf
  können nicht erkannt werden.
+\end_layout
+
+\begin_layout Enumerate
+Inkompatibel: WPF <=> System.Drawing.Image 
 \end_layout
 
 \end_deeper
@@ -113,6 +125,43 @@ Farbkalibration nötig?
 
 \begin_layout Enumerate
 Random oder mit definiertem Muster?
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+Stift Erkennen
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+Verfahren:
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+Diffbild
+\end_layout
+
+\begin_layout Enumerate
+Rot -> Graustufen
+\end_layout
+
+\begin_layout Enumerate
+Treshold
+\end_layout
+
+\begin_layout Enumerate
+Blob Recognition
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+Zuerst zu komplexer Ansatz für Blob-Auswertung gewählt.
+ Jetzt nehmen wir nur noch den Durchschnitt
+\end_layout
+
+\begin_layout Enumerate
+Algorithmus braucht zu viel Zeit (mehr als Framerate)
 \end_layout
 
 \end_deeper

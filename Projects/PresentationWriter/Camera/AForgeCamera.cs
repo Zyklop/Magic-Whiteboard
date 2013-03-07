@@ -25,6 +25,10 @@ namespace HSR.PresentationWriter.DataSources
         {
             videoCaptureDevices = new FilterInfoCollection(FilterCategory.VideoInputDevice);
             finalVideo = new VideoCaptureDevice(videoCaptureDevices[0].MonikerString);
+        }
+
+        public void ShowConfigurationDialog()
+        {
             finalVideo.DisplayPropertyPage(new IntPtr(0));
         }
 
@@ -44,10 +48,7 @@ namespace HSR.PresentationWriter.DataSources
         {
             if (lastBitmap != null)
             {
-                lock (lastBitmap)
-                {
-                    return new VideoFrame(lastFrameNumber, (Bitmap)lastBitmap.Clone(), lastTimestamp);
-                }
+                return new VideoFrame(lastFrameNumber, lastBitmap, lastTimestamp);
             }
             return null;
         }

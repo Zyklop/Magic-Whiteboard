@@ -88,7 +88,7 @@ namespace HSR.PresentationWriter.DataSources
             // Save it in clipboard
             NativeMethods.SendMessage(mCapHwnd, WM_CAP_COPY, 0, 0);
 
-            return new VideoFrame(++currentFrame, GetClipboardImage(), timestamp);
+            return new VideoFrame(++currentFrame, new Bitmap(GetClipboardImage()), timestamp);
         }
 
         /// <summary>
@@ -139,7 +139,7 @@ namespace HSR.PresentationWriter.DataSources
                 //IntPtr data = vhdr.lpData;
                 //NativeMethods.BITMAPINFO binfo = NativeMethods.BITMAPINFO.Default;
                 //Bitmap bmp = new Bitmap(binfo.biWidth, binfo.biHeight, binfo.biWidth * binfo.biBitCount / 8, System.Drawing.Imaging.PixelFormat.Format24bppRgb, data);
-                VideoFrame f = new VideoFrame(++currentFrame, GetClipboardImage(), timestamp);
+                VideoFrame f = new VideoFrame(++currentFrame, new Bitmap(GetClipboardImage()), timestamp);
                 FrameReady(this, new FrameReadyEventArgs(f));
             }
         }

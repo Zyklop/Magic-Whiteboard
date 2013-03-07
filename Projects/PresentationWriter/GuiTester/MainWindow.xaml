@@ -1,0 +1,9 @@
+﻿<Window x:Name="mainForm" x:Class="GuiTester.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="MainWindow" Height="350" Width="525" Loaded="mainForm_Loaded">
+    <Grid>
+        <Image x:Name="calibrationImage" HorizontalAlignment="Left" Height="310" Margin="0,10,0,0" VerticalAlignment="Top" Width="517"/>
+
+    </Grid>
+</Window>
