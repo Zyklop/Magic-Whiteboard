@@ -42,7 +42,10 @@ namespace WinFormsGuiTester
 
         private void camera_FrameReady(object sender, FrameReadyEventArgs e)
         {
+            long time1 = CurrentMillis.Millis;
             tracker.Process(e.Frame);
+            long time2 = CurrentMillis.Millis;
+            Debug.WriteLine("Time: {0}", time2 - time1);
             PointFrame p = tracker.GetLastFrame();
             this.calibrationPictureBox.Image = (Image)e.Frame.Bitmap.Clone();
         }

@@ -53,7 +53,9 @@ namespace HSR.PresentationWriter.Parser
             long timestamp = previousFrame.Timestamp;
             timestamp += (currentFrame.Timestamp - previousFrame.Timestamp) / 2;
 
-            previousBitmap = (Bitmap)previousFrame.Bitmap.Clone();
+            previousBitmap = previousFrame.Bitmap;
+            // We need to clone becaue we overwrite it in the pen tracking process,
+            // but the frame is still needed in next iteration
             currentBitmap = (Bitmap)currentFrame.Bitmap.Clone();
 
             // get intermediate point between diff image
@@ -88,11 +90,11 @@ namespace HSR.PresentationWriter.Parser
             // calculate difference
             differenceFilter.OverlayImage = a;
             differenceFilter.ApplyInPlace(b);
-            b.Save(@"c:\temp\images\r1_diff16.bmp");
+            //b.Save(@"c:\temp\images\r1_diff16.bmp");
 
             // translate red parts to gray image
             a = grayFilter.Apply(b);
-            a.Save(@"c:\temp\images\r2_grey16.bmp");
+            //a.Save(@"c:\temp\images\r2_grey16.bmp");
 
             // treshold the gray image
             thresholdFilter.ApplyInPlace(a);
