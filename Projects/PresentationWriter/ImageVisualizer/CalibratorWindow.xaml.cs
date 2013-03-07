@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace ImageVisualizer
 {
@@ -35,7 +36,7 @@ namespace ImageVisualizer
                     Margin = new Thickness(x, y, 0, 0),
                     Fill = new SolidColorBrush(c)
                 };
-            MainGrid.Children.Add(r);
+            MainGrid.Dispatcher.Invoke(() => MainGrid.Children.Add(r));
         }
 
         public void ClearRects()

@@ -38,15 +38,16 @@ namespace ImageVisualizer
 
         public static void Show()
         {
-            _cw.Dispatcher.Invoke(()=> _cw.Show());
+            _cw.Dispatcher.BeginInvoke(new Action(()=> _cw.Show()));
         }
 
         public static int Width { get
         {
-            int i = -1;
-            _cw.Dispatcher.Invoke(() => i = (int) _cw.ActualWidth);
-            Debug.WriteLine(i);
-            return i;
+            //int i = -1;
+            //_cw.Dispatcher.Invoke(() => i = (int) _cw.ActualWidth);
+            //Debug.WriteLine(i);
+            //return i;
+            return (int) _cw.ActualWidth;
         } }
 
         public static int Height { get { return (int) _cw.ActualHeight; } }

@@ -10,7 +10,8 @@ using System.Threading.Tasks;
 using System.Windows.Threading;
 using HSR.PresentationWriter.Parser.Events;
 using HSR.PresentationWriter.Parser.Images;
-using ImageVisualizer;
+using DColor = System.Drawing.Color;
+using WFVisuslizer;
 
 namespace HSR.PresentationWriter.Parser
 {
@@ -22,7 +23,7 @@ namespace HSR.PresentationWriter.Parser
         private const int Blockfill = 80; // Number of pixels needed for a Block to be valid. Depends on Blocksize.
         private const int CalibrationFrames = 300; // Number of Frames used for calibration. Divide by 10 to get Time for calibration.
         private ThreeChannelBitmap _blackImage;
-        //private CalibratorWindow VisualizerControl;
+        private VisualizerControl _vs = new VisualizerControl();
         private int _calibrationStep;
         private int _errors = 0;
         private Rect[] rects = new Rect[3];
@@ -31,7 +32,7 @@ namespace HSR.PresentationWriter.Parser
         {
             _cc = cc;
             this.Grid = new Grid(0,0);
-            //var thread = new Thread(() => VisualizerControl = new CalibratorWindow());
+            //var thread = new Thread(() => _vs = new CalibratorWindow());
             //thread.SetApartmentState(ApartmentState.STA);
             //thread.Start();
             //thread.Join();
@@ -56,12 +57,12 @@ namespace HSR.PresentationWriter.Parser
             //thread.SetApartmentState(ApartmentState.STA);
             //thread.Start();
             //thread.Join();
-            //VisualizerControl.Dispatcher.Invoke(() => CalibThread(e));
-            //VisualizerControl.Dispatcher.InvokeAsync(() => 
+            //_vs.Dispatcher.Invoke(() => CalibThread(e));
+            //_vs.Dispatcher.InvokeAsync(() => 
             //Debug.WriteLine("Calibrating"),DispatcherPriority.Send);
             //Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle,
             //           new Action(() => { }));
-            //VisualizerControl.Dispatcher.InvokeAsync(() => CalibThread(e));
+            //_vs.Dispatcher.InvokeAsync(() => CalibThread(e));
             CalibThread(e);
         }
 
@@ -78,7 +79,7 @@ namespace HSR.PresentationWriter.Parser
             {
                 _cc.NewImage -= BaseCalibration;
                 Grid.Calculate();
-                VisualizerControl.Close();
+                _vs.Close();
             }
                 //else if (_calibrationStep > CalibrationFrames/2)
                 //{
@@ -86,7 +87,7 @@ namespace HSR.PresentationWriter.Parser
                 //}
             else if (_calibrationStep > 2)
             {
-                VisualizerControl.ClearRects();
+                _vs.ClearRects();
                 FillRandomRects();
                 for (int j = 0; j < 3; j++)
                 {
@@ -142,7 +143,7 @@ namespace HSR.PresentationWriter.Parser
                             IsValid(Grid.BottomRight))
                         {
                             _calibrationStep++;
-                            VisualizerControl.ClearRects();
+                            _vs.ClearRects();
                             FillRandomRects();
                         }
                         else
@@ -153,15 +154,15 @@ namespace HSR.PresentationWriter.Parser
                         break;
                     case 1:
                         _blackImage = e.NewImage;
-                        VisualizerControl.AddRect(0, 0, (int) VisualizerControl.Width, (int) VisualizerControl.Height, Color.FromRgb(255, 255, 255));
+                        _vs.AddRect(0, 0, (int) _vs.Width, (int) _vs.Height, DColor.FromArgb(255,255, 255, 255));
                         _calibrationStep++;
                         break;
                     case 0:
                         Grid = new Grid(e.NewImage.Width, e.NewImage.Height);
                         var thread = new Thread(() =>
                             {
-                                VisualizerControl.Show();
-                                VisualizerControl.AddRect(0, 0, (int) VisualizerControl.Width, (int) VisualizerControl.Height, Color.FromRgb(0, 0, 0));
+                                _vs.Show();
+                                _vs.AddRect(0, 0, (int) _vs.Width, (int) _vs.Height, DColor.FromArgb(255, 0, 0, 0));
                             });
                         thread.SetApartmentState(ApartmentState.STA);
                         thread.Start();
@@ -180,15 +181,15 @@ namespace HSR.PresentationWriter.Parser
         private void FillRandomRects()
         {
             var r = new Random();
-            var tl = new Point(r.Next((int)VisualizerControl.Width), r.Next((int)VisualizerControl.Height));
-            rects[0] = new Rect(tl, new Point(r.Next((int)tl.X, (int)VisualizerControl.Width), r.Next((int)tl.Y, (int)VisualizerControl.Height)));
-            tl = new Point(r.Next((int)VisualizerControl.Width), r.Next((int)VisualizerControl.Height));
-            rects[1] = new Rect(tl, new Point(r.Next((int)tl.X, (int)VisualizerControl.Width), r.Next((int)tl.Y, (int)VisualizerControl.Height)));
-            tl = new Point(r.Next((int)VisualizerControl.Width), r.Next((int)VisualizerControl.Height));
-            rects[2] = new Rect(tl, new Point(r.Next((int)tl.X, (int)VisualizerControl.Width), r.Next((int)tl.Y, (int)VisualizerControl.Height)));
-            VisualizerControl.AddRect(rects[0].TopLeft, rects[0].BottomRight, Color.FromRgb(255, 0, 0));
-            VisualizerControl.AddRect(rects[1].TopLeft, rects[1].BottomRight, Color.FromRgb(0, 255, 0));
-            VisualizerControl.AddRect(rects[2].TopLeft, rects[2].BottomRight, Color.FromRgb(0, 0, 255));
+            var tl = new Point(r.Next((int)_vs.Width), r.Next((int)_vs.Height));
+            rects[0] = new Rect(tl, new Point(r.Next((int)tl.X, (int)_vs.Width), r.Next((int)tl.Y, (int)_vs.Height)));
+            tl = new Point(r.Next((int)_vs.Width), r.Next((int)_vs.Height));
+            rects[1] = new Rect(tl, new Point(r.Next((int)tl.X, (int)_vs.Width), r.Next((int)tl.Y, (int)_vs.Height)));
+            tl = new Point(r.Next((int)_vs.Width), r.Next((int)_vs.Height));
+            rects[2] = new Rect(tl, new Point(r.Next((int)tl.X, (int)_vs.Width), r.Next((int)tl.Y, (int)_vs.Height)));
+            _vs.AddRect(rects[0].TopLeft, rects[0].BottomRight, DColor.FromArgb(255, 255, 0, 0));
+            _vs.AddRect(rects[1].TopLeft, rects[1].BottomRight, DColor.FromArgb(255, 0, 255, 0));
+            _vs.AddRect(rects[2].TopLeft, rects[2].BottomRight, DColor.FromArgb(255, 0, 0, 255));
             CheckIntersections();
         }
 
@@ -198,19 +199,19 @@ namespace HSR.PresentationWriter.Parser
             {
                 var rect = rects[1];
                 rect.Intersect(rects[0]);
-                VisualizerControl.AddRect(rect, Color.FromRgb(255, 255, 0));
+                _vs.AddRect(rect, DColor.FromArgb(255, 255, 255, 0));
             }
             if (rects[0].IntersectsWith(rects[2]))
             {
                 var rect = rects[2];
                 rect.Intersect(rects[0]);
-                VisualizerControl.AddRect(rect, Color.FromRgb(255, 0, 255));
+                _vs.AddRect(rect, DColor.FromArgb(255, 255, 0, 255));
             }
             if (rects[1].IntersectsWith(rects[2]))
             {
                 var rect = rects[2];
                 rect.Intersect(rects[1]);
-                VisualizerControl.AddRect(rect, Color.FromRgb(0, 255, 255));
+                _vs.AddRect(rect, DColor.FromArgb(255, 0, 255, 255));
             }
         }
 

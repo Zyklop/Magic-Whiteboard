@@ -56,10 +56,21 @@
       <Project>{c7bc83d8-ddff-4b93-b747-22c8c2ccd812}</Project>
       <Name>Camera</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\ImageVisualizer\ImageVisualizer.csproj">
+      <Project>{3AF7E3B7-7ED1-4F0D-9426-58150F6697F8}</Project>
+      <Name>ImageVisualizer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\WFVisuslizer\WFVisuslizer.csproj">
+      <Project>{6d096d62-8614-434b-a558-d99053d395ea}</Project>
+      <Name>WFVisuslizer</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Parser.csproj">
       <Project>{c9d79db6-72b8-461a-b725-8fee1dc05eb6}</Project>
       <Name>Parser</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
