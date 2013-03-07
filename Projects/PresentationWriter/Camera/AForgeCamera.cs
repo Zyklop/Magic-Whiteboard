@@ -24,12 +24,16 @@ namespace HSR.PresentationWriter.DataSources
         public AForgeCamera()
         {
             videoCaptureDevices = new FilterInfoCollection(FilterCategory.VideoInputDevice);
+            finalVideo = new VideoCaptureDevice(videoCaptureDevices[0].MonikerString);
+        }
+
+        public void ShowConfigurationDialog()
+        {
+            finalVideo.DisplayPropertyPage(new IntPtr(0));
         }
 
         public void Start()
         {
-            // Take first
-            finalVideo = new VideoCaptureDevice(videoCaptureDevices[0].MonikerString);
             finalVideo.NewFrame += new NewFrameEventHandler(finalVideo_NewFrame);
             finalVideo.Start();
         }
@@ -37,17 +41,14 @@ namespace HSR.PresentationWriter.DataSources
         public void Stop()
         {
             finalVideo.NewFrame -= new NewFrameEventHandler(finalVideo_NewFrame);
-            finalVideo.Stop();
+            finalVideo.SignalToStop();
         }
 
-        public Frame GetLastFrame()
+        public VideoFrame GetLastFrame()
         {
             if (lastBitmap != null)
             {
-                lock (lastBitmap)
-                {
-                    return new Frame(lastFrameNumber, (Bitmap)lastBitmap.Clone(), lastTimestamp);
-                }
+                return new VideoFrame(lastFrameNumber, lastBitmap, lastTimestamp);
             }
             return null;
         }

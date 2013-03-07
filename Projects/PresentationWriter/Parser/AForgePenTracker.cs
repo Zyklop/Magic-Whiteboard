@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,93 +17,124 @@ namespace HSR.PresentationWriter.Parser
     {
         /// <summary>
         /// Max count of frames to be included in pen discovering process.</summary>
-        private const int MAX_FRAMEBUFFER_LENGTH = 2;
-        private const int SAME_POINT_TRESHOLD = 2;
-        private LinkedList<Frame> frameBuffer;
-        /// <summary>
-        /// TODO No threshold for size. Must be fixed eventually</summary>
-        private Dictionary<long, Point> penPoints;
+        private const int MAX_FRAMEBUFFER_LENGTH = 3;
+        private const int MAX_POINTBUFFER_LENGTH = 3;
+        private LinkedList<VideoFrame> frameBuffer;
+        private LinkedList<PointFrame> penPoints;
+        private int currentFrameNumber;
 
         public AForgePenTracker()
         {
-            this.frameBuffer = new LinkedList<Frame>();
-            this.penPoints = new Dictionary<long, Point>();
+            this.frameBuffer = new LinkedList<VideoFrame>();
+            this.penPoints = new LinkedList<PointFrame>();
+            this.currentFrameNumber = 0;
+            this.initFilters();
         }
 
-        public void Process()
+        private Bitmap previousBitmap, currentBitmap;
+        /// <summary>
+        /// Process a new frame.
+        /// That means queuing it an finding a new 
+        /// </summary>
+        public void Process(VideoFrame frame)
         {
-            Bitmap previousImage;
-            Bitmap currentImage;
+            queue(frame);
 
-            lock (this.frameBuffer) // lock, while accessing pictures
+            // if we have less than 2 images, we cant do anything
+            if (this.frameBuffer.Count < 2)
             {
-                Frame previousFrame = this.frameBuffer.Last.Previous.Value;
-                Frame currentFrame = this.frameBuffer.Last.Value;
-                previousImage = new Bitmap(previousFrame.Image);
-                currentImage = new Bitmap(currentFrame.Image);
+                return;
             }
 
-            // diff both images
-            Difference differenceFilter = new Difference(previousImage);
-            Bitmap diffImage = differenceFilter.Apply(currentImage);
-            diffImage.Save(@"c:\temp\images\3_diff16.bmp");
+            VideoFrame previousFrame = this.frameBuffer.Last.Previous.Value;
+            VideoFrame currentFrame = this.frameBuffer.Last.Value;
 
-            // convert to grayscale with focus on red parts
-            Grayscale grayFilter = new Grayscale(1, 0, 0);
-            Bitmap grayImage = grayFilter.Apply(diffImage);
-            grayImage.Save(@"c:\temp\images\4_grey16.bmp");
+            // interpolate timestamps
+            long timestamp = previousFrame.Timestamp;
+            timestamp += (currentFrame.Timestamp - previousFrame.Timestamp) / 2;
 
-            // make monochrome picture without noisy red parts
-            IFilter thresholdFilter = new Threshold(50);
-            Bitmap tresholdImage = thresholdFilter.Apply(grayImage);
-            tresholdImage.Save(@"c:\temp\images\5_grey16.bmp");
+            previousBitmap = previousFrame.Bitmap;
+            // We need to clone becaue we overwrite it in the pen tracking process,
+            // but the frame is still needed in next iteration
+            currentBitmap = (Bitmap)currentFrame.Bitmap.Clone();
 
-            // count white blobs
-            BlobCounter bc = new BlobCounter();
-            bc.ProcessImage(tresholdImage);
-            Rectangle[] rects = bc.GetObjectsRectangles();
-
-            // only save found points if there are two of them
-            if (rects.Length == 2)
+            // get intermediate point between diff image
+            try
             {
-                lock (penPoints)
+                Point p = findPen(previousBitmap, currentBitmap);
+                if (!p.IsEmpty)
                 {
-                    Point previousPoint = penPoints.Values.Last();
-                    Point newA = new Point(rects[0].X, rects[0].Y);
-                    Point newB = new Point(rects[1].X, rects[1].Y);
-                    double distanceA = getDistance(newA, previousPoint);
-                    double distanceB = getDistance(newB, previousPoint);
-
-                    if (distanceA < SAME_POINT_TRESHOLD)
-                    {
-                        Point currentPoint = newA;
-                    }
-                    if (distanceB < SAME_POINT_TRESHOLD)
-
-                    {
-                        Point currentPoint = newB;
-                    }
-
-                    if (distanceA > SAME_POINT_TRESHOLD && distanceB > SAME_POINT_TRESHOLD)
-                    {
-                        throw new Exception("previous point lost");
-                    }
+                    queue(new PointFrame(++currentFrameNumber, p, timestamp));
                 }
             }
+            catch (Exception ex)
+            { }
+        }
 
-            // debug out
-            foreach (Rectangle rect in rects)
+        private Difference differenceFilter;
+        private Grayscale grayFilter;
+        private Threshold thresholdFilter;
+        private BlobCounter blobCounter;
+        private void initFilters()
+        {
+            differenceFilter = new Difference();
+            grayFilter = new Grayscale(1, 0, 0);
+            thresholdFilter = new Threshold(50);
+            blobCounter = new BlobCounter();
+        }
+
+        private Point findPen(Bitmap a, Bitmap b)
+        {
+            //long time1 = CurrentMillis.Millis;
+
+            // calculate difference
+            differenceFilter.OverlayImage = a;
+            differenceFilter.ApplyInPlace(b);
+            //b.Save(@"c:\temp\images\r1_diff16.bmp");
+
+            // translate red parts to gray image
+            a = grayFilter.Apply(b);
+            //a.Save(@"c:\temp\images\r2_grey16.bmp");
+
+            // treshold the gray image
+            thresholdFilter.ApplyInPlace(a);
+
+#if DEBUG
+            if (DebugPicture != null)
             {
-                Debug.WriteLine("{0}, {1}", rect.X, rect.Y);
+                DebugPicture(this, new DebugPictureEventArgs(new List<Bitmap>() { b, a }));
+            }
+#endif
+
+            //tresholdImage.Save(@"c:\temp\images\r3_treshold16.bmp");
+
+            // count white blobs (ev. kann man den thresholdFilter wegschmeissen, siehe ctr parameter)
+            blobCounter.ProcessImage(a);
+            Rectangle[] r = blobCounter.GetObjectsRectangles();
+
+            //long time2 = CurrentMillis.Millis;
+
+            //StreamWriter streamWriter = new StreamWriter(@"c:\temp\gach.csv", true);
+            //streamWriter.WriteLine("{0};{1}", time1, time2);
+            //streamWriter.Close();
+
+            // Return intermediate point
+            switch (r.Length)
+            {
+                case 0:
+                    return Point.Empty;
+                case 1:
+                    return PointTools.CalculateCenterPoint(r[0]);
+                case 2:
+                    return PointTools.CalculateCenterPoint(
+                        PointTools.CalculateCenterPoint(r[0]), 
+                        PointTools.CalculateCenterPoint(r[1]));
+                default:
+                    throw new Exception("TODO: Error Handling: more than two points are bad!");
             }
         }
 
-        private double getDistance(Point p, Point q)
-        {
-            return Math.Sqrt(Math.Pow(q.X - p.X, 2) + Math.Pow(q.Y - p.Y, 2));
-        }
-
-        public void Feed(Frame frame)
+        private void queue(VideoFrame frame)
         {
             if (frameBuffer.Count >= MAX_FRAMEBUFFER_LENGTH)
             {
@@ -111,22 +143,50 @@ namespace HSR.PresentationWriter.Parser
             frameBuffer.AddLast(frame);
         }
 
-        public Nullable<Point> GetLastPenPosition()
+        private void queue(PointFrame frame)
+        {
+            if (this.penPoints.Count >= MAX_POINTBUFFER_LENGTH)
+            {
+                this.penPoints.RemoveFirst();
+            }
+            this.penPoints.AddLast(frame);
+        }
+
+        public PointFrame GetLastFrame()
         {
             if (penPoints.Count > 0)
             {
-                return penPoints.Values.Last();
+                return penPoints.Last.Value;
             }
             return null;
         }
 
-        public Nullable<Point> GetPenPosition(long timestamp)
+        /// <summary>
+        /// Estimates the pen position on a certain time.
+        /// </summary>
+        /// <param name="timestamp"></param>
+        /// <returns></returns>
+        public Point GetPenPoint(long timestamp)
         {
-            if (penPoints.Count <= 0)
+            LinkedListNode<PointFrame> current = this.penPoints.First;
+            while (current != null)
             {
-                return null;
+                if (timestamp == current.Value.Timestamp)
+                {
+                    return current.Value.Point;
+                }
+                if (timestamp > current.Value.Timestamp && current.Next != null)
+                {
+                    Point currentPoint = current.Value.Point;
+                    long currentTime = current.Value.Timestamp;
+                    Point nextPoint = current.Next.Value.Point;
+                    long nextTime = current.Next.Value.Timestamp;
+                    long ratio = currentTime / nextTime;
+                    return PointTools.CalculateIntermediatePoint(currentPoint, nextPoint, ratio);
+                }
+                current = current.Next;
             }
-            return null;
+            return Point.Empty;
         }
 
         public event EventHandler<PenPositionEventArgs> PenMoved;
@@ -134,5 +194,21 @@ namespace HSR.PresentationWriter.Parser
         public event EventHandler<PenPositionEventArgs> PenDetected;
 
         public event EventHandler<PenPositionEventArgs> PenLost;
+
+
+#if DEBUG
+        public event EventHandler<DebugPictureEventArgs> DebugPicture;
+#endif
     }
+
+#if DEBUG
+    public class DebugPictureEventArgs : EventArgs
+    {
+        public List<Bitmap> Pictures { get; private set; }
+        public DebugPictureEventArgs(List<Bitmap> pics)
+        {
+            Pictures = pics;
+        }
+    }
+#endif
 }

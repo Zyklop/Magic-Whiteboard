@@ -15,6 +15,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImageVisualizer", "ImageVis
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WFVisuslizer", "WFVisuslizer\WFVisuslizer.csproj", "{6D096D62-8614-434B-A558-D99053D395EA}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{16DDBE5B-F38A-414C-A0D4-5388BE957A33}"
+	ProjectSection(SolutionItems) = preProject
+		Performance1.psess = Performance1.psess
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinFormsGuiTester", "WinFormsGuiTester\WinFormsGuiTester.csproj", "{F669B6B8-59B9-41CA-A8E9-047B3EB5C8D7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -49,8 +56,15 @@ Global
 		{6D096D62-8614-434B-A558-D99053D395EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6D096D62-8614-434B-A558-D99053D395EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6D096D62-8614-434B-A558-D99053D395EA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F669B6B8-59B9-41CA-A8E9-047B3EB5C8D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F669B6B8-59B9-41CA-A8E9-047B3EB5C8D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F669B6B8-59B9-41CA-A8E9-047B3EB5C8D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F669B6B8-59B9-41CA-A8E9-047B3EB5C8D7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(Performance) = preSolution
+		HasPerformanceSessions = true
 	EndGlobalSection
 EndGlobal

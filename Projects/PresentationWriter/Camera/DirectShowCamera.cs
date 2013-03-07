@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using DirectShowLib;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
+using System.Drawing;
 
 namespace HSR.PresentationWriter.DataSources
 {
@@ -49,7 +50,7 @@ namespace HSR.PresentationWriter.DataSources
             CloseInterfaces();
         }
 
-        public Frame GetLastFrame()
+        public VideoFrame GetLastFrame()
         {
             return null;
         }
