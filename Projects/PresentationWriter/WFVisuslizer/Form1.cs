@@ -27,11 +27,11 @@ namespace WFVisuslizer
         {
             if (value)
             {
-                BackColor = Color.Transparent;
+                TransparencyKey = Color.Black;
             }
             else
             {
-                BackColor = Color.Black;
+                TransparencyKey = Color.Transparent;
             }
         } }
 

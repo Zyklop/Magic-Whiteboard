@@ -20,7 +20,7 @@ namespace MockTester
 {
     class Program
     {
-        static void Main(string[] args)
+        static void Main1(string[] args)
         {
             int i = 0;
             ThreeChannelBitmap tci = new ThreeChannelBitmap();
@@ -64,7 +64,7 @@ namespace MockTester
             //Console.Read();
         }
 
-        static void Main3(string[] args)
+        static void Main(string[] args)
         {
             var vc = new VisualizerControl();
             //var thread = new Thread(vc.Show);
@@ -74,10 +74,12 @@ namespace MockTester
             var thread2 = new Thread(() =>
             {
                 vc.Show();
+                vc.Transparent = true;
             Console.Write(vc.Width + " x " + vc.Height);
             vc.AddRect(100, 100, 200, 200, Color.GreenYellow);
             Thread.Sleep(1000);
                 vc.ClearRects();
+                vc.Transparent = false;
             vc.AddRect(500, 100, 200, 200, Color.Red);
             Thread.Sleep(1000);
             vc.Close();
