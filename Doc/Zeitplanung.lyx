@@ -103,7 +103,7 @@ Kern-Probleme lösen:
 \begin_inset Newline newline
 \end_inset
 
-- Einzelne Kernprobleme in den Ansätzen gelöst
+- Einzelne Kernprobleme in den Ansätzen gelöst (in Labor Umgebung)
 \end_layout
 
 \begin_layout Enumerate
@@ -111,7 +111,7 @@ W4-7:
 \begin_inset Newline newline
 \end_inset
 
-Kernprobleme gut lösen
+Kernprobleme gut lösen (in Realer Umgebung)
 \begin_inset Newline newline
 \end_inset
 
@@ -119,11 +119,7 @@ Stift-Werkzeug wählen
 \end_layout
 
 \begin_layout Enumerate
-W7-9:
-\begin_inset Newline newline
-\end_inset
-
-Archtitektur-refactoring fertig.
+W8:
 \begin_inset Newline newline
 \end_inset
 
@@ -135,7 +131,11 @@ Punkt 1,2 & 3 der Anforderungen erfüllt
 \end_layout
 
 \begin_layout Enumerate
-Zusatzinput vom Stift analysieren und auswerten.W10
+W9-10: 
+\begin_inset Newline newline
+\end_inset
+
+Zusatzinput vom Stift analysieren und auswerten.
 \begin_inset Newline newline
 \end_inset
 
@@ -147,11 +147,23 @@ Farbe
 \end_layout
 
 \begin_layout Enumerate
-Powerpoint-Integration analysierenW11
+W11: 
+\begin_inset Newline newline
+\end_inset
+
+Archtitektur-refactoring fertig.
+\begin_inset Newline newline
+\end_inset
+
+Powerpoint-Integration analysieren
 \end_layout
 
 \begin_layout Enumerate
-Standartfeatures Powerpoint W12[-[13]
+W12:
+\begin_inset Newline newline
+\end_inset
+
+Standartfeatures Powerpoint
 \begin_inset Newline newline
 \end_inset
 
@@ -163,7 +175,11 @@ Schreiben
 \end_layout
 
 \begin_layout Enumerate
-Zusatzfeatures Powerpoint [W12-14]
+W13-14:
+\begin_inset Newline newline
+\end_inset
+
+Zusatzfeatures Powerpoint
 \begin_inset Newline newline
 \end_inset
 
@@ -175,19 +191,31 @@ Speichern von Annotations
 \end_layout
 
 \begin_layout Enumerate
-Dokumentation finalisieren W14-15
-\end_layout
-
-\begin_layout Enumerate
-Präsentation Vorbereiten W15
+W15:
 \begin_inset Newline newline
 \end_inset
 
-Poster fertig W15
+Dokumentation finalisieren
 \end_layout
 
 \begin_layout Enumerate
-Präsentation W16
+W15:
+\begin_inset Newline newline
+\end_inset
+
+Präsentation Vorbereiten
+\begin_inset Newline newline
+\end_inset
+
+Poster fertig
+\end_layout
+
+\begin_layout Enumerate
+W16:
+\begin_inset Newline newline
+\end_inset
+
+Präsentation
 \end_layout
 
 \end_body
