@@ -69,7 +69,21 @@ Kernfeatures
 \end_layout
 
 \begin_layout Enumerate
-Bilder von Webcam erhalten
+Tools: Stift Auswahl
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+Evaluation eines geeigneten Stiftes
+\end_layout
+
+\begin_layout Enumerate
+Evaluation eines günsigen Stiftes
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+Input: Bilder von Webcam erhalten
 \end_layout
 
 \begin_deeper
@@ -87,7 +101,8 @@ Zeitmanagement erarbeiten
 
 \end_deeper
 \begin_layout Enumerate
-Projektionsfeld des Beamers auf einem oder mehreren Webcam-Bildern erkennen
+Processing: Projektionsfeld des Beamers auf einem oder mehreren Webcam-Bildern
+ erkennen
 \end_layout
 
 \begin_deeper
@@ -99,9 +114,13 @@ Bildgrenzen erkennen
 Projektion der Beamerbildkoordinaten auf Bildschirmkoordinaten
 \end_layout
 
+\begin_layout Enumerate
+Kalibrierungszeit messen
+\end_layout
+
 \end_deeper
 \begin_layout Enumerate
-Stiftposition auf dem Beamerbild erkennen
+Processing: Stiftposition auf dem Beamerbild erkennen
 \end_layout
 
 \begin_deeper
@@ -117,14 +136,61 @@ Beamerbildkoordinaten des Stiftes auf Bildschirmkoordinaten projizieren.
 Bewegung des Stiftes interpolieren
 \end_layout
 
+\begin_layout Enumerate
+Höchste Erkennungsfrequenz ausmessen
+\end_layout
+
+\begin_layout Enumerate
+Verarbeitungszeit messen
+\end_layout
+
 \end_deeper
 \begin_layout Enumerate
-Erweiterte Stiftinformationen
+Output
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+Kalibrierungsbild ausgeben
 \end_layout
 
 \begin_layout Enumerate
-Powerpoint-Integration
+Overlay auf Bildschirm/Beamer anzeigen
 \end_layout
 
+\end_deeper
+\begin_layout Enumerate
+Processing: Erweiterte Stiftinformationen
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+An/Aus
+\end_layout
+
+\begin_layout Enumerate
+Farb wechsel
+\end_layout
+
+\begin_layout Enumerate
+ev.
+ Maus-Emulation um Input zu sparen (1 Bit für Linke/Rechte Maustaste)
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+Output & Input: Powerpoint-Integration
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+Standardfunktionalität in PP ansprechen
+\end_layout
+
+\begin_layout Enumerate
+PP-API kennenlernen
+\end_layout
+
+\end_deeper
 \end_body
 \end_document
