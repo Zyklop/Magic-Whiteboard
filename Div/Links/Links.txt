@@ -3,8 +3,10 @@ http://www.codeproject.com/Articles/125478/Versatile-WebCam-C-library
 http://msdn.microsoft.com/en-us/library/windows/desktop/dd757677%28v=vs.85%29.aspx
 http://msdn.microsoft.com/en-us/library/windows/desktop/dd797852%28v=vs.85%29.aspx
 http://www.metricam.net/
+
 OpenCV:
 http://www.emgu.com/wiki/index.php/Emgu_CV
+http://opencv-srf.blogspot.ch/2011/11/opencv-matlab-or-aforge.html
 
 Camera Code:
 http://www.Planet-Source-Code.com/vb/scripts/ShowCode.asp?txtCodeId=1339&lngWId=10
