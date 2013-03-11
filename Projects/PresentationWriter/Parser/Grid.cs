@@ -54,6 +54,10 @@ namespace HSR.PresentationWriter.Parser
             get { return _topLeft; }
             set { 
                 _topLeft = value;
+                if (_calibratorData[(int) value.X,(int) value.Y] == null)
+                {
+                    _calibratorData[(int)value.X, (int)value.Y] = new List<Point>();
+                }
                 _calibratorData[(int) value.X,(int) value.Y].Add(new Point(0,0));
                 AddRefPoints(0,0);
             }

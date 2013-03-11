@@ -148,7 +148,7 @@ namespace HSR.PresentationWriter.Parser
                         }
                         else
                         {
-                            _calibrationStep = 0;
+                            _calibrationStep++; //= 0;
                             _errors ++;
                         }
                         break;
@@ -163,6 +163,7 @@ namespace HSR.PresentationWriter.Parser
                             {
                                 _vs.Show();
                                 _vs.AddRect(0, 0, (int) _vs.Width, (int) _vs.Height, DColor.FromArgb(255, 0, 0, 0));
+                                //_vs.Draw();
                             });
                         thread.SetApartmentState(ApartmentState.STA);
                         thread.Start();

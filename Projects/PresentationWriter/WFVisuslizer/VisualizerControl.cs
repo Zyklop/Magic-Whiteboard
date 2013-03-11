@@ -1,6 +1,9 @@
-﻿using System.Drawing;
+﻿using System.Collections.Generic;
+using System.Drawing;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Forms;
 using Point = System.Windows.Point;
 
 namespace WFVisuslizer
@@ -8,10 +11,14 @@ namespace WFVisuslizer
     public class VisualizerControl
     {
         private Form1 _cw = new Form1();
+        private bool _shown = false;
 
         public VisualizerControl()
         {
-            
+            Task.Factory.StartNew(() => Application.Run(_cw));
+            _cw.Hide();
+            //var thread2 = new Thread(() => Application.Run(_cw));
+            //_cw.Hide();
         }
 
         public bool Transparent { get { return _cw.Transparent; } set { _cw.Transparent = value; } }
@@ -23,22 +30,33 @@ namespace WFVisuslizer
 
         public void AddRect(Rect rect, Color c)
         {
-            AddRect(new Point((int) rect.TopLeft.X, (int) rect.TopLeft.Y), new Point((int) rect.BottomRight.X, (int) rect.BottomRight.Y), c);
+            AddRect(new Point((int)rect.TopLeft.X, (int)rect.TopLeft.Y), new Point((int)rect.BottomRight.X, (int)rect.BottomRight.Y), c);
         }
 
         public void ClearRects()
         {
             _cw.ClearRects();
+            //rects.Clear();
         }
 
         public void Close()
         {
-            _cw.Close();
+            if (_shown)
+            {
+                _cw.Hide();
+                _shown = false;
+                Application.DoEvents();
+            }
         }
 
         public void Show()
         {
-            _cw.Show();
+            //if (!_shown)
+            //{
+            //    _cw.Show();
+            //    _shown = true;
+            //    Application.DoEvents();
+            //}
         }
 
         public int Width { get
@@ -47,14 +65,19 @@ namespace WFVisuslizer
             //_cw.Dispatcher.Invoke(() => i = (int) _cw.ActualWidth);
             //Debug.WriteLine(i);
             //return i;
-            return (int) _cw.Width;
+            return (int) Screen.PrimaryScreen.Bounds.Width;
         } }
 
-        public int Height { get { return (int) _cw.Height; } }
+        public int Height { get { return (int) Screen.PrimaryScreen.Bounds.Height; } }
 
         public void AddRect(int topLeft, int bottomRight, int width, int height, Color color)
         {
             _cw.AddRect(topLeft, bottomRight, width, height, color);
         }
+
+        //public void Draw()
+        //{
+        //    throw new System.NotImplementedException();
+        //}
     }
 }
