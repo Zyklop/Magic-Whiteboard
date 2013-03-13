@@ -25,9 +25,9 @@ namespace Parser.Mock
         {
             imagelist = new List<ThreeChannelBitmap>
                 {
-                    new ThreeChannelBitmap(new Bitmap(@"Images/Raumsetup.jpg")),
-                    new ThreeChannelBitmap(new Bitmap(@"Images/Raumsetup-ohne-Licht.jpg")),
-                    new ThreeChannelBitmap(new Bitmap(@"Images/Raumsetup-ohne-Licht.jpg"))
+                    //new ThreeChannelBitmap(new Bitmap(@"Images/Raumsetup.jpg")),
+                    //new ThreeChannelBitmap(new Bitmap(@"Images/Raumsetup-ohne-Licht.jpg")),
+                    //new ThreeChannelBitmap(new Bitmap(@"Images/Raumsetup-ohne-Licht.jpg"))
                 };
             Start();
         }

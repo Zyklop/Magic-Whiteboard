@@ -27,6 +27,7 @@ namespace HSR.PresentationWriter.Parser
         private int _calibrationStep;
         private int _errors = 0;
         private Rect[] rects = new Rect[3];
+        private readonly object _lockObj = new object();
 
         public Calibrator(CameraConnector cc)
         {
@@ -69,109 +70,111 @@ namespace HSR.PresentationWriter.Parser
 
         private void CalibThread(NewImageEventArgs e)
         {
-            Debug.WriteLine("Calibrating");
-            if (_errors > 100)
+            lock (_lockObj)
             {
-                //calibration not possible
-                return;
-            }
-            if (_calibrationStep == CalibrationFrames || !Grid.DataNeeded)
-            {
-                _cc.NewImage -= BaseCalibration;
-                Grid.Calculate();
-                _vs.Close();
-            }
-                //else if (_calibrationStep > CalibrationFrames/2)
-                //{
-                
-                //}
-            else if (_calibrationStep > 2)
-            {
-                _vs.ClearRects();
-                FillRandomRects();
-                for (int j = 0; j < 3; j++)
+                Debug.WriteLine("Calibrating");
+                if (_errors > 100)
                 {
-                    OneChannelBitmap diff = new OneChannelBitmap();
-                    switch (j)
-                    {
-                        case 0:
-                            diff = _blackImage.RChannelBitmap - e.NewImage.RChannelBitmap;
-                            break;
-                        case 1:
-                            diff = _blackImage.GChannelBitmap - e.NewImage.GChannelBitmap;
-                            break;
-                        case 2:
-                            diff = _blackImage.GChannelBitmap - e.NewImage.GChannelBitmap;
-                            break;
-                    }
-                    var topLeftCorner = GetTopLeftCorner(diff);
-                    var topRightCorner = GetTopRightCorner(diff);
-                    var bottomLeftCorner = GetBottomLeftCorner(diff);
-                    var bottomRightCorner = GetBottomRightCorner(diff);
-                    if (topLeftCorner.X < topRightCorner.X && topLeftCorner.Y > bottomLeftCorner.Y
-                        && topRightCorner.Y < bottomRightCorner.Y && topRightCorner.Y < bottomLeftCorner.Y
-                        && topLeftCorner.Y < bottomRightCorner.Y && bottomLeftCorner.X < bottomRightCorner.X
-                        && topLeftCorner.X < bottomRightCorner.X && bottomLeftCorner.X < topRightCorner.X
-                        && IsValid(topLeftCorner) && IsValid(topRightCorner) && IsValid(bottomLeftCorner) &&
-                        IsValid(bottomRightCorner))
-                    {
-                        Grid.AddPoint(rects[j].TopLeft, topLeftCorner);
-                        Grid.AddPoint(rects[j].TopRight, topRightCorner);
-                        Grid.AddPoint(rects[j].BottomLeft, bottomLeftCorner);
-                        Grid.AddPoint(rects[j].BottomRight, bottomRightCorner);
-                    }
-                    else
-                    {
-                        _errors++;
-                    }
+                    //calibration not possible
+                    return;
                 }
-            }
-            else
-                switch (_calibrationStep)
+                if (_calibrationStep == CalibrationFrames || !Grid.DataNeeded)
                 {
-                    case 2:
-                        var diff = (_blackImage - e.NewImage).GetGrayscale();
-                        Grid.TopLeft = GetTopLeftCorner(diff);
-                        Grid.TopRight = GetTopRightCorner(diff);
-                        Grid.BottomLeft = GetBottomLeftCorner(diff);
-                        Grid.BottomRight = GetBottomRightCorner(diff);
-                        if (Grid.TopLeft.X < Grid.TopRight.X && Grid.TopLeft.X < Grid.BottomRight.X &&
-                            Grid.BottomLeft.X < Grid.TopRight.X && Grid.BottomLeft.X < Grid.BottomRight.X &&
-                            Grid.TopLeft.Y < Grid.BottomLeft.Y && Grid.TopLeft.Y < Grid.BottomRight.Y &&
-                            Grid.TopRight.Y < Grid.BottomLeft.Y && Grid.TopRight.Y < Grid.BottomRight.Y &&
-                            IsValid(Grid.TopLeft) && IsValid(Grid.TopRight) && IsValid(Grid.BottomLeft) &&
-                            IsValid(Grid.BottomRight))
+                    _cc.NewImage -= BaseCalibration;
+                    Grid.Calculate();
+                    _vs.Close();
+                }
+                    //else if (_calibrationStep > CalibrationFrames/2)
+                    //{
+                
+                    //}
+                else if (_calibrationStep > 2)
+                {
+                    _vs.ClearRects();
+                    FillRandomRects();
+                    for (int j = 0; j < 3; j++)
+                    {
+                        OneChannelBitmap diff = new OneChannelBitmap();
+                        switch (j)
                         {
-                            _calibrationStep++;
-                            _vs.ClearRects();
-                            FillRandomRects();
+                            case 0:
+                                diff = _blackImage.RChannelBitmap - e.NewImage.RChannelBitmap;
+                                break;
+                            case 1:
+                                diff = _blackImage.GChannelBitmap - e.NewImage.GChannelBitmap;
+                                break;
+                            case 2:
+                                diff = _blackImage.GChannelBitmap - e.NewImage.GChannelBitmap;
+                                break;
+                        }
+                        var topLeftCorner = GetTopLeftCorner(diff);
+                        var topRightCorner = GetTopRightCorner(diff);
+                        var bottomLeftCorner = GetBottomLeftCorner(diff);
+                        var bottomRightCorner = GetBottomRightCorner(diff);
+                        if (topLeftCorner.X < topRightCorner.X && topLeftCorner.Y > bottomLeftCorner.Y
+                            && topRightCorner.Y < bottomRightCorner.Y && topRightCorner.Y < bottomLeftCorner.Y
+                            && topLeftCorner.Y < bottomRightCorner.Y && bottomLeftCorner.X < bottomRightCorner.X
+                            && topLeftCorner.X < bottomRightCorner.X && bottomLeftCorner.X < topRightCorner.X
+                            && IsValid(topLeftCorner) && IsValid(topRightCorner) && IsValid(bottomLeftCorner) &&
+                            IsValid(bottomRightCorner))
+                        {
+                            Grid.AddPoint(rects[j].TopLeft, topLeftCorner);
+                            Grid.AddPoint(rects[j].TopRight, topRightCorner);
+                            Grid.AddPoint(rects[j].BottomLeft, bottomLeftCorner);
+                            Grid.AddPoint(rects[j].BottomRight, bottomRightCorner);
                         }
                         else
                         {
-                            _calibrationStep++; //= 0;
-                            _errors ++;
+                            _errors++;
                         }
-                        break;
-                    case 1:
-                        _blackImage = e.NewImage;
-                        _vs.AddRect(0, 0, (int) _vs.Width, (int) _vs.Height, DColor.FromArgb(255,255, 255, 255));
-                        _calibrationStep++;
-                        break;
-                    case 0:
-                        Grid = new Grid(e.NewImage.Width, e.NewImage.Height);
-                        var thread = new Thread(() =>
-                            {
-                                _vs.Show();
-                                _vs.AddRect(0, 0, (int) _vs.Width, (int) _vs.Height, DColor.FromArgb(255, 0, 0, 0));
-                                //_vs.Draw();
-                            });
-                        thread.SetApartmentState(ApartmentState.STA);
-                        thread.Start();
-                        thread.Join();
-                        _calibrationStep++;
-                        break;
+                    }
                 }
-            return;
+                else
+                    switch (_calibrationStep)
+                    {
+                        case 2:
+                            var diff = (_blackImage - e.NewImage).GetGrayscale();
+                            Grid.TopLeft = GetTopLeftCorner(diff);
+                            Grid.TopRight = GetTopRightCorner(diff);
+                            Grid.BottomLeft = GetBottomLeftCorner(diff);
+                            Grid.BottomRight = GetBottomRightCorner(diff);
+                            if (Grid.TopLeft.X < Grid.TopRight.X && Grid.TopLeft.X < Grid.BottomRight.X &&
+                                Grid.BottomLeft.X < Grid.TopRight.X && Grid.BottomLeft.X < Grid.BottomRight.X &&
+                                Grid.TopLeft.Y < Grid.BottomLeft.Y && Grid.TopLeft.Y < Grid.BottomRight.Y &&
+                                Grid.TopRight.Y < Grid.BottomLeft.Y && Grid.TopRight.Y < Grid.BottomRight.Y &&
+                                IsValid(Grid.TopLeft) && IsValid(Grid.TopRight) && IsValid(Grid.BottomLeft) &&
+                                IsValid(Grid.BottomRight))
+                            {
+                                _calibrationStep++;
+                                _vs.ClearRects();
+                                FillRandomRects();
+                            }
+                            else
+                            {
+                                _calibrationStep++; //= 0;
+                                _errors ++;
+                            }
+                            break;
+                        case 1:
+                            _blackImage = e.NewImage;
+                            _vs.AddRect(0, 0, (int) _vs.Width, (int) _vs.Height, DColor.FromArgb(255,255, 255, 255));
+                            _calibrationStep++;
+                            break;
+                        case 0:
+                            Grid = new Grid(e.NewImage.Width, e.NewImage.Height);
+                            var thread = new Thread(() =>
+                                {
+                                    _vs.Show();
+                                    _vs.AddRect(0, 0, (int) _vs.Width, (int) _vs.Height, DColor.FromArgb(255, 0, 0, 0));
+                                    //_vs.Draw();
+                                });
+                            thread.SetApartmentState(ApartmentState.STA);
+                            thread.Start();
+                            thread.Join();
+                            _calibrationStep++;
+                            break;
+                    }
+            }
         }
 
         private bool IsValid(Point point)
@@ -182,12 +185,12 @@ namespace HSR.PresentationWriter.Parser
         private void FillRandomRects()
         {
             var r = new Random();
-            var tl = new Point(r.Next((int)_vs.Width), r.Next((int)_vs.Height));
-            rects[0] = new Rect(tl, new Point(r.Next((int)tl.X, (int)_vs.Width), r.Next((int)tl.Y, (int)_vs.Height)));
-            tl = new Point(r.Next((int)_vs.Width), r.Next((int)_vs.Height));
-            rects[1] = new Rect(tl, new Point(r.Next((int)tl.X, (int)_vs.Width), r.Next((int)tl.Y, (int)_vs.Height)));
-            tl = new Point(r.Next((int)_vs.Width), r.Next((int)_vs.Height));
-            rects[2] = new Rect(tl, new Point(r.Next((int)tl.X, (int)_vs.Width), r.Next((int)tl.Y, (int)_vs.Height)));
+            var tl = new Point(r.Next(_vs.Width-50), r.Next(_vs.Height-50));
+            rects[0] = new Rect(tl, new Point(r.Next((int)tl.X, _vs.Width-50)+50, r.Next((int)tl.Y, _vs.Height-50)+50));
+            tl = new Point(r.Next(_vs.Width - 50), r.Next(_vs.Height - 50));
+            rects[1] = new Rect(tl, new Point(r.Next((int)tl.X, _vs.Width - 50) + 50, r.Next((int)tl.Y, _vs.Height - 50) + 50));
+            tl = new Point(r.Next(_vs.Width - 50), r.Next(_vs.Height - 50));
+            rects[2] = new Rect(tl, new Point(r.Next((int)tl.X, _vs.Width - 50) + 50, r.Next((int)tl.Y, _vs.Height - 50) + 50));
             _vs.AddRect(rects[0].TopLeft, rects[0].BottomRight, DColor.FromArgb(255, 255, 0, 0));
             _vs.AddRect(rects[1].TopLeft, rects[1].BottomRight, DColor.FromArgb(255, 0, 255, 0));
             _vs.AddRect(rects[2].TopLeft, rects[2].BottomRight, DColor.FromArgb(255, 0, 0, 255));
@@ -213,6 +216,11 @@ namespace HSR.PresentationWriter.Parser
                 var rect = rects[2];
                 rect.Intersect(rects[1]);
                 _vs.AddRect(rect, DColor.FromArgb(255, 0, 255, 255));
+                if (rect.IntersectsWith(rects[0]))
+                {
+                    rect.Intersect(rects[0]);
+                    _vs.AddRect(rect, DColor.FromArgb(255, 255, 255, 255));
+                }
             }
         }
 

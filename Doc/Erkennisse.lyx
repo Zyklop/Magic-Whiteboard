@@ -127,6 +127,10 @@ Farbkalibration nötig?
 Random oder mit definiertem Muster?
 \end_layout
 
+\begin_layout Enumerate
+Subthreads werden aufgeräumt => Task.Factory
+\end_layout
+
 \end_deeper
 \begin_layout Enumerate
 Stift Erkennen

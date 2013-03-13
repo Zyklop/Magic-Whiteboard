@@ -21,8 +21,8 @@ namespace WFVisuslizer
             this.FormBorderStyle = FormBorderStyle.None;
             WindowState = FormWindowState.Maximized;
             BackColor = Color.Black;
-            _bm = new Bitmap(Width,Height);
-            _g = Graphics.FromImage(_bm);
+                _bm = new Bitmap(Screen.PrimaryScreen.Bounds.Width, Screen.PrimaryScreen.Bounds.Width);
+                _g = Graphics.FromImage(_bm);
         }
 
         public bool Transparent
@@ -44,23 +44,32 @@ namespace WFVisuslizer
 
         public void AddRect(Point topLeft, Point bottomRight, Color fromRgb)
         {
-            _g.FillRectangle(new SolidBrush(fromRgb), topLeft.X, topLeft.Y, bottomRight.X-topLeft.X, bottomRight.Y-topLeft.Y);
-            _g.Flush();
-            Invalidate();
+            lock (_g)
+            {
+                _g.FillRectangle(new SolidBrush(fromRgb), topLeft.X, topLeft.Y, bottomRight.X-topLeft.X, bottomRight.Y-topLeft.Y);
+                _g.Flush();
+            }
+            Invalidate(new Rectangle(topLeft.X, topLeft.Y, bottomRight.X - topLeft.X, bottomRight.Y - topLeft.Y));
             Application.DoEvents();
         }
 
         public void ClearRects()
         {
-            _g.Clear(BackColor);
+            lock (_g)
+            {
+                _g.Clear(BackColor);
+            }
             Invalidate();
             Application.DoEvents();
         }
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            base.OnPaint(e);
-            e.Graphics.DrawImage(_bm, 0, 0);
+            lock (_g)
+            {
+                base.OnPaint(e);
+                e.Graphics.DrawImageUnscaled(_bm, 0, 0);
+            }
         }
 
         public void AddRect(int topLeft, int bottomRight, int width, int height, Color color)
@@ -69,9 +78,12 @@ namespace WFVisuslizer
             //var r = new Rectangle(topLeft, bottomRight, width, height);
             //g.FillRectangles(new SolidBrush(color), new Rectangle[1] { r });
             //OnPaint(new PaintEventArgs(g,r));
-            _g.FillRectangle(new SolidBrush(color), topLeft, bottomRight, width, height);
-            _g.Flush();
-            Invalidate();
+            lock (_g)
+            {
+                _g.FillRectangle(new SolidBrush(color), topLeft, bottomRight, width, height);
+                _g.Flush();
+            }
+            Invalidate(new Rectangle(topLeft, bottomRight, width, height));
             Application.DoEvents();
             //g.Dispose();
         }
@@ -79,9 +91,12 @@ namespace WFVisuslizer
         public void AddRect(System.Windows.Point topLeft, System.Windows.Point bottomRight, Color fromRgb)
         {
             //var g = this.CreateGraphics();
-            _g.FillRectangle(new SolidBrush(fromRgb), (int)topLeft.X, (int)topLeft.Y, (int)bottomRight.X - (int)topLeft.X, (int)bottomRight.Y - (int)topLeft.Y);
-            _g.Flush();
-            Invalidate();
+            lock (_g)
+            {
+                _g.FillRectangle(new SolidBrush(fromRgb), (int)topLeft.X, (int)topLeft.Y, (int)bottomRight.X - (int)topLeft.X, (int)bottomRight.Y - (int)topLeft.Y);
+                _g.Flush();
+            }
+            Invalidate(new Rectangle((int)topLeft.X, (int)topLeft.Y, (int)bottomRight.X - (int)topLeft.X, (int)bottomRight.Y - (int)topLeft.Y));
             Application.DoEvents();
             //g.Dispose();
         }

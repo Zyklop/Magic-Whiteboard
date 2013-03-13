@@ -1,6 +1,8 @@
 
 using System;
 using System.Drawing;
+using System.Threading.Tasks;
+
 namespace HSR.PresentationWriter.Parser.Images
 {
     public class ThreeChannelBitmap
@@ -37,24 +39,21 @@ namespace HSR.PresentationWriter.Parser.Images
             _b = b;
         }
 
-        public ThreeChannelBitmap(Image bitmap)
+        public static async Task<ThreeChannelBitmap> FromBitmapAsync(Image bitmap)
         {
+            var res = new ThreeChannelBitmap(bitmap.Width, bitmap.Height);
             var bm = new Bitmap(bitmap);
-            var width = bitmap.Width;
-            var height = bitmap.Height;
-            _r = new OneChannelBitmap(width, height);
-            _g = new OneChannelBitmap(width, height);
-            _b = new OneChannelBitmap(width, height);
             for (int i = 0; i < bitmap.Width; i++)
             {
                 for (int j = 0; j < bitmap.Height; j++)
                 {
                     var c = bm.GetPixel(i,j);
-                    _r.Channel[i, j] = c.R;
-                    _g.Channel[i, j] = c.G;
-                    _b.Channel[i, j] = c.B;
+                    res._r.Channel[i, j] = c.R;
+                    res._g.Channel[i, j] = c.G;
+                    res._b.Channel[i, j] = c.B;
                 }
             }
+            return res;
         }
 
         public byte[,] R { get { return _r.Channel; } set { _r.Channel = value; } }

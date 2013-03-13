@@ -18,9 +18,9 @@ namespace HSR.PresentationWriter.Parser
             _camera.Start();
         }
 
-        private void NewFrame(object sender, DataSources.FrameReadyEventArgs e)
+        private async void NewFrame(object sender, FrameReadyEventArgs e)
         {
-            NewImage(this, new NewImageEventArgs{NewImage = new ThreeChannelBitmap((Image)e.Frame.Bitmap)});
+            NewImage(this, new NewImageEventArgs{NewImage = await ThreeChannelBitmap.FromBitmapAsync(e.Frame.Bitmap)});
         }
 
         protected CameraConnector()
