@@ -1,3 +1,4 @@
+using HSR.PresentationWriter.DataSources;
 using System;
 using System.Windows;
 
@@ -7,8 +8,13 @@ namespace HSR.PresentationWriter.Parser.Events
     {
         private double _confidence;
 
-        public Point Point { get; set; }
-        public long Timestamp { get; set; }
+        public PointFrame Frame { get; private set; }
+
+        public PenPositionEventArgs(PointFrame frame, double confidence = 1)
+        {
+            this._confidence = confidence;
+            this.Frame = frame;
+        }
 
         public double Confidance { 
             get 

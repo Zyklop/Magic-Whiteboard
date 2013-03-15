@@ -64,6 +64,10 @@ namespace HSR.PresentationWriter.Parser
                     long timestamp = previousFrame.Timestamp + (currentFrame.Timestamp - previousFrame.Timestamp) / 2;
                     PointFrame resultFrame = new PointFrame(Interlocked.Increment(ref currentFrameNumber), foundPoint, timestamp);
                     this.penPoints.Enqueue(resultFrame);
+                    if (this.PenMoved != null)
+                    {
+                        this.PenMoved(this, new PenPositionEventArgs(resultFrame));
+                    }
                     return resultFrame;
                 }
             }
@@ -86,7 +90,7 @@ namespace HSR.PresentationWriter.Parser
         {
             differenceFilter = new Difference();
             grayFilter = new Grayscale(1, 0, 0);
-            thresholdFilter = new Threshold(50);
+            thresholdFilter = new Threshold(40);
             blobCounter = new BlobCounter();
         }
 
