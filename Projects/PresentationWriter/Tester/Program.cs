@@ -6,12 +6,14 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace HSR.PresentationWriter.Tester
 {
     class Program
     {
-        static void Main(string[] args)
+
+        public static void Main(string[] args)
         {
             List<VideoFrame> l = new List<VideoFrame>() {
                 new VideoFrame(1, new Bitmap(@"c:\temp\images\1_frame16.bmp"), 100),
@@ -21,10 +23,12 @@ namespace HSR.PresentationWriter.Tester
             };
 
             AForgePenTracker t = new AForgePenTracker();
-            foreach(VideoFrame f in l)
+            foreach (VideoFrame f in l)
             {
-                t.Process(f);
-                PointFrame p = t.GetLastFrame();
+                Task<PointFrame> task = t.ProcessAsync(f);
+                task.Wait();
+                PointFrame p = task.Result;
+                //PointFrame p = t.GetLastFrame();
                 if (p == null)
                 {
                     Debug.WriteLine("P: no frame");
@@ -35,5 +39,18 @@ namespace HSR.PresentationWriter.Tester
                 }
             }
         }
+
+        //static void Main(string[] args)
+        //{
+        //    AForgeCamera camera = new AForgeCamera();
+        //    camera.Start();
+        //    camera.ShowConfigurationDialog();
+        //    camera.FrameReady += camera_FrameReady;
+        //}
+
+        //private static void camera_FrameReady(object sender, FrameReadyEventArgs e)
+        //{
+        //    e.Frame.Bitmap.Save(@"c:\temp\img-" + ++frameNumber + ".bmp");
+        //}
     }
 }
