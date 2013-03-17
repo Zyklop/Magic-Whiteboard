@@ -87,7 +87,14 @@ Parsing:
 
 \begin_deeper
 \begin_layout Enumerate
-C# WritableBitmap ist inperformant --> Eigene Bitmapklasse mit byte Arrays
+C# WritableBitmap ist inperformant --> Eigene Bitmapklasse mit byte Arrays,
+ aber auch nicht gut, da schon die Umwandlung in die Byte-Arrays schon zu
+ lange dauert.
+ Performantere Lösung als GetPixel?
+\end_layout
+
+\begin_layout Enumerate
+AForge könnte gleichzeitig viel mehr Rechtecke analysieren.
 \end_layout
 
 \end_deeper

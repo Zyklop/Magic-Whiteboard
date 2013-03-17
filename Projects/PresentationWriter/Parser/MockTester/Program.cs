@@ -46,7 +46,7 @@ namespace MockTester
             //        i++;
             //    };
             Console.Write(parser.Topl.X + " "+parser.Topl.Y);
-            Console.Read();
+            //Console.Read();
         }
 
         static void Main2(string[] args)

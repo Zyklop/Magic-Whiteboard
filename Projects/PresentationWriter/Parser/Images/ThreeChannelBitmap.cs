@@ -1,6 +1,8 @@
 
 using System;
 using System.Drawing;
+using System.Drawing.Imaging;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
 namespace HSR.PresentationWriter.Parser.Images
@@ -42,15 +44,42 @@ namespace HSR.PresentationWriter.Parser.Images
         public static async Task<ThreeChannelBitmap> FromBitmapAsync(Image bitmap)
         {
             var res = new ThreeChannelBitmap(bitmap.Width, bitmap.Height);
-            var bm = new Bitmap(bitmap);
-            for (int i = 0; i < bitmap.Width; i++)
+            //var bm = new Bitmap(bitmap);
+            //for (int i = 0; i < bitmap.Width; i++)
+            //{
+            //    for (int j = 0; j < bitmap.Height; j++)
+            //    {
+            //        var c = bm.GetPixel(i,j);
+            //        res._r.Channel[i, j] = c.R;
+            //        res._g.Channel[i, j] = c.G;
+            //        res._b.Channel[i, j] = c.B;
+            //    }
+            //}
+            //return res;
+
+            // Lock the bitmap's bits.  
+            Rectangle rect = new Rectangle(0, 0, bitmap.Width, bitmap.Height);
+            BitmapData bmpData = ((Bitmap)bitmap).LockBits(rect, ImageLockMode.ReadWrite, PixelFormat.Format24bppRgb);
+
+            // Get the address of the first line.
+            IntPtr ptr = bmpData.Scan0;
+
+            // Declare an array to hold the bytes of the bitmap.
+            int bytes = bmpData.Stride*bitmap.Height;
+            byte[] rgbValues = new byte[bytes];
+
+            // Copy the RGB values into the array.
+            Marshal.Copy(ptr, rgbValues, 0, bytes);
+
+            int stride = bmpData.Stride;
+
+            for (int column = 0; column < bmpData.Height; column++)
             {
-                for (int j = 0; j < bitmap.Height; j++)
+                for (int row = 0; row < bmpData.Width; row++)
                 {
-                    var c = bm.GetPixel(i,j);
-                    res._r.Channel[i, j] = c.R;
-                    res._g.Channel[i, j] = c.G;
-                    res._b.Channel[i, j] = c.B;
+                    res.B[column, row] = rgbValues[(column * stride) + (row * 3)];
+                    res.G[column, row] = rgbValues[(column * stride) + (row * 3) + 1];
+                    res.R[column, row] = rgbValues[(column * stride) + (row * 3) + 2];
                 }
             }
             return res;
@@ -127,6 +156,48 @@ namespace HSR.PresentationWriter.Parser.Images
         private static byte Avg(byte b1, byte b2, byte b3)
         {
             return (byte) (Math.Round(((b1 + b2 + b3) / 3.0)));
+        }
+
+        public static ThreeChannelBitmap FromBitmap(Bitmap bitmap)
+        {
+            var res = new ThreeChannelBitmap(bitmap.Width, bitmap.Height);
+            //var bm = new Bitmap(bitmap);
+            //for (int i = 0; i < bitmap.Width; i++)
+            //{
+            //    for (int j = 0; j < bitmap.Height; j++)
+            //    {
+            //        var c = bm.GetPixel(i, j);
+            //        res._r.Channel[i, j] = c.R;
+            //        res._g.Channel[i, j] = c.G;
+            //        res._b.Channel[i, j] = c.B;
+            //    }
+            //}
+
+            Rectangle rect = new Rectangle(0, 0, bitmap.Width, bitmap.Height);
+            BitmapData bmpData = ((Bitmap)bitmap).LockBits(rect, ImageLockMode.ReadWrite, PixelFormat.Format24bppRgb);
+
+            // Get the address of the first line.
+            IntPtr ptr = bmpData.Scan0;
+
+            // Declare an array to hold the bytes of the bitmap.
+            int bytes = bmpData.Stride * bitmap.Height;
+            byte[] rgbValues = new byte[bytes];
+
+            // Copy the RGB values into the array.
+            Marshal.Copy(ptr, rgbValues, 0, bytes);
+
+            int stride = bmpData.Stride;
+
+            for (int column = 0; column < bmpData.Height; column++)
+            {
+                for (int row = 0; row < bmpData.Width; row++)
+                {
+                    res.B[row, column] = rgbValues[(column * stride) + (row * 3)];
+                    res.G[row, column] = rgbValues[(column * stride) + (row * 3) + 1];
+                    res.R[row, column] = rgbValues[(column * stride) + (row * 3) + 2];
+                }
+            }
+            return res;
         }
     }
 }

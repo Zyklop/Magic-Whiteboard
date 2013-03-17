@@ -90,6 +90,7 @@ namespace HSR.PresentationWriter.Parser
                     //}
                 else if (_calibrationStep > 2)
                 {
+                    var tcb = ThreeChannelBitmap.FromBitmap(e.NewImage);
                     _vs.ClearRects();
                     FillRandomRects();
                     for (int j = 0; j < 3; j++)
@@ -98,13 +99,22 @@ namespace HSR.PresentationWriter.Parser
                         switch (j)
                         {
                             case 0:
-                                diff = _blackImage.RChannelBitmap - e.NewImage.RChannelBitmap;
+                                diff = _blackImage.RChannelBitmap - tcb.RChannelBitmap;
+                                var s = new ThreeChannelBitmap(diff, new OneChannelBitmap(diff.Width, diff.Height),
+                                                               new OneChannelBitmap(diff.Width, diff.Height));
+                                s.GetVisual().Save(@"C:\temp\rimg\img" + _calibrationStep + ".jpg");
                                 break;
                             case 1:
-                                diff = _blackImage.GChannelBitmap - e.NewImage.GChannelBitmap;
+                                diff = _blackImage.GChannelBitmap - tcb.GChannelBitmap;
+                                s = new ThreeChannelBitmap(new OneChannelBitmap(diff.Width, diff.Height),diff, 
+                                                               new OneChannelBitmap(diff.Width, diff.Height));
+                                s.GetVisual().Save(@"C:\temp\gimg\img" + _calibrationStep + ".jpg");
                                 break;
                             case 2:
-                                diff = _blackImage.GChannelBitmap - e.NewImage.GChannelBitmap;
+                                diff = _blackImage.GChannelBitmap - tcb.GChannelBitmap;
+                                s = new ThreeChannelBitmap(new OneChannelBitmap(diff.Width, diff.Height),
+                                                               new OneChannelBitmap(diff.Width, diff.Height), diff);
+                                s.GetVisual().Save(@"C:\temp\bimg\img" + _calibrationStep + ".jpg");
                                 break;
                         }
                         var topLeftCorner = GetTopLeftCorner(diff);
@@ -128,12 +138,13 @@ namespace HSR.PresentationWriter.Parser
                             _errors++;
                         }
                     }
+                    _calibrationStep++;
                 }
                 else
                     switch (_calibrationStep)
                     {
                         case 2:
-                            var diff = (_blackImage - e.NewImage).GetGrayscale();
+                            var diff = (_blackImage - ThreeChannelBitmap.FromBitmap(e.NewImage)).GetGrayscale();
                             Grid.TopLeft = GetTopLeftCorner(diff);
                             Grid.TopRight = GetTopRightCorner(diff);
                             Grid.BottomLeft = GetBottomLeftCorner(diff);
@@ -156,7 +167,7 @@ namespace HSR.PresentationWriter.Parser
                             }
                             break;
                         case 1:
-                            _blackImage = e.NewImage;
+                            _blackImage = ThreeChannelBitmap.FromBitmap(e.NewImage);
                             _vs.AddRect(0, 0, (int) _vs.Width, (int) _vs.Height, DColor.FromArgb(255,255, 255, 255));
                             _calibrationStep++;
                             break;

@@ -18,12 +18,12 @@ namespace Parser.Mock
     public class MockCameraConnector:CameraConnector
     {
         private System.Timers.Timer tim = new Timer();
-        private List<ThreeChannelBitmap> imagelist;
+        private List<Bitmap> imagelist;
         private int index=0;
 
         public MockCameraConnector()
         {
-            imagelist = new List<ThreeChannelBitmap>
+            imagelist = new List<Bitmap>
                 {
                     //new ThreeChannelBitmap(new Bitmap(@"Images/Raumsetup.jpg")),
                     //new ThreeChannelBitmap(new Bitmap(@"Images/Raumsetup-ohne-Licht.jpg")),

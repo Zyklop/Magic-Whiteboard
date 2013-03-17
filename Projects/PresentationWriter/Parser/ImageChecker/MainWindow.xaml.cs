@@ -35,7 +35,7 @@ namespace ImageChecker
             cameraConnector.NewImage += delegate(object sender, NewImageEventArgs args)
                 {
                     MemoryStream ms = new MemoryStream();
-                    args.NewImage.GetVisual().Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+                    //args.NewImage.GetVisual().Save(ms, System.Drawing.Imaging.ImageFormat.Png);
                     ms.Position = 0;
                     var bi = new BitmapImage();
                     bi.BeginInit();
