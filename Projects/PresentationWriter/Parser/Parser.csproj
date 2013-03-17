@@ -58,6 +58,7 @@
     <Compile Include="AForgePenTracker.cs" />
     <Compile Include="Colorfilter.cs" />
     <Compile Include="Events\PenPositionEventArgs.cs" />
+    <Compile Include="FixedSizeQueue.cs" />
     <Compile Include="Images\OneChannelBitmap.cs" />
     <Compile Include="Calibrator.cs" />
     <Compile Include="CameraConnector.cs" />

@@ -6,25 +6,32 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace HSR.PresentationWriter.Tester
 {
     class Program
     {
-        static void Main(string[] args)
+        private static Bitmap trackingBitmap;
+        public static void Main(string[] args)
         {
-            List<VideoFrame> l = new List<VideoFrame>() {
-                new VideoFrame(1, new Bitmap(@"c:\temp\images\1_frame16.bmp"), 100),
-                new VideoFrame(2, new Bitmap(@"c:\temp\images\2_frame16.bmp"), 900),
-                new VideoFrame(3, new Bitmap(@"c:\temp\images\3_frame16.bmp"), 930),
-                new VideoFrame(4, new Bitmap(@"c:\temp\images\4_frame16.bmp"), 960),
-            };
+            trackingBitmap = new Bitmap(800,600);
+            DirectoryInfo d = new DirectoryInfo(@"C:\temp\images\dot-red");
+            int i = 1;
 
-            AForgePenTracker t = new AForgePenTracker();
-            foreach(VideoFrame f in l)
+            AForgePenTracker tracker = new AForgePenTracker();
+            tracker.PenMoved += tracker_PenMoved;
+#if DEBUG
+            tracker.DebugPicture += tracker_DebugPicture;
+#endif
+
+            foreach (FileInfo info in d.GetFiles())
             {
-                t.Process(f);
-                PointFrame p = t.GetLastFrame();
+                VideoFrame frame = new VideoFrame(i, new Bitmap(info.FullName), i*40);
+                Task<PointFrame> task = tracker.ProcessAsync(frame);
+                task.Wait();
+                PointFrame p = task.Result;
+
                 if (p == null)
                 {
                     Debug.WriteLine("P: no frame");
@@ -34,6 +41,34 @@ namespace HSR.PresentationWriter.Tester
                     Debug.WriteLine("P: {0}, {1}", p.Point.X, p.Point.Y);
                 }
             }
+
+            trackingBitmap.Save(@"C:\temp\images\result-"+CurrentMillis.Millis+".bmp");
         }
+
+    private static Point previousPoint = Point.Empty;
+    private static void tracker_PenMoved(object sender, Parser.Events.PenPositionEventArgs e)
+    {
+        Graphics g = Graphics.FromImage(trackingBitmap);
+        if (!previousPoint.IsEmpty)
+        {
+            
+            g.DrawLine(Pens.Red, previousPoint.X, previousPoint.Y, e.Frame.Point.X, e.Frame.Point.Y);
+        }
+        else
+        {
+            g.DrawEllipse(Pens.Green, e.Frame.Point.X, e.Frame.Point.Y, 2, 2);
+        }
+        previousPoint = e.Frame.Point;
+    }
+
+#if DEBUG
+        private static int counter = 0;
+        private static void tracker_DebugPicture(object sender, DebugPictureEventArgs e)
+        {
+            counter++;
+            e.Pictures[0].Save(@"C:\temp\images\temp\img-" + counter + "-a.bmp");
+            e.Pictures[1].Save(@"C:\temp\images\temp\img-" + counter + "-b.bmp");
+        }
+#endif
     }
 }
