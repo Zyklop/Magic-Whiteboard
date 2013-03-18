@@ -138,6 +138,17 @@ Random oder mit definiertem Muster?
 Subthreads werden aufgeräumt => Task.Factory
 \end_layout
 
+\begin_layout Enumerate
+Beim Eventmodell müssen Daten, die aufgrund mangelder Rechenleistung nicht
+ verarbeitet werden können, aktiv verworfen werden.
+\end_layout
+
+\begin_layout Enumerate
+Task.Factory spawnt zu viele Threads.
+ => Semaphore darum.
+ Async reicht leider auch nicht, da keine Events verworfen werden können.
+\end_layout
+
 \end_deeper
 \begin_layout Enumerate
 Stift Erkennen

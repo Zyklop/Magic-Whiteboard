@@ -28,6 +28,8 @@ namespace HSR.PresentationWriter.Parser
         private int _errors = 0;
         private Rect[] rects = new Rect[3];
         private readonly object _lockObj = new object();
+        private SemaphoreSlim sem;
+        private Task calibTask;
 
         public Calibrator(CameraConnector cc)
         {
@@ -49,10 +51,11 @@ namespace HSR.PresentationWriter.Parser
         {
             _calibrationStep = 0;
             _errors = 0;
+            sem = new SemaphoreSlim(1, 1);
             _cc.NewImage += BaseCalibration;
         }
 
-        private void BaseCalibration(object sender, Events.NewImageEventArgs e)
+        private async void BaseCalibration(object sender, Events.NewImageEventArgs e)
         {
             //var thread = new Thread(() => CalibThread(e));
             //thread.SetApartmentState(ApartmentState.STA);
@@ -64,13 +67,28 @@ namespace HSR.PresentationWriter.Parser
             //Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle,
             //           new Action(() => { }));
             //_vs.Dispatcher.InvokeAsync(() => CalibThread(e));
-            CalibThread(e);
+            //if (calibTask == null || calibTask.Status != TaskStatus.Running)
+            //{
+            //    Task.Factory.StartNew(() => { calibTask = CalibThread(e); });
+            //    Debug.WriteLine("thread started");
+            //    //calibTask = CalibThread(e);
+            //}
+            //Debug.WriteLine(calibTask.Status);
+            //Task.Factory.StartNew(() => CalibThread(e));
+            if (sem.CurrentCount >= 1)
+            {
+                sem.Wait();
+                Task.Factory.StartNew(() => CalibThread(e));
+            }
         }
 
 
-        private void CalibThread(NewImageEventArgs e)
+        private async Task CalibThread(NewImageEventArgs e)
         {
-            lock (_lockObj)
+#if DEBUG
+            e.NewImage.Save(@"C:\temp\srcimg\img" + _calibrationStep + ".jpg");
+#endif
+            //lock (_lockObj)
             {
                 Debug.WriteLine("Calibrating");
                 if (_errors > 100)
@@ -100,21 +118,27 @@ namespace HSR.PresentationWriter.Parser
                         {
                             case 0:
                                 diff = _blackImage.RChannelBitmap - tcb.RChannelBitmap;
+#if DEBUG
                                 var s = new ThreeChannelBitmap(diff, new OneChannelBitmap(diff.Width, diff.Height),
                                                                new OneChannelBitmap(diff.Width, diff.Height));
                                 s.GetVisual().Save(@"C:\temp\rimg\img" + _calibrationStep + ".jpg");
+#endif
                                 break;
                             case 1:
                                 diff = _blackImage.GChannelBitmap - tcb.GChannelBitmap;
+#if DEBUG
                                 s = new ThreeChannelBitmap(new OneChannelBitmap(diff.Width, diff.Height),diff, 
                                                                new OneChannelBitmap(diff.Width, diff.Height));
                                 s.GetVisual().Save(@"C:\temp\gimg\img" + _calibrationStep + ".jpg");
+#endif
                                 break;
                             case 2:
                                 diff = _blackImage.GChannelBitmap - tcb.GChannelBitmap;
+#if DEBUG
                                 s = new ThreeChannelBitmap(new OneChannelBitmap(diff.Width, diff.Height),
                                                                new OneChannelBitmap(diff.Width, diff.Height), diff);
                                 s.GetVisual().Save(@"C:\temp\bimg\img" + _calibrationStep + ".jpg");
+#endif
                                 break;
                         }
                         var topLeftCorner = GetTopLeftCorner(diff);
@@ -159,6 +183,7 @@ namespace HSR.PresentationWriter.Parser
                                 _calibrationStep++;
                                 _vs.ClearRects();
                                 FillRandomRects();
+                                sem = new SemaphoreSlim(3, 4);
                             }
                             else
                             {
@@ -186,6 +211,7 @@ namespace HSR.PresentationWriter.Parser
                             break;
                     }
             }
+            sem.Release();
         }
 
         private bool IsValid(Point point)
