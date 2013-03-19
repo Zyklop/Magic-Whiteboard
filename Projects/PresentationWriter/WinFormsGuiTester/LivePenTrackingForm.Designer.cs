@@ -1,6 +1,6 @@
 ﻿namespace WinFormsGuiTester
 {
-    partial class Form1
+    partial class LivePenTrackingForm
     {
         /// <summary>
         /// Required designer variable.
@@ -53,16 +53,16 @@
             this.diffDebugPicture.TabIndex = 1;
             this.diffDebugPicture.TabStop = false;
             // 
-            // blobPicture
+            // blobDebugPicture
             // 
             this.blobDebugPicture.Location = new System.Drawing.Point(658, 252);
-            this.blobDebugPicture.Name = "blobPicture";
+            this.blobDebugPicture.Name = "blobDebugPicture";
             this.blobDebugPicture.Size = new System.Drawing.Size(320, 240);
             this.blobDebugPicture.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.blobDebugPicture.TabIndex = 2;
             this.blobDebugPicture.TabStop = false;
             // 
-            // Form1
+            // LivePenTrackingForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -70,8 +70,9 @@
             this.Controls.Add(this.blobDebugPicture);
             this.Controls.Add(this.diffDebugPicture);
             this.Controls.Add(this.calibrationPictureBox);
-            this.Name = "Form1";
+            this.Name = "LivePenTrackingForm";
             this.Text = "Form1";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.LivePenTrackingForm_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.calibrationPictureBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.diffDebugPicture)).EndInit();
