@@ -13,6 +13,9 @@ namespace HSR.PresentationWriter.Parser.Images
         private OneChannelBitmap _g;
         private OneChannelBitmap _b;
 
+        /// <summary>
+        /// Create a new bitmap with size 0,0 
+        /// </summary>
         public ThreeChannelBitmap()
         {
             _r = new OneChannelBitmap();
@@ -20,6 +23,11 @@ namespace HSR.PresentationWriter.Parser.Images
             _b = new OneChannelBitmap();
         }
 
+        /// <summary>
+        /// Creates an empty bitmap with the desired size
+        /// </summary>
+        /// <param name="width">desired width</param>
+        /// <param name="height">desired height</param>
         public ThreeChannelBitmap(int width, int height)
         {
             _r = new OneChannelBitmap(width, height);
@@ -27,6 +35,12 @@ namespace HSR.PresentationWriter.Parser.Images
             _b = new OneChannelBitmap(width, height);
         }
 
+        /// <summary>
+        /// Create a bitmap from an byte array
+        /// </summary>
+        /// <param name="r">Red source</param>
+        /// <param name="g">Green source</param>
+        /// <param name="b">Blue source</param>
         public ThreeChannelBitmap(byte[,] r, byte[,] g, byte[,] b)
         {
             _r = new OneChannelBitmap(r);
@@ -34,6 +48,12 @@ namespace HSR.PresentationWriter.Parser.Images
             _b = new OneChannelBitmap(b);
         }
 
+        /// <summary>
+        /// Create a bitmap from Channels
+        /// </summary>
+        /// <param name="r">Red source</param>
+        /// <param name="g">Green source</param>
+        /// <param name="b">Blue source</param>
         public ThreeChannelBitmap(OneChannelBitmap r, OneChannelBitmap g, OneChannelBitmap b)
         {
             _r = r;
@@ -41,6 +61,11 @@ namespace HSR.PresentationWriter.Parser.Images
             _b = b;
         }
 
+        /// <summary>
+        /// Create from a System image
+        /// </summary>
+        /// <param name="bitmap"></param>
+        /// <returns></returns>
         public static async Task<ThreeChannelBitmap> FromBitmapAsync(Image bitmap)
         {
             var res = new ThreeChannelBitmap(bitmap.Width, bitmap.Height);
@@ -85,24 +110,53 @@ namespace HSR.PresentationWriter.Parser.Images
             return res;
         }
 
+        /// <summary>
+        /// Red Channel
+        /// </summary>
         public byte[,] R { get { return _r.Channel; } set { _r.Channel = value; } }
 
+        /// <summary>
+        /// Green Channel
+        /// </summary>
         public byte[,] G { get { return _g.Channel; } set { _g.Channel = value; } }
 
+        /// <summary>
+        /// Blue Channel
+        /// </summary>
         public byte[,] B { get { return _b.Channel; } set { _b.Channel = value; } }
 
+        /// <summary>
+        /// Red Bitmap
+        /// </summary>
         public OneChannelBitmap RChannelBitmap { get { return _r; } set { _r = value; } }
 
+        /// <summary>
+        /// Green Bitmap
+        /// </summary>
         public OneChannelBitmap GChannelBitmap { get { return _g; } set { _g = value; } }
 
+        /// <summary>
+        /// Blue Bitmap
+        /// </summary>
         public OneChannelBitmap BChannelBitmap { get { return _b; } set { _b = value; } }
 
+        /// <summary>
+        /// Image width
+        /// </summary>
         public int Width {
             get { return _r.Channel.GetLength(0); }
         }
-
+    
+        /// <summary>
+        /// Image height
+        /// </summary>
         public int Height { get { return _r.Channel.GetLength(1); } }
 
+        /// <summary>
+        /// Transform to a grayscale image
+        /// by building the average of all channels
+        /// </summary>
+        /// <returns></returns>
         public OneChannelBitmap GetGrayscale()
         {
             var res = new OneChannelBitmap(Width, Height);
@@ -116,6 +170,10 @@ namespace HSR.PresentationWriter.Parser.Images
             return res;
         }
 
+        /// <summary>
+        /// Transform to a System Bitmap
+        /// </summary>
+        /// <returns></returns>
         public Image GetVisual()
         {
             var res = new Bitmap(Width, Height);
@@ -130,11 +188,23 @@ namespace HSR.PresentationWriter.Parser.Images
             return res;
         }
 
+        /// <summary>
+        /// Add all channels seperate
+        /// </summary>
+        /// <param name="a1"></param>
+        /// <param name="a2"></param>
+        /// <returns></returns>
         public static ThreeChannelBitmap operator +(ThreeChannelBitmap a1, ThreeChannelBitmap a2)
         {
             return new ThreeChannelBitmap(a1._r + a2._r, a1._g + a2._g, a1._b + a2._b);
         }
 
+        /// <summary>
+        /// Building a difference bitmap of all seperate channels.
+        /// </summary>
+        /// <param name="a1"></param>
+        /// <param name="a2"></param>
+        /// <returns></returns>
         public static ThreeChannelBitmap operator -(ThreeChannelBitmap a1, ThreeChannelBitmap a2)
         {
 
@@ -158,6 +228,11 @@ namespace HSR.PresentationWriter.Parser.Images
             return (byte) (Math.Round(((b1 + b2 + b3) / 3.0)));
         }
 
+        /// <summary>
+        /// Transform from a System image synchronous
+        /// </summary>
+        /// <param name="bitmap"></param>
+        /// <returns></returns>
         public static ThreeChannelBitmap FromBitmap(Bitmap bitmap)
         {
             var res = new ThreeChannelBitmap(bitmap.Width, bitmap.Height);

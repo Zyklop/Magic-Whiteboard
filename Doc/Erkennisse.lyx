@@ -149,6 +149,11 @@ Task.Factory spawnt zu viele Threads.
  Async reicht leider auch nicht, da keine Events verworfen werden können.
 \end_layout
 
+\begin_layout Enumerate
+Vorgang wann starten? Bei Userinteraktion ist der User noch am Notebook,
+ die Sicht ist wahrscheinlich verdeckt.
+\end_layout
+
 \end_deeper
 \begin_layout Enumerate
 Stift Erkennen

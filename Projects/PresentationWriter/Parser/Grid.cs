@@ -18,6 +18,11 @@ namespace HSR.PresentationWriter.Parser
         private Point _bottomRight;
         private SortedDictionary<int, SortedSet<int>> _refPoints; 
 
+        /// <summary>
+        /// Creating a mapping grid
+        /// </summary>
+        /// <param name="width">width of the source image</param>
+        /// <param name="height">height of the source image</param>
         public Grid(int width, int height)
         {
             _mapData = new Point[width,height];
@@ -25,30 +30,54 @@ namespace HSR.PresentationWriter.Parser
             _refPoints = new SortedDictionary<int, SortedSet<int>>();
         }
 
+        /// <summary>
+        /// Maximum width of the matching area
+        /// </summary>
         public int Width { get
         {
-            return (int) (TopRight.X - TopLeft.X > BottomRight.X - BottomLeft.X
-                              ? TopRight.X - TopLeft.X
-                              : BottomRight.X - BottomLeft.X);
+            return (int) (new List<double>
+                {
+                    TopRight.X - TopLeft.X, 
+                    BottomRight.X - BottomLeft.X, 
+                    TopRight.X - BottomLeft.X, 
+                    BottomRight.X - TopLeft.X
+                }).Max();
         } }
 
+        /// <summary>
+        /// Maximum height of the matching area
+        /// </summary>
         public int Height
         {
             get
             {
-                return (int) (BottomLeft.Y - TopLeft.Y > BottomRight.Y - TopRight.Y
-                                  ? BottomLeft.Y - TopLeft.Y
-                                  : BottomRight.Y - TopRight.Y);
+                return (int)(new List<double>
+                {
+                    BottomRight.Y - TopLeft.Y, 
+                    BottomRight.Y - TopLeft.Y, 
+                    BottomLeft.Y - TopRight.Y, 
+                    BottomLeft.Y - TopLeft.Y
+                }).Max();
             }
         }
 
+        /// <summary>
+        /// More data needed for Calibration
+        /// </summary>
         public bool DataNeeded { get { return _needed; } }
 
+        /// <summary>
+        /// A good area for calibration
+        /// </summary>
+        /// <returns></returns>
         public Rect Needed()
         {
             return new Rect();
         }
 
+        /// <summary>
+        /// Top left corner
+        /// </summary>
         public Point TopLeft
         {
             get { return _topLeft; }
@@ -57,6 +86,9 @@ namespace HSR.PresentationWriter.Parser
             }
         }
 
+        /// <summary>
+        /// Top right corner
+        /// </summary>
         public Point TopRight
         {
             get { return _topRight; }
@@ -66,6 +98,9 @@ namespace HSR.PresentationWriter.Parser
             }
         }
 
+        /// <summary>
+        /// Bottom left corner
+        /// </summary>
         public Point BottomLeft
         {
             get { return _bottomLeft; }
@@ -75,6 +110,9 @@ namespace HSR.PresentationWriter.Parser
             }
         }
 
+        /// <summary>
+        /// Bottom left corner
+        /// </summary>
         public Point BottomRight
         {
             get { return _bottomRight; }
@@ -84,6 +122,9 @@ namespace HSR.PresentationWriter.Parser
             }
         }
 
+        /// <summary>
+        /// Reset temporary calibration data
+        /// </summary>
         public void Reset()
         {
             foreach (List<Point> l in _calibratorData)
@@ -92,12 +133,24 @@ namespace HSR.PresentationWriter.Parser
             }
         }
 
+        /// <summary>
+        /// Add a point from calibration
+        /// </summary>
+        /// <param name="screenX">Beamer coordinate</param>
+        /// <param name="screenY">Beamer coordinate</param>
+        /// <param name="imgX">Webcam coordinate</param>
+        /// <param name="imgY"></param>
         public void AddPoint(int screenX, int screenY, int imgX, int imgY)
         {
             _calibratorData[imgX,imgY].Add(new Point{X = screenX, Y = screenY});
             AddRefPoints(screenX, screenY);
         }
 
+        /// <summary>
+        /// Add a point from calibration
+        /// </summary>
+        /// <param name="screen">Beamer coordinate</param>
+        /// <param name="img">Webcam coordinate</param>
         public void AddPoint(Point screen, Point img)
         {
             _calibratorData[(int) img.X, (int) img.Y].Add(new Point { X = screen.X, Y = screen.Y });
@@ -117,6 +170,9 @@ namespace HSR.PresentationWriter.Parser
             }
         }
 
+        /// <summary>
+        /// Calibrate from collected data
+        /// </summary>
         public void Calculate()
         {
             for (int i = 0; i < _mapData.GetLength(0); i++)
@@ -132,6 +188,9 @@ namespace HSR.PresentationWriter.Parser
             _refPoints.Clear();
         }
 
+        /// <summary>
+        /// Calculate from corners
+        /// </summary>
         public void PredictFromCorners()
         {
             var stor = _calibratorData.Clone();
@@ -155,6 +214,7 @@ namespace HSR.PresentationWriter.Parser
             {
                 for (int j = 0; j < ymax; j++)
                 {
+                    //find intersection
                     int y1 = (int)Math.Round(TopLeft.Y - (double)(TopLeft.Y - TopRight.Y) * ((double)i / (double)xmax));
                     int y2 = (int)Math.Round(BottomLeft.Y - (double)(BottomLeft.Y - BottomRight.Y) * ((double)i / (double)xmax));
                     int x1 = (int)Math.Round(TopLeft.X - (double)(TopLeft.X - TopRight.X) * ((double)i / (double)xmax));
@@ -179,9 +239,14 @@ namespace HSR.PresentationWriter.Parser
             _calibratorData = (List<Point>[,]) stor;
         }
 
+        /// <summary>
+        /// Get the calculated screen coordinates
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
         public Point GetPosition(int x, int y)
         {
-
             return _mapData[x, y];
         }
     }

@@ -31,6 +31,10 @@ namespace HSR.PresentationWriter.Parser
         private SemaphoreSlim sem;
         private Task calibTask;
 
+        /// <summary>
+        /// A calibrator is needed to get the calibration grid
+        /// </summary>
+        /// <param name="cc"></param>
         public Calibrator(CameraConnector cc)
         {
             _cc = cc;
@@ -43,10 +47,17 @@ namespace HSR.PresentationWriter.Parser
             CalibrateColors();
         }
 
+        /// <summary>
+        /// Calibrating colors
+        /// </summary>
+        //TODO implement or remove
         public void CalibrateColors()
         {
         }
 
+        /// <summary>
+        /// Calibrate the grid
+        /// </summary>
         public void Calibrate()
         {
             _calibrationStep = 0;
@@ -344,14 +355,30 @@ namespace HSR.PresentationWriter.Parser
             return false;
         }
 
+        /// <summary>
+        /// Check if the grid needs to be recalibrated
+        /// Check if something moved
+        /// </summary>
+        /// <returns>
+        /// 0: ok
+        /// 1: grid calibration needed
+        /// 2: color calibration needed
+        /// 3: both needed
+        /// </returns>
         public int CheckCalibration()
         {
             // TODO dummy
             return 0;
         }
 
+        /// <summary>
+        /// Data for the matching
+        /// </summary>
         public Grid Grid { get; private set; }
 
+        /// <summary>
+        /// Data from color calibration
+        /// </summary>
         public Colorfilter ColorFilter { get; private set; }
     }
 }

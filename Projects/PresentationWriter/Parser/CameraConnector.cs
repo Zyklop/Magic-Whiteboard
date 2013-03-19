@@ -11,6 +11,10 @@ namespace HSR.PresentationWriter.Parser
     {
         private ICamera _camera;
 
+        /// <summary>
+        /// Facade to get images from the camera
+        /// </summary>
+        /// <param name="camera"></param>
         public CameraConnector(ICamera camera)
         {
             _camera = camera;
@@ -28,6 +32,9 @@ namespace HSR.PresentationWriter.Parser
             //for mocking, no other use
         }
 
+        /// <summary>
+        /// Notified if new images avaliable
+        /// </summary>
         public virtual event EventHandler<NewImageEventArgs> NewImage;
     }
 }

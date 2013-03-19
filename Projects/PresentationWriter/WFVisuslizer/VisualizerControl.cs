@@ -21,24 +21,44 @@ namespace WFVisuslizer
             //_cw.Hide();
         }
 
+        /// <summary>
+        /// Set a transparent background
+        /// </summary>
         public bool Transparent { get { return _cw.Transparent; } set { _cw.Transparent = value; } }
 
+        /// <summary>
+        /// Show a rectangle
+        /// </summary>
+        /// <param name="topLeft"></param>
+        /// <param name="bottomRight"></param>
+        /// <param name="fromRgb"></param>
         public void AddRect(Point topLeft, Point bottomRight, Color fromRgb)
         {
             _cw.AddRect(topLeft, bottomRight, fromRgb);
         }
 
+        /// <summary>
+        /// Show a rectangle
+        /// </summary>
+        /// <param name="rect"></param>
+        /// <param name="c"></param>
         public void AddRect(Rect rect, Color c)
         {
             AddRect(new Point((int)rect.TopLeft.X, (int)rect.TopLeft.Y), new Point((int)rect.BottomRight.X, (int)rect.BottomRight.Y), c);
         }
 
+        /// <summary>
+        /// Remove all the rectangles
+        /// </summary>
         public void ClearRects()
         {
             _cw.ClearRects();
             //rects.Clear();
         }
 
+        /// <summary>
+        /// Close the window when shown
+        /// </summary>
         public void Close()
         {
             if (_shown)
@@ -49,6 +69,9 @@ namespace WFVisuslizer
             }
         }
 
+        /// <summary>
+        /// Showing the window if not already open
+        /// </summary>
         public void Show()
         {
             //if (!_shown)
@@ -59,6 +82,9 @@ namespace WFVisuslizer
             //}
         }
 
+        /// <summary>
+        /// Width of the shown window
+        /// </summary>
         public int Width { get
         {
             //int i = -1;
@@ -68,8 +94,19 @@ namespace WFVisuslizer
             return (int) Screen.PrimaryScreen.Bounds.Width;
         } }
 
+        /// <summary>
+        /// Height of the window when shown
+        /// </summary>
         public int Height { get { return (int) Screen.PrimaryScreen.Bounds.Height; } }
 
+        /// <summary>
+        /// Show a rectangle
+        /// </summary>
+        /// <param name="topLeft"></param>
+        /// <param name="bottomRight"></param>
+        /// <param name="width"></param>
+        /// <param name="height"></param>
+        /// <param name="color"></param>
         public void AddRect(int topLeft, int bottomRight, int width, int height, Color color)
         {
             _cw.AddRect(topLeft, bottomRight, width, height, color);

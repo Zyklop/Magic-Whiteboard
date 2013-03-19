@@ -8,14 +8,23 @@ namespace HSR.PresentationWriter.Parser.Events
     {
         private double _confidence;
 
+        /// <summary>
+        /// Location of the pen
+        /// </summary>
+        // why PointFrame? 
+        // TODO use a common type!
         public PointFrame Frame { get; private set; }
 
         public PenPositionEventArgs(PointFrame frame, double confidence = 1)
         {
-            this._confidence = confidence;
+            Confidance = confidence;
             this.Frame = frame;
         }
 
+        /// <summary>
+        /// Probability of accuracy
+        /// </summary>
+        /// <value>Has to be between 0 and 1</value>
         public double Confidance { 
             get 
             {
