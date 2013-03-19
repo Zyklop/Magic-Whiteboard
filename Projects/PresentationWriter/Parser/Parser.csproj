@@ -65,6 +65,7 @@
     <Compile Include="Events\NewImageEventArgs.cs" />
     <Compile Include="Grid.cs" />
     <Compile Include="Images\ThreeChannelBitmap.cs" />
+    <Compile Include="FilterStrategy.cs" />
     <Compile Include="Mock\MockCameraConnector.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
@@ -72,6 +73,9 @@
     <Compile Include="IPenTracker.cs" />
     <Compile Include="PointTools.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Strategies\CustomFilterStrategy.cs" />
+    <Compile Include="Strategies\LightBulbStrategy.cs" />
+    <Compile Include="Strategies\RedLaserStrategy.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Mock\Images\" />

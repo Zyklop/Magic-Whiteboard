@@ -1,34 +1,29 @@
 ﻿using HSR.PresentationWriter.DataSources;
 using HSR.PresentationWriter.Parser;
+using HSR.PresentationWriter.Parser.Strategies;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace WinFormsGuiTester
 {
-    public partial class Form1 : Form
+    public partial class LivePenTrackingForm : Form
     {
         private AForgeCamera camera;
         private AForgePenTracker tracker;
         private Graphics overlayGraphics;
         private StreamWriter streamWriter;
 
-        public Form1()
+        public LivePenTrackingForm()
         {
             InitializeComponent();
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            tracker = new AForgePenTracker();
+            tracker = new AForgePenTracker(new RedLaserStrategy());
 
 #if DEBUG
             tracker.DebugPicture += tracker_DebugPicture;
@@ -57,5 +52,15 @@ namespace WinFormsGuiTester
             this.blobDebugPicture.Image = (Image)e.Pictures[1].Clone();
         }
 #endif
+
+
+        private void LivePenTrackingForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+#if DEBUG
+            tracker.DebugPicture -= tracker_DebugPicture;
+#endif
+            camera.FrameReady -= camera_FrameReady;
+            camera.Stop();
+        }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using HSR.PresentationWriter.DataSources;
 using HSR.PresentationWriter.Parser;
+using HSR.PresentationWriter.Parser.Strategies;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -19,7 +20,7 @@ namespace HSR.PresentationWriter.Tester
             DirectoryInfo d = new DirectoryInfo(@"C:\temp\images\dot-red");
             int i = 1;
 
-            AForgePenTracker tracker = new AForgePenTracker();
+            AForgePenTracker tracker = new AForgePenTracker(new RedLaserStrategy());
             tracker.PenMoved += tracker_PenMoved;
 #if DEBUG
             tracker.DebugPicture += tracker_DebugPicture;

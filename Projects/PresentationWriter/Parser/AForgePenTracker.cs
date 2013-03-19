@@ -16,7 +16,6 @@ namespace HSR.PresentationWriter.Parser
 {
     public class AForgePenTracker : IPenTracker
     {
-
         /// <summary>
         /// Max count of frames to be included in pen discovering process.</summary>
         private const int MAX_FRAMEBUFFER_LENGTH = 3;
@@ -25,12 +24,14 @@ namespace HSR.PresentationWriter.Parser
         private FixedSizedQueue<PointFrame> penPoints;
         private int currentFrameNumber;
 
-        public AForgePenTracker()
+        public FilterStrategy Strategy { get; set; }
+
+        public AForgePenTracker(FilterStrategy strategy)
         {
+            this.Strategy = strategy;
             this.frameBuffer = new FixedSizedQueue<VideoFrame>(MAX_FRAMEBUFFER_LENGTH);
             this.penPoints = new FixedSizedQueue<PointFrame>(MAX_POINTBUFFER_LENGTH);
             this.currentFrameNumber = 0;
-            this.initFilters();
         }
 
         public async Task<PointFrame> ProcessAsync(VideoFrame currentFrame)
@@ -79,25 +80,8 @@ namespace HSR.PresentationWriter.Parser
             return null;
         }
 
-        #region Filters
-
-        private Difference differenceFilter;
-        private Grayscale grayFilter;
-        private Threshold thresholdFilter;
-        private BlobCounter blobCounter;
-
-        private void initFilters()
-        {
-            differenceFilter = new Difference();
-            grayFilter = new Grayscale(1, 0, 0);
-            thresholdFilter = new Threshold(40);
-            blobCounter = new BlobCounter();
-        }
-
-        #endregion
-
         /// <summary>
-        /// Attention: Bitmap a is overwritten because of a performance gain.
+        /// ATTENTION: Bitmap a is overwritten because of a performance gain.
         /// this makes the previous picture unusable for a second pass!
         /// </summary>
         /// <param name="previous"></param>
@@ -106,27 +90,27 @@ namespace HSR.PresentationWriter.Parser
         private Point findPen(Bitmap previous, Bitmap current)
         {
             // calculate difference image
-            differenceFilter.OverlayImage = previous;
-            Bitmap diff = differenceFilter.Apply(current);
+            Strategy.DifferenceFilter.OverlayImage = previous;
+            Bitmap diff = Strategy.DifferenceFilter.Apply(current);
             //b.Save(@"c:\temp\images\r1_diff16.bmp");
 
             // translate red parts to gray image
-            previous = grayFilter.Apply(diff);
+            Bitmap gray = Strategy.GrayFilter.Apply(diff);
             //a.Save(@"c:\temp\images\r2_grey16.bmp");
 
             // treshold the gray image
-            thresholdFilter.ApplyInPlace(previous);
+            Bitmap treshold = Strategy.ThresholdFilter.Apply(gray);
 
 #if DEBUG
             if (DebugPicture != null)
             {
-                DebugPicture(this, new DebugPictureEventArgs(new List<Bitmap>() { diff, previous }));
+                DebugPicture(this, new DebugPictureEventArgs(new List<Bitmap>() { diff, gray, treshold }));
             }
 #endif
 
-            // count white blobs (ev. kann man den thresholdFilter wegschmeissen, siehe ctr parameter)
-            blobCounter.ProcessImage(previous);
-            Rectangle[] r = blobCounter.GetObjectsRectangles();
+            // count white blobs (ev. kann man den thresholdFilter wegschmeissen, siehe ctr parameter von BlobCounter)
+            Strategy.BlobCounter.ProcessImage(treshold);
+            Rectangle[] r = Strategy.BlobCounter.GetObjectsRectangles();
 
             // Return intermediate point
             switch (r.Length)
