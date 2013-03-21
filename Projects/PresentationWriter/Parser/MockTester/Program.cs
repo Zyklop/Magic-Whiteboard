@@ -31,7 +31,7 @@ namespace MockTester
         {
             int i = 0;
             ThreeChannelBitmap tci = new ThreeChannelBitmap();
-            var cameraConnector = new CameraConnector(new AForgeCamera());
+            var cameraConnector = new MockCameraConnector();
             var parser = new DataParser(cameraConnector);
             parser.Start();
             Thread.Sleep(10000);
@@ -46,7 +46,7 @@ namespace MockTester
             //        i++;
             //    };
             Console.Write(parser.Topl.X + " "+parser.Topl.Y);
-            //Console.Read();
+            Console.Read();
         }
 
         static void Main2(string[] args)

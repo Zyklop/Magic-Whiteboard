@@ -23,24 +23,23 @@ namespace Parser.Mock
 
         public MockCameraConnector()
         {
-            imagelist = new List<Bitmap>
-                {
-                    //new ThreeChannelBitmap(new Bitmap(@"Images/Raumsetup.jpg")),
-                    //new ThreeChannelBitmap(new Bitmap(@"Images/Raumsetup-ohne-Licht.jpg")),
-                    //new ThreeChannelBitmap(new Bitmap(@"Images/Raumsetup-ohne-Licht.jpg"))
-                };
+            imagelist = new List<Bitmap>();
+            for (int i = 1; i < 17; i++)
+            {
+                imagelist.Add(new Bitmap(@"C:\temp\inp\img" + i + ".jpg"));
+            }
             Start();
         }
 
         private void Start()
         {
-            tim.Interval = 33;
+            tim.Interval = 5000;
             tim.AutoReset = true;
             tim.Elapsed += delegate
                 {
                     if (NewImage != null) NewImage(this, new NewImageEventArgs {NewImage = imagelist[index]});
                     if (++index >= imagelist.Count) index = 0;
-                    Thread.Sleep(33);
+                    //Thread.Sleep(0);
                 };
             tim.Start();
         }

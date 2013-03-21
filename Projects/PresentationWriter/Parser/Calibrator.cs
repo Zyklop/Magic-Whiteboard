@@ -17,19 +17,21 @@ namespace HSR.PresentationWriter.Parser
 {
     internal class Calibrator
     {
-        private CameraConnector _cc;
-        private const byte GreyDiff = 20;
+        private readonly CameraConnector _cc;
+        private const byte GreyDiff = 40;
+        private const byte ColorDiff = 100;
+        private byte _diffValue;
         private const int Blocksize = 10;
         private const int Blockfill = 80; // Number of pixels needed for a Block to be valid. Depends on Blocksize.
         private const int CalibrationFrames = 300; // Number of Frames used for calibration. Divide by 10 to get Time for calibration.
         private ThreeChannelBitmap _blackImage;
-        private VisualizerControl _vs = new VisualizerControl();
+        private readonly VisualizerControl _vs = new VisualizerControl();
         private int _calibrationStep;
-        private int _errors = 0;
-        private Rect[] rects = new Rect[3];
-        private readonly object _lockObj = new object();
-        private SemaphoreSlim sem;
-        private Task calibTask;
+        private int _errors;
+        private readonly Rect[] _rects = new Rect[3];
+        //private readonly object _lockObj = new object();
+        private SemaphoreSlim _sem;
+        //private Task calibTask;
 
         /// <summary>
         /// A calibrator is needed to get the calibration grid
@@ -38,7 +40,7 @@ namespace HSR.PresentationWriter.Parser
         public Calibrator(CameraConnector cc)
         {
             _cc = cc;
-            this.Grid = new Grid(0,0);
+            Grid = new Grid(0,0);
             //var thread = new Thread(() => _vs = new CalibratorWindow());
             //thread.SetApartmentState(ApartmentState.STA);
             //thread.Start();
@@ -62,11 +64,11 @@ namespace HSR.PresentationWriter.Parser
         {
             _calibrationStep = 0;
             _errors = 0;
-            sem = new SemaphoreSlim(1, 1);
+            _sem = new SemaphoreSlim(1, 1);
             _cc.NewImage += BaseCalibration;
         }
 
-        private async void BaseCalibration(object sender, Events.NewImageEventArgs e)
+        private void BaseCalibration(object sender, NewImageEventArgs e)
         {
             //var thread = new Thread(() => CalibThread(e));
             //thread.SetApartmentState(ApartmentState.STA);
@@ -86,9 +88,9 @@ namespace HSR.PresentationWriter.Parser
             //}
             //Debug.WriteLine(calibTask.Status);
             //Task.Factory.StartNew(() => CalibThread(e));
-            if (sem.CurrentCount >= 1)
+            if (_sem.CurrentCount >= 1)
             {
-                sem.Wait();
+                _sem.Wait();
                 Task.Factory.StartNew(() => CalibThread(e));
             }
         }
@@ -144,7 +146,7 @@ namespace HSR.PresentationWriter.Parser
 #endif
                                 break;
                             case 2:
-                                diff = _blackImage.GChannelBitmap - tcb.GChannelBitmap;
+                                diff = _blackImage.BChannelBitmap - tcb.BChannelBitmap;
 #if DEBUG
                                 s = new ThreeChannelBitmap(new OneChannelBitmap(diff.Width, diff.Height),
                                                                new OneChannelBitmap(diff.Width, diff.Height), diff);
@@ -156,17 +158,17 @@ namespace HSR.PresentationWriter.Parser
                         var topRightCorner = GetTopRightCorner(diff);
                         var bottomLeftCorner = GetBottomLeftCorner(diff);
                         var bottomRightCorner = GetBottomRightCorner(diff);
-                        if (topLeftCorner.X < topRightCorner.X && topLeftCorner.Y > bottomLeftCorner.Y
+                        if (topLeftCorner.X < topRightCorner.X && topLeftCorner.X > bottomLeftCorner.X
                             && topRightCorner.Y < bottomRightCorner.Y && topRightCorner.Y < bottomLeftCorner.Y
                             && topLeftCorner.Y < bottomRightCorner.Y && bottomLeftCorner.X < bottomRightCorner.X
                             && topLeftCorner.X < bottomRightCorner.X && bottomLeftCorner.X < topRightCorner.X
                             && IsValid(topLeftCorner) && IsValid(topRightCorner) && IsValid(bottomLeftCorner) &&
                             IsValid(bottomRightCorner))
                         {
-                            Grid.AddPoint(rects[j].TopLeft, topLeftCorner);
-                            Grid.AddPoint(rects[j].TopRight, topRightCorner);
-                            Grid.AddPoint(rects[j].BottomLeft, bottomLeftCorner);
-                            Grid.AddPoint(rects[j].BottomRight, bottomRightCorner);
+                            Grid.AddPoint(_rects[j].TopLeft, topLeftCorner);
+                            Grid.AddPoint(_rects[j].TopRight, topRightCorner);
+                            Grid.AddPoint(_rects[j].BottomLeft, bottomLeftCorner);
+                            Grid.AddPoint(_rects[j].BottomRight, bottomRightCorner);
                         }
                         else
                         {
@@ -180,6 +182,9 @@ namespace HSR.PresentationWriter.Parser
                     {
                         case 2:
                             var diff = (_blackImage - ThreeChannelBitmap.FromBitmap(e.NewImage)).GetGrayscale();
+                            var s = new ThreeChannelBitmap(diff,
+                                                               diff, diff);
+                                s.GetVisual().Save(@"C:\temp\diffimg.jpg");
                             Grid.TopLeft = GetTopLeftCorner(diff);
                             Grid.TopRight = GetTopRightCorner(diff);
                             Grid.BottomLeft = GetBottomLeftCorner(diff);
@@ -194,7 +199,8 @@ namespace HSR.PresentationWriter.Parser
                                 _calibrationStep++;
                                 _vs.ClearRects();
                                 FillRandomRects();
-                                sem = new SemaphoreSlim(3, 4);
+                                _diffValue = ColorDiff;
+                                _sem = new SemaphoreSlim(3, 4);
                             }
                             else
                             {
@@ -204,15 +210,16 @@ namespace HSR.PresentationWriter.Parser
                             break;
                         case 1:
                             _blackImage = ThreeChannelBitmap.FromBitmap(e.NewImage);
-                            _vs.AddRect(0, 0, (int) _vs.Width, (int) _vs.Height, DColor.FromArgb(255,255, 255, 255));
+                            _vs.AddRect(0, 0, _vs.Width, _vs.Height, DColor.FromArgb(255,255, 255, 255));
                             _calibrationStep++;
                             break;
                         case 0:
                             Grid = new Grid(e.NewImage.Width, e.NewImage.Height);
+                            _diffValue = GreyDiff;
                             var thread = new Thread(() =>
                                 {
                                     _vs.Show();
-                                    _vs.AddRect(0, 0, (int) _vs.Width, (int) _vs.Height, DColor.FromArgb(255, 0, 0, 0));
+                                    _vs.AddRect(0, 0, _vs.Width, _vs.Height, DColor.FromArgb(255, 0, 0, 0));
                                     //_vs.Draw();
                                 });
                             thread.SetApartmentState(ApartmentState.STA);
@@ -222,7 +229,7 @@ namespace HSR.PresentationWriter.Parser
                             break;
                     }
             }
-            sem.Release();
+            _sem.Release();
         }
 
         private bool IsValid(Point point)
@@ -234,39 +241,39 @@ namespace HSR.PresentationWriter.Parser
         {
             var r = new Random();
             var tl = new Point(r.Next(_vs.Width-50), r.Next(_vs.Height-50));
-            rects[0] = new Rect(tl, new Point(r.Next((int)tl.X, _vs.Width-50)+50, r.Next((int)tl.Y, _vs.Height-50)+50));
+            _rects[0] = new Rect(tl, new Point(r.Next((int)tl.X, _vs.Width-50)+50, r.Next((int)tl.Y, _vs.Height-50)+50));
             tl = new Point(r.Next(_vs.Width - 50), r.Next(_vs.Height - 50));
-            rects[1] = new Rect(tl, new Point(r.Next((int)tl.X, _vs.Width - 50) + 50, r.Next((int)tl.Y, _vs.Height - 50) + 50));
+            _rects[1] = new Rect(tl, new Point(r.Next((int)tl.X, _vs.Width - 50) + 50, r.Next((int)tl.Y, _vs.Height - 50) + 50));
             tl = new Point(r.Next(_vs.Width - 50), r.Next(_vs.Height - 50));
-            rects[2] = new Rect(tl, new Point(r.Next((int)tl.X, _vs.Width - 50) + 50, r.Next((int)tl.Y, _vs.Height - 50) + 50));
-            _vs.AddRect(rects[0].TopLeft, rects[0].BottomRight, DColor.FromArgb(255, 255, 0, 0));
-            _vs.AddRect(rects[1].TopLeft, rects[1].BottomRight, DColor.FromArgb(255, 0, 255, 0));
-            _vs.AddRect(rects[2].TopLeft, rects[2].BottomRight, DColor.FromArgb(255, 0, 0, 255));
+            _rects[2] = new Rect(tl, new Point(r.Next((int)tl.X, _vs.Width - 50) + 50, r.Next((int)tl.Y, _vs.Height - 50) + 50));
+            _vs.AddRect(_rects[0].TopLeft, _rects[0].BottomRight, DColor.FromArgb(255, 255, 0, 0));
+            _vs.AddRect(_rects[1].TopLeft, _rects[1].BottomRight, DColor.FromArgb(255, 0, 255, 0));
+            _vs.AddRect(_rects[2].TopLeft, _rects[2].BottomRight, DColor.FromArgb(255, 0, 0, 255));
             CheckIntersections();
         }
 
         private void CheckIntersections()
         {
-            if (rects[0].IntersectsWith(rects[1]))
+            if (_rects[0].IntersectsWith(_rects[1]))
             {
-                var rect = rects[1];
-                rect.Intersect(rects[0]);
+                var rect = _rects[1];
+                rect.Intersect(_rects[0]);
                 _vs.AddRect(rect, DColor.FromArgb(255, 255, 255, 0));
             }
-            if (rects[0].IntersectsWith(rects[2]))
+            if (_rects[0].IntersectsWith(_rects[2]))
             {
-                var rect = rects[2];
-                rect.Intersect(rects[0]);
+                var rect = _rects[2];
+                rect.Intersect(_rects[0]);
                 _vs.AddRect(rect, DColor.FromArgb(255, 255, 0, 255));
             }
-            if (rects[1].IntersectsWith(rects[2]))
+            if (_rects[1].IntersectsWith(_rects[2]))
             {
-                var rect = rects[2];
-                rect.Intersect(rects[1]);
+                var rect = _rects[2];
+                rect.Intersect(_rects[1]);
                 _vs.AddRect(rect, DColor.FromArgb(255, 0, 255, 255));
-                if (rect.IntersectsWith(rects[0]))
+                if (rect.IntersectsWith(_rects[0]))
                 {
-                    rect.Intersect(rects[0]);
+                    rect.Intersect(_rects[0]);
                     _vs.AddRect(rect, DColor.FromArgb(255, 255, 255, 255));
                 }
             }
@@ -274,9 +281,9 @@ namespace HSR.PresentationWriter.Parser
 
         private Point GetBottomRightCorner(OneChannelBitmap diff)
         {
-            for (int i = diff.Width; i >= 0; i--)
+            for (int i = diff.Width; i >= -diff.Height; i--) // it's wrong, but it's handled in Checkblock()
             {
-                for (int j = 0; j <= i; j++)
+                for (int j = 0; j <= diff.Height && j + i <= diff.Width; j++)
                 {
                     if (CheckBlock(diff, i + j - Blocksize, diff.Height - j - Blocksize))
                     {
@@ -343,7 +350,7 @@ namespace HSR.PresentationWriter.Parser
             {
                 for (int k = j; k <= j+Blocksize && k < diff.Height; k++)
                 {
-                    if (diff.Channel[i,k]>=GreyDiff)
+                    if (diff.Channel[i,k]>=_diffValue)
                     {
                         if (++sum>=Blockfill)
                         {
