@@ -25,7 +25,7 @@ namespace HSR.PresentationWriter.Parser
         private const int Blockfill = 80; // Number of pixels needed for a Block to be valid. Depends on Blocksize.
         private const int CalibrationFrames = 300; // Number of Frames used for calibration. Divide by 10 to get Time for calibration.
         private ThreeChannelBitmap _blackImage;
-        private readonly VisualizerControl _vs = new VisualizerControl();
+        private readonly VisualizerControl _vs = VisualizerControl.GetVisualizer();
         private int _calibrationStep;
         private int _errors;
         private readonly Rect[] _rects = new Rect[3];

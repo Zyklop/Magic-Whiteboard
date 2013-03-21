@@ -12,8 +12,18 @@ namespace WFVisuslizer
     {
         private Form1 _cw = new Form1();
         private bool _shown = false;
+        private static VisualizerControl _singleton;
 
-        public VisualizerControl()
+        public static VisualizerControl GetVisualizer()
+        {
+            if (_singleton == null)
+            {
+                _singleton = new VisualizerControl();
+            }
+            return _singleton;
+        }
+
+        protected VisualizerControl()
         {
             Task.Factory.StartNew(() => Application.Run(_cw));
             _cw.Hide();

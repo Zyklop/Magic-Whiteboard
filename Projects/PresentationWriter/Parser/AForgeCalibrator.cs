@@ -20,7 +20,7 @@ namespace HSR.PresentationWriter.Parser
         private CameraConnector _cc;
         private int _calibrationStep;
         private int _errors;
-        private VisualizerControl _vs = new VisualizerControl();
+        private VisualizerControl _vs = VisualizerControl.GetVisualizer();
         private const int CalibrationFrames = 25;
         private Difference diffFilter = new Difference();
         private int _rowcount=1;

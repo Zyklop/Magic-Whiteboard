@@ -73,7 +73,7 @@ namespace MockTester
 
         private static void Main3(string[] args)
         {
-            var vc = new VisualizerControl();
+            var vc = VisualizerControl.GetVisualizer();
             Thread.Sleep(1000);
             //var thread = new Thread(vc.Show);
             //thread.SetApartmentState(ApartmentState.STA);
