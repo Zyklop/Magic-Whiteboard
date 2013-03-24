@@ -47,6 +47,8 @@
             this.label6 = new System.Windows.Forms.Label();
             this.foundPointXLabel = new System.Windows.Forms.Label();
             this.foundPointYLabel = new System.Windows.Forms.Label();
+            this.clearPenPointsButton = new System.Windows.Forms.Button();
+            this.drawpointsCheckbox = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.filterPictureBox)).BeginInit();
             this.filterGroupBox.SuspendLayout();
             this.SuspendLayout();
@@ -243,11 +245,34 @@
             this.foundPointYLabel.TabIndex = 8;
             this.foundPointYLabel.Text = "YYY";
             // 
+            // clearPenPointsButton
+            // 
+            this.clearPenPointsButton.Location = new System.Drawing.Point(744, 9);
+            this.clearPenPointsButton.Name = "clearPenPointsButton";
+            this.clearPenPointsButton.Size = new System.Drawing.Size(98, 23);
+            this.clearPenPointsButton.TabIndex = 9;
+            this.clearPenPointsButton.Text = "clear pen points";
+            this.clearPenPointsButton.UseVisualStyleBackColor = true;
+            this.clearPenPointsButton.Click += new System.EventHandler(this.clearPenPointsButton_Click);
+            // 
+            // drawpointsCheckbox
+            // 
+            this.drawpointsCheckbox.AutoSize = true;
+            this.drawpointsCheckbox.Location = new System.Drawing.Point(619, 13);
+            this.drawpointsCheckbox.Name = "drawpointsCheckbox";
+            this.drawpointsCheckbox.Size = new System.Drawing.Size(119, 17);
+            this.drawpointsCheckbox.TabIndex = 10;
+            this.drawpointsCheckbox.Text = "capture draw points";
+            this.drawpointsCheckbox.UseVisualStyleBackColor = true;
+            this.drawpointsCheckbox.CheckedChanged += new System.EventHandler(this.drawpointsCheckbox_CheckedChanged);
+            // 
             // FilterCalibrationForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(846, 497);
+            this.Controls.Add(this.drawpointsCheckbox);
+            this.Controls.Add(this.clearPenPointsButton);
             this.Controls.Add(this.foundPointYLabel);
             this.Controls.Add(this.foundPointXLabel);
             this.Controls.Add(this.label6);
@@ -288,5 +313,7 @@
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label foundPointXLabel;
         private System.Windows.Forms.Label foundPointYLabel;
+        private System.Windows.Forms.Button clearPenPointsButton;
+        private System.Windows.Forms.CheckBox drawpointsCheckbox;
     }
 }

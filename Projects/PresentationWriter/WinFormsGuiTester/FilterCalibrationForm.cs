@@ -18,8 +18,11 @@ namespace WinFormsGuiTester
 {
     public partial class FilterCalibrationForm : Form
     {
+        private FixedSizedQueue<PointFrame> penDrawingBuffer;
+
         public FilterCalibrationForm()
         {
+            penDrawingBuffer = new FixedSizedQueue<PointFrame>(200);
             InitializeComponent();
         }
 
@@ -72,6 +75,29 @@ namespace WinFormsGuiTester
             }
             else
             {
+                if (this.drawpointsCheckbox.Checked)
+                {
+                    penDrawingBuffer.Enqueue(p2);
+                    // draw points on picture
+                    using (Graphics g = Graphics.FromImage(this.filterPictureBox.Image))
+                    {
+                        using (SolidBrush brush = new SolidBrush(Color.Black))
+                        {
+                            Point previousPoint = Point.Empty;
+                            foreach (PointFrame f in penDrawingBuffer)
+                            {
+                                g.DrawEllipse(Pens.Green, f.Point.X, f.Point.Y, 3, 3);
+                                if (!previousPoint.IsEmpty)
+                                {
+                                    g.DrawLine(Pens.Red, previousPoint, f.Point);
+                                }
+                                previousPoint = f.Point;
+                            }
+                        }
+                    }
+                }
+
+                // coordinate output
                 this.foundPointXLabel.Text = p2.Point.X.ToString();
                 this.foundPointYLabel.Text = p2.Point.Y.ToString();
             }
@@ -111,10 +137,29 @@ namespace WinFormsGuiTester
         {
             this.inputListBox.Items.Clear();
             DirectoryInfo d = new DirectoryInfo(path);
+            foreach (FileInfo f in d.GetFiles("*.bmp"))
+            {
+                this.inputListBox.Items.Add(f.FullName);
+            }
             foreach (FileInfo f in d.GetFiles("*.jpg"))
             {
                 this.inputListBox.Items.Add(f.FullName);
             }
+            foreach (FileInfo f in d.GetFiles("*.png"))
+            {
+                this.inputListBox.Items.Add(f.FullName);
+            }
+        }
+
+        private void clearPenPointsButton_Click(object sender, EventArgs e)
+        {
+            this.penDrawingBuffer = new FixedSizedQueue<PointFrame>(50);
+            this.filterPictureBox.Invalidate();
+        }
+
+        private void drawpointsCheckbox_CheckedChanged(object sender, EventArgs e)
+        {
+            this.filterPictureBox.Invalidate();
         }
     }
 }

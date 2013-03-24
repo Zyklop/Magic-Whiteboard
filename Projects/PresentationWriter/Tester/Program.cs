@@ -13,63 +13,78 @@ namespace HSR.PresentationWriter.Tester
 {
     class Program
     {
-        private static Bitmap trackingBitmap;
         public static void Main(string[] args)
         {
-            trackingBitmap = new Bitmap(800,600);
-            DirectoryInfo d = new DirectoryInfo(@"C:\temp\images\dot-red");
-            int i = 1;
-
-            AForgePenTracker tracker = new AForgePenTracker(new RedLaserStrategy());
-            tracker.PenMoved += tracker_PenMoved;
-#if DEBUG
-            tracker.DebugPicture += tracker_DebugPicture;
-#endif
-
-            foreach (FileInfo info in d.GetFiles())
-            {
-                VideoFrame frame = new VideoFrame(i, new Bitmap(info.FullName), i*40);
-                Task<PointFrame> task = tracker.ProcessAsync(frame);
-                task.Wait();
-                PointFrame p = task.Result;
-
-                if (p == null)
-                {
-                    Debug.WriteLine("P: no frame");
-                }
-                else
-                {
-                    Debug.WriteLine("P: {0}, {1}", p.Point.X, p.Point.Y);
-                }
-            }
-
-            trackingBitmap.Save(@"C:\temp\images\result-"+CurrentMillis.Millis+".bmp");
+            AForgeCamera c = new AForgeCamera();
+            c.FrameReady += c_FrameReady;
+            c.Start();
         }
 
-    private static Point previousPoint = Point.Empty;
-    private static void tracker_PenMoved(object sender, Parser.Events.PenPositionEventArgs e)
-    {
-        Graphics g = Graphics.FromImage(trackingBitmap);
-        if (!previousPoint.IsEmpty)
+        private static void c_FrameReady(object sender, FrameReadyEventArgs e)
         {
-            
-            g.DrawLine(Pens.Red, previousPoint.X, previousPoint.Y, e.Frame.Point.X, e.Frame.Point.Y);
+            DirectoryInfo d = new DirectoryInfo(@"C:\temp\images\light3");
+            e.Frame.Bitmap.Save(@"C:\temp\images\light3\cap-" + e.Frame.Timestamp + ".png");
         }
-        else
-        {
-            g.DrawEllipse(Pens.Green, e.Frame.Point.X, e.Frame.Point.Y, 2, 2);
-        }
-        previousPoint = e.Frame.Point;
-    }
-
-#if DEBUG
-        private static int counter = 0;
-        private static void tracker_DebugPicture(object sender, DebugPictureEventArgs e)
-        {
-            counter++;
-            e.Pictures[0].Save(@"C:\temp\images\temp\img-" + counter + "-a.bmp");
-            e.Pictures[1].Save(@"C:\temp\images\temp\img-" + counter + "-b.bmp");
-        }
-#endif
     }
 }
+
+//        private static Bitmap trackingBitmap;
+//        public static void Main(string[] args)
+//        {
+//            trackingBitmap = new Bitmap(800,600);
+//            DirectoryInfo d = new DirectoryInfo(@"C:\temp\images\dot-red");
+//            int i = 1;
+
+//            AForgePenTracker tracker = new AForgePenTracker(new RedLaserStrategy());
+//            tracker.PenMoved += tracker_PenMoved;
+//#if DEBUG
+//            tracker.DebugPicture += tracker_DebugPicture;
+//#endif
+
+//            foreach (FileInfo info in d.GetFiles())
+//            {
+//                VideoFrame frame = new VideoFrame(i, new Bitmap(info.FullName), i*40);
+//                Task<PointFrame> task = tracker.ProcessAsync(frame);
+//                task.Wait();
+//                PointFrame p = task.Result;
+
+//                if (p == null)
+//                {
+//                    Debug.WriteLine("P: no frame");
+//                }
+//                else
+//                {
+//                    Debug.WriteLine("P: {0}, {1}", p.Point.X, p.Point.Y);
+//                }
+//            }
+
+//            trackingBitmap.Save(@"C:\temp\images\result-"+CurrentMillis.Millis+".bmp");
+//        }
+
+//    private static Point previousPoint = Point.Empty;
+//    private static void tracker_PenMoved(object sender, Parser.Events.PenPositionEventArgs e)
+//    {
+//        Graphics g = Graphics.FromImage(trackingBitmap);
+//        if (!previousPoint.IsEmpty)
+//        {
+            
+//            g.DrawLine(Pens.Red, previousPoint.X, previousPoint.Y, e.Frame.Point.X, e.Frame.Point.Y);
+//        }
+//        else
+//        {
+//            g.DrawEllipse(Pens.Green, e.Frame.Point.X, e.Frame.Point.Y, 2, 2);
+//        }
+//        previousPoint = e.Frame.Point;
+//    }
+
+//#if DEBUG
+//        private static int counter = 0;
+//        private static void tracker_DebugPicture(object sender, DebugPictureEventArgs e)
+//        {
+//            counter++;
+//            e.Pictures[0].Save(@"C:\temp\images\temp\img-" + counter + "-a.bmp");
+//            e.Pictures[1].Save(@"C:\temp\images\temp\img-" + counter + "-b.bmp");
+//        }
+//#endif
+//    }
+//}

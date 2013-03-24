@@ -2,7 +2,7 @@
 
 namespace HSR.PresentationWriter.Parser
 {
-    internal class FixedSizedQueue<T> : ConcurrentQueue<T>
+    public class FixedSizedQueue<T> : ConcurrentQueue<T>
     {
         /// <summary>
         /// Size of the queue
