@@ -24,9 +24,15 @@ namespace Parser.Mock
         public MockCameraConnector()
         {
             imagelist = new List<Bitmap>();
-            for (int i = 1; i < 17; i++)
+            for (int i = 1; i < 50; i++)
             {
-                imagelist.Add(new Bitmap(@"C:\temp\inp\img" + i + ".jpg"));
+                try
+                {
+                    imagelist.Add(new Bitmap(@"C:\temp\inp2\img" + i + ".jpg"));
+                }
+                catch (ArgumentException e)
+                {
+                }
             }
             Start();
         }

@@ -2,16 +2,16 @@ using System;
 
 namespace HSR.PresentationWriter.Parser.Images
 {
-    public class OneChannelBitmap
+    public class BinaryBitmap
     {
-        private byte[,] _c;
+        private bool[,] _c;
 
         /// <summary>
         /// Create a new bitmap with size 0,0 
         /// </summary>
-        public OneChannelBitmap()
+        public BinaryBitmap()
         {
-            _c = new byte[0,0];
+            _c = new bool[0,0];
         }
 
         /// <summary>
@@ -19,38 +19,25 @@ namespace HSR.PresentationWriter.Parser.Images
         /// </summary>
         /// <param name="width">desired width</param>
         /// <param name="height">desired height</param>
-        public OneChannelBitmap(int width, int height)
+        public BinaryBitmap(int width, int height)
         {
-            _c = new byte[width, height];
+            _c = new bool[width, height];
         }
 
         /// <summary>
         /// Create a bitmap from an byte array
         /// </summary>
         /// <param name="src">image source</param>
-        public OneChannelBitmap(byte[,] src)
+        public BinaryBitmap(bool[,] src)
         {
             _c = src;
-        }
-
-        public BinaryBitmap GetBinary(byte threshold)
-        {
-            var res = new BinaryBitmap(Width, Height);
-            for (int i = 0; i < _c.GetLength(0); i++)
-            {
-                for (int j = 0; j < _c.GetLength(1); j++)
-                {
-                    res.Channel[i, j] = _c[i, j] >= threshold;
-                }
-            }
-            return res;
         }
 
         /// <summary>
         /// Values
         /// </summary>
         /// <param name="value">size must match</param>
-        public byte[,] Channel
+        public bool[,] Channel
         {
             get { return _c; }
             set
@@ -85,16 +72,16 @@ namespace HSR.PresentationWriter.Parser.Images
         /// <param name="a1"></param>
         /// <param name="a2"></param>
         /// <returns></returns>
-        public static OneChannelBitmap operator +(OneChannelBitmap a1, OneChannelBitmap a2)
+        public BinaryBitmap And(BinaryBitmap a1)
         {
             var width = a1.Width;
             var height = a1.Height;
-            var res = new OneChannelBitmap(width, height);
+            var res = new BinaryBitmap(width, height);
             for (int i = 0; i < width; i++)
             {
                 for (int j = 0; j < height; j++)
                 {
-                    res._c[i, j] = Sum(a1._c[i, j], a2._c[i, j]);
+                    res._c[i, j] = this._c[i, j] && a1._c[i, j];
                 }
             }
             return res;
@@ -107,31 +94,19 @@ namespace HSR.PresentationWriter.Parser.Images
         /// <param name="a2"></param>
         /// <returns></returns>
         /// <remarks>Underflow protected</remarks>
-        public static OneChannelBitmap operator -(OneChannelBitmap a1, OneChannelBitmap a2)
+        public BinaryBitmap XOR(BinaryBitmap a2)
         {
-            var width = a1.Width;
-            var height = a1.Height;
-            var res = new OneChannelBitmap(width, height);
+            var width = a2.Width;
+            var height = a2.Height;
+            var res = new BinaryBitmap(width, height);
             for (int i = 0; i < width; i++)
             {
                 for (int j = 0; j < height; j++)
                 {
-                    res._c[i, j] = Diff(a1._c[i, j], a2._c[i, j]);
+                    res._c[i, j] = _c[i, j] ^ a2._c[i, j];
                 }
             }
             return res;
-        }
-
-        private static byte Diff(byte b1, byte b2)
-        {
-            if (b1 > b2) return (byte)(b1 - b2);
-            return (byte)(b2 - b1);
-        }
-
-        private static byte Sum(byte b1, byte b2)
-        {
-            var r = b1 + b2;
-            return (byte)(r > 255 ? 255 : r);
         }
     }
 }
