@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Windows;
 using System.Linq;
 using System.Text;
@@ -153,6 +154,10 @@ namespace HSR.PresentationWriter.Parser
         /// <param name="img">Webcam coordinate</param>
         public void AddPoint(Point screen, Point img)
         {
+            if (_calibratorData[(int)img.X, (int)img.Y] == null)
+            {
+                _calibratorData[(int) img.X, (int) img.Y] = new List<Point>();
+            }
             _calibratorData[(int) img.X, (int) img.Y].Add(new Point { X = screen.X, Y = screen.Y });
             AddRefPoints((int) screen.X, (int) screen.Y);
         }

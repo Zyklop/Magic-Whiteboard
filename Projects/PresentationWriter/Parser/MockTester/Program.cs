@@ -24,14 +24,14 @@ namespace MockTester
         
         static void Main(string[] args)
         {
-            Main1(args);
+            Main2(args);
         }
 
         static void Main1(string[] args)
         {
             int i = 0;
             ThreeChannelBitmap tci = new ThreeChannelBitmap();
-            var cameraConnector = new MockCameraConnector();
+            var cameraConnector = new CameraConnector(new AForgeCamera());
             var parser = new DataParser(cameraConnector);
             parser.Start();
             Thread.Sleep(10000);
@@ -51,24 +51,23 @@ namespace MockTester
 
         static void Main2(string[] args)
         {
-            //int i;
-            //var thread = new Thread(VisualizerControl.Show);
-            //thread.SetApartmentState(ApartmentState.STA);
-            //thread.Start();
-            //thread.Join();
-            //thread = new Thread(() =>
+            int i = 0;
+            var cameraConnector = new MockCameraConnector();
+            var parser = new DataParser(cameraConnector);
+            parser.Start();
+            Thread.Sleep(10000);
+            //cameraConnector.NewImage += delegate(object sender, NewImageEventArgs e)
             //    {
-            //        VisualizerControl.Show();
-            //         Console.Write(VisualizerControl.Width + " x " + VisualizerControl.Height);
-            //VisualizerControl.AddRect(100,100,200,200,Color.FromRgb(0,255,0));
-            //Thread.Sleep(1000);
-            //VisualizerControl.Close();
-            //        Dispatcher.Run();
-            //    });
-            //thread.SetApartmentState(ApartmentState.STA);
-            //thread.IsBackground = true;
-            //thread.Start();
-            //Console.Read();
+            //        if (i>0)
+            //        {
+            //            (tci - e.NewImage).GetVisual().Save(@"C:\temp\gach" + i + ".jpg");
+            //        }
+
+            //        tci = e.NewImage;
+            //        i++;
+            //    };
+            Console.Write(parser.Topl.X + " " + parser.Topl.Y);
+            Console.Read();
         }
 
         private static void Main3(string[] args)

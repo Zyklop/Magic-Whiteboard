@@ -19,8 +19,9 @@ namespace HSR.PresentationWriter.Parser
     {
         private readonly CameraConnector _cc;
         private const byte GreyDiff = 40;
-        private const byte ColorDiff = 100;
-        private byte _diffValue;
+        private const byte GreenDiff = 150;
+        private const byte BlueDiff = 100;
+        private const byte RedDiff = 150;
         private const int Blocksize = 10;
         private const int Blockfill = 80; // Number of pixels needed for a Block to be valid. Depends on Blocksize.
         private const int CalibrationFrames = 300; // Number of Frames used for calibration. Divide by 10 to get Time for calibration.
@@ -29,8 +30,9 @@ namespace HSR.PresentationWriter.Parser
         private int _calibrationStep;
         private int _errors;
         private readonly Rect[] _rects = new Rect[3];
-        //private readonly object _lockObj = new object();
+        private readonly object _lockObj = new object();
         private SemaphoreSlim _sem;
+        private Task<Task> _t = new Task<Task>(()=>Task.Delay(10));
         //private Task calibTask;
 
         /// <summary>
@@ -88,7 +90,8 @@ namespace HSR.PresentationWriter.Parser
             //}
             //Debug.WriteLine(calibTask.Status);
             //Task.Factory.StartNew(() => CalibThread(e));
-            if (_sem.CurrentCount >= 1)
+                Debug.WriteLine("new image, sem = "+_sem.CurrentCount+" "+_t.Status);
+            if (_sem.CurrentCount >= 1)//_t.Status != TaskStatus.Running)//
             {
                 _sem.Wait();
                 Task.Factory.StartNew(() => CalibThread(e));
@@ -114,6 +117,7 @@ namespace HSR.PresentationWriter.Parser
                     _cc.NewImage -= BaseCalibration;
                     Grid.Calculate();
                     _vs.Close();
+                    Debug.WriteLine("errors");
                 }
                     //else if (_calibrationStep > CalibrationFrames/2)
                     //{
@@ -126,30 +130,35 @@ namespace HSR.PresentationWriter.Parser
                     FillRandomRects();
                     for (int j = 0; j < 3; j++)
                     {
-                        OneChannelBitmap diff = new OneChannelBitmap();
+                        var cChan = new OneChannelBitmap();
+                        var diff = new BinaryBitmap();
+                        Debug.WriteLine(j);
                         switch (j)
                         {
                             case 0:
-                                diff = _blackImage.RChannelBitmap - tcb.RChannelBitmap;
+                                cChan = _blackImage.RChannelBitmap - tcb.RChannelBitmap;
+                                diff = cChan.GetBinary(RedDiff);
 #if DEBUG
-                                var s = new ThreeChannelBitmap(diff, new OneChannelBitmap(diff.Width, diff.Height),
+                                var s = new ThreeChannelBitmap(cChan, new OneChannelBitmap(diff.Width, diff.Height),
                                                                new OneChannelBitmap(diff.Width, diff.Height));
                                 s.GetVisual().Save(@"C:\temp\rimg\img" + _calibrationStep + ".jpg");
 #endif
                                 break;
                             case 1:
-                                diff = _blackImage.GChannelBitmap - tcb.GChannelBitmap;
+                                cChan = _blackImage.GChannelBitmap - tcb.GChannelBitmap;
+                                diff = cChan.GetBinary(GreenDiff);
 #if DEBUG
-                                s = new ThreeChannelBitmap(new OneChannelBitmap(diff.Width, diff.Height),diff, 
+                                s = new ThreeChannelBitmap(new OneChannelBitmap(diff.Width, diff.Height),cChan, 
                                                                new OneChannelBitmap(diff.Width, diff.Height));
                                 s.GetVisual().Save(@"C:\temp\gimg\img" + _calibrationStep + ".jpg");
 #endif
                                 break;
                             case 2:
-                                diff = _blackImage.BChannelBitmap - tcb.BChannelBitmap;
+                                cChan = _blackImage.BChannelBitmap - tcb.BChannelBitmap;
+                                diff = cChan.GetBinary(BlueDiff);
 #if DEBUG
                                 s = new ThreeChannelBitmap(new OneChannelBitmap(diff.Width, diff.Height),
-                                                               new OneChannelBitmap(diff.Width, diff.Height), diff);
+                                                               new OneChannelBitmap(diff.Width, diff.Height), cChan);
                                 s.GetVisual().Save(@"C:\temp\bimg\img" + _calibrationStep + ".jpg");
 #endif
                                 break;
@@ -163,7 +172,7 @@ namespace HSR.PresentationWriter.Parser
                             && topLeftCorner.Y < bottomRightCorner.Y && bottomLeftCorner.X < bottomRightCorner.X
                             && topLeftCorner.X < bottomRightCorner.X && bottomLeftCorner.X < topRightCorner.X
                             && IsValid(topLeftCorner) && IsValid(topRightCorner) && IsValid(bottomLeftCorner) &&
-                            IsValid(bottomRightCorner))
+                            IsValid(bottomRightCorner) && true)
                         {
                             Grid.AddPoint(_rects[j].TopLeft, topLeftCorner);
                             Grid.AddPoint(_rects[j].TopRight, topRightCorner);
@@ -177,18 +186,18 @@ namespace HSR.PresentationWriter.Parser
                     }
                     _calibrationStep++;
                 }
-                else
                     switch (_calibrationStep)
                     {
                         case 2:
                             var diff = (_blackImage - ThreeChannelBitmap.FromBitmap(e.NewImage)).GetGrayscale();
+                            var b = diff.GetBinary(GreyDiff);
                             var s = new ThreeChannelBitmap(diff,
                                                                diff, diff);
                                 s.GetVisual().Save(@"C:\temp\diffimg.jpg");
-                            Grid.TopLeft = GetTopLeftCorner(diff);
-                            Grid.TopRight = GetTopRightCorner(diff);
-                            Grid.BottomLeft = GetBottomLeftCorner(diff);
-                            Grid.BottomRight = GetBottomRightCorner(diff);
+                            Grid.TopLeft = GetTopLeftCorner(b);
+                            Grid.TopRight = GetTopRightCorner(b);
+                            Grid.BottomLeft = GetBottomLeftCorner(b);
+                            Grid.BottomRight = GetBottomRightCorner(b);
                             if (Grid.TopLeft.X < Grid.TopRight.X && Grid.TopLeft.X < Grid.BottomRight.X &&
                                 Grid.BottomLeft.X < Grid.TopRight.X && Grid.BottomLeft.X < Grid.BottomRight.X &&
                                 Grid.TopLeft.Y < Grid.BottomLeft.Y && Grid.TopLeft.Y < Grid.BottomRight.Y &&
@@ -199,12 +208,11 @@ namespace HSR.PresentationWriter.Parser
                                 _calibrationStep++;
                                 _vs.ClearRects();
                                 FillRandomRects();
-                                _diffValue = ColorDiff;
                                 _sem = new SemaphoreSlim(3, 4);
                             }
                             else
                             {
-                                _calibrationStep++; //= 0;
+                                _calibrationStep = 0;
                                 _errors ++;
                             }
                             break;
@@ -215,20 +223,21 @@ namespace HSR.PresentationWriter.Parser
                             break;
                         case 0:
                             Grid = new Grid(e.NewImage.Width, e.NewImage.Height);
-                            _diffValue = GreyDiff;
                             var thread = new Thread(() =>
                                 {
                                     _vs.Show();
-                                    _vs.AddRect(0, 0, _vs.Width, _vs.Height, DColor.FromArgb(255, 0, 0, 0));
                                     //_vs.Draw();
                                 });
                             thread.SetApartmentState(ApartmentState.STA);
                             thread.Start();
                             thread.Join();
+                            _vs.AddRect(0, 0, _vs.Width, _vs.Height, DColor.FromArgb(255, 0, 0, 0));
                             _calibrationStep++;
                             break;
                     }
             }
+            await Task.Delay(500);
+            Debug.WriteLine("releasing");
             _sem.Release();
         }
 
@@ -279,7 +288,7 @@ namespace HSR.PresentationWriter.Parser
             }
         }
 
-        private Point GetBottomRightCorner(OneChannelBitmap diff)
+        private Point GetBottomRightCorner(BinaryBitmap diff)
         {
             for (int i = diff.Width; i >= -diff.Height; i--) // it's wrong, but it's handled in Checkblock()
             {
@@ -294,7 +303,7 @@ namespace HSR.PresentationWriter.Parser
             return new Point();
         }
 
-        private Point GetBottomLeftCorner(OneChannelBitmap diff)
+        private Point GetBottomLeftCorner(BinaryBitmap diff)
         {
             for (int i = 0; i < diff.Width; i++)
             {
@@ -309,7 +318,7 @@ namespace HSR.PresentationWriter.Parser
             return new Point();
         }
 
-        private Point GetTopRightCorner(OneChannelBitmap diff)
+        private Point GetTopRightCorner(BinaryBitmap diff)
         {
             for (int i = diff.Width - 1; i >= 0; i--)
             {
@@ -324,7 +333,7 @@ namespace HSR.PresentationWriter.Parser
             return new Point();
         }
 
-        private Point GetTopLeftCorner(OneChannelBitmap diff)
+        private Point GetTopLeftCorner(BinaryBitmap diff)
         {
             for (int i = 0; i < diff.Width; i++)
             {
@@ -339,7 +348,7 @@ namespace HSR.PresentationWriter.Parser
             return new Point();
         }
 
-        private bool CheckBlock(OneChannelBitmap diff, int p, int j)
+        private bool CheckBlock(BinaryBitmap diff, int p, int j)
         {
             int sum = 0;
             if (p < 0 || j < 0)
@@ -350,7 +359,7 @@ namespace HSR.PresentationWriter.Parser
             {
                 for (int k = j; k <= j+Blocksize && k < diff.Height; k++)
                 {
-                    if (diff.Channel[i,k]>=_diffValue)
+                    if (diff.Channel[i,k])
                     {
                         if (++sum>=Blockfill)
                         {
