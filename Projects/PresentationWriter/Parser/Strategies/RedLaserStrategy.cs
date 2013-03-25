@@ -9,8 +9,10 @@ namespace HSR.PresentationWriter.Parser.Strategies
         {
             DifferenceFilter = new Difference();
             GrayFilter       = new Grayscale(1, 0, 0);
-            ThresholdFilter  = new Threshold(40);
+            ThresholdFilter  = new Threshold(35);
             BlobCounter      = new BlobCounter();
+            BlobCounter.MaxWidth = 10;
+            BlobCounter.MaxHeight = 10;
         }
     }
 }

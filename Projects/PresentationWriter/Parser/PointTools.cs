@@ -14,6 +14,11 @@ namespace HSR.PresentationWriter.Parser
             return new Point(r.X + r.Width / 2, r.Y + r.Height);
         }
 
+        public static double CalculateDistance(Point a, Point b)
+        {
+            return Math.Sqrt(Math.Pow(b.X - a.X, 2) + Math.Pow(b.Y - a.Y, 2));
+        }
+
         public static Point CalculateCenterPoint(Point a, Point b)
         {
             // Always floor the results, thats conservative

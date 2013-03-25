@@ -20,7 +20,7 @@ namespace WinFormsGuiTester
 
         public LivePenTrackingForm()
         {
-            penDrawingBuffer = new FixedSizedQueue<PointFrame>(50);
+            penDrawingBuffer = new FixedSizedQueue<PointFrame>(100);
             InitializeComponent();
         }
 
@@ -50,7 +50,11 @@ namespace WinFormsGuiTester
             //// fake:
             //lastRandX += tempRandom.Next(15);
             //lastRandY += tempRandom.Next(15);
-            //penDrawingBuffer.Enqueue(new PointFrame(1, new Point(lastRandX % 640, lastRandY % 480)));
+
+            if (pointFrame != null)
+            {
+                penDrawingBuffer.Enqueue(pointFrame);
+            }
 
             // draw points in buffer to image
             using (Graphics g = Graphics.FromImage(redaction))
@@ -60,8 +64,8 @@ namespace WinFormsGuiTester
                     Point previousPoint = Point.Empty;
                     foreach (PointFrame f in penDrawingBuffer)
                     {
-                        g.DrawEllipse(Pens.Green, f.Point.X, f.Point.Y, 3, 3);
-                        if (!previousPoint.IsEmpty)
+                        g.DrawEllipse(Pens.Green, f.Point.X -3, f.Point.Y -3, 3, 3);
+                        if (!previousPoint.IsEmpty && PointTools.CalculateDistance(previousPoint, f.Point) < 50)
                         {
                             g.DrawLine(Pens.Red, previousPoint, f.Point);
                         }
