@@ -18,10 +18,10 @@ namespace HSR.PresentationWriter.Parser
     internal class Calibrator
     {
         private readonly CameraConnector _cc;
-        private const byte GreyDiff = 40;
-        private const byte GreenDiff = 150;
-        private const byte BlueDiff = 100;
-        private const byte RedDiff = 150;
+        private const byte GreyDiff = 10;
+        private const byte GreenDiff = 40;
+        private const byte BlueDiff = 40;
+        private const byte RedDiff = 50;
         private const int Blocksize = 10;
         private const int Blockfill = 80; // Number of pixels needed for a Block to be valid. Depends on Blocksize.
         private const int CalibrationFrames = 300; // Number of Frames used for calibration. Divide by 10 to get Time for calibration.
@@ -193,7 +193,7 @@ namespace HSR.PresentationWriter.Parser
                             var b = diff.GetBinary(GreyDiff);
                             var s = new ThreeChannelBitmap(diff,
                                                                diff, diff);
-                                s.GetVisual().Save(@"C:\temp\diffimg.jpg");
+                                s.GetVisual().Save(@"C:\temp\diffs\img" + _errors + ".jpg");
                             Grid.TopLeft = GetTopLeftCorner(b);
                             Grid.TopRight = GetTopRightCorner(b);
                             Grid.BottomLeft = GetBottomLeftCorner(b);
