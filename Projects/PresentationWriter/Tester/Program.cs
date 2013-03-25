@@ -1,4 +1,6 @@
-﻿using HSR.PresentationWriter.DataSources;
+﻿using AForge.Imaging;
+using AForge.Imaging.Filters;
+using HSR.PresentationWriter.DataSources;
 using HSR.PresentationWriter.Parser;
 using HSR.PresentationWriter.Parser.Strategies;
 using System;
@@ -15,16 +17,38 @@ namespace HSR.PresentationWriter.Tester
     {
         public static void Main(string[] args)
         {
+            /*
             AForgeCamera c = new AForgeCamera();
             c.FrameReady += c_FrameReady;
             c.Start();
+             */
+            Bitmap a = new Bitmap(@"c:\temp\calib-none.bmp");
+            Bitmap b = new Bitmap(@"c:\temp\calib-square.bmp");
+            Difference d = new Difference(a);
+            Bitmap c = d.Apply(b);
+
+            BlobCounter counter = new BlobCounter();
+            counter.MinHeight = 10;
+            counter.MinWidth = 10;
+            counter.BackgroundThreshold = Color.FromArgb(35,35,35);
+            counter.FilterBlobs = true;
+            counter.ProcessImage(c);
+            Rectangle[] rects = counter.GetObjectsRectangles();
+
+            foreach (Rectangle r in rects)
+            {
+                Console.WriteLine("Found: {0}, {1}", r.X, r.Y);
+            }
+
+            c.Save(@"c:\temp\calib-diff.bmp");
+            Console.ReadLine();
         }
 
-        private static void c_FrameReady(object sender, FrameReadyEventArgs e)
-        {
-            DirectoryInfo d = new DirectoryInfo(@"C:\temp\images\light3");
-            e.Frame.Bitmap.Save(@"C:\temp\images\light3\cap-" + e.Frame.Timestamp + ".png");
-        }
+        //private static void c_FrameReady(object sender, FrameReadyEventArgs e)
+        //{
+        //    DirectoryInfo d = new DirectoryInfo(@"C:\temp\images\light3");
+        //    e.Frame.Bitmap.Save(@"C:\temp\images\light3\cap-" + e.Frame.Timestamp + ".png");
+        //}
     }
 }
 
