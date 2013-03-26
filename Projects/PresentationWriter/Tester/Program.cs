@@ -22,17 +22,20 @@ namespace HSR.PresentationWriter.Tester
             c.FrameReady += c_FrameReady;
             c.Start();
              */
-            Bitmap a = new Bitmap(@"c:\temp\calib-none.bmp");
-            Bitmap b = new Bitmap(@"c:\temp\calib-square.bmp");
+            Bitmap a = new Bitmap(@"c:\temp\calib2-none.bmp");
+            Bitmap b = new Bitmap(@"c:\temp\calib2-square.bmp");
             Difference d = new Difference(a);
             Bitmap c = d.Apply(b);
+            Bitmap gray = (new Grayscale(1,1,1)).Apply(c);
+
+            Bitmap t = (new Threshold(60)).Apply(gray);
 
             BlobCounter counter = new BlobCounter();
-            counter.MinHeight = 10;
-            counter.MinWidth = 10;
-            counter.BackgroundThreshold = Color.FromArgb(35,35,35);
+            counter.MinHeight = 7;
+            counter.MinWidth = 7;
+            //counter.BackgroundThreshold = Color.FromArgb(20,20,20);
             counter.FilterBlobs = true;
-            counter.ProcessImage(c);
+            counter.ProcessImage(t);
             Rectangle[] rects = counter.GetObjectsRectangles();
 
             foreach (Rectangle r in rects)
@@ -40,7 +43,7 @@ namespace HSR.PresentationWriter.Tester
                 Console.WriteLine("Found: {0}, {1}", r.X, r.Y);
             }
 
-            c.Save(@"c:\temp\calib-diff.bmp");
+            t.Save(@"c:\temp\calib2-diff.bmp");
             Console.ReadLine();
         }
 

@@ -28,7 +28,7 @@ namespace WinFormsGuiTester
 
         private void FilterCalibrationForm_Load(object sender, EventArgs e)
         {
-            updateListBox(@"c:\temp\filterimages");
+            updateListBox(@"c:\temp\filtercalib");
         }
 
         private class CustomFilterStrategy : FilterStrategy
