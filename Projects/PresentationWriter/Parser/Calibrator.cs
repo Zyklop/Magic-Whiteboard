@@ -15,7 +15,43 @@ using WFVisuslizer;
 
 namespace HSR.PresentationWriter.Parser
 {
-    internal class Calibrator
+    internal interface ICalibrator
+    {
+        /// <summary>
+        /// Calibrating colors
+        /// </summary>
+        //TODO implement or remove
+        void CalibrateColors();
+
+        /// <summary>
+        /// Calibrate the grid
+        /// </summary>
+        void Calibrate();
+
+        /// <summary>
+        /// Check if the grid needs to be recalibrated
+        /// Check if something moved
+        /// </summary>
+        /// <returns>
+        /// 0: ok
+        /// 1: grid calibration needed
+        /// 2: color calibration needed
+        /// 3: both needed
+        /// </returns>
+        int CheckCalibration();
+
+        /// <summary>
+        /// Data for the matching
+        /// </summary>
+        Grid Grid { get; }
+
+        /// <summary>
+        /// Data from color calibration
+        /// </summary>
+        Colorfilter ColorFilter { get; }
+    }
+
+    internal class Calibrator : ICalibrator
     {
         private readonly CameraConnector _cc;
         private const byte GreyDiff = 10;

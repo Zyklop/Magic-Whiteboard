@@ -17,7 +17,7 @@ using Point = System.Windows.Point;
 
 namespace HSR.PresentationWriter.Parser
 {
-    class AForgeCalibrator
+    class AForgeCalibrator: ICalibrator
     {
         private CameraConnector _cc;
         private int _calibrationStep;
@@ -28,6 +28,7 @@ namespace HSR.PresentationWriter.Parser
         private const int Rowcount=20;
         private const int Columncount=15;
         private SemaphoreSlim _sem;
+        private Task t;
         private double sqrheight;
         private double sqrwidth;
 
@@ -58,19 +59,27 @@ namespace HSR.PresentationWriter.Parser
             _cc.NewImage += BaseCalibration;
         }
 
+        public int CheckCalibration()
+        {
+            return 0;
+        }
+
         private void BaseCalibration(object sender, NewImageEventArgs e)
         {
 
             if (_sem.CurrentCount >= 1)//_t.Status != TaskStatus.Running)//
             {
                 _sem.Wait();
-                Task.Factory.StartNew(() => CalibThread(e));
+                Task.Factory.StartNew(() => t = CalibThread(e));
             }
         }
 
 
         private async Task CalibThread(NewImageEventArgs e)
         {
+            Debug.WriteLine("Calibrating " + _calibrationStep);
+            e.NewImage.Save(@"C:\temp\aforge\src\img" + _calibrationStep + ".jpg");
+            //e.NewImage.Save(@"C:\temp\aforge\src\img" + _calibrationStep + ".jpg");
             if (_errors > 100)
             {
                 //calibration not possible
@@ -84,33 +93,45 @@ namespace HSR.PresentationWriter.Parser
             }
             else
             {
-                var diffBitmap = diffFilter.Apply(e.NewImage);
+                var diffBitmap = new Bitmap(1,1);
+                if(diffFilter.OverlayImage != null)
+                    diffBitmap = diffFilter.Apply(e.NewImage);
+                diffBitmap.Save(@"C:\temp\aforge\diff\img" + _calibrationStep + ".jpg");
                 if (_calibrationStep > 2)
                 {
                     _vs.ClearRects();
                     FillRects();
-                    var gf = new ColorFiltering(new IntRange(0, 50), new IntRange(100, 255), new IntRange(0, 50));
-                    var bf = new ColorFiltering(new IntRange(0, 50), new IntRange(0, 50), new IntRange(100, 255));
+                    var gf = new ColorFiltering(new IntRange(0, 255), new IntRange(30, 255), new IntRange(0, 20));
+                    var bf = new ColorFiltering(new IntRange(0, 255), new IntRange(0, 20), new IntRange(30, 255));
                     var gbm = gf.Apply(diffBitmap);
+                    gbm.Save(@"C:\temp\aforge\gimg\img" + _calibrationStep + ".jpg");
                     var bbm = bf.Apply(diffBitmap);
-                    var gblobCounter = new BlobCounter {ObjectsOrder = ObjectsOrder.YX};
+                    bbm.Save(@"C:\temp\aforge\bimg\img" + _calibrationStep + ".jpg");
+                    var gblobCounter = new BlobCounter {ObjectsOrder = ObjectsOrder.YX, 
+                        MaxHeight = 25, MinHeight = 15, MaxWidth = 25, MinWidth = 15, FilterBlobs = true, CoupledSizeFiltering = true};
                     gblobCounter.ProcessImage(gbm);
-                    var bblobCounter = new BlobCounter { ObjectsOrder = ObjectsOrder.YX };
+                    var bblobCounter = new BlobCounter { ObjectsOrder = ObjectsOrder.YX, MaxHeight = 25, MinHeight = 15, MaxWidth = 25, MinWidth = 15 };
                     bblobCounter.ProcessImage(bbm);
                     ProcessBlobs(gblobCounter, 0);
                     ProcessBlobs(bblobCounter, 1);
+                    _calibrationStep++;
                 }
                 else
                     switch (_calibrationStep)
                     {
                         case 2:
-                            var thresholdFilter = new Threshold(50);
-                            thresholdFilter.ApplyInPlace(diffBitmap);
-                            var blobCounter = new BlobCounter {ObjectsOrder = ObjectsOrder.Size};
+                            //var thresholdFilter = new Threshold(50);
+                            //thresholdFilter.ApplyInPlace(diffBitmap);
+                            var blobCounter = new BlobCounter {ObjectsOrder = ObjectsOrder.Size, BackgroundThreshold = Color.FromArgb(255,15,20,20), FilterBlobs = true};
                             blobCounter.ProcessImage(diffBitmap);
                             var blobs = blobCounter.GetObjectsInformation();
-                            List<IntPoint> corners =
-                                PointsCloud.FindQuadrilateralCorners(blobCounter.GetBlobsEdgePoints(blobs[0]));
+                            int i = 0;
+                            List<IntPoint> corners;
+                            do
+                            {
+                                corners =
+                                    PointsCloud.FindQuadrilateralCorners(blobCounter.GetBlobsEdgePoints(blobs[i++]));
+                            } while (corners.Count != 4);
                             InPlaceSort(corners);
                             Grid.TopLeft = new Point(corners[0].X, corners[0].Y);
                             Grid.TopRight = new Point(corners[1].X, corners[1].Y);
@@ -134,7 +155,7 @@ namespace HSR.PresentationWriter.Parser
                             }
                             else
                             {
-                                _calibrationStep = 0;
+                                _calibrationStep++; //= 0;
                                 _errors++;
                             }
                             break;
@@ -157,6 +178,9 @@ namespace HSR.PresentationWriter.Parser
                             break;
                     }
             }
+            Debug.WriteLine("Releasing");
+            await Task.Delay(500);
+            _sem.Release();
         }
 
         private void ProcessBlobs(BlobCounter blobCounter, int offset)
@@ -169,11 +193,11 @@ namespace HSR.PresentationWriter.Parser
             //var top = blobs.Where(x => x.CenterOfGravity.X == blobs.GetRange(0,Rowcount).
             //    Min(y => y.CenterOfGravity.X)).
             //    OrderBy(z=>z.CenterOfGravity.Y).First();
-            var top = blobs.Where(x => IsNextTo(x.CenterOfGravity, Grid.TopLeft, 0, 0, 1.5 + offset));
-            if (top.Count() == 1 && IsNextTo(top.First().CenterOfGravity, Grid.TopLeft,0,0,1.5 + offset))
+            var top = blobs.Where(x => IsNextTo(x.CenterOfGravity, Grid.TopLeft, 0, 0, 1.5 + offset)).OrderBy(x => x.Area);
+            if (top.Any() && IsNextTo(top.First().CenterOfGravity, Grid.TopLeft,0,0,1.5 + offset))
             {
-                blobs.Remove(top.First());
-                if (ProcessBlobs(top.First(), blobs, 0, 0, offset, blobCounter) < Rowcount*Columncount*0.75)
+                blobs.Remove(top.Last());
+                if (ProcessBlobs(top.Last(), blobs, 0, 0, offset, blobCounter) < Rowcount*Columncount*0.75)
                     _errors++;
             }
             else
@@ -192,8 +216,8 @@ namespace HSR.PresentationWriter.Parser
             var corners =
                 PointsCloud.FindQuadrilateralCorners(blobCounter.GetBlobsEdgePoints(blob));
             InPlaceSort(corners);
-            double xOff = ((_calibrationStep - 3) % (int)Math.Sqrt(CalibrationFrames - 3)) * sqrwidth;
-            double yOff = Math.Floor((_calibrationStep - 3) / Math.Sqrt(CalibrationFrames - 3)) * sqrwidth;
+            double xOff = ((_calibrationStep - 3) % (int)Math.Sqrt(CalibrationFrames - 3)) * sqrwidth / (int)Math.Sqrt(CalibrationFrames - 3);
+            double yOff = Math.Floor((_calibrationStep - 3) / Math.Sqrt(CalibrationFrames - 3)) * sqrwidth / (int)Math.Sqrt(CalibrationFrames - 3);
             Grid.AddPoint((int)(x * sqrwidth + xOff), (int)(y * sqrheight + yOff), corners[0].X, corners[0].Y);
             Grid.AddPoint((int)((x + 1) * sqrwidth + xOff), (int)(y * sqrheight + yOff), corners[1].X, corners[1].Y);
             Grid.AddPoint((int)(x * sqrwidth + xOff), (int)((y + 1) * sqrheight + yOff), corners[2].X, corners[2].Y);
@@ -293,9 +317,11 @@ namespace HSR.PresentationWriter.Parser
             tl = tmp.First(x => x.Y == tmp.Min(y => y.Y));
             tmp.Remove(tl);
             rect.Add(tl);
-            rect = rect.OrderBy(x => x.X).ToList();
+            rect.Sort((x,y) => x.X.CompareTo(y.X));
             tmp = tmp.OrderBy(x => x.X).ToList();
-            rect.AddRange(tmp);
+            //rect.AddRange(tmp);
+            rect.Add(tmp[0]);
+            rect.Add(tmp[1]);
         }
 
         private void FillRects()
@@ -310,13 +336,13 @@ namespace HSR.PresentationWriter.Parser
                     if (y%2==0 && x%2 == 0)
                     {
                         _vs.AddRect((int)(x * sqrwidth + xOff), (int)(y * sqrheight + yOff), 
-                            ((int)((x + 1) * sqrwidth + xOff)), (int)((y + 1) * sqrheight + yOff),
+                            (int)sqrwidth, (int)sqrheight,
                         Color.FromArgb(255,0,255,0)); 
                     }
                     if (y % 2 == 1 && x % 2 == 1)
                     {
                         _vs.AddRect((int)(x * sqrwidth + xOff), (int)(y * sqrheight + yOff),
-                            ((int)((x + 1) * sqrwidth + xOff)), (int)((y + 1) * sqrheight + yOff),
+                            (int)sqrwidth, (int)sqrheight,
                         Color.FromArgb(255, 0, 0, 255));
                     }
                 }
@@ -324,5 +350,6 @@ namespace HSR.PresentationWriter.Parser
         }
 
         public Grid Grid { get; set; }
+        public Colorfilter ColorFilter { get; private set; }
     }
 }
