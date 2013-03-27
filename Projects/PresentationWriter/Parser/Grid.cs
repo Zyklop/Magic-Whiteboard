@@ -5,6 +5,7 @@ using System.Windows;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Drawing.Drawing2D;
 
 namespace HSR.PresentationWriter.Parser
 {
@@ -122,6 +123,29 @@ namespace HSR.PresentationWriter.Parser
                 _bottomRight = value;
             }
         }
+
+        public bool Contains(Point p)
+        {
+            //var at = Angle(TopLeft, p, TopRight);
+            //var al = Angle(TopLeft, p, BottomLeft);
+            //var ar = Angle(TopRight, p, BottomRight);
+            //var ab = Angle(BottomLeft, p, BottomRight);
+            //return at > 180 && al < 180 && ar < 180 && ab < 180;
+            // internal method
+            var gp = new GraphicsPath();
+            gp.AddLine((int) TopLeft.X, (int) TopLeft.Y, (int)TopRight.X, (int)TopRight.Y);
+            gp.AddLine((int)TopRight.X, (int)TopRight.Y, (int)BottomRight.X, (int)BottomRight.Y);
+            gp.AddLine((int)BottomRight.X, (int)BottomRight.Y, (int)BottomLeft.X, (int)BottomLeft.Y);
+            gp.AddLine((int)BottomLeft.X, (int)BottomLeft.Y, (int)TopLeft.X, (int)TopLeft.Y);
+            return gp.IsVisible((int) p.X,(int) p.Y);
+        }
+
+        //private double Azimuth(Point start, Point finish)
+        //{
+        //    var a = new Vector(p.X - left.X, p.Y - left.Y);
+        //    var b = new Vector(p.X - right.X, p.Y - right.Y);
+        //    return Math.Acos((a.X * b.X + a.Y * b.Y) / Math.Sqrt(a.X*a.X+a.Y*a.Y)*Math.Sqrt(b.X*b.X+b.Y*b.Y));
+        //}
 
         /// <summary>
         /// Reset temporary calibration data
@@ -253,6 +277,11 @@ namespace HSR.PresentationWriter.Parser
         public Point GetPosition(int x, int y)
         {
             return _mapData[x, y];
+        }
+
+        public bool Contains(AForge.Point centerOfGravity)
+        {
+            return Contains(new Point(centerOfGravity.X, centerOfGravity.Y));
         }
     }
 }
