@@ -12,8 +12,6 @@ namespace HSR.PresentationWriter.Parser
         Task<PointFrame> ProcessAsync(VideoFrame frame);
         PointFrame GetLastFrame();
         Point GetPenPoint(long timestamp);
-        event EventHandler<PenPositionEventArgs> PenMoved;
-        event EventHandler<PenPositionEventArgs> PenDetected;
-        event EventHandler<PenPositionEventArgs> PenLost;
+        event EventHandler<PenPositionEventArgs> PenFound;
     }
 }
