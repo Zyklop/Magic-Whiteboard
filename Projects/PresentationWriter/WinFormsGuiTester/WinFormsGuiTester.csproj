@@ -54,6 +54,12 @@
     <Compile Include="FilterCalibrationForm.Designer.cs">
       <DependentUpon>FilterCalibrationForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="LibraryTrackingForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="LibraryTrackingForm.Designer.cs">
+      <DependentUpon>LibraryTrackingForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="LivePenTrackingForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -70,6 +76,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="FilterCalibrationForm.resx">
       <DependentUpon>FilterCalibrationForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="LibraryTrackingForm.resx">
+      <DependentUpon>LibraryTrackingForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="LivePenTrackingForm.resx">
       <DependentUpon>LivePenTrackingForm.cs</DependentUpon>

@@ -11,8 +11,9 @@ namespace HSR.PresentationWriter.Parser.Strategies
             GrayFilter       = new Grayscale(1, 0, 0);
             ThresholdFilter  = new Threshold(35);
             BlobCounter      = new BlobCounter();
-            BlobCounter.MaxWidth = 10;
-            BlobCounter.MaxHeight = 10;
+            BlobCounter.FilterBlobs = true;
+            BlobCounter.MaxWidth    = 10;
+            BlobCounter.MaxHeight   = 10;
         }
     }
 }

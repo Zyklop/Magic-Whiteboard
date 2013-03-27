@@ -28,7 +28,7 @@ namespace WinFormsGuiTester
 
         private void FilterCalibrationForm_Load(object sender, EventArgs e)
         {
-            updateListBox(@"c:\temp\filterimages");
+            updateListBox(@"c:\temp\filtercalib");
         }
 
         private class CustomFilterStrategy : FilterStrategy
@@ -81,18 +81,15 @@ namespace WinFormsGuiTester
                     // draw points on picture
                     using (Graphics g = Graphics.FromImage(this.filterPictureBox.Image))
                     {
-                        using (SolidBrush brush = new SolidBrush(Color.Black))
+                        Point previousPoint = Point.Empty;
+                        foreach (PointFrame f in penDrawingBuffer)
                         {
-                            Point previousPoint = Point.Empty;
-                            foreach (PointFrame f in penDrawingBuffer)
+                            g.DrawEllipse(Pens.Green, f.Point.X-2, f.Point.Y-2, 3, 3);
+                            if (!previousPoint.IsEmpty)
                             {
-                                g.DrawEllipse(Pens.Green, f.Point.X, f.Point.Y, 3, 3);
-                                if (!previousPoint.IsEmpty)
-                                {
-                                    g.DrawLine(Pens.Red, previousPoint, f.Point);
-                                }
-                                previousPoint = f.Point;
+                                g.DrawLine(Pens.Red, previousPoint, f.Point);
                             }
+                            previousPoint = f.Point;
                         }
                     }
                 }
@@ -160,6 +157,16 @@ namespace WinFormsGuiTester
         private void drawpointsCheckbox_CheckedChanged(object sender, EventArgs e)
         {
             this.filterPictureBox.Invalidate();
+        }
+
+        private void pathLabel_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void filterPictureBox_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

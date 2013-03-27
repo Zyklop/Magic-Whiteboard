@@ -54,10 +54,10 @@ namespace HSR.PresentationWriter.Parser
     internal class Calibrator : ICalibrator
     {
         private readonly CameraConnector _cc;
-        private const byte GreyDiff = 10;
-        private const byte GreenDiff = 40;
-        private const byte BlueDiff = 40;
-        private const byte RedDiff = 50;
+        private const byte GreyDiff = 40;
+        private const byte GreenDiff = 80;
+        private const byte BlueDiff = 80;
+        private const byte RedDiff = 90;
         private const int Blocksize = 10;
         private const int Blockfill = 80; // Number of pixels needed for a Block to be valid. Depends on Blocksize.
         private const int CalibrationFrames = 300; // Number of Frames used for calibration. Divide by 10 to get Time for calibration.

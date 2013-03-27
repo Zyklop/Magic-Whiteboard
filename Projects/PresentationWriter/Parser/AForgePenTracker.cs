@@ -22,7 +22,6 @@ namespace HSR.PresentationWriter.Parser
         private const int MAX_POINTBUFFER_LENGTH = 3;
         private FixedSizedQueue<VideoFrame> frameBuffer;
         private FixedSizedQueue<PointFrame> penPoints;
-        private int currentFrameNumber;
 
         public FilterStrategy Strategy { get; set; }
 
@@ -31,16 +30,15 @@ namespace HSR.PresentationWriter.Parser
             this.Strategy = strategy;
             this.frameBuffer = new FixedSizedQueue<VideoFrame>(MAX_FRAMEBUFFER_LENGTH);
             this.penPoints = new FixedSizedQueue<PointFrame>(MAX_POINTBUFFER_LENGTH);
-            this.currentFrameNumber = 0;
         }
 
         public async Task<PointFrame> ProcessAsync(VideoFrame currentFrame)
         {
             VideoFrame previousFrame;
-            // access correct framebuffer positions, cost: 50ns (source: http://www.informit.com/guides/content.aspx?g=dotnet&seqNum=600 )
-            lock (frameBuffer) 
+            // Lock buffer for adding elements in dependency of queue length
+            lock (this.frameBuffer) 
             {
-                // There must be at least one element in the queue already.
+                // We can only do our work if there is at least one frame in the buffer already
                 if (this.frameBuffer.Count < 1)
                 {
                     this.frameBuffer.Enqueue(currentFrame);
@@ -53,17 +51,25 @@ namespace HSR.PresentationWriter.Parser
                 }
             }
 
-            // Here begins the expensive part!
-            Point foundPoint;
             try
             {
-                foundPoint = findPen(previousFrame.Bitmap, currentFrame.Bitmap);
-                // Check result and frame it
-                if (!foundPoint.IsEmpty)
+                // Find pen candidates and evaluate them → finding candidates is expensive!
+                var candidates = findPenCandidates(previousFrame.Bitmap, currentFrame.Bitmap);
+
+                // Finding a new pen point and storing it must be atomic, because findPen(..) accesses the previously found pointframe for interpolation
+                lock (this.penPoints)
                 {
-                    // interpolate timestamps, since we found an interpolated pen point
-                    long timestamp = previousFrame.Timestamp + (currentFrame.Timestamp - previousFrame.Timestamp) / 2;
-                    PointFrame resultFrame = new PointFrame(Interlocked.Increment(ref currentFrameNumber), foundPoint, timestamp);
+                    // Evaluate the candidates (PenCandidate)
+                    Point foundPoint = this.findPen(candidates);
+
+                    
+                    if (foundPoint.IsEmpty)
+                    {
+                        return null;
+                    }
+
+                    // Put the qualified result in a new point frame and fire event
+                    PointFrame resultFrame = new PointFrame(currentFrame.Number + 1, foundPoint, currentFrame.Timestamp);
                     this.penPoints.Enqueue(resultFrame);
                     if (this.PenMoved != null)
                     {
@@ -74,57 +80,100 @@ namespace HSR.PresentationWriter.Parser
             }
             catch (Exception e)
             {
-                // TODO Error Handling
+                // TODO Error Handling: Maybe we should catch everything for bug containment.
+                return null;
             }
-
-            return null;
         }
 
         /// <summary>
-        /// ATTENTION: Bitmap a is overwritten because of a performance gain.
-        /// this makes the previous picture unusable for a second pass!
+        /// This is the time consuming part. We try to find pen candidates in two pictures 
+        /// by their filtered difference.
+        /// ATTENTION: Bitmap previous is overwritten because of a performance gain. This makes 
+        /// the previous picture unusable for a second pass!!!
         /// </summary>
         /// <param name="previous"></param>
         /// <param name="current"></param>
         /// <returns></returns>
-        private Point findPen(Bitmap previous, Bitmap current)
+        private IEnumerable<PenCandidate> findPenCandidates(Bitmap previous, Bitmap current)
         {
             // calculate difference image
             Strategy.DifferenceFilter.OverlayImage = previous;
-            Bitmap diff = Strategy.DifferenceFilter.Apply(current);
+            Bitmap diffImage = Strategy.DifferenceFilter.Apply(current);
             //b.Save(@"c:\temp\images\r1_diff16.bmp");
 
             // translate red parts to gray image
-            Bitmap gray = Strategy.GrayFilter.Apply(diff);
+            Bitmap grayImage = Strategy.GrayFilter.Apply(diffImage);
             //a.Save(@"c:\temp\images\r2_grey16.bmp");
 
             // treshold the gray image
-            Bitmap treshold = Strategy.ThresholdFilter.Apply(gray);
+            Bitmap tresholdImage = Strategy.ThresholdFilter.Apply(grayImage);
 
 #if DEBUG
             if (DebugPicture != null)
             {
-                DebugPicture(this, new DebugPictureEventArgs(new List<Bitmap>() { diff, gray, treshold }));
+                DebugPicture(this, new DebugPictureEventArgs(new List<Bitmap>() { diffImage, grayImage, tresholdImage }));
             }
 #endif
 
-            // count white blobs (ev. kann man den thresholdFilter wegschmeissen, siehe ctr parameter von BlobCounter)
-            Strategy.BlobCounter.ProcessImage(treshold);
-            Rectangle[] r = Strategy.BlobCounter.GetObjectsRectangles();
+            // count white blobs (TODO ev. kann man den thresholdFilter wegschmeissen, siehe ctr parameter von BlobCounter)
+            Strategy.BlobCounter.ProcessImage(tresholdImage);
 
+            // frame found blobs and add information
+            var candidates = 
+                from r in Strategy.BlobCounter.GetObjectsRectangles()
+                select new PenCandidate()
+                {
+                    Rectangle = r,
+                    WeightedCenter = PointTools.CalculateCenterPoint(r) // TODO more precise weightening
+                };
+
+            return candidates;
+        }
+
+        private Point findPen(IEnumerable<PenCandidate> candidates)
+        {
             // Return intermediate point
-            switch (r.Length)
+            switch (candidates.Count())
             {
                 case 0:
+                    // No pen found or pen is not moving
                     return Point.Empty;
                 case 1:
-                    return PointTools.CalculateCenterPoint(r[0]);
+                    // Take center of the only found rectangle
+                    return candidates.First().WeightedCenter;
                 case 2:
+                    PenCandidate candidateOne = candidates.ElementAt(0);
+                    PenCandidate candidateTwo = candidates.ElementAt(1);
+
+                    //PointFrame previousPointFrame = this.GetLastFrame();
+                    //if (previousPointFrame == null)
+                    //{
+                    //    // If we don't have a previous point, then we can't say in which direction
+                    //    // the pen is moving. We just interpolate.
+                    //    return PointTools.CalculateCenterPoint(
+                    //        candidateOne.WeightedCenter,
+                    //        candidateTwo.WeightedCenter);
+                    //}
+
+                    //// We search the candidates for the previously recognized pen point
+                    //// and return just the new one.
+                    //if (candidateOne.Rectangle.Contains(previousPointFrame.Point))
+                    //{
+                    //    return candidateTwo.WeightedCenter;
+                    //}
+                    //if (candidateTwo.Rectangle.Contains(previousPointFrame.Point))
+                    //{
+                    //    return candidateOne.WeightedCenter;
+                    //}
+
+                    //// Both points are unknown!
+                    //throw new NotImplementedException("TODO Invalid State. What to do?");
+
                     return PointTools.CalculateCenterPoint(
-                        PointTools.CalculateCenterPoint(r[0]), 
-                        PointTools.CalculateCenterPoint(r[1]));
+                        candidateOne.WeightedCenter,
+                        candidateTwo.WeightedCenter);
                 default:
-                    throw new Exception("TODO: Error Handling: more than two points are bad! Wrong Camera adjustment!");
+                    throw new NotImplementedException("TODO Error Handling: more than two points are bad! Wrong Camera adjustment?");
             }
         }
 
