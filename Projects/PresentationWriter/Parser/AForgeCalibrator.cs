@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Threading;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using AForge;
 using AForge.Imaging;
@@ -21,10 +23,13 @@ namespace HSR.PresentationWriter.Parser
         private int _calibrationStep;
         private int _errors;
         private VisualizerControl _vs = VisualizerControl.GetVisualizer();
-        private const int CalibrationFrames = 25;
+        private const int CalibrationFrames = 28; //must be n^2+3
         private Difference diffFilter = new Difference();
-        private int _rowcount=1;
-        private int _columncount=1;
+        private const int Rowcount=20;
+        private const int Columncount=15;
+        private SemaphoreSlim _sem;
+        private double sqrheight;
+        private double sqrwidth;
 
 
         public AForgeCalibrator(CameraConnector cc)
@@ -47,10 +52,24 @@ namespace HSR.PresentationWriter.Parser
         {
             _calibrationStep = 0;
             _errors = 0;
+            sqrwidth = ((double)_vs.Width) / Rowcount;
+            sqrheight = ((double)_vs.Height) / Columncount;
+            _sem = new SemaphoreSlim(1, 1);
             _cc.NewImage += BaseCalibration;
         }
 
         private void BaseCalibration(object sender, NewImageEventArgs e)
+        {
+
+            if (_sem.CurrentCount >= 1)//_t.Status != TaskStatus.Running)//
+            {
+                _sem.Wait();
+                Task.Factory.StartNew(() => CalibThread(e));
+            }
+        }
+
+
+        private async Task CalibThread(NewImageEventArgs e)
         {
             if (_errors > 100)
             {
@@ -65,67 +84,42 @@ namespace HSR.PresentationWriter.Parser
             }
             else
             {
-                Bitmap cChanBitmap;
-                Bitmap diffBitmap = diffFilter.Apply(e.NewImage);
+                var diffBitmap = diffFilter.Apply(e.NewImage);
                 if (_calibrationStep > 2)
                 {
                     _vs.ClearRects();
                     FillRects();
-                    var rectlist = new List<List<IntPoint>>();
-                    for (int j = 0; j < 3; j++)
-                    {
-                        var cf = new ColorFiltering(new IntRange(0,50), new IntRange(0,50), new IntRange(0,50) );
-                        switch (j)
-                        {
-                            case 0:
-                                cf.Red = new IntRange(100,255);
-                                break;
-                            case 1:
-                                cf.Green = new IntRange(100, 255);
-                                break;
-                            case 2:
-                                cf.Blue = new IntRange(100, 255);
-                                break;
-                        }
-                        cChanBitmap = cf.Apply(diffBitmap);
-                        var blobCounter = new BlobCounter();
-                        blobCounter.ObjectsOrder = ObjectsOrder.YX;
-                        blobCounter.ProcessImage(cChanBitmap);
-                        var blobs = blobCounter.GetObjectsInformation();
-                        // add all detected rects
-                        for (int i = 0, n = blobs.Length; i < n; i++)
-                        {
-                            List<IntPoint> corners = PointsCloud.FindQuadrilateralCorners(blobCounter.GetBlobsEdgePoints(blobs[i]));
-                            rectlist.Add(corners);
-                        }
-                        //sort
-                        foreach (var rect in rectlist)
-                        {
-                            InPlaceSort(rect);
-                        }
-                        InPlaceSort(rectlist);
-                    }
-
+                    var gf = new ColorFiltering(new IntRange(0, 50), new IntRange(100, 255), new IntRange(0, 50));
+                    var bf = new ColorFiltering(new IntRange(0, 50), new IntRange(0, 50), new IntRange(100, 255));
+                    var gbm = gf.Apply(diffBitmap);
+                    var bbm = bf.Apply(diffBitmap);
+                    var gblobCounter = new BlobCounter {ObjectsOrder = ObjectsOrder.YX};
+                    gblobCounter.ProcessImage(gbm);
+                    var bblobCounter = new BlobCounter { ObjectsOrder = ObjectsOrder.YX };
+                    bblobCounter.ProcessImage(bbm);
+                    ProcessBlobs(gblobCounter, 0);
+                    ProcessBlobs(bblobCounter, 1);
                 }
                 else
                     switch (_calibrationStep)
                     {
                         case 2:
-                        var thresholdFilter = new Threshold(50);
-                        thresholdFilter.ApplyInPlace(diffBitmap);
-                        var blobCounter = new BlobCounter {ObjectsOrder = ObjectsOrder.Size};
+                            var thresholdFilter = new Threshold(50);
+                            thresholdFilter.ApplyInPlace(diffBitmap);
+                            var blobCounter = new BlobCounter {ObjectsOrder = ObjectsOrder.Size};
                             blobCounter.ProcessImage(diffBitmap);
-                        var blobs = blobCounter.GetObjectsInformation();
-                            List<IntPoint> corners = PointsCloud.FindQuadrilateralCorners(blobCounter.GetBlobsEdgePoints(blobs[0]));
+                            var blobs = blobCounter.GetObjectsInformation();
+                            List<IntPoint> corners =
+                                PointsCloud.FindQuadrilateralCorners(blobCounter.GetBlobsEdgePoints(blobs[0]));
                             InPlaceSort(corners);
-                            Grid.TopLeft = new Point(corners[0].X,corners[0].Y);
+                            Grid.TopLeft = new Point(corners[0].X, corners[0].Y);
                             Grid.TopRight = new Point(corners[1].X, corners[1].Y);
                             Grid.BottomLeft = new Point(corners[2].X, corners[2].Y);
                             Grid.BottomRight = new Point(corners[3].X, corners[3].Y);
                             if (Grid.TopLeft.X > 10 && Grid.TopRight.X < _vs.Width - 10 && Grid.BottomLeft.X > 10 &&
-                                Grid.BottomRight.X < _vs.Width - 10 && Grid.TopLeft.Y > 10 && Grid.TopRight.Y > 10 && 
-                                Grid.BottomLeft.Y < _vs.Height - 10 && Grid.BottomRight.Y < _vs.Height - 10 && 
-                                Grid.TopLeft.X < Grid.BottomRight.X && 
+                                Grid.BottomRight.X < _vs.Width - 10 && Grid.TopLeft.Y > 10 && Grid.TopRight.Y > 10 &&
+                                Grid.BottomLeft.Y < _vs.Height - 10 && Grid.BottomRight.Y < _vs.Height - 10 &&
+                                Grid.TopLeft.X < Grid.BottomRight.X &&
                                 Grid.BottomLeft.X < Grid.TopRight.X && Grid.BottomLeft.X < Grid.BottomRight.X &&
                                 Grid.TopLeft.Y < Grid.BottomLeft.Y && Grid.TopLeft.Y < Grid.BottomRight.Y &&
                                 Grid.TopRight.Y < Grid.BottomLeft.Y && Grid.TopRight.Y < Grid.BottomRight.Y)
@@ -165,6 +159,112 @@ namespace HSR.PresentationWriter.Parser
             }
         }
 
+        private void ProcessBlobs(BlobCounter blobCounter, int offset)
+        {
+            blobCounter.FilterBlobs = true;
+            var blobs = blobCounter.GetObjectsInformation().ToList();
+            // remove when outside
+            blobs.RemoveAll(x => !Grid.Contains(x.CenterOfGravity));
+            //find topleft
+            //var top = blobs.Where(x => x.CenterOfGravity.X == blobs.GetRange(0,Rowcount).
+            //    Min(y => y.CenterOfGravity.X)).
+            //    OrderBy(z=>z.CenterOfGravity.Y).First();
+            var top = blobs.Where(x => IsNextTo(x.CenterOfGravity, Grid.TopLeft, 0, 0, 1.5 + offset));
+            if (top.Count() == 1 && IsNextTo(top.First().CenterOfGravity, Grid.TopLeft,0,0,1.5 + offset))
+            {
+                blobs.Remove(top.First());
+                if (ProcessBlobs(top.First(), blobs, 0, 0, offset, blobCounter) < Rowcount*Columncount*0.75)
+                    _errors++;
+            }
+            else
+            {
+                _errors++;
+                return;
+            }
+        }
+
+        private int ProcessBlobs(Blob blob, List<Blob> rest, int x, int y, int offset, BlobCounter blobCounter)
+        {
+            if (x < 0 || y < 0 || y > Columncount || x > Rowcount)
+            {
+                throw new ArgumentException("X: "+x+ " Y: " + y + " isn't a valid blob position");
+            }
+            var corners =
+                PointsCloud.FindQuadrilateralCorners(blobCounter.GetBlobsEdgePoints(blob));
+            InPlaceSort(corners);
+            double xOff = ((_calibrationStep - 3) % (int)Math.Sqrt(CalibrationFrames - 3)) * sqrwidth;
+            double yOff = Math.Floor((_calibrationStep - 3) / Math.Sqrt(CalibrationFrames - 3)) * sqrwidth;
+            Grid.AddPoint((int)(x * sqrwidth + xOff), (int)(y * sqrheight + yOff), corners[0].X, corners[0].Y);
+            Grid.AddPoint((int)((x + 1) * sqrwidth + xOff), (int)(y * sqrheight + yOff), corners[1].X, corners[1].Y);
+            Grid.AddPoint((int)(x * sqrwidth + xOff), (int)((y + 1) * sqrheight + yOff), corners[2].X, corners[2].Y);
+            Grid.AddPoint((int)((x + 1) * sqrwidth + xOff), (int)((y + 1) * sqrheight + yOff), corners[3].X, corners[3].Y);
+            //find neighbours
+            int maxNeigbours = 4;
+            if (x == 0 || x == Rowcount)
+                maxNeigbours--;
+            if (y == 0 || y == Columncount)
+                maxNeigbours--;
+            var n = rest.Where(m => IsNextTo(blob.CenterOfGravity, m.CenterOfGravity, x, y, 2.5));
+            if(n.Count()>maxNeigbours )
+                throw new InvalidOperationException("Too much Blobs");
+            int res = n.Count();
+            foreach (var b in n)
+            {
+                var xdiff = b.CenterOfGravity.X - blob.CenterOfGravity.X;
+                var ydiff = b.CenterOfGravity.Y - blob.CenterOfGravity.Y;
+                rest.Remove(b);
+                if (xdiff > ydiff)
+                {
+                    if (xdiff > 0)
+                    {
+                        res += ProcessBlobs(b, rest, x + 1, y, offset, blobCounter);
+                    }
+                    else
+                    {
+                        res += ProcessBlobs(b, rest, x - 1, y, offset, blobCounter);
+                    }
+                }
+                else
+                {
+                    if (ydiff > 0)
+                    {
+                        res += ProcessBlobs(b, rest, x, y + 1, offset, blobCounter);
+                    }
+                    else
+                    {
+                        res += ProcessBlobs(b, rest, x, y - 1, offset, blobCounter);
+                    }
+                }
+            }
+            return res;
+        }
+
+        private bool IsNextTo(AForge.Point p1, AForge.Point p2, int rownr, int colnr, double maxDist)
+        {
+            return IsNextTo(p1, new Point(p2.X, p2.Y), rownr, colnr, maxDist);
+        }
+
+        private bool IsNextTo(AForge.Point p1, Point p2, int rownr, int colnr, double maxDist)
+        {
+            return Math.Abs(p1.X - p2.X) < PredictRowDistance(colnr)*maxDist &&
+                   Math.Abs(p1.X - p2.X) < PredictColumnDistance(rownr)*maxDist;
+        }
+
+        private int PredictRowDistance(int columnnr)
+        {
+            var dist = (Grid.TopRight.X - Grid.TopLeft.X)*(1.0 - (double) columnnr/Columncount) +
+                       (Grid.BottomRight.X - Grid.BottomLeft.X)*((double) columnnr/Columncount);
+            return (int) Math.Round(dist/Rowcount);
+        }
+
+        private int PredictColumnDistance(int rownr)
+        {
+
+            var dist = (Grid.BottomLeft.Y - Grid.TopLeft.Y)*(1.0 - (double) rownr/Rowcount) +
+                       (Grid.BottomRight.Y - Grid.TopRight.Y)*((double) rownr/Rowcount);
+            return (int)Math.Round(dist / Columncount);
+        }
+
         /// <summary>
         /// Sorting the whole list
         /// </summary>
@@ -174,10 +274,10 @@ namespace HSR.PresentationWriter.Parser
         {
             var tmp = new List<List<IntPoint>>();
             rectlist = rectlist.OrderBy(x => x.First().Y).ToList();
-            for (int i = 0; i < _rowcount; i++)
+            for (int i = 0; i < Rowcount; i++)
             {
                 var tmp2 = new List<List<IntPoint>>();
-                tmp2.AddRange(rectlist.GetRange(0,_columncount));
+                tmp2.AddRange(rectlist.GetRange(0,Columncount));
             }
         }
 
@@ -200,10 +300,26 @@ namespace HSR.PresentationWriter.Parser
 
         private void FillRects()
         {
-            int step = (_calibrationStep - 2)*10;
-            for (int i = step; i < _vs.Width; i+=100)
+
+            double xOff = ((_calibrationStep - 3) % (int)Math.Sqrt(CalibrationFrames - 3)) * sqrwidth;
+            double yOff = Math.Floor((_calibrationStep - 3) / Math.Sqrt(CalibrationFrames - 3)) * sqrwidth;
+            for (int y = 0; y < Columncount; y++)
             {
-                
+                for (int x = 0; x < Rowcount; x++)
+                {
+                    if (y%2==0 && x%2 == 0)
+                    {
+                        _vs.AddRect((int)(x * sqrwidth + xOff), (int)(y * sqrheight + yOff), 
+                            ((int)((x + 1) * sqrwidth + xOff)), (int)((y + 1) * sqrheight + yOff),
+                        Color.FromArgb(255,0,255,0)); 
+                    }
+                    if (y % 2 == 1 && x % 2 == 1)
+                    {
+                        _vs.AddRect((int)(x * sqrwidth + xOff), (int)(y * sqrheight + yOff),
+                            ((int)((x + 1) * sqrwidth + xOff)), (int)((y + 1) * sqrheight + yOff),
+                        Color.FromArgb(255, 0, 0, 255));
+                    }
+                }
             }
         }
 
