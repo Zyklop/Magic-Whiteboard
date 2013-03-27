@@ -145,29 +145,33 @@ namespace HSR.PresentationWriter.Parser
                     PenCandidate candidateOne = candidates.ElementAt(0);
                     PenCandidate candidateTwo = candidates.ElementAt(1);
 
-                    PointFrame previousPointFrame = this.GetLastFrame();
-                    if (previousPointFrame == null)
-                    {
-                        // If we don't have a previous point, then we can't say in which direction
-                        // the pen is moving. We just interpolate.
-                        return PointTools.CalculateCenterPoint(
-                            candidateOne.WeightedCenter,
-                            candidateTwo.WeightedCenter);
-                    }
+                    //PointFrame previousPointFrame = this.GetLastFrame();
+                    //if (previousPointFrame == null)
+                    //{
+                    //    // If we don't have a previous point, then we can't say in which direction
+                    //    // the pen is moving. We just interpolate.
+                    //    return PointTools.CalculateCenterPoint(
+                    //        candidateOne.WeightedCenter,
+                    //        candidateTwo.WeightedCenter);
+                    //}
 
-                    // We search the candidates for the previously recognized pen point
-                    // and return just the new one.
-                    if (candidateOne.Rectangle.Contains(previousPointFrame.Point))
-                    {
-                        return candidateTwo.WeightedCenter;
-                    }
-                    if (candidateTwo.Rectangle.Contains(previousPointFrame.Point))
-                    {
-                        return candidateOne.WeightedCenter;
-                    }
+                    //// We search the candidates for the previously recognized pen point
+                    //// and return just the new one.
+                    //if (candidateOne.Rectangle.Contains(previousPointFrame.Point))
+                    //{
+                    //    return candidateTwo.WeightedCenter;
+                    //}
+                    //if (candidateTwo.Rectangle.Contains(previousPointFrame.Point))
+                    //{
+                    //    return candidateOne.WeightedCenter;
+                    //}
 
-                    // Both points are unknown!
-                    throw new NotImplementedException("TODO Invalid State. What to do?");
+                    //// Both points are unknown!
+                    //throw new NotImplementedException("TODO Invalid State. What to do?");
+
+                    return PointTools.CalculateCenterPoint(
+                        candidateOne.WeightedCenter,
+                        candidateTwo.WeightedCenter);
                 default:
                     throw new NotImplementedException("TODO Error Handling: more than two points are bad! Wrong Camera adjustment?");
             }

@@ -19,5 +19,10 @@ namespace WinFormsGuiTester
         {
             (new FilterCalibrationForm()).ShowDialog();
         }
+
+        private void libraryTrackingButton_Click(object sender, EventArgs e)
+        {
+            (new LibraryTrackingForm()).ShowDialog();
+        }
     }
 }

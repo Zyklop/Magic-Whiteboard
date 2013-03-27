@@ -61,6 +61,7 @@
             this.pathLabel.Size = new System.Drawing.Size(44, 13);
             this.pathLabel.TabIndex = 1;
             this.pathLabel.Text = "c:\\temp";
+            this.pathLabel.Click += new System.EventHandler(this.pathLabel_Click);
             // 
             // inputListBox
             // 
@@ -79,6 +80,7 @@
             this.filterPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.filterPictureBox.TabIndex = 3;
             this.filterPictureBox.TabStop = false;
+            this.filterPictureBox.Click += new System.EventHandler(this.filterPictureBox_Click);
             // 
             // filterGroupBox
             // 
