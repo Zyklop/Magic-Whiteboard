@@ -7,7 +7,7 @@ namespace HSR.PresentationWriter.Parser
     public class DataParser
     {
         private readonly CameraConnector _cc;
-        private Calibrator _calibrator;
+        private ICalibrator _calibrator;
         private int _gridcheck=1000;
 
         /// <summary>
@@ -25,7 +25,7 @@ namespace HSR.PresentationWriter.Parser
         /// </summary>
         private void Initialize()
         {
-            _calibrator = new Calibrator(_cc);
+            _calibrator = new AForgeCalibrator(_cc);
         }
 
         /// <summary>
