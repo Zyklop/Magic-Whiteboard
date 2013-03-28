@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using Point = System.Windows.Point;
 
-namespace HSR.PresentationWriter.Parser
+namespace HSR.PresWriter.PenTracking
 {
     public interface IVisualizerControl
     {

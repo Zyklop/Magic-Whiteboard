@@ -1,7 +1,7 @@
 ﻿using AForge.Imaging;
 using AForge.Imaging.Filters;
-using HSR.PresentationWriter.DataSources;
-using HSR.PresentationWriter.Parser.Events;
+using HSR.PresWriter.Containers;
+using HSR.PresWriter.PenTracking.Events;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -12,7 +12,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace HSR.PresentationWriter.Parser
+namespace HSR.PresWriter.PenTracking
 {
     public class AForgePenTracker : IPenTracker
     {

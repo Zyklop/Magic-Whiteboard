@@ -1,6 +1,6 @@
-﻿using HSR.PresentationWriter.DataSources;
-using HSR.PresentationWriter.Parser;
-using HSR.PresentationWriter.Parser.Strategies;
+﻿using HSR.PresWriter.Containers;
+using HSR.PresWriter.PenTracking;
+using HSR.PresWriter.PenTracking.Strategies;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;

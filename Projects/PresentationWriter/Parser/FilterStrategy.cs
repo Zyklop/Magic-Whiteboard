@@ -1,7 +1,7 @@
 ﻿using AForge.Imaging;
 using AForge.Imaging.Filters;
 
-namespace HSR.PresentationWriter.Parser
+namespace HSR.PresWriter.PenTracking
 {
     public abstract class FilterStrategy
     {

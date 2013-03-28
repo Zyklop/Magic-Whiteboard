@@ -1,11 +1,10 @@
-﻿using HSR.PresentationWriter.Parser.Events;
-using HSR.PresentationWriter.Parser.Images;
+﻿using HSR.PresWriter.Containers;
+using HSR.PresWriter.PenTracking.Events;
 using System;
 using System.Drawing;
-using HSR.PresentationWriter.DataSources;
 using System.Threading.Tasks;
 
-namespace HSR.PresentationWriter.Parser
+namespace HSR.PresWriter.PenTracking
 {
     public interface IPenTracker
     {

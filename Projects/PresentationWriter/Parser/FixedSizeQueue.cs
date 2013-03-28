@@ -1,6 +1,6 @@
 ﻿using System.Collections.Concurrent;
 
-namespace HSR.PresentationWriter.Parser
+namespace HSR.PresWriter.PenTracking
 {
     public class FixedSizedQueue<T> : ConcurrentQueue<T>
     {

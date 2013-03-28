@@ -52,9 +52,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Camera\Camera.csproj">
+    <ProjectReference Include="..\..\Camera\HSR.PresWriter.Camera.csproj">
       <Project>{c7bc83d8-ddff-4b93-b747-22c8c2ccd812}</Project>
-      <Name>Camera</Name>
+      <Name>HSR.PresWriter.Camera</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\ImageVisualizer\ImageVisualizer.csproj">
       <Project>{3AF7E3B7-7ED1-4F0D-9426-58150F6697F8}</Project>
@@ -68,9 +68,9 @@
       <Project>{6d096d62-8614-434b-a558-d99053d395ea}</Project>
       <Name>WFVisuslizer</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Parser.csproj">
+    <ProjectReference Include="..\HSR.PresWriter.PenTracking.csproj">
       <Project>{c9d79db6-72b8-461a-b725-8fee1dc05eb6}</Project>
-      <Name>Parser</Name>
+      <Name>HSR.PresWriter.PenTracking</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

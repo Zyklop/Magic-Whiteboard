@@ -1,6 +1,6 @@
 using System;
 
-namespace HSR.PresentationWriter.Parser.Images
+namespace HSR.PresWriter.PenTracking.Images
 {
     public class BinaryBitmap
     {

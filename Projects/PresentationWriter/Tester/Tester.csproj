@@ -53,13 +53,13 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Camera\Camera.csproj">
+    <ProjectReference Include="..\Camera\HSR.PresWriter.Camera.csproj">
       <Project>{c7bc83d8-ddff-4b93-b747-22c8c2ccd812}</Project>
-      <Name>Camera</Name>
+      <Name>HSR.PresWriter.Camera</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Parser\Parser.csproj">
+    <ProjectReference Include="..\Parser\HSR.PresWriter.PenTracking.csproj">
       <Project>{c9d79db6-72b8-461a-b725-8fee1dc05eb6}</Project>
-      <Name>Parser</Name>
+      <Name>HSR.PresWriter.PenTracking</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

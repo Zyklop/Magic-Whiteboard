@@ -1,18 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Windows.Media;
-using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Media.Imaging;
-using System.Windows.Threading;
-using HSR.PresentationWriter.DataSources;
-using HSR.PresentationWriter.Parser;
-using HSR.PresentationWriter.Parser.Events;
-using HSR.PresentationWriter.Parser.Images;
-using Parser;
+using HSR.PresWriter.PenTracking;
+using HSR.PresWriter.PenTracking.Images;
 using Parser.Mock;
 using WFVisuslizer;
 using Color = System.Drawing.Color;
@@ -31,8 +20,7 @@ namespace MockTester
         {
             int i = 0;
             ThreeChannelBitmap tci = new ThreeChannelBitmap();
-            var cameraConnector = new CameraConnector(new AForgeCamera());
-            var parser = new DataParser(cameraConnector);
+            var parser = new DataParser();
             parser.Start();
             Thread.Sleep(10000);
             //cameraConnector.NewImage += delegate(object sender, NewImageEventArgs e)
@@ -53,7 +41,7 @@ namespace MockTester
         {
             int i = 0;
             var cameraConnector = new MockCameraConnector();
-            var parser = new DataParser(cameraConnector);
+            var parser = new DataParser();
             parser.Start();
             Thread.Sleep(10000);
             //cameraConnector.NewImage += delegate(object sender, NewImageEventArgs e)

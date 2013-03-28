@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Windows;
-using HSR.PresentationWriter.Parser.Events;
+using HSR.PresWriter.PenTracking.Events;
 
-namespace HSR.PresentationWriter.Parser
+namespace HSR.PresWriter.PenTracking
 {
     public class DataParser
     {
-        private readonly CameraConnector _cc;
         private ICalibrator _calibrator;
         private int _gridcheck=1000;
 
@@ -15,9 +14,9 @@ namespace HSR.PresentationWriter.Parser
         /// Parsing all the data
         /// </summary>
         /// <param name="camera"></param>
-        public DataParser(CameraConnector camera)
+        public DataParser()
         {
-            _cc = camera;
+            // TODO
         }
 
         /// <summary>
@@ -25,7 +24,7 @@ namespace HSR.PresentationWriter.Parser
         /// </summary>
         private void Initialize()
         {
-            _calibrator = new AForgeCalibrator(_cc);
+            _calibrator = new AForgeCalibrator(null); // TODO
         }
 
         /// <summary>
@@ -34,7 +33,7 @@ namespace HSR.PresentationWriter.Parser
         public void Start()
         {
             Initialize();
-            _cc.NewImage += NewImage;
+            // TODO
         }
 
         private void NewImage(object sender, NewImageEventArgs e)
@@ -59,7 +58,7 @@ namespace HSR.PresentationWriter.Parser
         /// </summary>
         public void Stop()
         {
-            _cc.NewImage -= NewImage;
+            // TODO
         }
 
         /// <summary>

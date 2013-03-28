@@ -6,16 +6,16 @@ using System.Text;
 using System.Timers;
 using System.Threading;
 using System.Threading.Tasks;
-using HSR.PresentationWriter.Parser;
-using HSR.PresentationWriter.Parser.Events;
-using HSR.PresentationWriter.Parser.Images;
+using HSR.PresWriter.PenTracking;
+using HSR.PresWriter.PenTracking.Events;
+using HSR.PresWriter.PenTracking.Images;
 using System.Drawing;
 using Timer = System.Timers.Timer;
 
 namespace Parser.Mock
 {
 
-    public class MockCameraConnector:CameraConnector
+    public class MockCameraConnector // TODO
     {
         private System.Timers.Timer tim = new Timer();
         private List<Bitmap> imagelist;
@@ -50,6 +50,6 @@ namespace Parser.Mock
             tim.Start();
         }
 
-        public override event EventHandler<NewImageEventArgs> NewImage;
+        public event EventHandler<NewImageEventArgs> NewImage;
     }
 }
