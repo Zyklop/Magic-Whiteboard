@@ -1,11 +1,6 @@
-﻿using System;
-using System.Drawing;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows;
-using Point = System.Windows.Point;
+﻿using System.Drawing;
 
-namespace HSR.PresentationWriter.Parser
+namespace Visualizer
 {
     public interface IVisualizerControl
     {
@@ -37,7 +32,7 @@ namespace HSR.PresentationWriter.Parser
         /// </summary>
         /// <param name="rect"></param>
         /// <param name="c"></param>
-        void AddRect(Rect rect, Color c);
+        //void AddRect(Rect rect, Color c);
 
         /// <summary>
         /// Remove all the rectangles

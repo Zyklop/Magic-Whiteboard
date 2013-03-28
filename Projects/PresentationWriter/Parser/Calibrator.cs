@@ -11,6 +11,7 @@ using System.Windows.Threading;
 using HSR.PresentationWriter.Parser.Events;
 using HSR.PresentationWriter.Parser.Images;
 using DColor = System.Drawing.Color;
+using VPoint = Visualizer.Point;
 using WFVisuslizer;
 
 namespace HSR.PresentationWriter.Parser
@@ -291,9 +292,9 @@ namespace HSR.PresentationWriter.Parser
             _rects[1] = new Rect(tl, new Point(r.Next((int)tl.X, _vs.Width - 50) + 50, r.Next((int)tl.Y, _vs.Height - 50) + 50));
             tl = new Point(r.Next(_vs.Width - 50), r.Next(_vs.Height - 50));
             _rects[2] = new Rect(tl, new Point(r.Next((int)tl.X, _vs.Width - 50) + 50, r.Next((int)tl.Y, _vs.Height - 50) + 50));
-            _vs.AddRect(_rects[0].TopLeft, _rects[0].BottomRight, DColor.FromArgb(255, 255, 0, 0));
-            _vs.AddRect(_rects[1].TopLeft, _rects[1].BottomRight, DColor.FromArgb(255, 0, 255, 0));
-            _vs.AddRect(_rects[2].TopLeft, _rects[2].BottomRight, DColor.FromArgb(255, 0, 0, 255));
+            _vs.AddRect(new VPoint(_rects[0].TopLeft.X,_rects[0].Y), new VPoint(_rects[0].BottomRight.X, _rects[0].BottomRight.Y), DColor.FromArgb(255, 255, 0, 0));
+            _vs.AddRect(new VPoint(_rects[1].TopLeft.X, _rects[1].Y), new VPoint(_rects[1].BottomRight.X, _rects[1].BottomRight.Y), DColor.FromArgb(255, 0, 255, 0));
+            _vs.AddRect(new VPoint(_rects[2].TopLeft.X,_rects[2].Y), new VPoint(_rects[2].BottomRight.X, _rects[2].BottomRight.Y), DColor.FromArgb(255, 0, 0, 255));
             CheckIntersections();
         }
 
@@ -303,23 +304,23 @@ namespace HSR.PresentationWriter.Parser
             {
                 var rect = _rects[1];
                 rect.Intersect(_rects[0]);
-                _vs.AddRect(rect, DColor.FromArgb(255, 255, 255, 0));
+                _vs.AddRect(new VPoint(rect.TopLeft.X,rect.Y), new VPoint(rect.BottomRight.X, rect.BottomRight.Y), DColor.FromArgb(255, 255, 255, 0));
             }
             if (_rects[0].IntersectsWith(_rects[2]))
             {
                 var rect = _rects[2];
                 rect.Intersect(_rects[0]);
-                _vs.AddRect(rect, DColor.FromArgb(255, 255, 0, 255));
+                _vs.AddRect(new VPoint(rect.TopLeft.X, rect.Y), new VPoint(rect.BottomRight.X, rect.BottomRight.Y), DColor.FromArgb(255, 255, 0, 255));
             }
             if (_rects[1].IntersectsWith(_rects[2]))
             {
                 var rect = _rects[2];
                 rect.Intersect(_rects[1]);
-                _vs.AddRect(rect, DColor.FromArgb(255, 0, 255, 255));
+                _vs.AddRect(new VPoint(rect.TopLeft.X, rect.Y), new VPoint(rect.BottomRight.X, rect.BottomRight.Y), DColor.FromArgb(255, 0, 255, 255));
                 if (rect.IntersectsWith(_rects[0]))
                 {
                     rect.Intersect(_rects[0]);
-                    _vs.AddRect(rect, DColor.FromArgb(255, 255, 255, 255));
+                    _vs.AddRect(new VPoint(rect.TopLeft.X, rect.Y), new VPoint(rect.BottomRight.X, rect.BottomRight.Y), DColor.FromArgb(255, 255, 255, 255));
                 }
             }
         }
