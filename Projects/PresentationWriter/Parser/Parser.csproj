@@ -67,6 +67,7 @@
     <Compile Include="Grid.cs" />
     <Compile Include="Images\ThreeChannelBitmap.cs" />
     <Compile Include="FilterStrategy.cs" />
+    <Compile Include="IVisualizerControl.cs" />
     <Compile Include="Mock\MockCameraConnector.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>

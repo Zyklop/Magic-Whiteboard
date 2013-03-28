@@ -28,7 +28,7 @@ namespace Parser.Mock
             {
                 try
                 {
-                    imagelist.Add(new Bitmap(@"C:\temp\inp2\img" + i + ".jpg"));
+                    imagelist.Add(new Bitmap(@"C:\temp\aforge\inp\img" + i + ".jpg"));
                 }
                 catch (ArgumentException e)
                 {

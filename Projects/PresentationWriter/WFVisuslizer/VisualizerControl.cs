@@ -4,11 +4,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
+using HSR.PresentationWriter.Parser;
 using Point = System.Windows.Point;
 
 namespace WFVisuslizer
 {
-    public class VisualizerControl
+    public class VisualizerControl : IVisualizerControl
     {
         private Form1 _cw = new Form1();
         private bool _shown = false;
