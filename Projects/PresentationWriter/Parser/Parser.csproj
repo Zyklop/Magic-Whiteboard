@@ -67,6 +67,7 @@
     <Compile Include="Grid.cs" />
     <Compile Include="Images\ThreeChannelBitmap.cs" />
     <Compile Include="FilterStrategy.cs" />
+    <Compile Include="IVisualizerControl.cs" />
     <Compile Include="Mock\MockCameraConnector.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
@@ -92,6 +93,10 @@
     <ProjectReference Include="..\Camera\Camera.csproj">
       <Project>{c7bc83d8-ddff-4b93-b747-22c8c2ccd812}</Project>
       <Name>Camera</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Visualizer\Visualizer.csproj">
+      <Project>{9674e9a0-ec6b-44d9-9700-85b6acf9a5fb}</Project>
+      <Name>Visualizer</Name>
     </ProjectReference>
     <ProjectReference Include="..\WFVisuslizer\WFVisuslizer.csproj">
       <Project>{6d096d62-8614-434b-a558-d99053d395ea}</Project>

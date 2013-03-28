@@ -31,6 +31,8 @@ namespace HSR.PresentationWriter.Parser
         private Task t;
         private double sqrheight;
         private double sqrwidth;
+        private const int MeanDiff = 0;
+        private const int ColorDiff = 15;
 
 
         public AForgeCalibrator(CameraConnector cc)
@@ -79,6 +81,19 @@ namespace HSR.PresentationWriter.Parser
         {
             Debug.WriteLine("Calibrating " + _calibrationStep);
             e.NewImage.Save(@"C:\temp\aforge\src\img" + _calibrationStep + ".jpg");
+            var stats = new ImageStatistics(e.NewImage);
+                    //var histogram = stats.Gray;
+            //Debug.WriteLine("Grey: Min: " + histogram.Min + " Max: " + histogram.Max + " Mean: " + histogram.Mean +
+            //    " Dev: " + histogram.StdDev + " Median: " + histogram.Median);
+            var histogram = stats.Green;
+            Debug.WriteLine("Green: Min: " + histogram.Min + " Max: " + histogram.Max + " Mean: " + histogram.Mean +
+                " Dev: " + histogram.StdDev + " Median: " + histogram.Median);
+            histogram = stats.Blue;
+            Debug.WriteLine("Blue: Min: " + histogram.Min + " Max: " + histogram.Max + " Mean: " + histogram.Mean +
+                " Dev: " + histogram.StdDev + " Median: " + histogram.Median);
+            histogram = stats.Red;
+            Debug.WriteLine("Red: Min: " + histogram.Min + " Max: " + histogram.Max + " Mean: " + histogram.Mean +
+                " Dev: " + histogram.StdDev + " Median: " + histogram.Median);
             //e.NewImage.Save(@"C:\temp\aforge\src\img" + _calibrationStep + ".jpg");
             if (_errors > 100)
             {
@@ -93,19 +108,23 @@ namespace HSR.PresentationWriter.Parser
             }
             else
             {
-                var diffBitmap = new Bitmap(1,1);
-                if(diffFilter.OverlayImage != null)
-                    diffBitmap = diffFilter.Apply(e.NewImage);
-                diffBitmap.Save(@"C:\temp\aforge\diff\img" + _calibrationStep + ".jpg");
+                //var diffBitmap = new Bitmap(1,1);
+                //if(diffFilter.OverlayImage != null)
+                //    diffBitmap = diffFilter.Apply(e.NewImage);
+                //diffBitmap.Save(@"C:\temp\aforge\diff\img" + _calibrationStep + ".jpg");
                 if (_calibrationStep > 2)
                 {
                     _vs.ClearRects();
                     FillRects();
-                    var gf = new ColorFiltering(new IntRange(0, 255), new IntRange(30, 255), new IntRange(0, 20));
-                    var bf = new ColorFiltering(new IntRange(0, 255), new IntRange(0, 20), new IntRange(30, 255));
-                    var gbm = gf.Apply(diffBitmap);
+                    var gf = new ColorFiltering(new IntRange(0, 255), //(int) stats.Red.Mean), 
+                                                new IntRange((int) (stats.Green.Mean + ColorDiff), 255),
+                                                new IntRange(0, 255));//(int) stats.Blue.Mean));
+                    var bf = new ColorFiltering(new IntRange(0, 255),//(int)stats.Red.Mean), 
+                        new IntRange(0, 255),//(int) stats.Green.Mean), 
+                        new IntRange((int) stats.Blue.Mean + ColorDiff, 255));
+                    var gbm = gf.Apply(e.NewImage);
                     gbm.Save(@"C:\temp\aforge\gimg\img" + _calibrationStep + ".jpg");
-                    var bbm = bf.Apply(diffBitmap);
+                    var bbm = bf.Apply(e.NewImage);
                     bbm.Save(@"C:\temp\aforge\bimg\img" + _calibrationStep + ".jpg");
                     var gblobCounter = new BlobCounter {ObjectsOrder = ObjectsOrder.YX, 
                         MaxHeight = 25, MinHeight = 15, MaxWidth = 25, MinWidth = 15, FilterBlobs = true, CoupledSizeFiltering = true};
@@ -122,8 +141,14 @@ namespace HSR.PresentationWriter.Parser
                         case 2:
                             //var thresholdFilter = new Threshold(50);
                             //thresholdFilter.ApplyInPlace(diffBitmap);
+                            var cf = new ColorFiltering(new IntRange(0, 255), //red is bad
+                                                        new IntRange((int) stats.Green.Mean + MeanDiff, 255),
+                                                        new IntRange((int) stats.Blue.Mean + MeanDiff, 255));
+                            var bm = cf.Apply(e.NewImage);
+
                             var blobCounter = new BlobCounter {ObjectsOrder = ObjectsOrder.Size, BackgroundThreshold = Color.FromArgb(255,15,20,20), FilterBlobs = true};
-                            blobCounter.ProcessImage(diffBitmap);
+                            blobCounter.ProcessImage(bm);
+                            bm.Save(@"C:\temp\aforge\diff.jpg");
                             var blobs = blobCounter.GetObjectsInformation();
                             int i = 0;
                             List<IntPoint> corners;

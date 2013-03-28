@@ -4,11 +4,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
-using Point = System.Windows.Point;
+using Visualizer;
+using Point = Visualizer.Point;
+using DPoint = System.Windows.Point;
 
 namespace WFVisuslizer
 {
-    public class VisualizerControl
+    public class VisualizerControl : IVisualizerControl
     {
         private Form1 _cw = new Form1();
         private bool _shown = false;
@@ -44,7 +46,7 @@ namespace WFVisuslizer
         /// <param name="fromRgb"></param>
         public void AddRect(Point topLeft, Point bottomRight, Color fromRgb)
         {
-            _cw.AddRect(topLeft, bottomRight, fromRgb);
+            _cw.AddRect(new DPoint(topLeft.X,topLeft.Y), new DPoint(bottomRight.X, bottomRight.Y), fromRgb);
         }
 
         /// <summary>
@@ -52,10 +54,10 @@ namespace WFVisuslizer
         /// </summary>
         /// <param name="rect"></param>
         /// <param name="c"></param>
-        public void AddRect(Rect rect, Color c)
-        {
-            AddRect(new Point((int)rect.TopLeft.X, (int)rect.TopLeft.Y), new Point((int)rect.BottomRight.X, (int)rect.BottomRight.Y), c);
-        }
+        //public void AddRect(Rect rect, Color c)
+        //{
+        //    AddRect(new Point((int)rect.TopLeft.X, (int)rect.TopLeft.Y), new Point((int)rect.BottomRight.X, (int)rect.BottomRight.Y), c);
+        //}
 
         /// <summary>
         /// Remove all the rectangles
