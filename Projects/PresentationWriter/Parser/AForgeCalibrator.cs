@@ -9,6 +9,7 @@ using AForge;
 using AForge.Imaging;
 using AForge.Imaging.Filters;
 using AForge.Math.Geometry;
+using HSR.PresWriter.IO.Events;
 using HSR.PresWriter.PenTracking.Events; // TODO: wieso?
 using HSR.PresWriter.IO;
 using WFVisuslizer;
@@ -65,7 +66,7 @@ namespace HSR.PresWriter.PenTracking
             sqrwidth = ((double)_vs.Width) / Rowcount;
             sqrheight = ((double)_vs.Height) / Columncount;
             _sem = new SemaphoreSlim(1, 1);
-            // _cc.NewImage += BaseCalibration; // TODO
+            _cc.FrameReady += BaseCalibration; // TODO
         }
 
         public int CheckCalibration()
@@ -73,7 +74,7 @@ namespace HSR.PresWriter.PenTracking
             return 0;
         }
 
-        private void BaseCalibration(object sender, NewImageEventArgs e)
+        private void BaseCalibration(object sender, FrameReadyEventArgs e)
         {
 
             if (_sem.CurrentCount >= 1)//_t.Status != TaskStatus.Running)//
@@ -84,11 +85,11 @@ namespace HSR.PresWriter.PenTracking
         }
 
 
-        private async Task CalibThread(NewImageEventArgs e)
+        private async Task CalibThread(FrameReadyEventArgs e)
         {
             Debug.WriteLine("Calibrating " + _calibrationStep);
-            e.NewImage.Save(@"C:\temp\aforge\src\img" + _calibrationStep + ".jpg");
-            var stats = new ImageStatistics(e.NewImage);
+            e.Frame.Bitmap.Save(@"C:\temp\aforge\src\img" + _calibrationStep + ".jpg");
+            var stats = new ImageStatistics(e.Frame.Bitmap);
                     //var histogram = stats.Gray;
             //Debug.WriteLine("Grey: Min: " + histogram.Min + " Max: " + histogram.Max + " Mean: " + histogram.Mean +
             //    " Dev: " + histogram.StdDev + " Median: " + histogram.Median);
@@ -129,9 +130,9 @@ namespace HSR.PresWriter.PenTracking
                     //var bf = new ColorFiltering(new IntRange(0, 255),//(int)stats.Red.Mean), 
                     //    new IntRange(0, 255),//(int) stats.Green.Mean), 
                     //    new IntRange((int) stats.Blue.Mean + ColorDiff, 255));
-                    var gbm = PartiallyApplyAvgFilter(e.NewImage, Channels.Green, 4, 4, ColorDiff);
+                    var gbm = PartiallyApplyAvgFilter(e.Frame.Bitmap, Channels.Green, 4, 4, 5);
                     gbm.Save(@"C:\temp\aforge\gimg\img" + _calibrationStep + ".jpg");
-                    var bbm = PartiallyApplyAvgFilter(e.NewImage, Channels.Blue, 4, 4, ColorDiff);
+                    var bbm = PartiallyApplyAvgFilter(e.Frame.Bitmap, Channels.Blue, 4, 4, 10);
                     bbm.Save(@"C:\temp\aforge\bimg\img" + _calibrationStep + ".jpg");
                     var gblobCounter = new BlobCounter {ObjectsOrder = ObjectsOrder.YX, 
                         MaxHeight = 25, MinHeight = 10, MaxWidth = 25, MinWidth = 10, FilterBlobs = true, CoupledSizeFiltering = true};
@@ -153,7 +154,7 @@ namespace HSR.PresWriter.PenTracking
                             //                            new IntRange((int) stats.Green.Mean + MeanDiff, 255),
                             //                            new IntRange((int) stats.Blue.Mean + MeanDiff, 255));
                             //var bm = cf.Apply(e.NewImage);
-                            var bm = PartiallyApplyAvgFilter(e.NewImage, Channels.GreenAndBlue, 2, 2, MeanDiff);
+                            var bm = PartiallyApplyAvgFilter(e.Frame.Bitmap, Channels.GreenAndBlue, 2, 2, MeanDiff);
                             var blobCounter = new BlobCounter {ObjectsOrder = ObjectsOrder.Size, BackgroundThreshold = Color.FromArgb(255,15,20,20), FilterBlobs = true};
                             blobCounter.ProcessImage(bm);
                             bm.Save(@"C:\temp\aforge\diff.jpg");
@@ -193,12 +194,12 @@ namespace HSR.PresWriter.PenTracking
                             }
                             break;
                         case 1:
-                            diffFilter.OverlayImage = e.NewImage;
+                            diffFilter.OverlayImage = e.Frame.Bitmap;
                             _vs.AddRect(0, 0, (int) _vs.Width, (int) _vs.Height, Color.FromArgb(255, 255, 255, 255));
                             _calibrationStep++;
                             break;
                         case 0:
-                            Grid = new Grid(e.NewImage.Width, e.NewImage.Height);
+                            Grid = new Grid(e.Frame.Bitmap.Width, e.Frame.Bitmap.Height);
                             var thread = new Thread(() =>
                                 {
                                     _vs.Show();
