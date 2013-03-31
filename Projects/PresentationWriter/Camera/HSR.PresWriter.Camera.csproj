@@ -7,7 +7,7 @@
     <ProjectGuid>{C7BC83D8-DDFF-4B93-B747-22C8C2CCD812}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>HSR.PresentationWriter.DataSources</RootNamespace>
+    <RootNamespace>HSR.PresWriter.DataSources</RootNamespace>
     <AssemblyName>Camera</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -70,15 +70,10 @@
   <ItemGroup>
     <Compile Include="AForgeCamera.cs" />
     <Compile Include="AvicapCamera.cs" />
-    <Compile Include="CurrentMillis.cs" />
     <Compile Include="DirectShowCamera.cs" />
-    <Compile Include="Frame.cs" />
-    <Compile Include="Camera.cs" />
-    <Compile Include="FrameReadyEventArgs.cs" />
+    <Compile Include="ICamera.cs" />
     <Compile Include="NativeMethods.cs" />
-    <Compile Include="PointFrame.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="VideoFrame.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -99,6 +94,12 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Common\HSR.PresWriter.csproj">
+      <Project>{1386f52b-ab44-46f8-b442-ec2662df1e3a}</Project>
+      <Name>HSR.PresWriter</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

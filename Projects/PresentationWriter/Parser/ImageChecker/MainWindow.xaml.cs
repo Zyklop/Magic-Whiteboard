@@ -14,8 +14,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
-using HSR.PresentationWriter.Parser;
-using HSR.PresentationWriter.Parser.Events;
+using HSR.PresWriter.PenTracking;
+using HSR.PresWriter.PenTracking.Events;
 using Parser;
 using Parser.Mock;
 
@@ -29,8 +29,8 @@ namespace ImageChecker
         public MainWindow()
         {
             InitializeComponent();
-            CameraConnector cameraConnector = new MockCameraConnector();
-            var parser = new DataParser(cameraConnector);
+            MockCameraConnector cameraConnector = new MockCameraConnector();
+            var parser = new DataParser(); // TODO
             parser.Start();
             cameraConnector.NewImage += delegate(object sender, NewImageEventArgs args)
                 {

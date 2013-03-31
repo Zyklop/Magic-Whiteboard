@@ -1,8 +1,8 @@
 using System;
 using System.Drawing;
-using HSR.PresentationWriter.Parser.Images;
+using HSR.PresWriter.PenTracking.Images;
 
-namespace HSR.PresentationWriter.Parser.Events
+namespace HSR.PresWriter.PenTracking.Events
 {
     public class NewImageEventArgs:EventArgs
     {

@@ -7,8 +7,10 @@ using DirectShowLib;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
 using System.Drawing;
+using HSR.PresWriter.Containers;
+using HSR.PresWriter.IO.Events;
 
-namespace HSR.PresentationWriter.DataSources
+namespace HSR.PresWriter.IO.Cameras
 {
     class DirectShowCamera : ICamera
     {

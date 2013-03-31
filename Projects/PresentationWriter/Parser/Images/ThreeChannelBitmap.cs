@@ -5,7 +5,7 @@ using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
-namespace HSR.PresentationWriter.Parser.Images
+namespace HSR.PresWriter.PenTracking.Images
 {
     public class ThreeChannelBitmap
     {

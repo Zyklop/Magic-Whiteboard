@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Drawing.Drawing2D;
 
-namespace HSR.PresentationWriter.Parser
+namespace HSR.PresWriter.PenTracking
 {
     public class Grid
     {

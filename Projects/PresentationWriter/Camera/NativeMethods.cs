@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace HSR.PresentationWriter.DataSources
+namespace HSR.PresWriter.IO
 {
     /// <summary>
     /// Access to Win32 features</summary>
-    class NativeMethods
+    public class NativeMethods
     {
         // TODO: Explicit 64bit Compatibility
         [DllImport("user32", EntryPoint = "SendMessage")]

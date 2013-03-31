@@ -1,7 +1,7 @@
 ﻿using AForge.Imaging;
 using AForge.Imaging.Filters;
-using HSR.PresentationWriter.DataSources;
-using HSR.PresentationWriter.Parser;
+using HSR.PresWriter.Containers;
+using HSR.PresWriter.PenTracking;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
