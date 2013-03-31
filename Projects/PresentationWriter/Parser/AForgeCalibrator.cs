@@ -17,6 +17,14 @@ using Point = System.Windows.Point;
 
 namespace HSR.PresentationWriter.Parser
 {
+    enum Channels
+    {
+        Red,
+        Green,
+        Blue,
+        GreenAndBlue
+    }
+
     class AForgeCalibrator: ICalibrator
     {
         private CameraConnector _cc;
@@ -31,8 +39,8 @@ namespace HSR.PresentationWriter.Parser
         private Task t;
         private double sqrheight;
         private double sqrwidth;
-        private const int MeanDiff = 0;
-        private const int ColorDiff = 15;
+        private const int MeanDiff = 5;
+        private const int ColorDiff = 8;
 
 
         public AForgeCalibrator(CameraConnector cc)
@@ -116,20 +124,21 @@ namespace HSR.PresentationWriter.Parser
                 {
                     _vs.ClearRects();
                     FillRects();
-                    var gf = new ColorFiltering(new IntRange(0, 255), //(int) stats.Red.Mean), 
-                                                new IntRange((int) (stats.Green.Mean + ColorDiff), 255),
-                                                new IntRange(0, 255));//(int) stats.Blue.Mean));
-                    var bf = new ColorFiltering(new IntRange(0, 255),//(int)stats.Red.Mean), 
-                        new IntRange(0, 255),//(int) stats.Green.Mean), 
-                        new IntRange((int) stats.Blue.Mean + ColorDiff, 255));
-                    var gbm = gf.Apply(e.NewImage);
+                    //var gf = new ColorFiltering(new IntRange(0, 255), //(int) stats.Red.Mean), 
+                    //                            new IntRange((int) (stats.Green.Mean + ColorDiff), 255),
+                    //                            new IntRange(0, 255));//(int) stats.Blue.Mean));
+                    //var bf = new ColorFiltering(new IntRange(0, 255),//(int)stats.Red.Mean), 
+                    //    new IntRange(0, 255),//(int) stats.Green.Mean), 
+                    //    new IntRange((int) stats.Blue.Mean + ColorDiff, 255));
+                    var gbm = PartiallyApplyAvgFilter(e.NewImage, Channels.Green, 4, 4, ColorDiff);
                     gbm.Save(@"C:\temp\aforge\gimg\img" + _calibrationStep + ".jpg");
-                    var bbm = bf.Apply(e.NewImage);
+                    var bbm = PartiallyApplyAvgFilter(e.NewImage, Channels.Blue, 4, 4, ColorDiff);
                     bbm.Save(@"C:\temp\aforge\bimg\img" + _calibrationStep + ".jpg");
                     var gblobCounter = new BlobCounter {ObjectsOrder = ObjectsOrder.YX, 
-                        MaxHeight = 25, MinHeight = 15, MaxWidth = 25, MinWidth = 15, FilterBlobs = true, CoupledSizeFiltering = true};
+                        MaxHeight = 25, MinHeight = 10, MaxWidth = 25, MinWidth = 10, FilterBlobs = true, CoupledSizeFiltering = true};
                     gblobCounter.ProcessImage(gbm);
-                    var bblobCounter = new BlobCounter { ObjectsOrder = ObjectsOrder.YX, MaxHeight = 25, MinHeight = 15, MaxWidth = 25, MinWidth = 15 };
+                    var bblobCounter = new BlobCounter { ObjectsOrder = ObjectsOrder.YX, 
+                        MaxHeight = 25, MinHeight = 10, MaxWidth = 25, MinWidth = 10, FilterBlobs = true, CoupledSizeFiltering = true};
                     bblobCounter.ProcessImage(bbm);
                     ProcessBlobs(gblobCounter, 0);
                     ProcessBlobs(bblobCounter, 1);
@@ -141,11 +150,11 @@ namespace HSR.PresentationWriter.Parser
                         case 2:
                             //var thresholdFilter = new Threshold(50);
                             //thresholdFilter.ApplyInPlace(diffBitmap);
-                            var cf = new ColorFiltering(new IntRange(0, 255), //red is bad
-                                                        new IntRange((int) stats.Green.Mean + MeanDiff, 255),
-                                                        new IntRange((int) stats.Blue.Mean + MeanDiff, 255));
-                            var bm = cf.Apply(e.NewImage);
-
+                            //var cf = new ColorFiltering(new IntRange(0, 255), //red is bad
+                            //                            new IntRange((int) stats.Green.Mean + MeanDiff, 255),
+                            //                            new IntRange((int) stats.Blue.Mean + MeanDiff, 255));
+                            //var bm = cf.Apply(e.NewImage);
+                            var bm = PartiallyApplyAvgFilter(e.NewImage, Channels.GreenAndBlue, 2, 2, MeanDiff);
                             var blobCounter = new BlobCounter {ObjectsOrder = ObjectsOrder.Size, BackgroundThreshold = Color.FromArgb(255,15,20,20), FilterBlobs = true};
                             blobCounter.ProcessImage(bm);
                             bm.Save(@"C:\temp\aforge\diff.jpg");
@@ -208,6 +217,50 @@ namespace HSR.PresentationWriter.Parser
             _sem.Release();
         }
 
+        private Bitmap PartiallyApplyAvgFilter(Bitmap src, Channels channel, int x, int y, int diff)
+        {
+            var parts = new Bitmap[x,y];
+            var res = new Bitmap(src.Width, src.Height);
+            int width = src.Width/x;
+            int height = src.Height/y;
+            using (var g = Graphics.FromImage(res))
+            {
+                for (int i = 0; i < x; i++)
+                {
+                    for (int j = 0; j < y; j++)
+                    {
+                        var crop = src.Clone(new Rectangle(i*width, j*height, width, height), src.PixelFormat);
+                        var s = new ImageStatistics(crop);
+                        var cf = new ColorFiltering(new IntRange(0,255), new IntRange(0,255), new IntRange(0,255));
+                        switch (channel)
+                        {
+                            case Channels.Red:
+                                cf.Red = new IntRange((int) s.Red.Mean+diff,255);
+                                break;
+                            case Channels.Green:
+                                cf.Green = new IntRange((int) s.Green.Mean + diff, 255);
+                                cf.Blue = new IntRange(0, (int)s.Blue.Mean + diff);
+                                break;
+                            case Channels.Blue:
+                                cf.Blue = new IntRange((int) s.Blue.Mean + diff, 255);
+                                cf.Green = new IntRange(0, (int)s.Green.Mean + diff);
+                                break;
+                            case Channels.GreenAndBlue:
+                                cf.Green = new IntRange((int) s.Green.Mean + diff, 255);
+                                cf.Blue = new IntRange((int)s.Blue.Mean + diff, 255);
+                                break;
+                            default:
+                                throw new ArgumentOutOfRangeException("channel");
+                        }
+                        cf.ApplyInPlace(crop);
+                        g.DrawImageUnscaled(crop, i* width, j * height);
+                    }
+                }
+                g.Flush();
+            }
+            return res;
+        }
+
         private void ProcessBlobs(BlobCounter blobCounter, int offset)
         {
             blobCounter.FilterBlobs = true;
@@ -218,7 +271,7 @@ namespace HSR.PresentationWriter.Parser
             //var top = blobs.Where(x => x.CenterOfGravity.X == blobs.GetRange(0,Rowcount).
             //    Min(y => y.CenterOfGravity.X)).
             //    OrderBy(z=>z.CenterOfGravity.Y).First();
-            var top = blobs.Where(x => IsNextTo(x.CenterOfGravity, Grid.TopLeft, 0, 0, 1.5 + offset)).OrderBy(x => x.Area);
+            var top = blobs.Where(x => IsNextTo(x.CenterOfGravity, Grid.TopLeft, 0, 0, 1.5 + offset)).OrderBy(x => x.Area).ToList();
             if (top.Any() && IsNextTo(top.First().CenterOfGravity, Grid.TopLeft,0,0,1.5 + offset))
             {
                 blobs.Remove(top.Last());
@@ -296,7 +349,7 @@ namespace HSR.PresentationWriter.Parser
         private bool IsNextTo(AForge.Point p1, Point p2, int rownr, int colnr, double maxDist)
         {
             return Math.Abs(p1.X - p2.X) < PredictRowDistance(colnr)*maxDist &&
-                   Math.Abs(p1.X - p2.X) < PredictColumnDistance(rownr)*maxDist;
+                   Math.Abs(p1.Y - p2.Y) < PredictColumnDistance(rownr)*maxDist;
         }
 
         private int PredictRowDistance(int columnnr)
