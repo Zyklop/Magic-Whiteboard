@@ -95,9 +95,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Parser.csproj">
+    <ProjectReference Include="..\HSR.PresWriter.PenTracking.csproj">
       <Project>{c9d79db6-72b8-461a-b725-8fee1dc05eb6}</Project>
-      <Name>Parser</Name>
+      <Name>HSR.PresWriter.PenTracking</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

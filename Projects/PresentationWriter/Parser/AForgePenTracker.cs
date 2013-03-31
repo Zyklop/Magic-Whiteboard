@@ -1,7 +1,7 @@
 ﻿using AForge.Imaging;
 using AForge.Imaging.Filters;
-using HSR.PresentationWriter.DataSources;
-using HSR.PresentationWriter.Parser.Events;
+using HSR.PresWriter.Containers;
+using HSR.PresWriter.PenTracking.Events;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -12,7 +12,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace HSR.PresentationWriter.Parser
+namespace HSR.PresWriter.PenTracking
 {
     public class AForgePenTracker : IPenTracker
     {
@@ -71,9 +71,9 @@ namespace HSR.PresentationWriter.Parser
                     // Put the qualified result in a new point frame and fire event
                     PointFrame resultFrame = new PointFrame(currentFrame.Number + 1, foundPoint, currentFrame.Timestamp);
                     this.penPoints.Enqueue(resultFrame);
-                    if (this.PenMoved != null)
+                    if (this.PenFound != null)
                     {
-                        this.PenMoved(this, new PenPositionEventArgs(resultFrame));
+                        this.PenFound(this, new PenPositionEventArgs(resultFrame));
                     }
                     return resultFrame;
                 }
@@ -218,11 +218,7 @@ namespace HSR.PresentationWriter.Parser
             return Point.Empty;
         }
 
-        public event EventHandler<PenPositionEventArgs> PenMoved;
-
-        public event EventHandler<PenPositionEventArgs> PenDetected;
-
-        public event EventHandler<PenPositionEventArgs> PenLost;
+        public event EventHandler<PenPositionEventArgs> PenFound;
 
 
 #if DEBUG

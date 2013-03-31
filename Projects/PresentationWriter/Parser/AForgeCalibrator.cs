@@ -1,21 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Threading;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows;
 using AForge;
 using AForge.Imaging;
 using AForge.Imaging.Filters;
 using AForge.Math.Geometry;
-using HSR.PresentationWriter.Parser.Events;
+using HSR.PresWriter.PenTracking.Events; // TODO: wieso?
+using HSR.PresWriter.IO;
 using WFVisuslizer;
 using Point = System.Windows.Point;
 
-namespace HSR.PresentationWriter.Parser
+namespace HSR.PresWriter.PenTracking
 {
     enum Channels
     {
@@ -27,7 +26,7 @@ namespace HSR.PresentationWriter.Parser
 
     class AForgeCalibrator: ICalibrator
     {
-        private CameraConnector _cc;
+        private IPictureProvider _cc;
         private int _calibrationStep;
         private int _errors;
         private VisualizerControl _vs = VisualizerControl.GetVisualizer();
@@ -43,9 +42,9 @@ namespace HSR.PresentationWriter.Parser
         private const int ColorDiff = 8;
 
 
-        public AForgeCalibrator(CameraConnector cc)
+        public AForgeCalibrator(IPictureProvider provider)
         {
-            _cc = cc;
+            _cc = provider;
             this.Grid = new Grid(0,0);
             //var thread = new Thread(() => _vs = new CalibratorWindow());
             //thread.SetApartmentState(ApartmentState.STA);
@@ -66,7 +65,7 @@ namespace HSR.PresentationWriter.Parser
             sqrwidth = ((double)_vs.Width) / Rowcount;
             sqrheight = ((double)_vs.Height) / Columncount;
             _sem = new SemaphoreSlim(1, 1);
-            _cc.NewImage += BaseCalibration;
+            // _cc.NewImage += BaseCalibration; // TODO
         }
 
         public int CheckCalibration()
@@ -110,7 +109,7 @@ namespace HSR.PresentationWriter.Parser
             }
             if (_calibrationStep == CalibrationFrames)
             {
-                _cc.NewImage -= BaseCalibration;
+                // _cc.NewImage -= BaseCalibration; // TODO
                 Grid.Calculate();
                 _vs.Close();
             }

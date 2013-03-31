@@ -1,19 +1,16 @@
-﻿using HSR.PresentationWriter.Parser.Events;
-using HSR.PresentationWriter.Parser.Images;
+﻿using HSR.PresWriter.Containers;
+using HSR.PresWriter.PenTracking.Events;
 using System;
 using System.Drawing;
-using HSR.PresentationWriter.DataSources;
 using System.Threading.Tasks;
 
-namespace HSR.PresentationWriter.Parser
+namespace HSR.PresWriter.PenTracking
 {
     public interface IPenTracker
     {
         Task<PointFrame> ProcessAsync(VideoFrame frame);
         PointFrame GetLastFrame();
         Point GetPenPoint(long timestamp);
-        event EventHandler<PenPositionEventArgs> PenMoved;
-        event EventHandler<PenPositionEventArgs> PenDetected;
-        event EventHandler<PenPositionEventArgs> PenLost;
+        event EventHandler<PenPositionEventArgs> PenFound;
     }
 }

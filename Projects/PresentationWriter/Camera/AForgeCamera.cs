@@ -1,15 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using AForge.Video;
 using AForge.Video.DirectShow;
 using System.Drawing;
 using System.Diagnostics;
+using HSR.PresWriter.IO.Events;
+using HSR.PresWriter.Containers;
 
 
-namespace HSR.PresentationWriter.DataSources
+namespace HSR.PresWriter.IO.Cameras
 {
     public class AForgeCamera : ICamera
     {

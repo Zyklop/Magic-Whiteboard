@@ -1,6 +1,9 @@
-﻿using HSR.PresentationWriter.DataSources;
-using HSR.PresentationWriter.Parser;
-using HSR.PresentationWriter.Parser.Strategies;
+﻿using HSR.PresWriter.Containers;
+using HSR.PresWriter.IO;
+using HSR.PresWriter.IO.Cameras;
+using HSR.PresWriter.IO.Events;
+using HSR.PresWriter.PenTracking;
+using HSR.PresWriter.PenTracking.Strategies;
 using System;
 using System.Diagnostics;
 using System.Drawing;

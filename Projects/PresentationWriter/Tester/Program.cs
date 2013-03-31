@@ -1,8 +1,7 @@
 ﻿using AForge.Imaging;
 using AForge.Imaging.Filters;
-using HSR.PresentationWriter.DataSources;
-using HSR.PresentationWriter.Parser;
-using HSR.PresentationWriter.Parser.Strategies;
+using HSR.PresWriter.PenTracking;
+using HSR.PresWriter.PenTracking.Strategies;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -11,7 +10,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace HSR.PresentationWriter.Tester
+namespace HSR.PresWriter.Tester
 {
     class Program
     {

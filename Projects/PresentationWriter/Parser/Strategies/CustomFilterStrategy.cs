@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HSR.PresentationWriter.Parser.Strategies
+namespace HSR.PresWriter.PenTracking.Strategies
 {
     public class CustomFilterStrategy : FilterStrategy
     {

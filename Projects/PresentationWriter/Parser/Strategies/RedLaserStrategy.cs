@@ -1,7 +1,7 @@
 ﻿using AForge.Imaging;
 using AForge.Imaging.Filters;
 
-namespace HSR.PresentationWriter.Parser.Strategies
+namespace HSR.PresWriter.PenTracking.Strategies
 {
     public class RedLaserStrategy : FilterStrategy
     {

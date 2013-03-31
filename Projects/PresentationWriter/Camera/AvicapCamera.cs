@@ -1,10 +1,12 @@
-﻿using System;
+﻿using HSR.PresWriter.Containers;
+using HSR.PresWriter.IO.Events;
+using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Threading;
 
-namespace HSR.PresentationWriter.DataSources
+namespace HSR.PresWriter.IO.Cameras
 {
     /// <summary>
     /// Used to access a webcam per AVICAP</summary>

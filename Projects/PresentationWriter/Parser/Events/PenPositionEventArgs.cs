@@ -1,8 +1,8 @@
-using HSR.PresentationWriter.DataSources;
+using HSR.PresWriter.Containers;
 using System;
 using System.Windows;
 
-namespace HSR.PresentationWriter.Parser.Events
+namespace HSR.PresWriter.PenTracking.Events
 {
     public class PenPositionEventArgs : EventArgs
     {

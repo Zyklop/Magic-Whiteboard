@@ -7,7 +7,7 @@
     <ProjectGuid>{C9D79DB6-72B8-461A-B725-8FEE1DC05EB6}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>HSR.PresentationWriter.Parser</RootNamespace>
+    <RootNamespace>HSR.PresWriter.PenTracking</RootNamespace>
     <AssemblyName>Parser</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -40,8 +40,6 @@
     <Reference Include="AForge.Math">
       <HintPath>..\lib\AForge\AForge.Math.dll</HintPath>
     </Reference>
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -62,7 +60,6 @@
     <Compile Include="Images\BinaryBitmap.cs" />
     <Compile Include="Images\OneChannelBitmap.cs" />
     <Compile Include="Calibrator.cs" />
-    <Compile Include="CameraConnector.cs" />
     <Compile Include="Events\NewImageEventArgs.cs" />
     <Compile Include="Grid.cs" />
     <Compile Include="Images\ThreeChannelBitmap.cs" />
@@ -81,6 +78,7 @@
     <Compile Include="Strategies\RedLaserStrategy.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="IO\" />
     <Folder Include="Mock\Images\" />
   </ItemGroup>
   <ItemGroup>
@@ -90,9 +88,13 @@
     <Content Include="Images\Raumsetup.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <ProjectReference Include="..\Camera\Camera.csproj">
+    <ProjectReference Include="..\Camera\HSR.PresWriter.Camera.csproj">
       <Project>{c7bc83d8-ddff-4b93-b747-22c8c2ccd812}</Project>
-      <Name>Camera</Name>
+      <Name>HSR.PresWriter.Camera</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Common\HSR.PresWriter.csproj">
+      <Project>{1386f52b-ab44-46f8-b442-ec2662df1e3a}</Project>
+      <Name>HSR.PresWriter</Name>
     </ProjectReference>
     <ProjectReference Include="..\Visualizer\Visualizer.csproj">
       <Project>{9674e9a0-ec6b-44d9-9700-85b6acf9a5fb}</Project>

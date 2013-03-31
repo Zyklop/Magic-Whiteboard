@@ -1,20 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using System.Windows;
-using System.Windows.Media;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Threading;
-using HSR.PresentationWriter.Parser.Events;
-using HSR.PresentationWriter.Parser.Images;
+using HSR.PresWriter.PenTracking.Events;
+using HSR.PresWriter.PenTracking.Images;
 using DColor = System.Drawing.Color;
 using VPoint = Visualizer.Point;
 using WFVisuslizer;
 
-namespace HSR.PresentationWriter.Parser
+namespace HSR.PresWriter.PenTracking
 {
     internal interface ICalibrator
     {
@@ -54,7 +49,6 @@ namespace HSR.PresentationWriter.Parser
 
     internal class Calibrator : ICalibrator
     {
-        private readonly CameraConnector _cc;
         private const byte GreyDiff = 40;
         private const byte GreenDiff = 80;
         private const byte BlueDiff = 80;
@@ -76,9 +70,8 @@ namespace HSR.PresentationWriter.Parser
         /// A calibrator is needed to get the calibration grid
         /// </summary>
         /// <param name="cc"></param>
-        public Calibrator(CameraConnector cc)
+        public Calibrator()
         {
-            _cc = cc;
             Grid = new Grid(0,0);
             //var thread = new Thread(() => _vs = new CalibratorWindow());
             //thread.SetApartmentState(ApartmentState.STA);
@@ -104,7 +97,7 @@ namespace HSR.PresentationWriter.Parser
             _calibrationStep = 0;
             _errors = 0;
             _sem = new SemaphoreSlim(1, 1);
-            _cc.NewImage += BaseCalibration;
+            // _cc.NewImage += BaseCalibration; // TODO
         }
 
         private void BaseCalibration(object sender, NewImageEventArgs e)
@@ -151,7 +144,7 @@ namespace HSR.PresentationWriter.Parser
                 }
                 if (_calibrationStep == CalibrationFrames || !Grid.DataNeeded)
                 {
-                    _cc.NewImage -= BaseCalibration;
+                    //_cc.NewImage -= BaseCalibration; // TODO
                     Grid.Calculate();
                     _vs.Close();
                     Debug.WriteLine("errors");
