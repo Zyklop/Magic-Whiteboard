@@ -40,7 +40,7 @@ namespace MockTester
         static void Main2(string[] args)
         {
             int i = 0;
-            var cameraConnector = new MockCameraConnector();
+            //var cameraConnector = new MockCameraConnector();
             var parser = new DataParser();
             parser.Start();
             Thread.Sleep(10000);

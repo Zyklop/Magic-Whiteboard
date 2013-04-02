@@ -6,6 +6,9 @@ using System.Text;
 using System.Timers;
 using System.Threading;
 using System.Threading.Tasks;
+using HSR.PresWriter.Containers;
+using HSR.PresWriter.IO;
+using HSR.PresWriter.IO.Events;
 using HSR.PresWriter.PenTracking;
 using HSR.PresWriter.PenTracking.Events;
 using HSR.PresWriter.PenTracking.Images;
@@ -15,7 +18,7 @@ using Timer = System.Timers.Timer;
 namespace Parser.Mock
 {
 
-    public class MockCameraConnector // TODO
+    public class MockCameraConnector : IPictureProvider
     {
         private System.Timers.Timer tim = new Timer();
         private List<Bitmap> imagelist;
@@ -44,6 +47,7 @@ namespace Parser.Mock
             tim.Elapsed += delegate
                 {
                     if (NewImage != null) NewImage(this, new NewImageEventArgs {NewImage = imagelist[index]});
+                    if (FrameReady != null) FrameReady(this, new FrameReadyEventArgs(new VideoFrame(index, imagelist[index])));
                     if (++index >= imagelist.Count) index = 0;
                     //Thread.Sleep(0);
                 };
@@ -51,5 +55,6 @@ namespace Parser.Mock
         }
 
         public event EventHandler<NewImageEventArgs> NewImage;
+        public event EventHandler<FrameReadyEventArgs> FrameReady;
     }
 }
