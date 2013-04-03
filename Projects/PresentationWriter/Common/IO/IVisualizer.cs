@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace HSR.PresWriter.IO
 {
-    class IVisualizer
+    interface IVisualizer
     {
     }
 }

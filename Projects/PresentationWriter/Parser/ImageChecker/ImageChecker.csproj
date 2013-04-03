@@ -95,6 +95,14 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Camera\HSR.PresWriter.Camera.csproj">
+      <Project>{c7bc83d8-ddff-4b93-b747-22c8c2ccd812}</Project>
+      <Name>HSR.PresWriter.Camera</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Common\HSR.PresWriter.csproj">
+      <Project>{1386f52b-ab44-46f8-b442-ec2662df1e3a}</Project>
+      <Name>HSR.PresWriter</Name>
+    </ProjectReference>
     <ProjectReference Include="..\HSR.PresWriter.PenTracking.csproj">
       <Project>{c9d79db6-72b8-461a-b725-8fee1dc05eb6}</Project>
       <Name>HSR.PresWriter.PenTracking</Name>

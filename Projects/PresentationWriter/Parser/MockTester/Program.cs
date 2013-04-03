@@ -2,7 +2,6 @@
 using System.Threading;
 using HSR.PresWriter.PenTracking;
 using HSR.PresWriter.PenTracking.Images;
-using Parser.Mock;
 using WFVisuslizer;
 using Color = System.Drawing.Color;
 

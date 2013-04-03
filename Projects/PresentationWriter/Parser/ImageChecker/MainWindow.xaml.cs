@@ -16,8 +16,8 @@ using System.Windows.Shapes;
 using System.Windows.Threading;
 using HSR.PresWriter.PenTracking;
 using HSR.PresWriter.PenTracking.Events;
-using Parser;
-using Parser.Mock;
+using HSR.PresWriter.IO.Cameras;
+using HSR.PresWriter.IO.Events;
 
 namespace ImageChecker
 {
@@ -30,9 +30,13 @@ namespace ImageChecker
         {
             InitializeComponent();
             //MockCameraConnector cameraConnector = new MockCameraConnector();
+            //var parser = new DataParser(); // TODO
+            //parser.Start();
+            //cameraConnector.NewImage += delegate(object sender, NewImageEventArgs args)
+            FilesystemCamera cameraConnector = new FilesystemCamera(new DirectoryInfo(@"C:\temp\images\light"));
             var parser = new DataParser(); // TODO
             parser.Start();
-            //cameraConnector.NewImage += delegate(object sender, NewImageEventArgs args)
+            cameraConnector.FrameReady += delegate(object sender, FrameReadyEventArgs args)
                 {
                     MemoryStream ms = new MemoryStream();
                     //args.NewImage.GetVisual().Save(ms, System.Drawing.Imaging.ImageFormat.Png);

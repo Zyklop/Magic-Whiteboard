@@ -68,9 +68,10 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AForgeCamera.cs" />
-    <Compile Include="AvicapCamera.cs" />
-    <Compile Include="DirectShowCamera.cs" />
+    <Compile Include="Cameras\AForgeCamera.cs" />
+    <Compile Include="Cameras\AvicapCamera.cs" />
+    <Compile Include="Cameras\DirectShowCamera.cs" />
+    <Compile Include="Cameras\FilesystemCamera.cs" />
     <Compile Include="ICamera.cs" />
     <Compile Include="NativeMethods.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
