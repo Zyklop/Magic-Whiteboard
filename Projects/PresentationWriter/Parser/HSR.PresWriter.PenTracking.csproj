@@ -55,6 +55,7 @@
     <Compile Include="AForgeCalibrator.cs" />
     <Compile Include="AForgePenTracker.cs" />
     <Compile Include="Colorfilter.cs" />
+    <Compile Include="Events\InternalPenPositionEventArgs.cs" />
     <Compile Include="Events\PenPositionEventArgs.cs" />
     <Compile Include="FixedSizeQueue.cs" />
     <Compile Include="Images\BinaryBitmap.cs" />

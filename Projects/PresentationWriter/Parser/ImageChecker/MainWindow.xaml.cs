@@ -29,10 +29,10 @@ namespace ImageChecker
         public MainWindow()
         {
             InitializeComponent();
-            MockCameraConnector cameraConnector = new MockCameraConnector();
+            //MockCameraConnector cameraConnector = new MockCameraConnector();
             var parser = new DataParser(); // TODO
             parser.Start();
-            cameraConnector.NewImage += delegate(object sender, NewImageEventArgs args)
+            //cameraConnector.NewImage += delegate(object sender, NewImageEventArgs args)
                 {
                     MemoryStream ms = new MemoryStream();
                     //args.NewImage.GetVisual().Save(ms, System.Drawing.Imaging.ImageFormat.Png);

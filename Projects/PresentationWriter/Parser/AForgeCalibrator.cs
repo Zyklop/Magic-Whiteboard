@@ -108,11 +108,12 @@ namespace HSR.PresWriter.PenTracking
                 //calibration not possible
                 return;
             }
-            if (_calibrationStep == CalibrationFrames)
+            if (_calibrationStep == 3)//CalibrationFrames)
             {
-                // _cc.NewImage -= BaseCalibration; // TODO
-                Grid.Calculate();
+                _cc.FrameReady -= BaseCalibration; // TODO
+                //Grid.Calculate();
                 _vs.Close();
+                CalibrationCompleted(this, new EventArgs());
             }
             else
             {
@@ -130,7 +131,7 @@ namespace HSR.PresWriter.PenTracking
                     //var bf = new ColorFiltering(new IntRange(0, 255),//(int)stats.Red.Mean), 
                     //    new IntRange(0, 255),//(int) stats.Green.Mean), 
                     //    new IntRange((int) stats.Blue.Mean + ColorDiff, 255));
-                    var gbm = PartiallyApplyAvgFilter(e.Frame.Bitmap, Channels.Green, 4, 4, 5);
+                    var gbm = PartiallyApplyAvgFilter(e.Frame.Bitmap, Channels.Green, 4, 4, 1);
                     gbm.Save(@"C:\temp\aforge\gimg\img" + _calibrationStep + ".jpg");
                     var bbm = PartiallyApplyAvgFilter(e.Frame.Bitmap, Channels.Blue, 4, 4, 10);
                     bbm.Save(@"C:\temp\aforge\bimg\img" + _calibrationStep + ".jpg");
@@ -429,5 +430,8 @@ namespace HSR.PresWriter.PenTracking
 
         public Grid Grid { get; set; }
         public Colorfilter ColorFilter { get; private set; }
+
+
+        public event EventHandler CalibrationCompleted;
     }
 }

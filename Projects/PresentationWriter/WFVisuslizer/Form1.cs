@@ -15,11 +15,16 @@ namespace WFVisuslizer
         private Bitmap _bm;
         private Graphics _g;
 
+        //[BrowsableAttribute(false)]
+        //public static bool CheckForIllegalCrossThreadCalls { get; set; }
+
+
         public Form1()
         {
             InitializeComponent();
             this.FormBorderStyle = FormBorderStyle.None;
             WindowState = FormWindowState.Maximized;
+            CheckForIllegalCrossThreadCalls = false;
             BackColor = Color.Black;
                 _bm = new Bitmap(Screen.PrimaryScreen.Bounds.Width, Screen.PrimaryScreen.Bounds.Width);
                 _g = Graphics.FromImage(_bm);

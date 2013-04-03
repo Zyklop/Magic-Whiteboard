@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using HSR.PresWriter.PenTracking.Events;
+using HSR.PresWriter.PenTracking.Strategies;
 using Parser.Mock;
 
 namespace HSR.PresWriter.PenTracking
@@ -8,6 +9,7 @@ namespace HSR.PresWriter.PenTracking
     public class DataParser
     {
         private ICalibrator _calibrator;
+        private IPenTracker _penTracker;
         private int _gridcheck=1000;
 
         /// <summary>
@@ -26,6 +28,19 @@ namespace HSR.PresWriter.PenTracking
         private void Initialize()
         {
             _calibrator = new AForgeCalibrator(new MockCameraConnector()); // TODO
+            _calibrator.CalibrationCompleted += StartTracking;
+        }
+
+        private void StartTracking(object sender, EventArgs e)
+        {
+            _calibrator.Grid.PredictFromCorners();
+            _penTracker = new AForgePenTracker(new RedLaserStrategy());
+            _penTracker.PenFound += PenFound;
+        }
+
+        private void PenFound(object sender, InternalPenPositionEventArgs e)
+        {
+            PenPositionChanged(this, new PenPositionEventArgs(_calibrator.Grid.GetPosition(e.Frame.Point.X, e.Frame.Point.Y), e.Confidance));
         }
 
         /// <summary>

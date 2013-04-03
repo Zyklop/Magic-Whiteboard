@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace HSR.PresWriter.PenTracking
 {
-    public interface IPenTracker
+    internal interface IPenTracker
     {
         Task<PointFrame> ProcessAsync(VideoFrame frame);
         PointFrame GetLastFrame();
         Point GetPenPoint(long timestamp);
-        event EventHandler<PenPositionEventArgs> PenFound;
+        event EventHandler<InternalPenPositionEventArgs> PenFound;
     }
 }

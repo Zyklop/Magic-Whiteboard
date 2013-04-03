@@ -73,7 +73,7 @@ namespace HSR.PresWriter.PenTracking
                     this.penPoints.Enqueue(resultFrame);
                     if (this.PenFound != null)
                     {
-                        this.PenFound(this, new PenPositionEventArgs(resultFrame));
+                        this.PenFound(this, new InternalPenPositionEventArgs(resultFrame));
                     }
                     return resultFrame;
                 }
@@ -218,7 +218,7 @@ namespace HSR.PresWriter.PenTracking
             return Point.Empty;
         }
 
-        public event EventHandler<PenPositionEventArgs> PenFound;
+        public event EventHandler<InternalPenPositionEventArgs> PenFound;
 
 
 #if DEBUG

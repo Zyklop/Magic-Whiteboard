@@ -45,6 +45,8 @@ namespace HSR.PresWriter.PenTracking
         /// Data from color calibration
         /// </summary>
         Colorfilter ColorFilter { get; }
+
+        event EventHandler CalibrationCompleted;
     }
 
     internal class PrimitiveCalibrator : ICalibrator
@@ -147,7 +149,7 @@ namespace HSR.PresWriter.PenTracking
                     //_cc.NewImage -= BaseCalibration; // TODO
                     Grid.Calculate();
                     _vs.Close();
-                    Debug.WriteLine("errors");
+                    CalibrationCompleted(this, new EventArgs());
                 }
                     //else if (_calibrationStep > CalibrationFrames/2)
                     //{
@@ -426,5 +428,7 @@ namespace HSR.PresWriter.PenTracking
         /// Data from color calibration
         /// </summary>
         public Colorfilter ColorFilter { get; private set; }
+
+        public event EventHandler CalibrationCompleted;
     }
 }

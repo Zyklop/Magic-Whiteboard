@@ -86,12 +86,12 @@ namespace WFVisuslizer
         /// </summary>
         public void Show()
         {
-            //if (!_shown)
-            //{
-            //    _cw.Show();
-            //    _shown = true;
-            //    Application.DoEvents();
-            //}
+            if (!_shown)
+            {
+                _cw.Show();
+                _shown = true;
+                Application.DoEvents();
+            }
         }
 
         /// <summary>

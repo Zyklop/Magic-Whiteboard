@@ -55,7 +55,13 @@ namespace MockTester
             //        i++;
             //    };
             Console.Write(parser.Topl.X + " " + parser.Topl.Y);
+            parser.PenPositionChanged += NewPoint;
             Console.Read();
+        }
+
+        private static void NewPoint(object sender, HSR.PresWriter.PenTracking.Events.PenPositionEventArgs e)
+        {
+            Console.WriteLine("Pen gound at: " + e.Point.X + " / " + e.Point.Y);
         }
 
         private static void Main3(string[] args)
