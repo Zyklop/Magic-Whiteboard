@@ -1,56 +1,77 @@
 ﻿using System;
-using System.Windows;
+using System.Drawing;
 using HSR.PresWriter.PenTracking.Events;
 using HSR.PresWriter.PenTracking.Strategies;
 using HSR.PresWriter.IO.Cameras;
 using System.IO;
+using HSR.PresWriter.Containers;
+using HSR.PresWriter.IO;
+using HSR.PresWriter.IO.Events;
 
 namespace HSR.PresWriter.PenTracking
 {
     public class DataParser
     {
-        private ICalibrator _calibrator;
+        private AForgeCamera _pictureProvider;
+        private AForgeCalibrator _calibrator; // TODO Interface anpassen an StartCalibration etc
         private IPenTracker _penTracker;
         private int _gridcheck=1000;
+
+        public bool IsRunning { get; protected set; }
 
         /// <summary>
         /// Set up a parser gor th images
         /// Parsing all the data
         /// </summary>
-        /// <param name="camera"></param>
-        public DataParser()
+        /// <param name="provider"></param>
+        public DataParser(AForgeCamera provider)
         {
-            // TODO
-        }
+            _pictureProvider = provider;
 
-        /// <summary>
-        /// Initializing and starting the calibration 
-        /// </summary>
-        private void Initialize()
-        {
-            _calibrator = new AForgeCalibrator(new FilesystemCamera(new DirectoryInfo(@"c:\temp\"))); // TODO
-            _calibrator.CalibrationCompleted += StartTracking;
-        }
+            // Initialize Calibration Tools
+            _calibrator = new AForgeCalibrator(_pictureProvider);
+            _calibrator.CalibrationCompleted += StartTracking; // begin pen tracking after calibration immediately
 
-        private void StartTracking(object sender, EventArgs e)
-        {
-            _calibrator.Grid.PredictFromCorners();
+            // Initialize Pen Tracking Tools
             _penTracker = new AForgePenTracker(new RedLaserStrategy());
             _penTracker.PenFound += PenFound;
         }
 
-        private void PenFound(object sender, InternalPenPositionEventArgs e)
+        private void StartTracking(object sender, EventArgs e)
         {
-            PenPositionChanged(this, new PenPositionEventArgs(_calibrator.Grid.GetPosition(e.Frame.Point.X, e.Frame.Point.Y), e.Confidance));
+            _pictureProvider.ShowConfigurationDialog();
+            _calibrator.Grid.PredictFromCorners();
+            _pictureProvider.FrameReady += _camera_FrameReady; // TODO siehe _camera_FrameReady
         }
 
         /// <summary>
-        /// Starting a calibration and start tracking the pen afterward
+        /// Starting calibration and start tracking the pen afterwards
         /// </summary>
         public void Start()
         {
-            Initialize();
-            // TODO
+            this.IsRunning = true;
+            _calibrator.StartCalibration();
+        }
+
+        public void Stop()
+        {
+            this.IsRunning = false;
+            _pictureProvider.FrameReady -= _camera_FrameReady; // TODO siehe _camera_FrameReady
+        }
+
+        private async void _camera_FrameReady(object sender, FrameReadyEventArgs e)
+        {
+            // TODO dem PenTracker auch einen PictureProvider übergeben und diese Methode streichen!
+            PointFrame p = await _penTracker.ProcessAsync(e.Frame);
+        }
+
+        private void PenFound(object sender, PenPositionEventArgs e)
+        {
+            // TODO Loswerden!!!
+            System.Windows.Point p = _calibrator.Grid.GetPosition(e.Frame.Point.X, e.Frame.Point.Y);
+            Point point = new Point((int)p.X, (int)p.Y);
+            PointFrame frame = e.Frame.ApplyRebase(point);
+            PenPositionChanged(this, new PenPositionEventArgs(frame, e.Confidance));
         }
 
         private void NewImage(object sender, NewImageEventArgs e)
@@ -71,17 +92,9 @@ namespace HSR.PresWriter.PenTracking
         }
 
         /// <summary>
-        /// Stopp tracking the pen
-        /// </summary>
-        public void Stop()
-        {
-            // TODO
-        }
-
-        /// <summary>
         /// Dummy
         /// </summary>
-        public Point Topl { get { return _calibrator.Grid.TopLeft; } }
+        public Point Topl { get { return new Point((int)_calibrator.Grid.TopLeft.X, (int)_calibrator.Grid.TopLeft.Y); } }
 
         /// <summary>
         /// Calibrator with the grid data

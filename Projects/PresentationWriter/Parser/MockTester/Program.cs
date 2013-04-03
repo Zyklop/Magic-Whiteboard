@@ -4,6 +4,9 @@ using HSR.PresWriter.PenTracking;
 using HSR.PresWriter.PenTracking.Images;
 using WFVisuslizer;
 using Color = System.Drawing.Color;
+using HSR.PresWriter.PenTracking.Events;
+using HSR.PresWriter.IO.Cameras;
+using System.IO;
 
 namespace MockTester
 {
@@ -19,7 +22,7 @@ namespace MockTester
         {
             int i = 0;
             ThreeChannelBitmap tci = new ThreeChannelBitmap();
-            var parser = new DataParser();
+            var parser = new DataParser(new FilesystemCamera(new DirectoryInfo(@"C:\temp\images\light")));
             parser.Start();
             Thread.Sleep(10000);
             //cameraConnector.NewImage += delegate(object sender, NewImageEventArgs e)
@@ -40,7 +43,9 @@ namespace MockTester
         {
             int i = 0;
             //var cameraConnector = new MockCameraConnector();
-            var parser = new DataParser();
+            var cam = new FilesystemCamera(new DirectoryInfo(@"C:\temp\images\light"));
+            cam.Start();
+            var parser = new DataParser(cam);
             parser.Start();
             Thread.Sleep(10000);
             //cameraConnector.NewImage += delegate(object sender, NewImageEventArgs e)
@@ -58,9 +63,9 @@ namespace MockTester
             Console.Read();
         }
 
-        private static void NewPoint(object sender, HSR.PresWriter.PenTracking.Events.PenPositionEventArgs e)
+        private static void NewPoint(object sender, PenPositionEventArgs e)
         {
-            Console.WriteLine("Pen gound at: " + e.Point.X + " / " + e.Point.Y);
+            Console.WriteLine("Pen gound at: " + e.Frame.Point.X + " / " + e.Frame.Point.Y);
         }
 
         private static void Main3(string[] args)

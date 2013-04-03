@@ -30,7 +30,7 @@ namespace HSR.PresWriter.PenTracking
         private IPictureProvider _cc;
         private int _calibrationStep;
         private int _errors;
-        private VisualizerControl _vs = VisualizerControl.GetVisualizer();
+        private VisualizerControl _vs;
         private const int CalibrationFrames = 28; //must be n^2+3
         private Difference diffFilter = new Difference();
         private const int Rowcount=20;
@@ -51,9 +51,16 @@ namespace HSR.PresWriter.PenTracking
             //thread.SetApartmentState(ApartmentState.STA);
             //thread.Start();
             //thread.Join();
+        }
+
+        // TODO Calibrate Funktionen aufräumen
+        public void StartCalibration()
+        {
+            _vs = VisualizerControl.GetVisualizer();
             Calibrate();
             CalibrateColors();
         }
+
 
         public void CalibrateColors()
         {
@@ -61,6 +68,7 @@ namespace HSR.PresWriter.PenTracking
 
         public void Calibrate()
         {
+
             _calibrationStep = 0;
             _errors = 0;
             sqrwidth = ((double)_vs.Width) / Rowcount;
@@ -88,7 +96,7 @@ namespace HSR.PresWriter.PenTracking
         private async Task CalibThread(FrameReadyEventArgs e)
         {
             Debug.WriteLine("Calibrating " + _calibrationStep);
-            e.Frame.Bitmap.Save(@"C:\temp\aforge\src\img" + _calibrationStep + ".jpg");
+            //e.Frame.Bitmap.Save(@"C:\temp\aforge\src\img" + _calibrationStep + ".jpg");
             var stats = new ImageStatistics(e.Frame.Bitmap);
                     //var histogram = stats.Gray;
             //Debug.WriteLine("Grey: Min: " + histogram.Min + " Max: " + histogram.Max + " Mean: " + histogram.Mean +
@@ -132,9 +140,9 @@ namespace HSR.PresWriter.PenTracking
                     //    new IntRange(0, 255),//(int) stats.Green.Mean), 
                     //    new IntRange((int) stats.Blue.Mean + ColorDiff, 255));
                     var gbm = PartiallyApplyAvgFilter(e.Frame.Bitmap, Channels.Green, 4, 4, 1);
-                    gbm.Save(@"C:\temp\aforge\gimg\img" + _calibrationStep + ".jpg");
+                    //gbm.Save(@"C:\temp\aforge\gimg\img" + _calibrationStep + ".jpg");
                     var bbm = PartiallyApplyAvgFilter(e.Frame.Bitmap, Channels.Blue, 4, 4, 10);
-                    bbm.Save(@"C:\temp\aforge\bimg\img" + _calibrationStep + ".jpg");
+                    //bbm.Save(@"C:\temp\aforge\bimg\img" + _calibrationStep + ".jpg");
                     var gblobCounter = new BlobCounter {ObjectsOrder = ObjectsOrder.YX, 
                         MaxHeight = 25, MinHeight = 10, MaxWidth = 25, MinWidth = 10, FilterBlobs = true, CoupledSizeFiltering = false};
                     gblobCounter.ProcessImage(gbm);
@@ -158,7 +166,7 @@ namespace HSR.PresWriter.PenTracking
                             var bm = PartiallyApplyAvgFilter(e.Frame.Bitmap, Channels.GreenAndBlue, 2, 2, MeanDiff);
                             var blobCounter = new BlobCounter {ObjectsOrder = ObjectsOrder.Size, BackgroundThreshold = Color.FromArgb(255,15,20,20), FilterBlobs = true};
                             blobCounter.ProcessImage(bm);
-                            bm.Save(@"C:\temp\aforge\diff.jpg");
+                            //bm.Save(@"C:\temp\aforge\diff.jpg");
                             var blobs = blobCounter.GetObjectsInformation();
                             int i = 0;
                             List<IntPoint> corners;
@@ -190,7 +198,7 @@ namespace HSR.PresWriter.PenTracking
                             }
                             else
                             {
-                                _calibrationStep++; //= 0;
+                                _calibrationStep = 0;
                                 _errors++;
                             }
                             break;

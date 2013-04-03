@@ -17,6 +17,8 @@ namespace HSR.PresWriter.IO.Cameras
         private long lastTimestamp = 0;
         private Bitmap lastBitmap = null;
 
+        public bool IsRunning { get; protected set; }
+
         public event EventHandler<FrameReadyEventArgs> FrameReady;
 
         public AForgeCamera()
@@ -33,6 +35,7 @@ namespace HSR.PresWriter.IO.Cameras
 
         public void Start()
         {
+            this.IsRunning = true;
             finalVideo.NewFrame += finalVideo_NewFrame;
             finalVideo.Start();
         }
@@ -40,6 +43,7 @@ namespace HSR.PresWriter.IO.Cameras
         public void Stop()
         {
             finalVideo.NewFrame -= finalVideo_NewFrame;
+            this.IsRunning = false;
             finalVideo.SignalToStop();
         }
 

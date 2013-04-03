@@ -224,6 +224,7 @@ namespace HSR.PresWriter.PenTracking
         /// </summary>
         public void PredictFromCorners()
         {
+            // TODO index out of bound exception möglich
             var stor = _calibratorData.Clone();
             int xmax = (int) _calibratorData[(int) BottomRight.X, (int) BottomRight.Y].First().X;
             int ymax = (int) _calibratorData[(int) BottomRight.X, (int) BottomRight.Y].First().Y;

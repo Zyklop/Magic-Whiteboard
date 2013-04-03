@@ -24,5 +24,10 @@ namespace WinFormsGuiTester
         {
             (new LibraryTrackingForm()).ShowDialog();
         }
+
+        private void liveTestButton_Click(object sender, EventArgs e)
+        {
+            (new LiveTestForm()).ShowDialog();
+        }
     }
 }

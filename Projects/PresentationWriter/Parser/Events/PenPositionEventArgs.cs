@@ -11,12 +11,14 @@ namespace HSR.PresWriter.PenTracking.Events
         /// <summary>
         /// Location of the pen
         /// </summary>
-        public Point Point { get; private set; }
+        // why PointFrame? 
+        // TODO use a common type!
+        public PointFrame Frame { get; private set; }
 
-        public PenPositionEventArgs(Point frame, double confidence = 1)
+        public PenPositionEventArgs(PointFrame frame, double confidence = 1)
         {
             Confidance = confidence;
-            this.Point = frame;
+            this.Frame = frame;
         }
 
         /// <summary>
