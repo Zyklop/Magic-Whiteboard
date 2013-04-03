@@ -22,6 +22,7 @@ namespace HSR.PresWriter.IO.Cameras
         public AForgeCamera()
         {
             videoCaptureDevices = new FilterInfoCollection(FilterCategory.VideoInputDevice);
+            // TODO Choose camera device. We just use the first camera for now.
             finalVideo = new VideoCaptureDevice(videoCaptureDevices[0].MonikerString);
         }
 
@@ -32,13 +33,13 @@ namespace HSR.PresWriter.IO.Cameras
 
         public void Start()
         {
-            finalVideo.NewFrame += new NewFrameEventHandler(finalVideo_NewFrame);
+            finalVideo.NewFrame += finalVideo_NewFrame;
             finalVideo.Start();
         }
 
         public void Stop()
         {
-            finalVideo.NewFrame -= new NewFrameEventHandler(finalVideo_NewFrame);
+            finalVideo.NewFrame -= finalVideo_NewFrame;
             finalVideo.SignalToStop();
         }
 
