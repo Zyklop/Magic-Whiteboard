@@ -70,7 +70,7 @@ namespace HSR.PresWriter.PenTracking
         /// <summary>
         /// Calibrator with the grid data
         /// </summary>
-        internal Calibrator Calibrator { get; set; }
+        internal PrimitiveCalibrator Calibrator { get; set; }
 
         /// <summary>
         /// The pen changed the position

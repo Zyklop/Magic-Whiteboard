@@ -167,6 +167,8 @@ namespace HSR.PresWriter.PenTracking
         /// <param name="imgY"></param>
         public void AddPoint(int screenX, int screenY, int imgX, int imgY)
         {
+            if (_calibratorData[imgX,imgY] == null)
+                _calibratorData[imgX, imgY] = new List<Point>();
             _calibratorData[imgX,imgY].Add(new Point{X = screenX, Y = screenY});
             AddRefPoints(screenX, screenY);
         }

@@ -47,7 +47,7 @@ namespace HSR.PresWriter.PenTracking
         Colorfilter ColorFilter { get; }
     }
 
-    internal class Calibrator : ICalibrator
+    internal class PrimitiveCalibrator : ICalibrator
     {
         private const byte GreyDiff = 40;
         private const byte GreenDiff = 80;
@@ -70,7 +70,7 @@ namespace HSR.PresWriter.PenTracking
         /// A calibrator is needed to get the calibration grid
         /// </summary>
         /// <param name="cc"></param>
-        public Calibrator()
+        public PrimitiveCalibrator()
         {
             Grid = new Grid(0,0);
             //var thread = new Thread(() => _vs = new CalibratorWindow());

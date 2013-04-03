@@ -135,10 +135,10 @@ namespace HSR.PresWriter.PenTracking
                     var bbm = PartiallyApplyAvgFilter(e.Frame.Bitmap, Channels.Blue, 4, 4, 10);
                     bbm.Save(@"C:\temp\aforge\bimg\img" + _calibrationStep + ".jpg");
                     var gblobCounter = new BlobCounter {ObjectsOrder = ObjectsOrder.YX, 
-                        MaxHeight = 25, MinHeight = 10, MaxWidth = 25, MinWidth = 10, FilterBlobs = true, CoupledSizeFiltering = true};
+                        MaxHeight = 25, MinHeight = 10, MaxWidth = 25, MinWidth = 10, FilterBlobs = true, CoupledSizeFiltering = false};
                     gblobCounter.ProcessImage(gbm);
                     var bblobCounter = new BlobCounter { ObjectsOrder = ObjectsOrder.YX, 
-                        MaxHeight = 25, MinHeight = 10, MaxWidth = 25, MinWidth = 10, FilterBlobs = true, CoupledSizeFiltering = true};
+                        MaxHeight = 25, MinHeight = 10, MaxWidth = 25, MinWidth = 10, FilterBlobs = true, CoupledSizeFiltering = false};
                     bblobCounter.ProcessImage(bbm);
                     ProcessBlobs(gblobCounter, 0);
                     ProcessBlobs(bblobCounter, 1);

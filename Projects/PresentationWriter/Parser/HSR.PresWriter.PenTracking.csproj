@@ -59,7 +59,7 @@
     <Compile Include="FixedSizeQueue.cs" />
     <Compile Include="Images\BinaryBitmap.cs" />
     <Compile Include="Images\OneChannelBitmap.cs" />
-    <Compile Include="Calibrator.cs" />
+    <Compile Include="PrimitiveCalibrator.cs" />
     <Compile Include="Events\NewImageEventArgs.cs" />
     <Compile Include="Grid.cs" />
     <Compile Include="Images\ThreeChannelBitmap.cs" />
