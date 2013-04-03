@@ -1,5 +1,7 @@
 ﻿using AForge.Imaging;
 using AForge.Imaging.Filters;
+using HSR.PresWriter.IO.Cameras;
+using HSR.PresWriter.IO.Events;
 using HSR.PresWriter.PenTracking;
 using HSR.PresWriter.PenTracking.Strategies;
 using System;
@@ -16,34 +18,42 @@ namespace HSR.PresWriter.Tester
     {
         public static void Main(string[] args)
         {
-            /*
-            AForgeCamera c = new AForgeCamera();
-            c.FrameReady += c_FrameReady;
-            c.Start();
-             */
-            Bitmap a = new Bitmap(@"c:\temp\calib2-none.bmp");
-            Bitmap b = new Bitmap(@"c:\temp\calib2-square.bmp");
-            Difference d = new Difference(a);
-            Bitmap c = d.Apply(b);
-            Bitmap gray = (new Grayscale(1,1,1)).Apply(c);
-
-            Bitmap t = (new Threshold(60)).Apply(gray);
-
-            BlobCounter counter = new BlobCounter();
-            counter.MinHeight = 7;
-            counter.MinWidth = 7;
-            //counter.BackgroundThreshold = Color.FromArgb(20,20,20);
-            counter.FilterBlobs = true;
-            counter.ProcessImage(t);
-            Rectangle[] rects = counter.GetObjectsRectangles();
-
-            foreach (Rectangle r in rects)
-            {
-                Console.WriteLine("Found: {0}, {1}", r.X, r.Y);
-            }
-
-            t.Save(@"c:\temp\calib2-diff.bmp");
+            FilesystemCamera camera = new FilesystemCamera(new DirectoryInfo(@"C:\temp\images\light"));
+            camera.FrameReady += delegate(object sender, FrameReadyEventArgs e) {
+                Console.WriteLine(e.Frame.Number);
+            };
+            camera.Start();
             Console.ReadLine();
+            camera.Stop();
+
+            ///*
+            //AForgeCamera c = new AForgeCamera();
+            //c.FrameReady += c_FrameReady;
+            //c.Start();
+            // */
+            //Bitmap a = new Bitmap(@"c:\temp\calib2-none.bmp");
+            //Bitmap b = new Bitmap(@"c:\temp\calib2-square.bmp");
+            //Difference d = new Difference(a);
+            //Bitmap c = d.Apply(b);
+            //Bitmap gray = (new Grayscale(1,1,1)).Apply(c);
+
+            //Bitmap t = (new Threshold(60)).Apply(gray);
+
+            //BlobCounter counter = new BlobCounter();
+            //counter.MinHeight = 7;
+            //counter.MinWidth = 7;
+            ////counter.BackgroundThreshold = Color.FromArgb(20,20,20);
+            //counter.FilterBlobs = true;
+            //counter.ProcessImage(t);
+            //Rectangle[] rects = counter.GetObjectsRectangles();
+
+            //foreach (Rectangle r in rects)
+            //{
+            //    Console.WriteLine("Found: {0}, {1}", r.X, r.Y);
+            //}
+
+            //t.Save(@"c:\temp\calib2-diff.bmp");
+            //Console.ReadLine();
         }
 
         //private static void c_FrameReady(object sender, FrameReadyEventArgs e)

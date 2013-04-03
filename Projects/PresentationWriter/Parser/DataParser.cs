@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Windows;
 using HSR.PresWriter.PenTracking.Events;
-using Parser.Mock;
+using HSR.PresWriter.IO.Cameras;
+using System.IO;
 
 namespace HSR.PresWriter.PenTracking
 {
@@ -25,7 +26,7 @@ namespace HSR.PresWriter.PenTracking
         /// </summary>
         private void Initialize()
         {
-            _calibrator = new AForgeCalibrator(new MockCameraConnector()); // TODO
+            _calibrator = new AForgeCalibrator(new FilesystemCamera(new DirectoryInfo(@"c:\temp\"))); // TODO
         }
 
         /// <summary>
