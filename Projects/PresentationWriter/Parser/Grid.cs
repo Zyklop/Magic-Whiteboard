@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Windows;
 using System.Linq;
 using System.Text;
@@ -180,6 +181,14 @@ namespace HSR.PresWriter.PenTracking
         /// <param name="img">Webcam coordinate</param>
         public void AddPoint(Point screen, Point img)
         {
+#if DEBUG
+            using (var fs = new StreamWriter(new FileStream(@"C:\Temp\aforge\points.csv", FileMode.Append, FileAccess.Write)))
+            {
+                var s = screen.X + ";" + screen.Y + ";" + img.X + ";" + img.Y + ";";
+                fs.WriteLine(s);
+                fs.Flush();
+            }
+#endif
             if (_calibratorData[(int)img.X, (int)img.Y] == null)
             {
                 _calibratorData[(int) img.X, (int) img.Y] = new List<Point>();

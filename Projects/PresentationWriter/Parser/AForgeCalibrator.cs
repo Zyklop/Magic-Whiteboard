@@ -92,26 +92,26 @@ namespace HSR.PresWriter.PenTracking
         {
             Debug.WriteLine("Calibrating " + _calibrationStep);
             e.Frame.Bitmap.Save(@"C:\temp\aforge\src\img" + _calibrationStep + ".jpg");
-            var stats = new ImageStatistics(e.Frame.Bitmap);
-                    //var histogram = stats.Gray;
-            //Debug.WriteLine("Grey: Min: " + histogram.Min + " Max: " + histogram.Max + " Mean: " + histogram.Mean +
+            //var stats = new ImageStatistics(e.Frame.Bitmap);
+            //        //var histogram = stats.Gray;
+            ////Debug.WriteLine("Grey: Min: " + histogram.Min + " Max: " + histogram.Max + " Mean: " + histogram.Mean +
+            ////    " Dev: " + histogram.StdDev + " Median: " + histogram.Median);
+            //var histogram = stats.Green;
+            //Debug.WriteLine("Green: Min: " + histogram.Min + " Max: " + histogram.Max + " Mean: " + histogram.Mean +
             //    " Dev: " + histogram.StdDev + " Median: " + histogram.Median);
-            var histogram = stats.Green;
-            Debug.WriteLine("Green: Min: " + histogram.Min + " Max: " + histogram.Max + " Mean: " + histogram.Mean +
-                " Dev: " + histogram.StdDev + " Median: " + histogram.Median);
-            histogram = stats.Blue;
-            Debug.WriteLine("Blue: Min: " + histogram.Min + " Max: " + histogram.Max + " Mean: " + histogram.Mean +
-                " Dev: " + histogram.StdDev + " Median: " + histogram.Median);
-            histogram = stats.Red;
-            Debug.WriteLine("Red: Min: " + histogram.Min + " Max: " + histogram.Max + " Mean: " + histogram.Mean +
-                " Dev: " + histogram.StdDev + " Median: " + histogram.Median);
+            //histogram = stats.Blue;
+            //Debug.WriteLine("Blue: Min: " + histogram.Min + " Max: " + histogram.Max + " Mean: " + histogram.Mean +
+            //    " Dev: " + histogram.StdDev + " Median: " + histogram.Median);
+            //histogram = stats.Red;
+            //Debug.WriteLine("Red: Min: " + histogram.Min + " Max: " + histogram.Max + " Mean: " + histogram.Mean +
+            //    " Dev: " + histogram.StdDev + " Median: " + histogram.Median);
             //e.NewImage.Save(@"C:\temp\aforge\src\img" + _calibrationStep + ".jpg");
             if (_errors > 100)
             {
                 //calibration not possible
                 return;
             }
-            if (_calibrationStep == 2)
+            if (_calibrationStep == CalibrationFrames)
             {
                 _cc.FrameReady -= BaseCalibration; // TODO
                 //Grid.Calculate();
@@ -158,7 +158,11 @@ namespace HSR.PresWriter.PenTracking
                             //                            new IntRange((int) stats.Green.Mean + MeanDiff, 255),
                             //                            new IntRange((int) stats.Blue.Mean + MeanDiff, 255));
                             //var bm = cf.Apply(e.NewImage);
-                            var bm = PartiallyApplyAvgFilter(e.Frame.Bitmap, Channels.GreenAndBlue, 2, 2, MeanDiff);
+                            //var bm = PartiallyApplyAvgFilter(e.Frame.Bitmap, Channels.GreenAndBlue, 2, 2, MeanDiff);
+                            var bm = diffFilter.Apply(e.Frame.Bitmap);
+                            var cf = new ColorFiltering(new IntRange(10, 255), new IntRange(20, 255),
+                                                        new IntRange(20, 255));
+                            cf.ApplyInPlace(bm);
                             var blobCounter = new BlobCounter {ObjectsOrder = ObjectsOrder.Size, BackgroundThreshold = Color.FromArgb(255,15,20,20), FilterBlobs = true};
                             blobCounter.ProcessImage(bm);
                             bm.Save(@"C:\temp\aforge\diff.jpg");
@@ -193,13 +197,26 @@ namespace HSR.PresWriter.PenTracking
                             }
                             else
                             {
-                                _calibrationStep++; //= 0;
+                                _calibrationStep = 0;
                                 _errors++;
                             }
                             break;
                         case 1:
                             diffFilter.OverlayImage = e.Frame.Bitmap;
-                            _vs.AddRect(0, 0, (int) _vs.Width, (int) _vs.Height, Color.FromArgb(255, 255, 255, 255));
+                            //_vs.AddRect(0, 0, (int) _vs.Width, (int) _vs.Height, Color.FromArgb(255, 255, 255, 255));
+                            _vs.ClearRects();
+                            for (int y = 0; y < Columncount; y++)
+                            {
+                                for (int x = 0; x < Rowcount; x++)
+                                {
+                                    if (!(y % 2 == 0 && x % 2 == 0 || y % 2 == 1 && x % 2 == 1))
+                                    {
+                                        _vs.AddRect((int)(x * sqrwidth), (int)(y * sqrheight),
+                                            (int)sqrwidth, (int)sqrheight,
+                                        Color.FromArgb(255, 255, 255, 255));
+                                    }
+                                }
+                            }
                             _calibrationStep++;
                             break;
                         case 0:
@@ -212,12 +229,24 @@ namespace HSR.PresWriter.PenTracking
                             thread.SetApartmentState(ApartmentState.STA);
                             thread.Start();
                             thread.Join();
+                            for (int y = 0; y < Columncount; y++)
+                            {
+                                for (int x = 0; x < Rowcount; x++)
+                                {
+                                    if (y % 2 == 0 && x % 2 == 0 || y % 2 == 1 && x % 2 == 1)
+                                    {
+                                        _vs.AddRect((int)(x * sqrwidth), (int)(y * sqrheight),
+                                            (int)sqrwidth, (int)sqrheight,
+                                        Color.FromArgb(255, 255, 255, 255));
+                                    }
+                                }
+                            }
                             _calibrationStep++;
                             break;
                     }
             }
             Debug.WriteLine("Releasing");
-            await Task.Delay(500);
+            await Task.Delay(100);
             _sem.Release();
         }
 
@@ -312,7 +341,7 @@ namespace HSR.PresWriter.PenTracking
                 maxNeigbours--;
             if (y == 0 || y == Columncount)
                 maxNeigbours--;
-            var n = rest.Where(m => IsNextTo(blob.CenterOfGravity, m.CenterOfGravity, x, y, 2.5));
+            var n = rest.Where(m => IsNextTo(blob.CenterOfGravity, m.CenterOfGravity, x, y, 2.5)).ToList();
             if (n.Count() > maxNeigbours)
                 Debug.WriteLine("too many neighbours");
                 //throw new InvalidOperationException("Too much Blobs");
@@ -415,8 +444,10 @@ namespace HSR.PresWriter.PenTracking
         private void FillRects()
         {
 
-            double xOff = ((_calibrationStep - 3) % (int)Math.Sqrt(CalibrationFrames - 3)) * sqrwidth;
-            double yOff = Math.Floor((_calibrationStep - 3) / Math.Sqrt(CalibrationFrames - 3)) * sqrwidth;
+            double xOff = ((_calibrationStep - 3) % (int)Math.Sqrt(CalibrationFrames - 3)) * 
+                sqrwidth / Math.Sqrt(CalibrationFrames - 3);
+            double yOff = Math.Floor((_calibrationStep - 3) / Math.Sqrt(CalibrationFrames - 3)) * 
+                sqrwidth / Math.Sqrt(CalibrationFrames - 3);
             for (int y = 0; y < Columncount; y++)
             {
                 for (int x = 0; x < Rowcount; x++)
