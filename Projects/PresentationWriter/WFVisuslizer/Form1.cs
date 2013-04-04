@@ -105,5 +105,17 @@ namespace WFVisuslizer
             Application.DoEvents();
             //g.Dispose();
         }
+
+        internal void AddCirclesAround(int x, int y)
+        {
+            lock (_g)
+            {
+                _g.DrawEllipse(new Pen(Color.Red), x - 200, y - 200, 400, 400);
+                _g.DrawEllipse(new Pen(Color.Red), x - 100, y - 100, 200, 200);
+                _g.Flush();
+            }
+            Invalidate(new Rectangle(x - 200, y - 200, 400, 400));
+            Application.DoEvents();
+        }
     }
 }

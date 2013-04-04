@@ -39,6 +39,8 @@ namespace HSR.PresWriter.PenTracking
         /// <param name="c"></param>
         void AddRect(Rect rect, Color c);
 
+        void MarkPoint(int x, int y);
+
         /// <summary>
         /// Remove all the rectangles
         /// </summary>

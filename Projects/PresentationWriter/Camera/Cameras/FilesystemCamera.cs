@@ -33,6 +33,7 @@ namespace HSR.PresWriter.IO.Cameras
         {
             tim.Interval = TIMER_INTERVAL;
             tim.AutoReset = true;
+            
             tim.Elapsed += delegate
             {
                 if (FrameReady != null) FrameReady(this, new FrameReadyEventArgs(new VideoFrame(index, imagelist[index])));

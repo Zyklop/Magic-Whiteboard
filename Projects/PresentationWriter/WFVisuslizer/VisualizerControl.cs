@@ -124,6 +124,12 @@ namespace WFVisuslizer
             _cw.AddRect(topLeft, bottomRight, width, height, color);
         }
 
+
+        void MarkPoint(int x, int y)
+        {
+            _cw.AddCirclesAround(x, y);
+        }
+
         //public void Draw()
         //{
         //    throw new System.NotImplementedException();

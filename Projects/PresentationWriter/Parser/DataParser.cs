@@ -28,7 +28,9 @@ namespace HSR.PresWriter.PenTracking
         /// </summary>
         private void Initialize()
         {
-            _calibrator = new AForgeCalibrator(new FilesystemCamera(new DirectoryInfo(@"c:\temp\"))); // TODO
+            var filesystemCamera = new FilesystemCamera(new DirectoryInfo(@"c:\temp\aforge\inp"));
+            filesystemCamera.Start();
+            _calibrator = new AForgeCalibrator(filesystemCamera); // TODO
             _calibrator.CalibrationCompleted += StartTracking;
         }
 

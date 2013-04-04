@@ -76,8 +76,11 @@ namespace HSR.PresWriter.PenTracking
 
         private void BaseCalibration(object sender, FrameReadyEventArgs e)
         {
-
-            if (_sem.CurrentCount >= 1)//_t.Status != TaskStatus.Running)//
+            if (t != null && t.Exception != null)
+            {
+                throw t.Exception;
+            }
+            if (_sem.CurrentCount >= 1)//_t.Status != TaskStatus.Running)
             {
                 _sem.Wait();
                 Task.Factory.StartNew(() => t = CalibThread(e));
@@ -108,7 +111,7 @@ namespace HSR.PresWriter.PenTracking
                 //calibration not possible
                 return;
             }
-            if (_calibrationStep == 3)//CalibrationFrames)
+            if (_calibrationStep == 2)
             {
                 _cc.FrameReady -= BaseCalibration; // TODO
                 //Grid.Calculate();
@@ -131,15 +134,15 @@ namespace HSR.PresWriter.PenTracking
                     //var bf = new ColorFiltering(new IntRange(0, 255),//(int)stats.Red.Mean), 
                     //    new IntRange(0, 255),//(int) stats.Green.Mean), 
                     //    new IntRange((int) stats.Blue.Mean + ColorDiff, 255));
-                    var gbm = PartiallyApplyAvgFilter(e.Frame.Bitmap, Channels.Green, 4, 4, 1);
+                    var gbm = PartiallyApplyAvgFilter(e.Frame.Bitmap, Channels.Green, 8, 8, 8);
                     gbm.Save(@"C:\temp\aforge\gimg\img" + _calibrationStep + ".jpg");
-                    var bbm = PartiallyApplyAvgFilter(e.Frame.Bitmap, Channels.Blue, 4, 4, 10);
+                    var bbm = PartiallyApplyAvgFilter(e.Frame.Bitmap, Channels.Blue, 8, 8, 8);
                     bbm.Save(@"C:\temp\aforge\bimg\img" + _calibrationStep + ".jpg");
                     var gblobCounter = new BlobCounter {ObjectsOrder = ObjectsOrder.YX, 
-                        MaxHeight = 25, MinHeight = 10, MaxWidth = 25, MinWidth = 10, FilterBlobs = true, CoupledSizeFiltering = false};
+                        MaxHeight = 30, MinHeight = 15, MaxWidth = 30, MinWidth = 15, FilterBlobs = true, CoupledSizeFiltering = false};
                     gblobCounter.ProcessImage(gbm);
                     var bblobCounter = new BlobCounter { ObjectsOrder = ObjectsOrder.YX, 
-                        MaxHeight = 25, MinHeight = 10, MaxWidth = 25, MinWidth = 10, FilterBlobs = true, CoupledSizeFiltering = false};
+                        MaxHeight = 30, MinHeight = 15, MaxWidth = 30, MinWidth = 15, FilterBlobs = true, CoupledSizeFiltering = false};
                     bblobCounter.ProcessImage(bbm);
                     ProcessBlobs(gblobCounter, 0);
                     ProcessBlobs(bblobCounter, 1);
@@ -240,11 +243,11 @@ namespace HSR.PresWriter.PenTracking
                                 break;
                             case Channels.Green:
                                 cf.Green = new IntRange((int) s.Green.Mean + diff, 255);
-                                cf.Blue = new IntRange(0, (int)s.Blue.Mean + diff);
+                                cf.Blue = new IntRange(0, (int)s.Blue.Mean + 10);
                                 break;
                             case Channels.Blue:
                                 cf.Blue = new IntRange((int) s.Blue.Mean + diff, 255);
-                                cf.Green = new IntRange(0, (int)s.Green.Mean + diff);
+                                cf.Green = new IntRange(0, (int)s.Green.Mean + 10);
                                 break;
                             case Channels.GreenAndBlue:
                                 cf.Green = new IntRange((int) s.Green.Mean + diff, 255);
@@ -290,7 +293,9 @@ namespace HSR.PresWriter.PenTracking
         {
             if (x < 0 || y < 0 || y > Columncount || x > Rowcount)
             {
-                throw new ArgumentException("X: "+x+ " Y: " + y + " isn't a valid blob position");
+                //throw new ArgumentException("X: "+x+ " Y: " + y + " isn't a valid blob position");
+                Debug.WriteLine("X: " + x + " Y: " + y + " isn't a valid blob position");
+                return 0;
             }
             var corners =
                 PointsCloud.FindQuadrilateralCorners(blobCounter.GetBlobsEdgePoints(blob));
@@ -308,34 +313,38 @@ namespace HSR.PresWriter.PenTracking
             if (y == 0 || y == Columncount)
                 maxNeigbours--;
             var n = rest.Where(m => IsNextTo(blob.CenterOfGravity, m.CenterOfGravity, x, y, 2.5));
-            if(n.Count()>maxNeigbours )
-                throw new InvalidOperationException("Too much Blobs");
+            if (n.Count() > maxNeigbours)
+                Debug.WriteLine("too many neighbours");
+                //throw new InvalidOperationException("Too much Blobs");
             int res = n.Count();
             foreach (var b in n)
             {
                 var xdiff = b.CenterOfGravity.X - blob.CenterOfGravity.X;
                 var ydiff = b.CenterOfGravity.Y - blob.CenterOfGravity.Y;
                 rest.Remove(b);
-                if (xdiff > ydiff)
+                if (rest.Any())
                 {
-                    if (xdiff > 0)
+                    if (xdiff > ydiff)
                     {
-                        res += ProcessBlobs(b, rest, x + 1, y, offset, blobCounter);
+                        if (xdiff > 0)
+                        {
+                            res += ProcessBlobs(b, rest, x + 1, y, offset, blobCounter);
+                        }
+                        else
+                        {
+                            res += ProcessBlobs(b, rest, x - 1, y, offset, blobCounter);
+                        }
                     }
                     else
                     {
-                        res += ProcessBlobs(b, rest, x - 1, y, offset, blobCounter);
-                    }
-                }
-                else
-                {
-                    if (ydiff > 0)
-                    {
-                        res += ProcessBlobs(b, rest, x, y + 1, offset, blobCounter);
-                    }
-                    else
-                    {
-                        res += ProcessBlobs(b, rest, x, y - 1, offset, blobCounter);
+                        if (ydiff > 0)
+                        {
+                            res += ProcessBlobs(b, rest, x, y + 1, offset, blobCounter);
+                        }
+                        else
+                        {
+                            res += ProcessBlobs(b, rest, x, y - 1, offset, blobCounter);
+                        }
                     }
                 }
             }

@@ -42,7 +42,7 @@ namespace MockTester
             //var cameraConnector = new MockCameraConnector();
             var parser = new DataParser();
             parser.Start();
-            Thread.Sleep(10000);
+            Thread.Sleep(15000);
             //cameraConnector.NewImage += delegate(object sender, NewImageEventArgs e)
             //    {
             //        if (i>0)
@@ -60,7 +60,7 @@ namespace MockTester
 
         private static void NewPoint(object sender, HSR.PresWriter.PenTracking.Events.PenPositionEventArgs e)
         {
-            Console.WriteLine("Pen gound at: " + e.Point.X + " / " + e.Point.Y);
+            Console.WriteLine("Pen found at: " + e.Point.X + " / " + e.Point.Y);
         }
 
         private static void Main3(string[] args)
