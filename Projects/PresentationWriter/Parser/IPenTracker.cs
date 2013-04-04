@@ -11,6 +11,6 @@ namespace HSR.PresWriter.PenTracking
         Task<PointFrame> ProcessAsync(VideoFrame frame);
         PointFrame GetLastFrame();
         Point GetPenPoint(long timestamp);
-        event EventHandler<InternalPenPositionEventArgs> PenFound;
+        event EventHandler<PenPositionEventArgs> PenFound;
     }
 }

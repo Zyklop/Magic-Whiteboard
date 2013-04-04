@@ -11,7 +11,7 @@ namespace HSR.PresWriter.Containers
     {
         /// <summary>
         /// Linked Point</summary>
-        public readonly Point Point;
+        public Point Point { get; protected set; }
 
         /// <summary>
         /// Initializing a frame.
@@ -26,6 +26,26 @@ namespace HSR.PresWriter.Containers
             : base(number, timestamp)
         {
             this.Point = point;
+        }
+
+        /// <summary>
+        /// Return a repositioned version of the PointFrame
+        /// </summary>
+        /// <param name="p"></param>
+        /// <returns></returns>
+        public PointFrame ApplyRebase(Point p)
+        {
+            return new PointFrame(this.Number, p, this.Timestamp);
+        }
+
+        /// <summary>
+        /// Set a new Position for this Pointframe
+        /// </summary>
+        /// <param name="p"></param>
+        /// <returns></returns>
+        public void ApplyRebaseInPlace(Point p)
+        {
+            this.Point = p;
         }
     }
 }

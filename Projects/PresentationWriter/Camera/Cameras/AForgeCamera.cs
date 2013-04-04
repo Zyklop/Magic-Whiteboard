@@ -17,11 +17,14 @@ namespace HSR.PresWriter.IO.Cameras
         private long lastTimestamp = 0;
         private Bitmap lastBitmap = null;
 
+        public bool IsRunning { get; protected set; }
+
         public event EventHandler<FrameReadyEventArgs> FrameReady;
 
         public AForgeCamera()
         {
             videoCaptureDevices = new FilterInfoCollection(FilterCategory.VideoInputDevice);
+            // TODO Choose camera device. We just use the first camera for now.
             finalVideo = new VideoCaptureDevice(videoCaptureDevices[0].MonikerString);
         }
 
@@ -32,13 +35,15 @@ namespace HSR.PresWriter.IO.Cameras
 
         public void Start()
         {
-            finalVideo.NewFrame += new NewFrameEventHandler(finalVideo_NewFrame);
+            this.IsRunning = true;
+            finalVideo.NewFrame += finalVideo_NewFrame;
             finalVideo.Start();
         }
 
         public void Stop()
         {
-            finalVideo.NewFrame -= new NewFrameEventHandler(finalVideo_NewFrame);
+            finalVideo.NewFrame -= finalVideo_NewFrame;
+            this.IsRunning = false;
             finalVideo.SignalToStop();
         }
 

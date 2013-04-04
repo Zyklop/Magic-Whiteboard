@@ -56,6 +56,10 @@
       <Project>{c7bc83d8-ddff-4b93-b747-22c8c2ccd812}</Project>
       <Name>HSR.PresWriter.Camera</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Common\HSR.PresWriter.csproj">
+      <Project>{1386f52b-ab44-46f8-b442-ec2662df1e3a}</Project>
+      <Name>HSR.PresWriter</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\ImageVisualizer\ImageVisualizer.csproj">
       <Project>{3AF7E3B7-7ED1-4F0D-9426-58150F6697F8}</Project>
       <Name>ImageVisualizer</Name>

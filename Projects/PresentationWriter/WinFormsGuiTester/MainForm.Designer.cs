@@ -31,6 +31,7 @@
             this.liveButton = new System.Windows.Forms.Button();
             this.filtersButton = new System.Windows.Forms.Button();
             this.libraryTrackingButton = new System.Windows.Forms.Button();
+            this.liveTestButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // liveButton
@@ -63,11 +64,22 @@
             this.libraryTrackingButton.UseVisualStyleBackColor = true;
             this.libraryTrackingButton.Click += new System.EventHandler(this.libraryTrackingButton_Click);
             // 
+            // liveTestButton
+            // 
+            this.liveTestButton.Location = new System.Drawing.Point(12, 96);
+            this.liveTestButton.Name = "liveTestButton";
+            this.liveTestButton.Size = new System.Drawing.Size(118, 22);
+            this.liveTestButton.TabIndex = 3;
+            this.liveTestButton.Text = "Live Test";
+            this.liveTestButton.UseVisualStyleBackColor = true;
+            this.liveTestButton.Click += new System.EventHandler(this.liveTestButton_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(143, 100);
+            this.ClientSize = new System.Drawing.Size(143, 125);
+            this.Controls.Add(this.liveTestButton);
             this.Controls.Add(this.libraryTrackingButton);
             this.Controls.Add(this.filtersButton);
             this.Controls.Add(this.liveButton);
@@ -82,5 +94,6 @@
         private System.Windows.Forms.Button liveButton;
         private System.Windows.Forms.Button filtersButton;
         private System.Windows.Forms.Button libraryTrackingButton;
+        private System.Windows.Forms.Button liveTestButton;
     }
 }

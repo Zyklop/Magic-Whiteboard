@@ -1,6 +1,7 @@
 ﻿using AForge.Imaging;
 using AForge.Imaging.Filters;
 using HSR.PresWriter.Containers;
+using HSR.PresWriter.IO;
 using HSR.PresWriter.PenTracking.Events;
 using System;
 using System.Collections.Generic;
@@ -73,7 +74,7 @@ namespace HSR.PresWriter.PenTracking
                     this.penPoints.Enqueue(resultFrame);
                     if (this.PenFound != null)
                     {
-                        this.PenFound(this, new InternalPenPositionEventArgs(resultFrame));
+                        this.PenFound(this, new PenPositionEventArgs(resultFrame));
                     }
                     return resultFrame;
                 }
@@ -218,7 +219,7 @@ namespace HSR.PresWriter.PenTracking
             return Point.Empty;
         }
 
-        public event EventHandler<InternalPenPositionEventArgs> PenFound;
+        public event EventHandler<PenPositionEventArgs> PenFound;
 
 
 #if DEBUG

@@ -30,7 +30,7 @@ namespace HSR.PresWriter.PenTracking
         private IPictureProvider _cc;
         private int _calibrationStep;
         private int _errors;
-        private VisualizerControl _vs = VisualizerControl.GetVisualizer();
+        private VisualizerControl _vs;
         private const int CalibrationFrames = 28; //must be n^2+3
         private Difference diffFilter = new Difference();
         private const int Rowcount=20;
@@ -51,9 +51,16 @@ namespace HSR.PresWriter.PenTracking
             //thread.SetApartmentState(ApartmentState.STA);
             //thread.Start();
             //thread.Join();
+        }
+
+        // TODO Calibrate Funktionen aufräumen
+        public void StartCalibration()
+        {
+            _vs = VisualizerControl.GetVisualizer();
             Calibrate();
             CalibrateColors();
         }
+
 
         public void CalibrateColors()
         {
@@ -61,6 +68,7 @@ namespace HSR.PresWriter.PenTracking
 
         public void Calibrate()
         {
+
             _calibrationStep = 0;
             _errors = 0;
             sqrwidth = ((double)_vs.Width) / Rowcount;
@@ -104,6 +112,7 @@ namespace HSR.PresWriter.PenTracking
             //    " Dev: " + histogram.StdDev + " Median: " + histogram.Median);
             //histogram = stats.Red;
             //Debug.WriteLine("Red: Min: " + histogram.Min + " Max: " + histogram.Max + " Mean: " + histogram.Mean +
+            //e.Frame.Bitmap.Save(@"C:\temp\aforge\src\img" + _calibrationStep + ".jpg");
             //    " Dev: " + histogram.StdDev + " Median: " + histogram.Median);
             //e.NewImage.Save(@"C:\temp\aforge\src\img" + _calibrationStep + ".jpg");
             if (_errors > 100)
@@ -165,7 +174,7 @@ namespace HSR.PresWriter.PenTracking
                             cf.ApplyInPlace(bm);
                             var blobCounter = new BlobCounter {ObjectsOrder = ObjectsOrder.Size, BackgroundThreshold = Color.FromArgb(255,15,20,20), FilterBlobs = true};
                             blobCounter.ProcessImage(bm);
-                            bm.Save(@"C:\temp\aforge\diff.jpg");
+                            //bm.Save(@"C:\temp\aforge\diff.jpg");
                             var blobs = blobCounter.GetObjectsInformation();
                             int i = 0;
                             List<IntPoint> corners;

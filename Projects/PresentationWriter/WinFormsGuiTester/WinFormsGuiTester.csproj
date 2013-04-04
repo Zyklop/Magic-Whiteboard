@@ -66,6 +66,12 @@
     <Compile Include="LivePenTrackingForm.Designer.cs">
       <DependentUpon>LivePenTrackingForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="LiveTestForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="LiveTestForm.Designer.cs">
+      <DependentUpon>LiveTestForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -82,6 +88,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="LivePenTrackingForm.resx">
       <DependentUpon>LivePenTrackingForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="LiveTestForm.resx">
+      <DependentUpon>LiveTestForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
