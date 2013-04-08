@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Threading;
 using System.Linq;
 using System.Threading.Tasks;
@@ -168,13 +169,16 @@ namespace HSR.PresWriter.PenTracking
                             //                            new IntRange((int) stats.Blue.Mean + MeanDiff, 255));
                             //var bm = cf.Apply(e.NewImage);
                             //var bm = PartiallyApplyAvgFilter(e.Frame.Bitmap, Channels.GreenAndBlue, 2, 2, MeanDiff);
-                            var bm = diffFilter.Apply(e.Frame.Bitmap);
+                            var bm = UnmanagedImage.FromManagedImage(e.Frame.Bitmap);
+                            bm = diffFilter.Apply(bm);
+                            var gf = new GaussianBlur(9.0,3);
+                            gf.ApplyInPlace(bm);
                             var cf = new ColorFiltering(new IntRange(10, 255), new IntRange(20, 255),
                                                         new IntRange(20, 255));
                             cf.ApplyInPlace(bm);
                             var blobCounter = new BlobCounter {ObjectsOrder = ObjectsOrder.Size, BackgroundThreshold = Color.FromArgb(255,15,20,20), FilterBlobs = true};
                             blobCounter.ProcessImage(bm);
-                            //bm.Save(@"C:\temp\aforge\diff.jpg");
+                            bm.ToManagedImage().Save(@"C:\temp\aforge\diff.jpg");
                             var blobs = blobCounter.GetObjectsInformation();
                             int i = 0;
                             List<IntPoint> corners;
@@ -191,7 +195,7 @@ namespace HSR.PresWriter.PenTracking
                             if (Grid.TopLeft.X > 10 && Grid.TopRight.X < _vs.Width - 10 && Grid.BottomLeft.X > 10 &&
                                 Grid.BottomRight.X < _vs.Width - 10 && Grid.TopLeft.Y > 10 && Grid.TopRight.Y > 10 &&
                                 Grid.BottomLeft.Y < _vs.Height - 10 && Grid.BottomRight.Y < _vs.Height - 10 &&
-                                Grid.TopLeft.X < Grid.BottomRight.X &&
+                                Grid.TopLeft.X < Grid.BottomRight.X && blobs[i-1].Area > 60000 &&
                                 Grid.BottomLeft.X < Grid.TopRight.X && Grid.BottomLeft.X < Grid.BottomRight.X &&
                                 Grid.TopLeft.Y < Grid.BottomLeft.Y && Grid.TopLeft.Y < Grid.BottomRight.Y &&
                                 Grid.TopRight.Y < Grid.BottomLeft.Y && Grid.TopRight.Y < Grid.BottomRight.Y)
@@ -226,6 +230,7 @@ namespace HSR.PresWriter.PenTracking
                                     }
                                 }
                             }
+                            _vs.Draw();
                             _calibrationStep++;
                             break;
                         case 0:
@@ -250,6 +255,7 @@ namespace HSR.PresWriter.PenTracking
                                     }
                                 }
                             }
+                            _vs.Draw();
                             _calibrationStep++;
                             break;
                     }
@@ -261,7 +267,7 @@ namespace HSR.PresWriter.PenTracking
 
         private Bitmap PartiallyApplyAvgFilter(Bitmap src, Channels channel, int x, int y, int diff)
         {
-            var parts = new Bitmap[x,y];
+            var parts = new UnmanagedImage[x,y];
             var res = new Bitmap(src.Width, src.Height);
             int width = src.Width/x;
             int height = src.Height/y;
@@ -271,31 +277,46 @@ namespace HSR.PresWriter.PenTracking
                 {
                     for (int j = 0; j < y; j++)
                     {
-                        var crop = src.Clone(new Rectangle(i*width, j*height, width, height), src.PixelFormat);
+                        //var crop = src.Clone(new Rectangle(i*width, j*height, width, height), src.PixelFormat)
+                        UnmanagedImage crop;
+                        BitmapData imageData = src.LockBits(
+                            new Rectangle(i*width, j*height, width, height),
+                            ImageLockMode.ReadWrite, src.PixelFormat);
+
+                        try
+                        {
+                            crop = new UnmanagedImage(imageData);
+                            // apply several routines to the unmanaged image
+                        }
+                        finally
+                        {
+                            src.UnlockBits(imageData);
+                        }
+
                         var s = new ImageStatistics(crop);
-                        var cf = new ColorFiltering(new IntRange(0,255), new IntRange(0,255), new IntRange(0,255));
+                        var cf = new ColorFiltering(new IntRange(0, 255), new IntRange(0, 255), new IntRange(0, 255));
                         switch (channel)
                         {
                             case Channels.Red:
-                                cf.Red = new IntRange((int) s.Red.Mean+diff,255);
+                                cf.Red = new IntRange((int) s.Red.Mean + diff, 255);
                                 break;
                             case Channels.Green:
                                 cf.Green = new IntRange((int) s.Green.Mean + diff, 255);
-                                cf.Blue = new IntRange(0, (int)s.Blue.Mean + 10);
+                                cf.Blue = new IntRange(0, (int) s.Blue.Mean + 10);
                                 break;
                             case Channels.Blue:
                                 cf.Blue = new IntRange((int) s.Blue.Mean + diff, 255);
-                                cf.Green = new IntRange(0, (int)s.Green.Mean + 10);
+                                cf.Green = new IntRange(0, (int) s.Green.Mean + 10);
                                 break;
                             case Channels.GreenAndBlue:
                                 cf.Green = new IntRange((int) s.Green.Mean + diff, 255);
-                                cf.Blue = new IntRange((int)s.Blue.Mean + diff, 255);
+                                cf.Blue = new IntRange((int) s.Blue.Mean + diff, 255);
                                 break;
                             default:
                                 throw new ArgumentOutOfRangeException("channel");
                         }
                         cf.ApplyInPlace(crop);
-                        g.DrawImageUnscaled(crop, i* width, j * height);
+                        g.DrawImageUnscaled(crop.ToManagedImage(), i*width, j*height);
                     }
                 }
                 g.Flush();
@@ -337,13 +358,23 @@ namespace HSR.PresWriter.PenTracking
             }
             var corners =
                 PointsCloud.FindQuadrilateralCorners(blobCounter.GetBlobsEdgePoints(blob));
-            InPlaceSort(corners);
-            double xOff = ((_calibrationStep - 3) % (int)Math.Sqrt(CalibrationFrames - 3)) * sqrwidth / (int)Math.Sqrt(CalibrationFrames - 3);
-            double yOff = Math.Floor((_calibrationStep - 3) / Math.Sqrt(CalibrationFrames - 3)) * sqrwidth / (int)Math.Sqrt(CalibrationFrames - 3);
-            Grid.AddPoint((int)(x * sqrwidth + xOff), (int)(y * sqrheight + yOff), corners[0].X, corners[0].Y);
-            Grid.AddPoint((int)((x + 1) * sqrwidth + xOff), (int)(y * sqrheight + yOff), corners[1].X, corners[1].Y);
-            Grid.AddPoint((int)(x * sqrwidth + xOff), (int)((y + 1) * sqrheight + yOff), corners[2].X, corners[2].Y);
-            Grid.AddPoint((int)((x + 1) * sqrwidth + xOff), (int)((y + 1) * sqrheight + yOff), corners[3].X, corners[3].Y);
+            if (corners.Count == 4)
+            {
+                InPlaceSort(corners);
+                double xOff = ((_calibrationStep - 3)%(int) Math.Sqrt(CalibrationFrames - 3))*sqrwidth/
+                              (int) Math.Sqrt(CalibrationFrames - 3);
+                double yOff = Math.Floor((_calibrationStep - 3)/Math.Sqrt(CalibrationFrames - 3))*sqrwidth/
+                              (int) Math.Sqrt(CalibrationFrames - 3);
+                Grid.AddPoint((int) (x*sqrwidth + xOff), (int) (y*sqrheight + yOff), corners[0].X, corners[0].Y);
+                Grid.AddPoint((int) ((x + 1)*sqrwidth + xOff), (int) (y*sqrheight + yOff), corners[1].X, corners[1].Y);
+                Grid.AddPoint((int) (x*sqrwidth + xOff), (int) ((y + 1)*sqrheight + yOff), corners[2].X, corners[2].Y);
+                Grid.AddPoint((int) ((x + 1)*sqrwidth + xOff), (int) ((y + 1)*sqrheight + yOff), corners[3].X,
+                              corners[3].Y);
+            }
+            else
+            {
+                _errors++;
+            }
             //find neighbours
             int maxNeigbours = 4;
             if (x == 0 || x == Rowcount)
@@ -475,6 +506,7 @@ namespace HSR.PresWriter.PenTracking
                     }
                 }
             }
+            _vs.Draw();
         }
 
         public Grid Grid { get; set; }

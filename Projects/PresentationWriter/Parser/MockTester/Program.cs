@@ -22,7 +22,7 @@ namespace MockTester
         {
             int i = 0;
             ThreeChannelBitmap tci = new ThreeChannelBitmap();
-            var parser = new DataParser(new FilesystemCamera(new DirectoryInfo(@"C:\temp\images\light")));
+            var parser = new DataParser(new FilesystemCamera(new DirectoryInfo(@"C:\temp\aforge\inp")));
             parser.Start();
             Thread.Sleep(10000);
             //cameraConnector.NewImage += delegate(object sender, NewImageEventArgs e)
@@ -42,8 +42,8 @@ namespace MockTester
         static void Main2(string[] args)
         {
             int i = 0;
-            //var cameraConnector = new MockCameraConnector();
-            var cam = new FilesystemCamera(new DirectoryInfo(@"C:\temp\images\light"));
+            //var cam = new AForgeCamera();
+            var cam = new FilesystemCamera(new DirectoryInfo(@"C:\temp\aforge\inph"));
             cam.Start();
             var parser = new DataParser(cam);
             parser.Start();
@@ -65,7 +65,7 @@ namespace MockTester
 
         private static void NewPoint(object sender, PenPositionEventArgs e)
         {
-            Console.WriteLine("Pen gound at: " + e.Frame.Point.X + " / " + e.Frame.Point.Y);
+            Console.WriteLine("Pen found at: " + e.Frame.Point.X + " / " + e.Frame.Point.Y);
         }
 
         private static void Main3(string[] args)

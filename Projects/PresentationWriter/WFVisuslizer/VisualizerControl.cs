@@ -130,9 +130,9 @@ namespace WFVisuslizer
             _cw.AddCirclesAround(x, y);
         }
 
-        //public void Draw()
-        //{
-        //    throw new System.NotImplementedException();
-        //}
+        public void Draw()
+        {
+            _cw.Draw();
+        }
     }
 }

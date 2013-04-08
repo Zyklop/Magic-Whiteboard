@@ -54,8 +54,24 @@ namespace WFVisuslizer
                 _g.FillRectangle(new SolidBrush(fromRgb), topLeft.X, topLeft.Y, bottomRight.X-topLeft.X, bottomRight.Y-topLeft.Y);
                 _g.Flush();
             }
-            Invalidate(new Rectangle(topLeft.X, topLeft.Y, bottomRight.X - topLeft.X, bottomRight.Y - topLeft.Y));
+            //Invalidate(new Rectangle(topLeft.X, topLeft.Y, bottomRight.X - topLeft.X, bottomRight.Y - topLeft.Y));
             Application.DoEvents();
+        }
+
+        public void AddLine(Point topLeft, Point bottomRight, Color fromRgb)
+        {
+            lock (_g)
+            {
+                _g.DrawLine(new Pen(fromRgb), topLeft.X, topLeft.Y, bottomRight.X, bottomRight.Y);
+                _g.Flush();
+            }
+            //Invalidate(new Rectangle(topLeft.X, topLeft.Y, bottomRight.X - topLeft.X, bottomRight.Y - topLeft.Y));
+            Application.DoEvents();
+        }
+
+        public void Draw()
+        {
+            Invalidate();
         }
 
         public void ClearRects()
@@ -88,7 +104,7 @@ namespace WFVisuslizer
                 _g.FillRectangle(new SolidBrush(color), topLeft, bottomRight, width, height);
                 _g.Flush();
             }
-            Invalidate(new Rectangle(topLeft, bottomRight, width, height));
+            //Invalidate(new Rectangle(topLeft, bottomRight, width, height));
             Application.DoEvents();
             //g.Dispose();
         }
@@ -101,7 +117,7 @@ namespace WFVisuslizer
                 _g.FillRectangle(new SolidBrush(fromRgb), (int)topLeft.X, (int)topLeft.Y, (int)bottomRight.X - (int)topLeft.X, (int)bottomRight.Y - (int)topLeft.Y);
                 _g.Flush();
             }
-            Invalidate(new Rectangle((int)topLeft.X, (int)topLeft.Y, (int)bottomRight.X - (int)topLeft.X, (int)bottomRight.Y - (int)topLeft.Y));
+            //Invalidate(new Rectangle((int)topLeft.X, (int)topLeft.Y, (int)bottomRight.X - (int)topLeft.X, (int)bottomRight.Y - (int)topLeft.Y));
             Application.DoEvents();
             //g.Dispose();
         }

@@ -34,8 +34,8 @@ namespace ImageChecker
             //parser.Start();
             //cameraConnector.NewImage += delegate(object sender, NewImageEventArgs args)
             FilesystemCamera cameraConnector = new FilesystemCamera(new DirectoryInfo(@"C:\temp\images\light"));
-            var parser = new DataParser(cameraConnector); // TODO
-            parser.Start();
+            //var parser = new DataParser(cameraConnector); // TODO
+            //parser.Start();
             cameraConnector.FrameReady += delegate(object sender, FrameReadyEventArgs args)
                 {
                     MemoryStream ms = new MemoryStream();

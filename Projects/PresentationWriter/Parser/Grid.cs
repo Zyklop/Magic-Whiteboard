@@ -184,7 +184,7 @@ namespace HSR.PresWriter.PenTracking
 #if DEBUG
             using (var fs = new StreamWriter(new FileStream(@"C:\Temp\aforge\points.csv", FileMode.Append, FileAccess.Write)))
             {
-                var s = screen.X + ";" + screen.Y + ";" + img.X + ";" + img.Y + ";";
+                var s = screen.X + "," + screen.Y + "," + img.X + "," + img.Y + ",";
                 fs.WriteLine(s);
                 fs.Flush();
             }
