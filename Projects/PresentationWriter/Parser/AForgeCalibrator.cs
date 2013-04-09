@@ -121,7 +121,7 @@ namespace HSR.PresWriter.PenTracking
                 //calibration not possible
                 return;
             }
-            if (_calibrationStep == CalibrationFrames)
+            if (_calibrationStep == 3)
             {
                 _cc.FrameReady -= BaseCalibration; // TODO
                 //Grid.Calculate();

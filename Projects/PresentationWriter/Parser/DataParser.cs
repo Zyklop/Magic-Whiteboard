@@ -75,7 +75,8 @@ namespace HSR.PresWriter.PenTracking
             System.Windows.Point p = _calibrator.Grid.GetPosition(e.Frame.Point.X, e.Frame.Point.Y);
             Point point = new Point((int)p.X, (int)p.Y);
             PointFrame frame = e.Frame.ApplyRebase(point);
-            PenPositionChanged(this, new PenPositionEventArgs(frame, e.Confidance));
+            PenPositionChanged(this, new PenPositionEventArgs(frame, point.X < Int32.MaxValue && 
+                point.X > 0 && point.Y > 0 && point.Y < Int32.MaxValue, e.Confidance));
         }
 
         private void NewImage(object sender, NewImageEventArgs e)
@@ -96,14 +97,11 @@ namespace HSR.PresWriter.PenTracking
         }
 
         /// <summary>
-        /// Dummy
-        /// </summary>
-        public Point Topl { get { return new Point((int)_calibrator.Grid.TopLeft.X, (int)_calibrator.Grid.TopLeft.Y); } }
-
-        /// <summary>
         /// Calibrator with the grid data
         /// </summary>
         internal PrimitiveCalibrator Calibrator { get; set; }
+
+        public Grid CalibratorGrid { get { return _calibrator.Grid; } }
 
         /// <summary>
         /// The pen changed the position
