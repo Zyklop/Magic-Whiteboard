@@ -14,7 +14,7 @@ using HSR.PresWriter.IO.Events;
 using HSR.PresWriter.PenTracking.Events; // TODO: wieso?
 using HSR.PresWriter.IO;
 using WFVisuslizer;
-using Point = System.Windows.Point;
+using Point = System.Drawing.Point;
 
 namespace HSR.PresWriter.PenTracking
 {
@@ -422,7 +422,7 @@ namespace HSR.PresWriter.PenTracking
 
         private bool IsNextTo(AForge.Point p1, AForge.Point p2, int rownr, int colnr, double maxDist)
         {
-            return IsNextTo(p1, new Point(p2.X, p2.Y), rownr, colnr, maxDist);
+            return IsNextTo(p1, new Point((int) p2.X, (int) p2.Y), rownr, colnr, maxDist);
         }
 
         private bool IsNextTo(AForge.Point p1, Point p2, int rownr, int colnr, double maxDist)

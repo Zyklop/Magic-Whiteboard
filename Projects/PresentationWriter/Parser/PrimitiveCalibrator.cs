@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Threading;
-using System.Windows;
+using System.Drawing;
 using System.Threading.Tasks;
 using HSR.PresWriter.PenTracking.Events;
 using HSR.PresWriter.PenTracking.Images;
 using DColor = System.Drawing.Color;
-using VPoint = Visualizer.Point;
 using WFVisuslizer;
 
 namespace HSR.PresWriter.PenTracking
@@ -62,7 +61,7 @@ namespace HSR.PresWriter.PenTracking
         private readonly VisualizerControl _vs = VisualizerControl.GetVisualizer();
         private int _calibrationStep;
         private int _errors;
-        private readonly Rect[] _rects = new Rect[3];
+        private readonly Rectangle[] _rects = new Rectangle[3];
         private readonly object _lockObj = new object();
         private SemaphoreSlim _sem;
         private Task<Task> _t = new Task<Task>(()=>Task.Delay(10));
@@ -206,10 +205,10 @@ namespace HSR.PresWriter.PenTracking
                             && IsValid(topLeftCorner) && IsValid(topRightCorner) && IsValid(bottomLeftCorner) &&
                             IsValid(bottomRightCorner) && true)
                         {
-                            Grid.AddPoint(_rects[j].TopLeft, topLeftCorner);
-                            Grid.AddPoint(_rects[j].TopRight, topRightCorner);
-                            Grid.AddPoint(_rects[j].BottomLeft, bottomLeftCorner);
-                            Grid.AddPoint(_rects[j].BottomRight, bottomRightCorner);
+                            //Grid.AddPoint(_rects[j].Left, topLeftCorner);
+                            //Grid.AddPoint(_rects[j].TopRight, topRightCorner);
+                            //Grid.AddPoint(_rects[j].BottomLeft, bottomLeftCorner);
+                            //Grid.AddPoint(_rects[j].BottomRight, bottomRightCorner);
                         }
                         else
                         {
@@ -280,16 +279,16 @@ namespace HSR.PresWriter.PenTracking
 
         private void FillRandomRects()
         {
-            var r = new Random();
-            var tl = new Point(r.Next(_vs.Width-50), r.Next(_vs.Height-50));
-            _rects[0] = new Rect(tl, new Point(r.Next((int)tl.X, _vs.Width-50)+50, r.Next((int)tl.Y, _vs.Height-50)+50));
-            tl = new Point(r.Next(_vs.Width - 50), r.Next(_vs.Height - 50));
-            _rects[1] = new Rect(tl, new Point(r.Next((int)tl.X, _vs.Width - 50) + 50, r.Next((int)tl.Y, _vs.Height - 50) + 50));
-            tl = new Point(r.Next(_vs.Width - 50), r.Next(_vs.Height - 50));
-            _rects[2] = new Rect(tl, new Point(r.Next((int)tl.X, _vs.Width - 50) + 50, r.Next((int)tl.Y, _vs.Height - 50) + 50));
-            _vs.AddRect(new VPoint(_rects[0].TopLeft.X,_rects[0].Y), new VPoint(_rects[0].BottomRight.X, _rects[0].BottomRight.Y), DColor.FromArgb(255, 255, 0, 0));
-            _vs.AddRect(new VPoint(_rects[1].TopLeft.X, _rects[1].Y), new VPoint(_rects[1].BottomRight.X, _rects[1].BottomRight.Y), DColor.FromArgb(255, 0, 255, 0));
-            _vs.AddRect(new VPoint(_rects[2].TopLeft.X,_rects[2].Y), new VPoint(_rects[2].BottomRight.X, _rects[2].BottomRight.Y), DColor.FromArgb(255, 0, 0, 255));
+            //var r = new Random();
+            //var tl = new Point(r.Next(_vs.Width-50), r.Next(_vs.Height-50));
+            //_rects[0] = new Rectangle(tl, new Point(r.Next((int)tl.X, _vs.Width-50)+50, r.Next((int)tl.Y, _vs.Height-50)+50));
+            //tl = new Point(r.Next(_vs.Width - 50), r.Next(_vs.Height - 50));
+            //_rects[1] = new Rectangle(tl, new Point(r.Next((int)tl.X, _vs.Width - 50) + 50, r.Next((int)tl.Y, _vs.Height - 50) + 50));
+            //tl = new Point(r.Next(_vs.Width - 50), r.Next(_vs.Height - 50));
+            //_rects[2] = new Rectangle(tl, new Point(r.Next((int)tl.X, _vs.Width - 50) + 50, r.Next((int)tl.Y, _vs.Height - 50) + 50));
+            //_vs.AddRect(new VPoint(_rects[0].TopLeft.X,_rects[0].Y), new VPoint(_rects[0].BottomRight.X, _rects[0].BottomRight.Y), DColor.FromArgb(255, 255, 0, 0));
+            //_vs.AddRect(new VPoint(_rects[1].TopLeft.X, _rects[1].Y), new VPoint(_rects[1].BottomRight.X, _rects[1].BottomRight.Y), DColor.FromArgb(255, 0, 255, 0));
+            //_vs.AddRect(new VPoint(_rects[2].TopLeft.X,_rects[2].Y), new VPoint(_rects[2].BottomRight.X, _rects[2].BottomRight.Y), DColor.FromArgb(255, 0, 0, 255));
             CheckIntersections();
         }
 
@@ -299,23 +298,23 @@ namespace HSR.PresWriter.PenTracking
             {
                 var rect = _rects[1];
                 rect.Intersect(_rects[0]);
-                _vs.AddRect(new VPoint(rect.TopLeft.X,rect.Y), new VPoint(rect.BottomRight.X, rect.BottomRight.Y), DColor.FromArgb(255, 255, 255, 0));
+                //_vs.AddRect(new VPoint(rect.TopLeft.X,rect.Y), new VPoint(rect.BottomRight.X, rect.BottomRight.Y), DColor.FromArgb(255, 255, 255, 0));
             }
             if (_rects[0].IntersectsWith(_rects[2]))
             {
                 var rect = _rects[2];
                 rect.Intersect(_rects[0]);
-                _vs.AddRect(new VPoint(rect.TopLeft.X, rect.Y), new VPoint(rect.BottomRight.X, rect.BottomRight.Y), DColor.FromArgb(255, 255, 0, 255));
+                //_vs.AddRect(new VPoint(rect.TopLeft.X, rect.Y), new VPoint(rect.BottomRight.X, rect.BottomRight.Y), DColor.FromArgb(255, 255, 0, 255));
             }
             if (_rects[1].IntersectsWith(_rects[2]))
             {
                 var rect = _rects[2];
                 rect.Intersect(_rects[1]);
-                _vs.AddRect(new VPoint(rect.TopLeft.X, rect.Y), new VPoint(rect.BottomRight.X, rect.BottomRight.Y), DColor.FromArgb(255, 0, 255, 255));
+                //_vs.AddRect(new VPoint(rect.TopLeft.X, rect.Y), new VPoint(rect.BottomRight.X, rect.BottomRight.Y), DColor.FromArgb(255, 0, 255, 255));
                 if (rect.IntersectsWith(_rects[0]))
                 {
                     rect.Intersect(_rects[0]);
-                    _vs.AddRect(new VPoint(rect.TopLeft.X, rect.Y), new VPoint(rect.BottomRight.X, rect.BottomRight.Y), DColor.FromArgb(255, 255, 255, 255));
+                    //_vs.AddRect(new VPoint(rect.TopLeft.X, rect.Y), new VPoint(rect.BottomRight.X, rect.BottomRight.Y), DColor.FromArgb(255, 255, 255, 255));
                 }
             }
         }
