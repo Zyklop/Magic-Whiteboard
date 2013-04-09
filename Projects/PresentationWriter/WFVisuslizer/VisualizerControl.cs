@@ -62,7 +62,7 @@ namespace WFVisuslizer
         /// <summary>
         /// Remove all the rectangles
         /// </summary>
-        public void ClearRects()
+        public void Clear()
         {
             _cw.ClearRects();
             //rects.Clear();

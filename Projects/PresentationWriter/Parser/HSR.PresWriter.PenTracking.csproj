@@ -53,6 +53,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AForgeCalibrator.cs" />
+    <Compile Include="AForgeDiffCalibrator.cs" />
     <Compile Include="AForgePenTracker.cs" />
     <Compile Include="Colorfilter.cs" />
     <Compile Include="Events\PenPositionEventArgs.cs" />
