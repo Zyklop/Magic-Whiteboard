@@ -230,12 +230,23 @@ namespace HSR.PresWriter.PenTracking
             {
                 for (int j = 0; j < _mapData.GetLength(1); j++)
                 {
-                    var k = new Point();
-                    k.X = _calibratorData[i, j].Sum(x => x.X)/_calibratorData[i, j].Count;
-                    k.Y = _calibratorData[i, j].Sum(x => x.Y)/_calibratorData[i, j].Count;
-                    _mapData[i, j] = k;
+                    if (_calibratorData[i, j].Count > 0)
+                    {
+                        try
+                        {
+                            var k = new Point();
+                            k.X = _calibratorData[i, j].Sum(x => x.X)/_calibratorData[i, j].Count;
+                            k.Y = _calibratorData[i, j].Sum(x => x.Y)/_calibratorData[i, j].Count;
+                            _mapData[i, j] = k;
+                        }
+                        catch (Exception e)
+                        {
+                            Debug.WriteLine(e.Message + " happend during grid calculation at " + i + ", " + j);
+                        }
+                    }
                 }
             }
+            Debug.WriteLine("Calculation complete");
             _refPoints.Clear();
         }
 
@@ -246,8 +257,8 @@ namespace HSR.PresWriter.PenTracking
         {
             // TODO index out of bound exception möglich
             var stor = _calibratorData.Clone();
-            int xmax = (int) _calibratorData[(int) BottomRight.X, (int) BottomRight.Y].First().X;
-            int ymax = (int) _calibratorData[(int) BottomRight.X, (int) BottomRight.Y].First().Y;
+            int xmax = _calibratorData[BottomRight.X, BottomRight.Y].First().X;
+            int ymax = _calibratorData[BottomRight.X, BottomRight.Y].First().Y;
             for (int i = 0; i < _calibratorData.GetLength(0); i++)
             {
                 for (int j = 0; j < _calibratorData.GetLength(1); j++)
@@ -284,7 +295,14 @@ namespace HSR.PresWriter.PenTracking
                     double det = A1*B2 - A2*B1;
                         int x = (int) Math.Round((B2*C1 - B1*C2)/det);
                         int y = (int) Math.Round((A1*C2 - A2*C1)/det);
-                    _calibratorData[x, y].Add(new Point(i,j));
+                    try
+                    {
+                        _calibratorData[x, y].Add(new Point(i,j));
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.WriteLine("Tried to add " + x + ", " + y + " and " + e.Message + " happend");
+                    }
                 }
             }
             Calculate();
