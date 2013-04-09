@@ -15,11 +15,14 @@ namespace HSR.PresWriter.PenTracking.Events
         // TODO use a common type!
         public PointFrame Frame { get; private set; }
 
-        public PenPositionEventArgs(PointFrame frame, double confidence = 1)
+        public PenPositionEventArgs(PointFrame frame, bool inside, double confidence = 1)
         {
             Confidance = confidence;
-            this.Frame = frame;
+            Frame = frame;
+            IsInside = inside;
         }
+
+        public bool IsInside { get; set; }
 
         /// <summary>
         /// Probability of accuracy
