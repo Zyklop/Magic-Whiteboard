@@ -37,7 +37,7 @@ namespace Visualizer
         /// <summary>
         /// Remove all the rectangles
         /// </summary>
-        void ClearRects();
+        void Clear();
 
         /// <summary>
         /// Close the window when shown

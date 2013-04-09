@@ -157,7 +157,7 @@ namespace HSR.PresWriter.PenTracking
                 else if (_calibrationStep > 2)
                 {
                     var tcb = ThreeChannelBitmap.FromBitmap(e.NewImage);
-                    _vs.ClearRects();
+                    _vs.Clear();
                     FillRandomRects();
                     for (int j = 0; j < 3; j++)
                     {
@@ -237,7 +237,7 @@ namespace HSR.PresWriter.PenTracking
                                 IsValid(Grid.BottomRight))
                             {
                                 _calibrationStep++;
-                                _vs.ClearRects();
+                                _vs.Clear();
                                 FillRandomRects();
                                 _sem = new SemaphoreSlim(3, 4);
                             }

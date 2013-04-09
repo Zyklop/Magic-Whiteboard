@@ -81,7 +81,7 @@ namespace MockTester
                     Console.Write(vc.Width + " x " + vc.Height);
                     vc.AddRect(100, 100, 200, 200, Color.GreenYellow);
                     Thread.Sleep(1000);
-                    vc.ClearRects();
+                    vc.Clear();
                     Thread.Sleep(1000);
                     vc.Transparent = false;
                     Thread.Sleep(1000);
