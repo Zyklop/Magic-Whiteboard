@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing.Drawing2D;
 using System.IO;
 using System.Windows;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Drawing.Drawing2D;
+using System.Drawing;
+using Point = System.Drawing.Point;
 
 namespace HSR.PresWriter.PenTracking
 {
@@ -172,6 +174,15 @@ namespace HSR.PresWriter.PenTracking
                 _calibratorData[imgX, imgY] = new List<Point>();
             _calibratorData[imgX,imgY].Add(new Point{X = screenX, Y = screenY});
             AddRefPoints(screenX, screenY);
+
+#if DEBUG
+            using (var fs = new StreamWriter(new FileStream(@"C:\Temp\aforge\points.csv", FileMode.Append, FileAccess.Write)))
+            {
+                var s = screenX + "," + screenY + "," + imgX + "," + imgY + ",";
+                fs.WriteLine(s);
+                fs.Flush();
+            }
+#endif
         }
 
         /// <summary>
@@ -293,7 +304,7 @@ namespace HSR.PresWriter.PenTracking
 
         public bool Contains(AForge.Point centerOfGravity)
         {
-            return Contains(new Point(centerOfGravity.X, centerOfGravity.Y));
+            return Contains(new Point((int) centerOfGravity.X, (int) centerOfGravity.Y));
         }
     }
 }
