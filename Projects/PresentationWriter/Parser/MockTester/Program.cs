@@ -35,7 +35,6 @@ namespace MockTester
             //        tci = e.NewImage;
             //        i++;
             //    };
-            Console.Write(parser.Topl.X + " "+parser.Topl.Y);
             Console.Read();
         }
 
@@ -58,7 +57,6 @@ namespace MockTester
             //        tci = e.NewImage;
             //        i++;
             //    };
-            Console.Write(parser.Topl.X + " " + parser.Topl.Y);
             parser.PenPositionChanged += NewPoint;
             Console.Read();
         }
