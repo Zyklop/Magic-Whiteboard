@@ -7,6 +7,7 @@ using System.IO;
 using HSR.PresWriter.Containers;
 using HSR.PresWriter.IO;
 using HSR.PresWriter.IO.Events;
+using System.Diagnostics;
 
 namespace HSR.PresWriter.PenTracking
 {
@@ -40,8 +41,8 @@ namespace HSR.PresWriter.PenTracking
         private void StartTracking(object sender, EventArgs e)
         {
             //_pictureProvider.ShowConfigurationDialog();
-            _calibrator.Grid.PredictFromCorners();
             _pictureProvider.FrameReady += _camera_FrameReady; // TODO siehe _camera_FrameReady
+            _calibrator.Grid.PredictFromCorners();
         }
 
         /// <summary>
@@ -49,34 +50,41 @@ namespace HSR.PresWriter.PenTracking
         /// </summary>
         public void Start()
         {
+            this.IsRunning = true;
             //var filesystemCamera = new FilesystemCamera(new DirectoryInfo(@"c:\temp\aforge\inp"));
             //filesystemCamera.Start();
             _calibrator = new AForgeCalibrator(_pictureProvider); // TODO
             _calibrator.CalibrationCompleted += StartTracking;
-            this.IsRunning = true;
             _calibrator.StartCalibration();
         }
 
         public void Stop()
         {
-            this.IsRunning = false;
             _pictureProvider.FrameReady -= _camera_FrameReady; // TODO siehe _camera_FrameReady
+            this.IsRunning = false;
         }
 
         private async void _camera_FrameReady(object sender, FrameReadyEventArgs e)
         {
             // TODO dem PenTracker auch einen PictureProvider übergeben und diese Methode streichen!
             PointFrame p = await _penTracker.ProcessAsync(e.Frame);
+            if (p != null)
+            {
+                Debug.WriteLine("Point: {0}, {1}", p.Point.X, p.Point.Y);
+            }
         }
 
         private void PenFound(object sender, PenPositionEventArgs e)
         {
             // TODO Loswerden!!!
-            Point p = _calibrator.Grid.GetPosition(e.Frame.Point.X, e.Frame.Point.Y);
-            Point point = new Point(p.X, p.Y);
+            Point point = _calibrator.Grid.GetPosition(e.Frame.Point.X, e.Frame.Point.Y);
             PointFrame frame = e.Frame.ApplyRebase(point);
-            PenPositionChanged(this, new VirtualPenPositionEventArgs(frame, point.X < Int32.MaxValue && 
-                point.X > 0 && point.Y > 0 && point.Y < Int32.MaxValue));
+            if (PenPositionChanged != null)
+            {
+                bool isInside = point.X < Int32.MaxValue &&
+                    point.X > 0 && point.Y > 0 && point.Y < Int32.MaxValue;
+                PenPositionChanged(this, new VirtualPenPositionEventArgs(frame, isInside));
+            }
         }
 
         private void NewImage(object sender, NewImageEventArgs e)

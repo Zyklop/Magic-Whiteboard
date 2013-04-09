@@ -81,6 +81,7 @@ namespace HSR.PresWriter.PenTracking
             }
             catch (Exception e)
             {
+                Debug.WriteLine(e.Message);
                 // TODO Error Handling: Maybe we should catch everything for bug containment.
                 return null;
             }

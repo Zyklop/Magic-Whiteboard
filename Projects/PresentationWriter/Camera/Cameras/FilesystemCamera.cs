@@ -20,6 +20,8 @@ namespace HSR.PresWriter.IO.Cameras
         private List<Bitmap> imagelist;
         private int index = 0;
 
+        public bool IsRunning { get; protected set; }
+
         public FilesystemCamera(DirectoryInfo d)
         {
             this.imagelist = new List<Bitmap>();
@@ -31,6 +33,8 @@ namespace HSR.PresWriter.IO.Cameras
 
         public void Start()
         {
+            IsRunning = true;
+
             tim.Interval = TIMER_INTERVAL;
             tim.AutoReset = true;
             
@@ -45,7 +49,7 @@ namespace HSR.PresWriter.IO.Cameras
 
         public void Stop()
         {
-            // do nothing
+            IsRunning = false;
         }
 
         public VideoFrame GetLastFrame()
