@@ -38,6 +38,7 @@ namespace HSR.PresWriter.IO.Cameras
         private int mCapHwnd;
 
         public event EventHandler<FrameReadyEventArgs> FrameReady;
+        public bool IsRunning { get; protected set; }
 
         /// <summary>
         /// Creates a camera instance. Device must be started, before

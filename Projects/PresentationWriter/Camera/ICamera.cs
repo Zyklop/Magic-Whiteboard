@@ -7,6 +7,7 @@ namespace HSR.PresWriter.IO
     {
         void Start();
         void Stop();
+        bool IsRunning { get; }
         VideoFrame GetLastFrame();
     }
 }

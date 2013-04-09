@@ -24,6 +24,7 @@ namespace HSR.PresWriter.IO.Cameras
         };
 
         public event EventHandler<FrameReadyEventArgs> FrameReady;
+        public bool IsRunning { get; protected set; }
 
         // Application-defined message to notify app of filtergraph events
         public const int WM_GRAPHNOTIFY = 0x8000 + 1;
