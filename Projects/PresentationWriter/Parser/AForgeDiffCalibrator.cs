@@ -24,7 +24,7 @@ namespace HSR.PresWriter.PenTracking
         private IPictureProvider _cc;
         private int _calibrationStep;
         private int _errors;
-        private VisualizerControl _vs;
+        private VisualizerControl _vs = VisualizerControl.GetVisualizer();
         private const int CalibrationFrames = 12; //must be n^2+3
         private Difference diffFilter = new Difference();
         private const int Rowcount = 20;
@@ -92,14 +92,14 @@ namespace HSR.PresWriter.PenTracking
 
         private async Task CalibThread(FrameReadyEventArgs e)
         {
-            Debug.WriteLine("Calibrating " + _calibrationStep);
-            e.Frame.Bitmap.Save(@"C:\temp\daforge\src\img" + _calibrationStep + ".jpg");
+            Debug.WriteLine("Calibrating " + _calibrationStep + " " + _drawing);
+            e.Frame.Bitmap.Save(@"C:\temp\daforge\src\img" + _calibrationStep + "-" + (_drawing?1:0) + ".jpg");
             if (_errors > 100)
             {
                 //calibration not possible
                 return;
             }
-            if (_calibrationStep == 3)
+            if (_calibrationStep == CalibrationFrames)
             {
                 _cc.FrameReady -= BaseCalibration; // TODO
                 //Grid.Calculate();
@@ -110,17 +110,34 @@ namespace HSR.PresWriter.PenTracking
             {
                 if (_calibrationStep > 2)
                 {
-                    if (!_drawing)
+                    if (_drawing)
                     {
+                        _drawing = false;
                         _vs.Clear();
                         FillRects();
+                        diffFilter.OverlayImage = e.Frame.Bitmap;
+                    }
+                    else
+                    {
+                        _calibrationStep++;
+                        _drawing = true;
+                        _vs.Clear();
+                        FillRects();
+                        _calibrationStep--;
                         var gbm = diffFilter.Apply(e.Frame.Bitmap);
                         gbm.Save(@"C:\temp\daforge\diff\img" + _calibrationStep + ".jpg");
                         var cf = new ColorFiltering(new IntRange(0, 255), new IntRange(10, 255), new IntRange(10, 255));
                         cf.ApplyInPlace(gbm);
-                        var bbm = (Bitmap)gbm.Clone();
+                        var bbm = (Bitmap) gbm.Clone();
                         var stats = new ImageStatistics(gbm);
-                        var bcf = new ColorFiltering(new IntRange(0,255), new IntRange(0, stats.), )
+                        var gcf = new ColorFiltering(new IntRange(0, 255),
+                                                     new IntRange((int) stats.GreenWithoutBlack.Mean, 255),
+                                                     new IntRange(0, (int) stats.BlueWithoutBlack.Mean));
+                        var bcf = new ColorFiltering(new IntRange(0, 255),
+                                                     new IntRange(0, (int) stats.GreenWithoutBlack.Mean),
+                                                     new IntRange((int) stats.BlueWithoutBlack.Mean, 255));
+                        gcf.ApplyInPlace(gbm);
+                        bcf.ApplyInPlace(bbm);
                         gbm.Save(@"C:\temp\daforge\gimg\img" + _calibrationStep + ".jpg");
                         bbm.Save(@"C:\temp\daforge\bimg\img" + _calibrationStep + ".jpg");
                         var gblobCounter = new BlobCounter
@@ -148,13 +165,6 @@ namespace HSR.PresWriter.PenTracking
                         ProcessBlobs(gblobCounter, 0);
                         ProcessBlobs(bblobCounter, 1);
                         _calibrationStep++;
-                        _drawing = true;
-                    }
-                    else
-                    {
-                        _vs.Clear();
-                        FillRects();
-                        diffFilter.OverlayImage = e.Frame.Bitmap;
                     }
                 }
                 else
@@ -254,7 +264,7 @@ namespace HSR.PresWriter.PenTracking
                     }
             }
             Debug.WriteLine("Releasing");
-            await Task.Delay(100);
+            await Task.Delay(500);
             _sem.Release();
         }
 
@@ -485,29 +495,29 @@ namespace HSR.PresWriter.PenTracking
             {
                 for (int x = 0; x < Rowcount; x++)
                 {
-                    if (y % 2 == 0 && x % 2 == 0 && _drawing)
+                    if (y % 2 == 0 && x % 4 == 0 && _drawing)
                     {
-                        _vs.AddRect((int)(x * _sqrwidth + xOff), (int)(y * _sqrheight + yOff),
-                            (int)_sqrwidth * 2, (int)_sqrheight,
+                        _vs.AddRect((int)((x - 1) * _sqrwidth + xOff), (int)(y * _sqrheight + yOff),
+                            (int)(_sqrwidth * 3.0), (int)_sqrheight,
                         Color.FromArgb(255, 0, 255, 0));
                     }
 
-                    if (y % 2 == 0 && x % 2 == 1 && !_drawing)
+                    if (y % 2 == 0 && x % 4 == 2 && !_drawing)
                     {
-                        _vs.AddRect((int)(x * _sqrwidth + xOff), (int)(y * _sqrheight + yOff),
-                            (int)_sqrwidth * 2, (int)_sqrheight,
+                        _vs.AddRect((int)((x - 1) * _sqrwidth + xOff), (int)(y * _sqrheight + yOff),
+                            (int)(_sqrwidth * 3.0), (int)_sqrheight,
                         Color.FromArgb(255, 0, 255, 0));
                     }
-                    if (y % 2 == 1 && x % 2 == 0 && _drawing)
+                    if (y % 2 == 1 && x % 4 == 1 && _drawing)
                     {
-                        _vs.AddRect((int)(x * _sqrwidth + xOff), (int)(y * _sqrheight + yOff),
-                            (int)_sqrwidth, (int)_sqrheight,
+                        _vs.AddRect((int)((x - 1) * _sqrwidth + xOff), (int)(y * _sqrheight + yOff),
+                            (int)(_sqrwidth * 3.0), (int)_sqrheight,
                         Color.FromArgb(255, 0, 0, 255));
                     }
-                    if (y % 2 == 1 && x % 2 == 1 && !_drawing)
+                    if (y % 2 == 1 && x % 4 == 3 && !_drawing)
                     {
-                        _vs.AddRect((int)(x * _sqrwidth + xOff), (int)(y * _sqrheight + yOff),
-                            (int)_sqrwidth, (int)_sqrheight,
+                        _vs.AddRect((int)((x - 1) * _sqrwidth + xOff), (int)(y * _sqrheight + yOff),
+                            (int)(_sqrwidth * 3.0), (int)_sqrheight,
                         Color.FromArgb(255, 0, 0, 255));
                     }
                 }

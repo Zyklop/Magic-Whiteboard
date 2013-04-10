@@ -67,7 +67,7 @@ namespace HSR.PresWriter.IO.Cameras
                 FrameReady(this, new FrameReadyEventArgs(GetLastFrame()));
             }
 
-            Debug.WriteLine("Got Frame {0}", lastFrameNumber);
+            //Debug.WriteLine("Got Frame {0}", lastFrameNumber);
         }
 
         public void Dispose()

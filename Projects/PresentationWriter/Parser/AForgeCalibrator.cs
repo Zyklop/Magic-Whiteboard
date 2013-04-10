@@ -31,7 +31,7 @@ namespace HSR.PresWriter.PenTracking
         private IPictureProvider _cc;
         private int _calibrationStep;
         private int _errors;
-        private VisualizerControl _vs;
+        private VisualizerControl _vs = VisualizerControl.GetVisualizer();
         private const int CalibrationFrames = 28; //must be n^2+3
         private Difference diffFilter = new Difference();
         private const int Rowcount=20;
@@ -57,7 +57,6 @@ namespace HSR.PresWriter.PenTracking
         // TODO Calibrate Funktionen aufräumen
         public void StartCalibration()
         {
-            _vs = VisualizerControl.GetVisualizer();
             Calibrate();
             CalibrateColors();
         }
