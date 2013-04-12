@@ -54,6 +54,12 @@
     <Compile Include="FilterCalibrationForm.Designer.cs">
       <DependentUpon>FilterCalibrationForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="ScreenForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ScreenForm.Designer.cs">
+      <DependentUpon>ScreenForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="LibraryTrackingForm.cs">
       <SubType>Form</SubType>
     </Compile>

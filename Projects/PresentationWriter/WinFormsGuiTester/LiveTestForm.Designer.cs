@@ -34,6 +34,7 @@
             this.foundPointLabel = new System.Windows.Forms.Label();
             this.cameraPictureBox = new System.Windows.Forms.PictureBox();
             this.button1 = new System.Windows.Forms.Button();
+            this.overlayButton = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.cameraPictureBox)).BeginInit();
             this.SuspendLayout();
@@ -61,9 +62,9 @@
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.foundPointLabel);
-            this.groupBox1.Location = new System.Drawing.Point(12, 99);
+            this.groupBox1.Location = new System.Drawing.Point(12, 128);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(156, 393);
+            this.groupBox1.Size = new System.Drawing.Size(156, 364);
             this.groupBox1.TabIndex = 2;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Resultate:";
@@ -95,11 +96,22 @@
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
+            // overlayButton
+            // 
+            this.overlayButton.Location = new System.Drawing.Point(12, 99);
+            this.overlayButton.Name = "overlayButton";
+            this.overlayButton.Size = new System.Drawing.Size(156, 23);
+            this.overlayButton.TabIndex = 5;
+            this.overlayButton.Text = "Show Overlay";
+            this.overlayButton.UseVisualStyleBackColor = true;
+            this.overlayButton.Click += new System.EventHandler(this.overlayButton_Click);
+            // 
             // LiveTestForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(821, 497);
+            this.Controls.Add(this.overlayButton);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.cameraPictureBox);
             this.Controls.Add(this.groupBox1);
@@ -122,5 +134,6 @@
         private System.Windows.Forms.Label foundPointLabel;
         private System.Windows.Forms.PictureBox cameraPictureBox;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button overlayButton;
     }
 }

@@ -11,7 +11,9 @@ using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using WFVisuslizer;
@@ -23,10 +25,11 @@ namespace WinFormsGuiTester
         private AForgeCamera _camera;
         private DataParser _parser;
         private FixedSizedQueue<PointFrame> penDrawingBuffer;
+        private Form screenForm;
 
         public LiveTestForm()
         {
-            this.penDrawingBuffer = new FixedSizedQueue<PointFrame>(100);
+            this.penDrawingBuffer = new FixedSizedQueue<PointFrame>(200);
             InitializeComponent();
 
             // Initialize Camera
@@ -37,6 +40,9 @@ namespace WinFormsGuiTester
             // Initialize Calibration and Pen Parsing Mechanism
             _parser = new DataParser(_camera,VisualizerControl.GetVisualizer());
             _parser.PenPositionChanged += parser_PenPositionChanged;
+
+            // Form for visual feedback of tracking process
+            screenForm = new ScreenForm();
         }
 
         private void _camera_FrameReady(object sender, FrameReadyEventArgs e)
@@ -62,6 +68,35 @@ namespace WinFormsGuiTester
 
         }
 
+        //[DllImport("User32.dll")]
+        //public static extern IntPtr GetDC(IntPtr hwnd);
+
+        //[DllImport("User32.dll")]
+        //public static extern void ReleaseDC(IntPtr dc);
+
+        //protected override void OnPaint(PaintEventArgs e)
+        //{
+        //    IntPtr desktopDC = GetDC(IntPtr.Zero);
+
+        //    using (Graphics g = Graphics.FromHdc(desktopDC))
+        //    {
+        //        using (SolidBrush brush = new SolidBrush(Color.Green))
+        //        {
+        //            Point previousPoint = Point.Empty;
+        //            foreach (PointFrame f in penDrawingBuffer)
+        //            {
+        //                g.DrawEllipse(Pens.Green, f.Point.X - 3, f.Point.Y - 3, 3, 3);
+        //                if (!previousPoint.IsEmpty && PointTools.CalculateDistance(previousPoint, f.Point) < 50)
+        //                {
+        //                    g.DrawLine(Pens.Red, previousPoint, f.Point);
+        //                }
+        //                previousPoint = f.Point;
+        //            }
+        //        }
+        //    }
+        //    //ReleaseDC(desktopDC);
+        //}
+
         private void parser_PenPositionChanged(object sender, PenPositionEventArgs e)
         {
             Bitmap redaction = (Bitmap)this.cameraPictureBox.Image.Clone();
@@ -70,16 +105,18 @@ namespace WinFormsGuiTester
             {
                 penDrawingBuffer.Enqueue(e.Frame);
             }
+
             // draw points in buffer to image
-            using (Graphics g = Graphics.FromImage(redaction))
+            using (Graphics g = screenForm.CreateGraphics())
             {
-                using (SolidBrush brush = new SolidBrush(Color.Black))
+                g.Clear(Color.Black);
+                using (SolidBrush brush = new SolidBrush(Color.Green))
                 {
                     Point previousPoint = Point.Empty;
                     foreach (PointFrame f in penDrawingBuffer)
                     {
                         g.DrawEllipse(Pens.Green, f.Point.X - 3, f.Point.Y - 3, 3, 3);
-                        if (!previousPoint.IsEmpty && PointTools.CalculateDistance(previousPoint, f.Point) < 50)
+                        if (!previousPoint.IsEmpty && PointTools.CalculateDistance(previousPoint, f.Point) < 100)
                         {
                             g.DrawLine(Pens.Red, previousPoint, f.Point);
                         }
@@ -88,6 +125,47 @@ namespace WinFormsGuiTester
                 }
                 this.cameraPictureBox.Image = redaction;
             }
+
+
+            //var vc = VisualizerControl.GetVisualizer();
+            //Task.Factory.StartNew(() =>
+            //{
+            //    vc.Clear();
+            //    vc.Show();
+            //    vc.Transparent = true;
+            //    //vc.MarkPoint(e.Frame.Point.X, e.Frame.Point.Y);
+            //    vc.AddRect(e.Frame.Point.X, e.Frame.Point.Y, 25, 25, Color.Green);
+            //    vc.Close();
+            //    //    Dispatcher.Run();
+            //});
+            //thread2.SetApartmentState(ApartmentState.STA);
+            //thread2.Start();
+
+            //VisualizerControl v = VisualizerControl.GetVisualizer();
+            //v.Transparent = true;
+            //v.Clear();
+            //v.AddRect(e.Frame.Point.X, e.Frame.Point.Y, 2, 2, Color.Green);
+            //v.Show();
+            //v.Draw();
+
+            //// draw points in buffer to image
+            //using (Graphics g = Graphics.FromImage(redaction))
+            //{
+            //    using (SolidBrush brush = new SolidBrush(Color.Black))
+            //    {
+            //        Point previousPoint = Point.Empty;
+            //        foreach (PointFrame f in penDrawingBuffer)
+            //        {
+            //            g.DrawEllipse(Pens.Green, f.Point.X - 3, f.Point.Y - 3, 3, 3);
+            //            if (!previousPoint.IsEmpty && PointTools.CalculateDistance(previousPoint, f.Point) < 50)
+            //            {
+            //                g.DrawLine(Pens.Red, previousPoint, f.Point);
+            //            }
+            //            previousPoint = f.Point;
+            //        }
+            //    }
+            //    this.cameraPictureBox.Image = redaction;
+            //}
 
             this.foundPointLabel.Text = "Found Point: " + e.Frame.Point.X + ", " + e.Frame.Point.Y;
         }
@@ -123,6 +201,11 @@ namespace WinFormsGuiTester
         private void button1_Click(object sender, EventArgs e)
         {
             _camera.ShowConfigurationDialog();
+        }
+
+        private void overlayButton_Click(object sender, EventArgs e)
+        {
+            screenForm.Show();
         }
     }
 }
