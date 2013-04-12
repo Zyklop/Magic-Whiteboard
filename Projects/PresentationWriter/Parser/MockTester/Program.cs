@@ -42,7 +42,7 @@ namespace MockTester
         {
             int i = 0;
             //var cam = new AForgeCamera();
-            var cam = new FilesystemCamera(new DirectoryInfo(@"C:\temp\aforge\inph"));
+            var cam = new FilesystemCamera(new DirectoryInfo(@"C:\temp\daforge\inpm"));
             cam.Start();
             var parser = new DataParser(cam);
             parser.Start();

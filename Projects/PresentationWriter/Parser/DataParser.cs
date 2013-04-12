@@ -14,7 +14,7 @@ namespace HSR.PresWriter.PenTracking
     public class DataParser
     {
         private IPictureProvider _pictureProvider;
-        private AForgeCalibrator _calibrator; // TODO Interface anpassen an StartCalibration etc
+        private ICalibrator _calibrator; // TODO Interface anpassen an StartCalibration etc
         private IPenTracker _penTracker;
         private int _gridcheck=1000;
 
@@ -30,7 +30,7 @@ namespace HSR.PresWriter.PenTracking
             _pictureProvider = provider;
 
             // Initialize Calibration Tools
-            _calibrator = new AForgeCalibrator(_pictureProvider);
+            _calibrator = new AForgeDiffCalibrator(_pictureProvider);
             _calibrator.CalibrationCompleted += StartTracking; // begin pen tracking after calibration immediately
 
             // Initialize Pen Tracking Tools
@@ -53,9 +53,9 @@ namespace HSR.PresWriter.PenTracking
             this.IsRunning = true;
             //var filesystemCamera = new FilesystemCamera(new DirectoryInfo(@"c:\temp\aforge\inp"));
             //filesystemCamera.Start();
-            _calibrator = new AForgeCalibrator(_pictureProvider); // TODO
+            _calibrator = new AForgeDiffCalibrator(_pictureProvider); // TODO
             _calibrator.CalibrationCompleted += StartTracking;
-            _calibrator.StartCalibration();
+            _calibrator.Calibrate();
         }
 
         public void Stop()
