@@ -34,8 +34,9 @@ namespace HSR.PresWriter.PenTracking
         private double _sqrheight;
         private double _sqrwidth;
         private bool _drawing;
-        private const int MeanDiff = 5;
-        private const int ColorDiff = 8;
+        private const int BDiff = 8;
+        private const int GDiff = 5;
+        private Bitmap actImg;
 
 
         public AForgeDiffCalibrator(IPictureProvider provider)
@@ -62,7 +63,6 @@ namespace HSR.PresWriter.PenTracking
 
         public void Calibrate()
         {
-
             _calibrationStep = 0;
             _errors = 0;
             _sqrwidth = ((double)_vs.Width) / Rowcount;
@@ -125,17 +125,23 @@ namespace HSR.PresWriter.PenTracking
                         FillRects();
                         _calibrationStep--;
                         var gbm = diffFilter.Apply(e.Frame.Bitmap);
+#if DEBUG
+                        actImg = (Bitmap) gbm.Clone();
+#endif
                         gbm.Save(@"C:\temp\daforge\diff\img" + _calibrationStep + ".jpg");
                         var cf = new ColorFiltering(new IntRange(0, 255), new IntRange(10, 255), new IntRange(10, 255));
                         cf.ApplyInPlace(gbm);
                         var bbm = (Bitmap) gbm.Clone();
                         var stats = new ImageStatistics(gbm);
-                        var gcf = new ColorFiltering(new IntRange(0, 255),
-                                                     new IntRange((int) stats.GreenWithoutBlack.Mean, 255),
-                                                     new IntRange(0, (int) stats.BlueWithoutBlack.Mean));
+                        var gcf = new ColorFiltering(new IntRange(0, 255), new IntRange(50,255), 
+                                                     //new IntRange((int) stats.GreenWithoutBlack.Mean - GDiff, 255),
+                                                     new IntRange(0, 255));//(int) stats.BlueWithoutBlack.Mean + BDiff));
                         var bcf = new ColorFiltering(new IntRange(0, 255),
-                                                     new IntRange(0, (int) stats.GreenWithoutBlack.Mean),
-                                                     new IntRange((int) stats.BlueWithoutBlack.Mean, 255));
+                                                     new IntRange(0, 255),
+                                                     //(int) stats.GreenWithoutBlack.Mean + GDiff),
+                                                     new IntRange(50, 255));
+                                                     //new IntRange((int) stats.BlueWithoutBlack.Mean - BDiff, 255));
+                        Debug.WriteLine("Green: " + stats.GreenWithoutBlack.Mean + " Blue: " + stats.BlueWithoutBlack.Mean);
                         gcf.ApplyInPlace(gbm);
                         bcf.ApplyInPlace(bbm);
                         gbm.Save(@"C:\temp\daforge\gimg\img" + _calibrationStep + ".jpg");
@@ -164,6 +170,9 @@ namespace HSR.PresWriter.PenTracking
                         bblobCounter.ProcessImage(bbm);
                         ProcessBlobs(gblobCounter, 0);
                         ProcessBlobs(bblobCounter, 1);
+#if DEBUG
+                        actImg.Save(@"C:\temp\daforge\squares\img" + _calibrationStep + ".jpg");
+#endif
                         _calibrationStep++;
                     }
                 }
@@ -213,7 +222,7 @@ namespace HSR.PresWriter.PenTracking
                             }
                             else
                             {
-                                _calibrationStep = 0;
+                                _calibrationStep++;// TODO = 0;
                                 _errors++;
                             }
                             break;
@@ -341,7 +350,7 @@ namespace HSR.PresWriter.PenTracking
             if (top.Any() && IsNextTo(top.First().CenterOfGravity, Grid.TopLeft, 0, 0, 1.5 + offset))
             {
                 blobs.Remove(top.Last());
-                if (ProcessBlobs(top.Last(), blobs, 0, 0, offset, blobCounter) < Rowcount * Columncount * 0.75)
+                if (ProcessBlobs(top.Last(), blobs, offset, offset, offset, blobCounter) < Rowcount * Columncount * 0.75)
                     _errors++;
             }
             else
@@ -359,6 +368,15 @@ namespace HSR.PresWriter.PenTracking
                 Debug.WriteLine("X: " + x + " Y: " + y + " isn't a valid blob position");
                 return 0;
             }
+#if DEBUG
+            using (var g = Graphics.FromImage(actImg))
+            {
+                g.DrawString(x + "," + y,new Font(FontFamily.GenericSansSerif, 8.0f), new SolidBrush(Color.White), 
+                    blob.CenterOfGravity.X, blob.CenterOfGravity.Y);
+                g.Flush();
+                Debug.WriteLine("wrote to image");
+            }
+#endif
             var corners =
                 PointsCloud.FindQuadrilateralCorners(blobCounter.GetBlobsEdgePoints(blob));
             if (corners.Count == 4)
@@ -400,22 +418,22 @@ namespace HSR.PresWriter.PenTracking
                     {
                         if (xdiff > 0)
                         {
-                            res += ProcessBlobs(b, rest, x + 1, y, offset, blobCounter);
+                            res += ProcessBlobs(b, rest, x + 2, y, offset, blobCounter);
                         }
                         else
                         {
-                            res += ProcessBlobs(b, rest, x - 1, y, offset, blobCounter);
+                            res += ProcessBlobs(b, rest, x - 2, y, offset, blobCounter);
                         }
                     }
                     else
                     {
                         if (ydiff > 0)
                         {
-                            res += ProcessBlobs(b, rest, x, y + 1, offset, blobCounter);
+                            res += ProcessBlobs(b, rest, x, y + 2, offset, blobCounter);
                         }
                         else
                         {
-                            res += ProcessBlobs(b, rest, x, y - 1, offset, blobCounter);
+                            res += ProcessBlobs(b, rest, x, y - 2, offset, blobCounter);
                         }
                     }
                 }
@@ -493,30 +511,30 @@ namespace HSR.PresWriter.PenTracking
                 _sqrwidth / Math.Sqrt(CalibrationFrames - 3);
             for (int y = 0; y < Columncount; y++)
             {
-                for (int x = 0; x < Rowcount; x++)
+                for (int x = -1; x < Rowcount + 3; x++)
                 {
-                    if (y % 2 == 0 && x % 4 == 0 && _drawing)
+                    if (y % 2 == 0 && x % 4 == 2 && _drawing)
                     {
-                        _vs.AddRect((int)((x - 1) * _sqrwidth + xOff), (int)(y * _sqrheight + yOff),
+                        _vs.AddRect((int)((x - 3) * _sqrwidth + xOff), (int)(y * _sqrheight + yOff),
                             (int)(_sqrwidth * 3.0), (int)_sqrheight,
                         Color.FromArgb(255, 0, 255, 0));
                     }
 
-                    if (y % 2 == 0 && x % 4 == 2 && !_drawing)
+                    if (y % 2 == 0 && x % 4 == 0 && !_drawing)
                     {
-                        _vs.AddRect((int)((x - 1) * _sqrwidth + xOff), (int)(y * _sqrheight + yOff),
+                        _vs.AddRect((int)((x - 3) * _sqrwidth + xOff), (int)(y * _sqrheight + yOff),
                             (int)(_sqrwidth * 3.0), (int)_sqrheight,
                         Color.FromArgb(255, 0, 255, 0));
                     }
-                    if (y % 2 == 1 && x % 4 == 1 && _drawing)
+                    if (y % 2 == 1 && x % 4 == 3 && _drawing)
                     {
-                        _vs.AddRect((int)((x - 1) * _sqrwidth + xOff), (int)(y * _sqrheight + yOff),
+                        _vs.AddRect((int)((x - 3) * _sqrwidth + xOff), (int)(y * _sqrheight + yOff),
                             (int)(_sqrwidth * 3.0), (int)_sqrheight,
                         Color.FromArgb(255, 0, 0, 255));
                     }
-                    if (y % 2 == 1 && x % 4 == 3 && !_drawing)
+                    if (y % 2 == 1 && x % 4 == 1 && !_drawing)
                     {
-                        _vs.AddRect((int)((x - 1) * _sqrwidth + xOff), (int)(y * _sqrheight + yOff),
+                        _vs.AddRect((int)((x - 3) * _sqrwidth + xOff), (int)(y * _sqrheight + yOff),
                             (int)(_sqrwidth * 3.0), (int)_sqrheight,
                         Color.FromArgb(255, 0, 0, 255));
                     }
