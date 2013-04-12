@@ -3,10 +3,12 @@ using System.Diagnostics;
 using System.Threading;
 using System.Drawing;
 using System.Threading.Tasks;
+using HSR.PresWriter.IO;
 using HSR.PresWriter.PenTracking.Events;
 using HSR.PresWriter.PenTracking.Images;
+using Visualizer;
 using DColor = System.Drawing.Color;
-using WFVisuslizer;
+using Point = System.Drawing.Point;
 
 namespace HSR.PresWriter.PenTracking
 {
@@ -58,7 +60,7 @@ namespace HSR.PresWriter.PenTracking
         private const int Blockfill = 80; // Number of pixels needed for a Block to be valid. Depends on Blocksize.
         private const int CalibrationFrames = 300; // Number of Frames used for calibration. Divide by 10 to get Time for calibration.
         private ThreeChannelBitmap _blackImage;
-        private readonly VisualizerControl _vs = VisualizerControl.GetVisualizer();
+        private readonly IVisualizerControl _vs;
         private int _calibrationStep;
         private int _errors;
         private readonly Rectangle[] _rects = new Rectangle[3];
@@ -71,9 +73,10 @@ namespace HSR.PresWriter.PenTracking
         /// A calibrator is needed to get the calibration grid
         /// </summary>
         /// <param name="cc"></param>
-        public PrimitiveCalibrator()
+        public PrimitiveCalibrator(IPictureProvider prov, IVisualizerControl vc)
         {
             Grid = new Grid(0,0);
+            _vs = vc;
             //var thread = new Thread(() => _vs = new CalibratorWindow());
             //thread.SetApartmentState(ApartmentState.STA);
             //thread.Start();

@@ -14,7 +14,6 @@ using HSR.PresWriter.IO.Events;
 using HSR.PresWriter.PenTracking;
 using HSR.PresWriter.IO;
 using Visualizer;
-using WFVisuslizer;
 using Point = System.Drawing.Point;
 
 namespace HSR.PresWriter.PenTracking
@@ -35,8 +34,8 @@ namespace HSR.PresWriter.PenTracking
         private double _sqrheight;
         private double _sqrwidth;
         private bool _drawing;
-        private const int BDiff = 8;
-        private const int GDiff = 5;
+        private const int BDiff = 20;
+        private const int GDiff = 15;
         private Bitmap actImg;
 
 
@@ -94,7 +93,7 @@ namespace HSR.PresWriter.PenTracking
         private async Task CalibThread(FrameReadyEventArgs e)
         {
             Debug.WriteLine("Calibrating " + _calibrationStep + " " + _drawing);
-            e.Frame.Bitmap.Save(@"C:\temp\daforge\src\img" + _calibrationStep + "-" + (_drawing?1:0) + ".jpg");
+            e.Frame.Bitmap.Save(@"C:\temp\daforge\src\img" + (_calibrationStep<10?"0":"") + _calibrationStep + "-" + (_drawing?"1":"0") + ".jpg");
             if (_errors > 100)
             {
                 //calibration not possible
@@ -130,21 +129,23 @@ namespace HSR.PresWriter.PenTracking
                         actImg = (Bitmap) gbm.Clone();
 #endif
                         gbm.Save(@"C:\temp\daforge\diff\img" + _calibrationStep + ".jpg");
-                        var cf = new ColorFiltering(new IntRange(0, 255), new IntRange(10, 255), new IntRange(10, 255));
+                        var cf = new ColorFiltering(new IntRange(0, 255), new IntRange(20, 255), new IntRange(20, 255));
                         cf.ApplyInPlace(gbm);
                         var bbm = (Bitmap) gbm.Clone();
                         var stats = new ImageStatistics(gbm);
-                        var gcf = new ColorFiltering(new IntRange(0, 255), new IntRange(50,255), 
-                                                     //new IntRange((int) stats.GreenWithoutBlack.Mean - GDiff, 255),
-                                                     new IntRange(0, 255));//(int) stats.BlueWithoutBlack.Mean + BDiff));
+                        var gcf = new ColorFiltering(new IntRange(0, 255), //new IntRange(50,255),
+                                                     new IntRange((int)stats.GreenWithoutBlack.Mean - GDiff, 255),
+                                                     new IntRange(0, (int)stats.BlueWithoutBlack.Mean));
+                                                     //new IntRange(0, 255));
                         var bcf = new ColorFiltering(new IntRange(0, 255),
                                                      new IntRange(0, 255),
-                                                     //(int) stats.GreenWithoutBlack.Mean + GDiff),
-                                                     new IntRange(50, 255));
-                                                     //new IntRange((int) stats.BlueWithoutBlack.Mean - BDiff, 255));
+                                                     //new IntRange(0, (int) stats.GreenWithoutBlack.Mean + GDiff),
+                                                     //new IntRange(50, 255));
+                                                     new IntRange((int)stats.BlueWithoutBlack.Mean - BDiff, 255));
+                        Debug.WriteLine("Green: " + stats.GreenWithoutBlack.Median + " Blue: " + stats.BlueWithoutBlack.Median);
                         Debug.WriteLine("Green: " + stats.GreenWithoutBlack.Mean + " Blue: " + stats.BlueWithoutBlack.Mean);
                         gcf.ApplyInPlace(gbm);
-                        bcf.ApplyInPlace(bbm);
+                        //bcf.ApplyInPlace(bbm);
                         gbm.Save(@"C:\temp\daforge\gimg\img" + _calibrationStep + ".jpg");
                         bbm.Save(@"C:\temp\daforge\bimg\img" + _calibrationStep + ".jpg");
                         var gblobCounter = new BlobCounter
@@ -375,7 +376,7 @@ namespace HSR.PresWriter.PenTracking
                 g.DrawString(x + "," + y,new Font(FontFamily.GenericSansSerif, 8.0f), new SolidBrush(Color.White), 
                     blob.CenterOfGravity.X, blob.CenterOfGravity.Y);
                 g.Flush();
-                Debug.WriteLine("wrote to image");
+                //Debug.WriteLine("wrote to image");
             }
 #endif
             var corners =

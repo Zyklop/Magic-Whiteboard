@@ -13,7 +13,7 @@ using AForge.Math.Geometry;
 using HSR.PresWriter.IO.Events;
 using HSR.PresWriter.PenTracking.Events; // TODO: wieso?
 using HSR.PresWriter.IO;
-using WFVisuslizer;
+using Visualizer;
 using Point = System.Drawing.Point;
 
 namespace HSR.PresWriter.PenTracking
@@ -31,7 +31,7 @@ namespace HSR.PresWriter.PenTracking
         private IPictureProvider _cc;
         private int _calibrationStep;
         private int _errors;
-        private VisualizerControl _vs = VisualizerControl.GetVisualizer();
+        private IVisualizerControl _vs;
         private const int CalibrationFrames = 28; //must be n^2+3
         private Difference diffFilter = new Difference();
         private const int Rowcount=20;
@@ -44,9 +44,10 @@ namespace HSR.PresWriter.PenTracking
         private const int ColorDiff = 8;
 
 
-        public AForgeCalibrator(IPictureProvider provider)
+        public AForgeCalibrator(IPictureProvider provider, IVisualizerControl vc)
         {
             _cc = provider;
+            _vs = vc;
             this.Grid = new Grid(0,0);
             //var thread = new Thread(() => _vs = new CalibratorWindow());
             //thread.SetApartmentState(ApartmentState.STA);

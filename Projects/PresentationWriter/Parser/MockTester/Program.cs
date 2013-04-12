@@ -41,8 +41,8 @@ namespace MockTester
         static void Main2(string[] args)
         {
             int i = 0;
-            var cam = new AForgeCamera();
-            //var cam = new FilesystemCamera(new DirectoryInfo(@"C:\temp\daforge\inpm"));
+            //var cam = new AForgeCamera();
+            var cam = new FilesystemCamera(new DirectoryInfo(@"C:\temp\daforge\inpk"));
             cam.Start();
             var parser = new DataParser(cam,WFVisuslizer.VisualizerControl.GetVisualizer());
             parser.Start();
