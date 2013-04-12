@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Drawing;
 using HSR.PresWriter.PenTracking.Events;
 using HSR.PresWriter.PenTracking.Strategies;
 using HSR.PresWriter.IO.Cameras;
@@ -8,6 +7,8 @@ using HSR.PresWriter.Containers;
 using HSR.PresWriter.IO;
 using HSR.PresWriter.IO.Events;
 using System.Diagnostics;
+using Visualizer;
+using Point = System.Drawing.Point;
 
 namespace HSR.PresWriter.PenTracking
 {
@@ -25,12 +26,12 @@ namespace HSR.PresWriter.PenTracking
         /// Parsing all the data
         /// </summary>
         /// <param name="provider"></param>
-        public DataParser(IPictureProvider provider)
+        public DataParser(IPictureProvider provider, IVisualizerControl visualizer)
         {
             _pictureProvider = provider;
 
             // Initialize Calibration Tools
-            _calibrator = new AForgeDiffCalibrator(_pictureProvider);
+            _calibrator = new AForgeDiffCalibrator(_pictureProvider, visualizer);
             _calibrator.CalibrationCompleted += StartTracking; // begin pen tracking after calibration immediately
 
             // Initialize Pen Tracking Tools
@@ -53,7 +54,7 @@ namespace HSR.PresWriter.PenTracking
             this.IsRunning = true;
             //var filesystemCamera = new FilesystemCamera(new DirectoryInfo(@"c:\temp\aforge\inp"));
             //filesystemCamera.Start();
-            _calibrator = new AForgeDiffCalibrator(_pictureProvider); // TODO
+            //_calibrator = new AForgeDiffCalibrator(_pictureProvider, TODO); // TODO
             _calibrator.CalibrationCompleted += StartTracking;
             _calibrator.Calibrate();
         }

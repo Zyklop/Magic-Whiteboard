@@ -49,6 +49,9 @@ namespace Visualizer
         /// </summary>
         void Show();
 
+
+        void Draw();
+
         /// <summary>
         /// Show a rectangle
         /// </summary>
