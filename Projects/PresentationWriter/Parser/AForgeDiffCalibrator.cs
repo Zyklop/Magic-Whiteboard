@@ -120,7 +120,7 @@ namespace HSR.PresWriter.PenTracking
                         cf.ApplyInPlace(gbm);
                         var bbm = (Bitmap)gbm.Clone();
                         var stats = new ImageStatistics(gbm);
-                        var bcf = new ColorFiltering(new IntRange(0,255), new IntRange(0, stats.), )
+                        //var bcf = new ColorFiltering(new IntRange(0,255), new IntRange(0, stats.), )
                         gbm.Save(@"C:\temp\daforge\gimg\img" + _calibrationStep + ".jpg");
                         bbm.Save(@"C:\temp\daforge\bimg\img" + _calibrationStep + ".jpg");
                         var gblobCounter = new BlobCounter

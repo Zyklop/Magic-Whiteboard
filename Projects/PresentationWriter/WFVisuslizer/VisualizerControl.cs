@@ -88,6 +88,7 @@ namespace WFVisuslizer
         {
             if (!_shown)
             {
+                _cw.TopLevel = true;
                 _cw.Show();
                 _shown = true;
                 Application.DoEvents();
@@ -125,7 +126,7 @@ namespace WFVisuslizer
         }
 
 
-        void MarkPoint(int x, int y)
+        public void MarkPoint(int x, int y)
         {
             _cw.AddCirclesAround(x, y);
         }
