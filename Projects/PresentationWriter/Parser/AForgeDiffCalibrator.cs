@@ -13,6 +13,7 @@ using AForge.Math.Geometry;
 using HSR.PresWriter.IO.Events;
 using HSR.PresWriter.PenTracking;
 using HSR.PresWriter.IO;
+using Visualizer;
 using WFVisuslizer;
 using Point = System.Drawing.Point;
 
@@ -24,7 +25,7 @@ namespace HSR.PresWriter.PenTracking
         private IPictureProvider _cc;
         private int _calibrationStep;
         private int _errors;
-        private VisualizerControl _vs = VisualizerControl.GetVisualizer();
+        private IVisualizerControl _vs;
         private const int CalibrationFrames = 12; //must be n^2+3
         private Difference diffFilter = new Difference();
         private const int Rowcount = 20;
@@ -39,9 +40,10 @@ namespace HSR.PresWriter.PenTracking
         private Bitmap actImg;
 
 
-        public AForgeDiffCalibrator(IPictureProvider provider)
+        public AForgeDiffCalibrator(IPictureProvider provider, IVisualizerControl visualizer)
         {
             _cc = provider;
+            _vs = visualizer;
             //var thread = new Thread(() => _vs = new CalibratorWindow());
             //thread.SetApartmentState(ApartmentState.STA);
             //thread.Start();
@@ -51,7 +53,6 @@ namespace HSR.PresWriter.PenTracking
         // TODO Calibrate Funktionen aufräumen
         public void StartCalibration()
         {
-            _vs = VisualizerControl.GetVisualizer();
             Calibrate();
             CalibrateColors();
         }
@@ -222,7 +223,7 @@ namespace HSR.PresWriter.PenTracking
                             }
                             else
                             {
-                                _calibrationStep++;// TODO = 0;
+                                _calibrationStep = 0;
                                 _errors++;
                             }
                             break;
@@ -250,7 +251,7 @@ namespace HSR.PresWriter.PenTracking
                             var thread = new Thread(() =>
                             {
                                 _vs.Show();
-                                _vs.AddRect(0, 0, (int)_vs.Width, (int)_vs.Height, Color.FromArgb(255, 0, 0, 0));
+                                _vs.AddRect(0, 0, _vs.Width, _vs.Height, Color.FromArgb(255, 0, 0, 0));
                             });
                             thread.SetApartmentState(ApartmentState.STA);
                             thread.Start();

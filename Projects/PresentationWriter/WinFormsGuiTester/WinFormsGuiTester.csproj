@@ -130,6 +130,14 @@
       <Project>{c9d79db6-72b8-461a-b725-8fee1dc05eb6}</Project>
       <Name>HSR.PresWriter.PenTracking</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Visualizer\Visualizer.csproj">
+      <Project>{9674e9a0-ec6b-44d9-9700-85b6acf9a5fb}</Project>
+      <Name>Visualizer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WFVisuslizer\WFVisuslizer.csproj">
+      <Project>{6d096d62-8614-434b-a558-d99053d395ea}</Project>
+      <Name>WFVisuslizer</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

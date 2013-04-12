@@ -22,7 +22,7 @@ namespace MockTester
         {
             int i = 0;
             ThreeChannelBitmap tci = new ThreeChannelBitmap();
-            var parser = new DataParser(new FilesystemCamera(new DirectoryInfo(@"C:\temp\aforge\inp")));
+            var parser = new DataParser(new FilesystemCamera(new DirectoryInfo(@"C:\temp\aforge\inp")),WFVisuslizer.VisualizerControl.GetVisualizer());
             parser.Start();
             Thread.Sleep(10000);
             //cameraConnector.NewImage += delegate(object sender, NewImageEventArgs e)
@@ -41,10 +41,10 @@ namespace MockTester
         static void Main2(string[] args)
         {
             int i = 0;
-            //var cam = new AForgeCamera();
-            var cam = new FilesystemCamera(new DirectoryInfo(@"C:\temp\daforge\inpm"));
+            var cam = new AForgeCamera();
+            //var cam = new FilesystemCamera(new DirectoryInfo(@"C:\temp\daforge\inpm"));
             cam.Start();
-            var parser = new DataParser(cam);
+            var parser = new DataParser(cam,WFVisuslizer.VisualizerControl.GetVisualizer());
             parser.Start();
             Thread.Sleep(15000);
             //cameraConnector.NewImage += delegate(object sender, NewImageEventArgs e)

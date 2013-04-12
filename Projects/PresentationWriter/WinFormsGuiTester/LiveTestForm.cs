@@ -14,6 +14,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using WFVisuslizer;
 
 namespace WinFormsGuiTester
 {
@@ -34,7 +35,7 @@ namespace WinFormsGuiTester
             _camera.FrameReady += _camera_FrameReady;
 
             // Initialize Calibration and Pen Parsing Mechanism
-            _parser = new DataParser(_camera);
+            _parser = new DataParser(_camera,VisualizerControl.GetVisualizer());
             _parser.PenPositionChanged += parser_PenPositionChanged;
         }
 

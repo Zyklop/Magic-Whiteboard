@@ -65,7 +65,6 @@
     <Compile Include="Grid.cs" />
     <Compile Include="Images\ThreeChannelBitmap.cs" />
     <Compile Include="FilterStrategy.cs" />
-    <Compile Include="IVisualizerControl.cs" />
     <Compile Include="DataParser.cs" />
     <Compile Include="IPenTracker.cs" />
     <Compile Include="PenCandidate.cs" />
