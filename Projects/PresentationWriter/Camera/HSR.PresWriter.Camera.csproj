@@ -72,6 +72,7 @@
     <Compile Include="Cameras\AvicapCamera.cs" />
     <Compile Include="Cameras\DirectShowCamera.cs" />
     <Compile Include="Cameras\FilesystemCamera.cs" />
+    <Compile Include="Cameras\VirtualCamera.cs" />
     <Compile Include="ICamera.cs" />
     <Compile Include="NativeMethods.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -100,6 +101,10 @@
     <ProjectReference Include="..\Common\HSR.PresWriter.csproj">
       <Project>{1386f52b-ab44-46f8-b442-ec2662df1e3a}</Project>
       <Name>HSR.PresWriter</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Visualizer\Visualizer.csproj">
+      <Project>{9674E9A0-EC6B-44D9-9700-85B6ACF9A5FB}</Project>
+      <Name>Visualizer</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

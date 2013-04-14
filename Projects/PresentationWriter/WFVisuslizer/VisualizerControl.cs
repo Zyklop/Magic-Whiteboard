@@ -2,11 +2,8 @@
 using System.Drawing;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Forms;
 using Visualizer;
-using Point = Visualizer.Point;
-using DPoint = System.Windows.Point;
 
 namespace WFVisuslizer
 {
@@ -46,7 +43,7 @@ namespace WFVisuslizer
         /// <param name="fromRgb"></param>
         public void AddRect(Point topLeft, Point bottomRight, Color fromRgb)
         {
-            _cw.AddRect(new DPoint(topLeft.X,topLeft.Y), new DPoint(bottomRight.X, bottomRight.Y), fromRgb);
+            _cw.AddRect(new Point(topLeft.X,topLeft.Y), new Point(bottomRight.X, bottomRight.Y), fromRgb);
         }
 
         /// <summary>

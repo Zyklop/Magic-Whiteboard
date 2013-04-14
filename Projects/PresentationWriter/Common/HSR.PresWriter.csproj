@@ -44,7 +44,6 @@
     <Compile Include="IO\Events\FrameReadyEventArgs.cs" />
     <Compile Include="Containers\Frame.cs" />
     <Compile Include="IO\IPictureProvider.cs" />
-    <Compile Include="IO\IVisualizer.cs" />
     <Compile Include="Containers\PointFrame.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Containers\VideoFrame.cs" />

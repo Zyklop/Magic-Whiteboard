@@ -14,7 +14,7 @@ namespace WFVisuslizer
     {
         private Bitmap _bm;
         private Graphics _g;
-
+        private static int _counter = 10;
         //[BrowsableAttribute(false)]
         //public static bool CheckForIllegalCrossThreadCalls { get; set; }
 
@@ -26,8 +26,8 @@ namespace WFVisuslizer
             WindowState = FormWindowState.Maximized;
             CheckForIllegalCrossThreadCalls = false;
             BackColor = Color.Black;
-                _bm = new Bitmap(Screen.PrimaryScreen.Bounds.Width, Screen.PrimaryScreen.Bounds.Width);
-                _g = Graphics.FromImage(_bm);
+            _bm = new Bitmap(Screen.PrimaryScreen.Bounds.Width, Screen.PrimaryScreen.Bounds.Height);
+            _g = Graphics.FromImage(_bm);
         }
 
         public bool Transparent
@@ -72,6 +72,17 @@ namespace WFVisuslizer
         public void Draw()
         {
             Invalidate();
+#if DEBUG
+            lock (_g)
+            {
+
+                var bm = new Bitmap(Screen.PrimaryScreen.Bounds.Width + 100, Screen.PrimaryScreen.Bounds.Height + 100);
+                var g = Graphics.FromImage(bm);
+                g.Clear(Color.DarkGray);
+                g.DrawImageUnscaled(_bm, 40, 60);
+                bm.Save(@"C:\temp\daforge\outp\img" + _counter++ + ".jpg");
+            }
+#endif
         }
 
         public void ClearRects()

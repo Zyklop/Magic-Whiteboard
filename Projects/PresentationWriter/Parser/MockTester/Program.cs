@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using HSR.PresWriter.DataSources.Cameras;
 using HSR.PresWriter.PenTracking;
 using HSR.PresWriter.PenTracking.Images;
 using WFVisuslizer;
@@ -15,7 +16,7 @@ namespace MockTester
         
         static void Main(string[] args)
         {
-            Main2(args);
+            Main4(args);
         }
 
         static void Main1(string[] args)
@@ -42,7 +43,7 @@ namespace MockTester
         {
             int i = 0;
             //var cam = new AForgeCamera();
-            var cam = new FilesystemCamera(new DirectoryInfo(@"C:\temp\daforge\inpk"));
+            var cam = new FilesystemCamera(new DirectoryInfo(@"C:\temp\daforge\created"));
             cam.Start();
             var parser = new DataParser(cam,WFVisuslizer.VisualizerControl.GetVisualizer());
             parser.Start();
@@ -92,6 +93,16 @@ namespace MockTester
                 });
             thread2.SetApartmentState(ApartmentState.STA);
             thread2.Start();
+            Console.Read();
+        }
+
+        static void Main4(string[] args)
+        {
+            var cam = new VirtualCamera();
+            cam.Start();
+            var parser = new DataParser(cam, cam);
+            parser.Start();
+            parser.PenPositionChanged += NewPoint;
             Console.Read();
         }
     }
