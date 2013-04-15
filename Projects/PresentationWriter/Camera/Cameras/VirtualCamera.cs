@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,30 +18,38 @@ namespace HSR.PresWriter.DataSources.Cameras
     {
         private Bitmap _bm;
         private Graphics _g;
+        private Bitmap _out;
         private Timer _tim = new Timer();
         private static int counter = 10;
-        private bool queued;
 
         public VirtualCamera()
         {
-            _tim = new Timer();
-            _tim.Interval = 2000;
-            _tim.AutoReset = false;
-            _tim.Elapsed += NoData;
-            _bm = new Bitmap(Width, Height);
+            SetTimer();
+            _bm = new Bitmap(Width, Height, PixelFormat.Format24bppRgb);
+            _out = new Bitmap(640,480,PixelFormat.Format24bppRgb);
             _g = Graphics.FromImage(_bm);
+        }
+
+        private void SetTimer()
+        {
+            //_tim.Dispose();
+            _tim = new Timer();
+            _tim.Interval = 30;
+            _tim.AutoReset = true;
+            _tim.Elapsed += NoData;
         }
 
         private void NoData(object sender, ElapsedEventArgs e)
         {
-            if (!queued)
+                //var bm = new Bitmap(640, 480);
+                //var g = Graphics.FromImage(bm);
+                //g.Clear(Color.DarkGray);
+            lock(_out)
             {
-                var bm = new Bitmap(640, 480);
-                var g = Graphics.FromImage(bm);
-                g.Clear(Color.DarkGray);
-                if (FrameReady != null) FrameReady(this, new FrameReadyEventArgs(new VideoFrame(counter++, bm)));
-                g.Dispose();
+                if (FrameReady != null) FrameReady(this, new FrameReadyEventArgs(new VideoFrame(counter++, (Bitmap) _out.Clone())));
             }
+            Debug.WriteLine("Sent frame " + counter);
+            //SetTimer();
         }
 
         public event EventHandler<FrameReadyEventArgs> FrameReady;
@@ -65,7 +75,7 @@ namespace HSR.PresWriter.DataSources.Cameras
 
         public VideoFrame GetLastFrame()
         {
-            throw new NotImplementedException();
+            return new VideoFrame(counter, _bm);
         }
 
         public bool Transparent { get; set; }
@@ -117,20 +127,22 @@ namespace HSR.PresWriter.DataSources.Cameras
 
         public async void Draw()
         {
-            var bm = new Bitmap(640, 480);
-            var g = Graphics.FromImage(bm);
-            queued = true;
-            //_tim.Stop();
-            lock (_g)
+            //_tim.Dispose();
+            lock(_out)
             {
-                g.Clear(Color.DarkGray);
-                g.DrawImage(_bm, 40, 60, 400, 300);
-            }
-            await Task.Delay(1000);
-            if (FrameReady != null) FrameReady(this, new FrameReadyEventArgs(new VideoFrame(counter++, bm)));
+                var g = Graphics.FromImage(_out);
+                //_tim.Stop();
+                lock (_g)
+                {
+                    g.Clear(Color.DarkGray);
+                    g.DrawImage(_bm, 40, 60, 400, 300);
+                }
             g.Dispose();
-            queued = false;
-            //_tim.Start();
+            }
+            //await Task.Delay(1000);
+            //if (FrameReady != null) FrameReady(this, new FrameReadyEventArgs(new VideoFrame(counter++, _out)));
+            //Debug.WriteLine("Drew frame " + (counter - 1));
+            //SetTimer();
         }
 
         public void ClearRects()

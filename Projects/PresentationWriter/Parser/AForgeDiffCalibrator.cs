@@ -93,7 +93,7 @@ namespace HSR.PresWriter.PenTracking
         private async Task CalibThread(FrameReadyEventArgs e)
         {
             Debug.WriteLine("Calibrating " + _calibrationStep + " " + _drawing);
-            e.Frame.Bitmap.Save(@"C:\temp\daforge\src\img" + (_calibrationStep<10?"0":"") + _calibrationStep + "-" + (_drawing?"1":"0") + ".jpg", ImageFormat.Jpeg);
+            e.Frame.Bitmap.Save(@"C:\temp\daforge\src\img" + (_calibrationStep<10?"0":"") + _calibrationStep + "-" + (_drawing?"1":"0") + "-" + _errors + ".jpg", ImageFormat.Jpeg);
             if (_errors > 100)
             {
                 //calibration not possible
@@ -182,6 +182,7 @@ namespace HSR.PresWriter.PenTracking
                     {
                         case 2:
                             var bm = UnmanagedImage.FromManagedImage(e.Frame.Bitmap);
+                            diffFilter.OverlayImage.Save(@"C:\temp\daforge\diff\src" + _errors + ".jpg", ImageFormat.Jpeg);
                             bm = diffFilter.Apply(bm);
                             var gf = new GaussianBlur(9.0, 3);
                             gf.ApplyInPlace(bm);
@@ -190,45 +191,56 @@ namespace HSR.PresWriter.PenTracking
                             cf.ApplyInPlace(bm);
                             var blobCounter = new BlobCounter { ObjectsOrder = ObjectsOrder.Size, BackgroundThreshold = Color.FromArgb(255, 15, 20, 20), FilterBlobs = true };
                             blobCounter.ProcessImage(bm);
-                            bm.ToManagedImage().Save(@"C:\temp\daforge\diff.jpg", ImageFormat.Jpeg);
+                            bm.ToManagedImage().Save(@"C:\temp\daforge\diff\img" + _calibrationStep + "-" + _errors + ".jpg", ImageFormat.Jpeg);
                             var blobs = blobCounter.GetObjectsInformation();
-                            int i = 0;
-                            List<IntPoint> corners;
-                            do
+                            if (blobs.Any())
                             {
-                                corners =
-                                    PointsCloud.FindQuadrilateralCorners(blobCounter.GetBlobsEdgePoints(blobs[i++]));
-                            } while (corners.Count != 4);
-                            InPlaceSort(corners);
-                            Grid.TopLeft = new Point(corners[0].X, corners[0].Y);
-                            Grid.TopRight = new Point(corners[1].X, corners[1].Y);
-                            Grid.BottomLeft = new Point(corners[2].X, corners[2].Y);
-                            Grid.BottomRight = new Point(corners[3].X, corners[3].Y);
-                            if (Grid.TopLeft.X > 10 && Grid.TopRight.X < _vs.Width - 10 && Grid.BottomLeft.X > 10 &&
-                                Grid.BottomRight.X < _vs.Width - 10 && Grid.TopLeft.Y > 10 && Grid.TopRight.Y > 10 &&
-                                Grid.BottomLeft.Y < _vs.Height - 10 && Grid.BottomRight.Y < _vs.Height - 10 &&
-                                Grid.TopLeft.X < Grid.BottomRight.X && blobs[i - 1].Area > 60000 &&
-                                Grid.BottomLeft.X < Grid.TopRight.X && Grid.BottomLeft.X < Grid.BottomRight.X &&
-                                Grid.TopLeft.Y < Grid.BottomLeft.Y && Grid.TopLeft.Y < Grid.BottomRight.Y &&
-                                Grid.TopRight.Y < Grid.BottomLeft.Y && Grid.TopRight.Y < Grid.BottomRight.Y)
-                            {
-                                _calibrationStep++;
-                                _drawing = true;
-                                _vs.Clear();
-                                FillRects();
-                                Grid.AddPoint(new Point(), new Point(corners[0].X, corners[0].Y));
-                                Grid.AddPoint(new Point(0, _vs.Height), new Point(corners[1].X, corners[1].Y));
-                                Grid.AddPoint(new Point(_vs.Width, 0), new Point(corners[2].X, corners[2].Y));
-                                Grid.AddPoint(new Point(_vs.Width, _vs.Height), new Point(corners[3].X, corners[3].Y));
+                                int i = 0;
+                                List<IntPoint> corners;
+                                do
+                                {
+                                    corners =
+                                        PointsCloud.FindQuadrilateralCorners(blobCounter.GetBlobsEdgePoints(blobs[i++]));
+                                } while (corners.Count != 4);
+                                InPlaceSort(corners);
+                                Grid.TopLeft = new Point(corners[0].X, corners[0].Y);
+                                Grid.TopRight = new Point(corners[1].X, corners[1].Y);
+                                Grid.BottomLeft = new Point(corners[2].X, corners[2].Y);
+                                Grid.BottomRight = new Point(corners[3].X, corners[3].Y);
+                                if (Grid.TopLeft.X > 10 && Grid.TopRight.X < _vs.Width - 10 && Grid.BottomLeft.X > 10 &&
+                                    Grid.BottomRight.X < _vs.Width - 10 && Grid.TopLeft.Y > 10 && Grid.TopRight.Y > 10 &&
+                                    Grid.BottomLeft.Y < _vs.Height - 10 && Grid.BottomRight.Y < _vs.Height - 10 &&
+                                    Grid.TopLeft.X < Grid.BottomRight.X && blobs[i - 1].Area > 60000 &&
+                                    Grid.BottomLeft.X < Grid.TopRight.X && Grid.BottomLeft.X < Grid.BottomRight.X &&
+                                    Grid.TopLeft.Y < Grid.BottomLeft.Y && Grid.TopLeft.Y < Grid.BottomRight.Y &&
+                                    Grid.TopRight.Y < Grid.BottomLeft.Y && Grid.TopRight.Y < Grid.BottomRight.Y)
+                                {
+                                    _calibrationStep++;
+                                    _drawing = true;
+                                    _vs.Clear();
+                                    FillRects();
+                                    Grid.AddPoint(new Point(), new Point(corners[0].X, corners[0].Y));
+                                    Grid.AddPoint(new Point(0, _vs.Height), new Point(corners[1].X, corners[1].Y));
+                                    Grid.AddPoint(new Point(_vs.Width, 0), new Point(corners[2].X, corners[2].Y));
+                                    Grid.AddPoint(new Point(_vs.Width, _vs.Height),
+                                                  new Point(corners[3].X, corners[3].Y));
+                                }
+                                else
+                                {
+                                    _calibrationStep = 0;
+                                    _errors++;
+                                }
                             }
                             else
                             {
                                 _calibrationStep = 0;
                                 _errors++;
+                                _vs.Draw();
                             }
                             break;
                         case 1:
                             diffFilter.OverlayImage = e.Frame.Bitmap;
+                            diffFilter.OverlayImage.Save(@"C:\temp\daforge\diff\srcf" + _errors + ".jpg", ImageFormat.Jpeg);
                             //_vs.AddRect(0, 0, (int) _vs.Width, (int) _vs.Height, Color.FromArgb(255, 255, 255, 255));
                             _vs.Clear();
                             for (int y = 0; y < Columncount; y++)
@@ -403,9 +415,9 @@ namespace HSR.PresWriter.PenTracking
                 maxNeigbours--;
             if (y == 0 || y == Columncount)
                 maxNeigbours--;
-            var n = rest.Where(m => IsNextTo(blob.CenterOfGravity, m.CenterOfGravity, x, y, 2.5)).ToList();
+            var n = rest.Where(m => IsNextTo(blob.CenterOfGravity, m.CenterOfGravity, x, y, 2.05)).ToList();
             if (n.Count() > maxNeigbours)
-                Debug.WriteLine("too many neighbours");
+                Debug.WriteLine("too many neighbours at " + x + "," + y);
             //throw new InvalidOperationException("Too much Blobs");
             int res = n.Count();
             foreach (var b in n)
@@ -415,7 +427,7 @@ namespace HSR.PresWriter.PenTracking
                 rest.Remove(b);
                 if (rest.Any())
                 {
-                    if (xdiff > ydiff)
+                    if (Math.Abs(xdiff) > Math.Abs(ydiff))
                     {
                         if (xdiff > 0)
                         {
