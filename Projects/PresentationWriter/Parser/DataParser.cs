@@ -43,7 +43,8 @@ namespace HSR.PresWriter.PenTracking
         {
             //_pictureProvider.ShowConfigurationDialog();
             _pictureProvider.FrameReady += _camera_FrameReady; // TODO siehe _camera_FrameReady
-            _calibrator.Grid.PredictFromCorners();
+            _calibrator.Grid.Calculate();
+            //_calibrator.Grid.PredictFromCorners();
         }
 
         /// <summary>

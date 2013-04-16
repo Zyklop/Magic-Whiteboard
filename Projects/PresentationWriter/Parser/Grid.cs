@@ -21,7 +21,7 @@ namespace HSR.PresWriter.PenTracking
         private Point _topRight;
         private Point _bottomLeft;
         private Point _bottomRight;
-        private SortedDictionary<int, SortedSet<int>> _refPoints; 
+        //private SortedDictionary<int, SortedSet<int>> _refPoints; 
 
         /// <summary>
         /// Creating a mapping grid
@@ -32,7 +32,7 @@ namespace HSR.PresWriter.PenTracking
         {
             _mapData = new Point[width,height];
             _calibratorData = new List<Point>[width,height];
-            _refPoints = new SortedDictionary<int, SortedSet<int>>();
+            //_refPoints = new SortedDictionary<int, SortedSet<int>>();
         }
 
         /// <summary>
@@ -210,15 +210,15 @@ namespace HSR.PresWriter.PenTracking
 
         private void AddRefPoints(int screenX, int screenY)
         {
-            if (_refPoints.ContainsKey(screenX))
-            {
-                _refPoints[screenX].Add(screenY);
-            }
-            else
-            {
-                _refPoints.Add(screenX, new SortedSet<int>());
-                _refPoints[screenX].Add(screenY);
-            }
+            //if (_refPoints.ContainsKey(screenX))
+            //{
+            //    _refPoints[screenX].Add(screenY);
+            //}
+            //else
+            //{
+            //    _refPoints.Add(screenX, new SortedSet<int>());
+            //    _refPoints[screenX].Add(screenY);
+            //}
         }
 
         /// <summary>
@@ -230,7 +230,7 @@ namespace HSR.PresWriter.PenTracking
             {
                 for (int j = 0; j < _mapData.GetLength(1); j++)
                 {
-                    if (_calibratorData[i, j].Count > 0)
+                    if (_calibratorData[i,j] != null && _calibratorData[i, j].Count > 0)
                     {
                         try
                         {
@@ -247,7 +247,7 @@ namespace HSR.PresWriter.PenTracking
                 }
             }
             Debug.WriteLine("Calculation complete");
-            _refPoints.Clear();
+            //_refPoints.Clear();
         }
 
         /// <summary>

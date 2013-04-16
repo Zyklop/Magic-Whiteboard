@@ -415,7 +415,7 @@ namespace HSR.PresWriter.PenTracking
                 maxNeigbours--;
             if (y == 0 || y == Columncount)
                 maxNeigbours--;
-            var n = rest.Where(m => IsNextTo(blob.CenterOfGravity, m.CenterOfGravity, x, y, 2.05)).ToList();
+            var n = rest.Where(m => IsNextTo(blob.CenterOfGravity, m.CenterOfGravity, x, y, 2.10, false)).ToList();
             if (n.Count() > maxNeigbours)
                 Debug.WriteLine("too many neighbours at " + x + "," + y);
             //throw new InvalidOperationException("Too much Blobs");
@@ -454,15 +454,30 @@ namespace HSR.PresWriter.PenTracking
             return res;
         }
 
-        private bool IsNextTo(AForge.Point p1, AForge.Point p2, int rownr, int colnr, double maxDist)
+        private double Distance(AForge.Point p1, AForge.Point p2)
         {
-            return IsNextTo(p1, new Point((int)p2.X, (int)p2.Y), rownr, colnr, maxDist);
+            var diff = (p1 - p2);
+            return Math.Sqrt(diff.X*diff.X + diff.Y*diff.Y);
         }
 
-        private bool IsNextTo(AForge.Point p1, Point p2, int rownr, int colnr, double maxDist)
+        private bool IsNextTo(AForge.Point p1, AForge.Point p2, int rownr, int colnr, double maxDist = 1.5, bool diagonal = true)
         {
-            return Math.Abs(p1.X - p2.X) < PredictRowDistance(colnr) * maxDist &&
-                   Math.Abs(p1.Y - p2.Y) < PredictColumnDistance(rownr) * maxDist;
+            return IsNextTo(p1, new Point((int)p2.X, (int)p2.Y), rownr, colnr, maxDist, diagonal);
+        }
+
+        private bool IsNextTo(AForge.Point p1, Point p2, int rownr, int colnr, double maxDist = 1.5, bool diagonal = true)
+        {
+            var rowDistance = PredictRowDistance(colnr);
+            var columnDistance = PredictColumnDistance(rownr);
+            var nextTo = Math.Abs(p1.X - p2.X) < rowDistance*maxDist && Math.Abs(p1.Y - p2.Y) < columnDistance*maxDist;
+            if (diagonal)
+            {
+                return nextTo;
+            }
+            //Debug.WriteLine("Dist: " + Distance(p1, new AForge.Point(p2.X, p2.Y)) + " diag: " + Math.Sqrt(columnDistance * columnDistance + rowDistance * rowDistance));
+            return nextTo &&
+                   Distance(p1, new AForge.Point(p2.X, p2.Y)) <
+                   maxDist/Math.Sqrt(2.0)*Math.Sqrt(columnDistance * columnDistance + rowDistance * rowDistance);
         }
 
         private int PredictRowDistance(int columnnr)
