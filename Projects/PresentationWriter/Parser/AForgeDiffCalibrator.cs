@@ -141,8 +141,8 @@ namespace HSR.PresWriter.PenTracking
                                                      new IntRange(0, (int)stats.GreenWithoutBlack.Mean),
                                                      //new IntRange(50, 255));
                                                      new IntRange((int)stats.BlueWithoutBlack.Mean - BDiff, 255));
-                        Debug.WriteLine("Green: " + stats.GreenWithoutBlack.Median + " Blue: " + stats.BlueWithoutBlack.Median);
-                        Debug.WriteLine("Green: " + stats.GreenWithoutBlack.Mean + " Blue: " + stats.BlueWithoutBlack.Mean);
+                        //Debug.WriteLine("Green: " + stats.GreenWithoutBlack.Median + " Blue: " + stats.BlueWithoutBlack.Median);
+                        //Debug.WriteLine("Green: " + stats.GreenWithoutBlack.Mean + " Blue: " + stats.BlueWithoutBlack.Mean);
                         Bitmap bbm = bcf.Apply(gbm);
                         bbm.Save(@"C:\temp\daforge\bimg\img" + _calibrationStep + ".jpg", ImageFormat.Jpeg);
                         gcf.ApplyInPlace(gbm);

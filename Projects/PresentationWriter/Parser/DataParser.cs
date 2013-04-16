@@ -35,15 +35,16 @@ namespace HSR.PresWriter.PenTracking
             _calibrator.CalibrationCompleted += StartTracking; // begin pen tracking after calibration immediately
 
             // Initialize Pen Tracking Tools
-            _penTracker = new AForgePenTracker(new RedLaserStrategy());
+            _penTracker = new AForgePenTracker(new RedLaserStrategy(), _pictureProvider);
             _penTracker.PenFound += PenFound;
         }
 
         private void StartTracking(object sender, EventArgs e)
         {
             //_pictureProvider.ShowConfigurationDialog();
-            _pictureProvider.FrameReady += _camera_FrameReady; // TODO siehe _camera_FrameReady
+            //_pictureProvider.FrameReady += _camera_FrameReady; // TODO siehe _camera_FrameReady
             _calibrator.Grid.Calculate();
+            _penTracker.Start();
             //_calibrator.Grid.PredictFromCorners();
         }
 
@@ -62,23 +63,24 @@ namespace HSR.PresWriter.PenTracking
 
         public void Stop()
         {
-            _pictureProvider.FrameReady -= _camera_FrameReady; // TODO siehe _camera_FrameReady
+            //_pictureProvider.FrameReady -= _camera_FrameReady; // TODO siehe _camera_FrameReady
+            _penTracker.Stop();
             this.IsRunning = false;
         }
 
-        private async void _camera_FrameReady(object sender, FrameReadyEventArgs e)
-        {
-            // TODO dem PenTracker auch einen PictureProvider übergeben und diese Methode streichen!
-            PointFrame p = await _penTracker.ProcessAsync(e.Frame);
-            if (p != null)
-            {
-                Debug.WriteLine("Point: {0}, {1}", p.Point.X, p.Point.Y);
-            }
-        }
+        //private async void _camera_FrameReady(object sender, FrameReadyEventArgs e)
+        //{
+        //    // TODO dem PenTracker auch einen PictureProvider übergeben und diese Methode streichen!
+        //    PointFrame p = await _penTracker.ProcessAsync(e.Frame);
+        //    if (p != null)
+        //    {
+        //        Debug.WriteLine("Point: {0}, {1}", p.Point.X, p.Point.Y);
+        //    }
+        //}
 
         private void PenFound(object sender, PenPositionEventArgs e)
         {
-            // TODO Loswerden!!!
+            // TODO Loswerden!!! Why???
             Point point = _calibrator.Grid.GetPosition(e.Frame.Point.X, e.Frame.Point.Y);
             PointFrame frame = e.Frame.ApplyRebase(point);
             if (PenPositionChanged != null)

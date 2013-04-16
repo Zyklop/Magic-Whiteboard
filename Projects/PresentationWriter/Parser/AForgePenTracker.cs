@@ -2,6 +2,7 @@
 using AForge.Imaging.Filters;
 using HSR.PresWriter.Containers;
 using HSR.PresWriter.IO;
+using HSR.PresWriter.IO.Events;
 using HSR.PresWriter.PenTracking.Events;
 using System;
 using System.Collections.Generic;
@@ -26,16 +27,28 @@ namespace HSR.PresWriter.PenTracking
 
         public FilterStrategy Strategy { get; set; }
 
-        public AForgePenTracker(FilterStrategy strategy)
+        public AForgePenTracker(FilterStrategy strategy, IPictureProvider provider)
         {
+            _provider = provider;
             this.Strategy = strategy;
             this.frameBuffer = new FixedSizedQueue<VideoFrame>(MAX_FRAMEBUFFER_LENGTH);
             this.penPoints = new FixedSizedQueue<PointFrame>(MAX_POINTBUFFER_LENGTH);
         }
 
-        public async Task<PointFrame> ProcessAsync(VideoFrame currentFrame)
+        public void Start()
+        {
+            _provider.FrameReady += ProcessAsync;
+        }
+
+        public void Stop()
+        {
+            _provider.FrameReady -= ProcessAsync;
+        }
+
+        public async void ProcessAsync(object sender, FrameReadyEventArgs frameReadyEventArgs)
         {
             VideoFrame previousFrame;
+            var currentFrame = frameReadyEventArgs.Frame;
             // Lock buffer for adding elements in dependency of queue length
             lock (this.frameBuffer) 
             {
@@ -43,7 +56,7 @@ namespace HSR.PresWriter.PenTracking
                 if (this.frameBuffer.Count < 1)
                 {
                     this.frameBuffer.Enqueue(currentFrame);
-                    return null;
+                    return;
                 }
                 else
                 {
@@ -55,7 +68,7 @@ namespace HSR.PresWriter.PenTracking
             try
             {
                 // Find pen candidates and evaluate them → finding candidates is expensive!
-                var candidates = findPenCandidates(previousFrame.Bitmap, currentFrame.Bitmap);
+                var candidates = findPenCandidates((Bitmap) previousFrame.Bitmap.Clone(), (Bitmap) currentFrame.Bitmap.Clone()); //TODO Fast fix against locking
 
                 // Finding a new pen point and storing it must be atomic, because findPen(..) accesses the previously found pointframe for interpolation
                 lock (this.penPoints)
@@ -66,7 +79,7 @@ namespace HSR.PresWriter.PenTracking
                     
                     if (foundPoint.IsEmpty)
                     {
-                        return null;
+                        return;
                     }
 
                     // Put the qualified result in a new point frame and fire event
@@ -76,14 +89,12 @@ namespace HSR.PresWriter.PenTracking
                     {
                         this.PenFound(this, new PenPositionEventArgs(resultFrame));
                     }
-                    return resultFrame;
                 }
             }
             catch (Exception e)
             {
                 Debug.WriteLine(e.Message);
                 // TODO Error Handling: Maybe we should catch everything for bug containment.
-                return null;
             }
         }
 
@@ -225,6 +236,7 @@ namespace HSR.PresWriter.PenTracking
 
 #if DEBUG
         public event EventHandler<DebugPictureEventArgs> DebugPicture;
+        private IPictureProvider _provider;
 #endif
     }
 

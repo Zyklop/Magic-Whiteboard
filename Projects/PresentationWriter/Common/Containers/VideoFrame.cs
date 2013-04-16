@@ -11,7 +11,7 @@ namespace HSR.PresWriter.Containers
     {
         /// <summary>
         /// Linked Picture</summary>
-        public readonly Bitmap Bitmap;
+        public Bitmap Bitmap { get; set; }
 
         /// <summary>
         /// Initializing a frame.
