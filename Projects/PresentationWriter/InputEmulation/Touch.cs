@@ -11,26 +11,44 @@ namespace InputEmulation
     {
         public enum FeedbackMode
         {
-            DefaultFeedback,
-            None,
-            Indirect
+            /// <summary>
+            /// Specifies default touch visualizations.
+            /// </summary>
+            DEFAULT = 0x1,
+
+            /// <summary>
+            /// Specifies indirect touch visualizations.
+            /// </summary>
+            INDIRECT = 0x2,
+
+            /// <summary>
+            /// Specifies no touch visualizations.
+            /// </summary>
+            NONE = 0x3
         }
 
-        internal struct RECT
+        [StructLayout(LayoutKind.Explicit)]
+        public struct RECT
         {
-            public int Left;
-            public int Top;
-            public int Right;
-            public int Bottom;
+            [FieldOffset(0)]
+            public int left;
+            [FieldOffset(4)]
+            public int top;
+            [FieldOffset(8)]
+            public int right;
+            [FieldOffset(12)]
+            public int bottom;
         }
 
+
+        [StructLayout(LayoutKind.Sequential)]
         internal struct POINTER_INFO
         {
-            public long pointerType;
+            public uint pointerType;
             public uint pointerId;
             public uint frameId;
-            public long pointerFlags;
-            public HandleRef sourceDevice;
+            public uint pointerFlags;
+            public IntPtr sourceDevice;
             public IntPtr hwndTarget;
             public Mouse.POINT ptPixelLocation;
             public Mouse.POINT ptHimetricLocation;
@@ -38,16 +56,17 @@ namespace InputEmulation
             public Mouse.POINT ptHimetricLocationRaw;
             public uint dwTime;
             public uint historyCount;
-            public int inputData;
+            public uint inputData;
             public uint dwKeyStates;
             public ulong PerformanceCount;
-            public long ButtonChangeType;
+            public uint ButtonChangeType;
         }
 
+        [StructLayout(LayoutKind.Sequential)]
         internal struct POINTER_TOUCH_INFO
         {
             public POINTER_INFO pointerInfo;
-            public ulong touchFlags;
+            public uint touchFlags;
             public uint touchMask;
             public RECT rcContact;
             public RECT rcContactRaw;
@@ -57,26 +76,26 @@ namespace InputEmulation
 
         internal static class TouchApi
         {
-            public const long POINTER_FLAG_NONE = 0x00000000;
-            public const long POINTER_FLAG_NEW = 0x00000001;
-            public const long POINTER_FLAG_INRANGE = 0x00000002;
-            public const long POINTER_FLAG_INCONTACT = 0x00000004;
-            public const long POINTER_FLAG_FIRSTBUTTON = 0x00000010;
-            public const long POINTER_FLAG_SECONDBUTTON = 0x00000020;
-            public const long POINTER_FLAG_THIRDBUTTON = 0x00000040;
-            public const long POINTER_FLAG_OTHERBUTTON = 0x00000080;
-            public const long POINTER_FLAG_PRIMARY = 0x00000100;
-            public const long POINTER_FLAG_CONFIDENCE = 0x00000200;
-            public const long POINTER_FLAG_CANCELLED = 0x00000400;
-            public const long POINTER_FLAG_DOWN = 0x00010000;
-            public const long POINTER_FLAG_UPDATE = 0x00020000;
-            public const long POINTER_FLAG_UP = 0x00040000;
-            public const long POINTER_FLAG_WHEEL = 0x00080000;
-            public const long POINTER_FLAG_HWHEEL = 0x00100000;
+            public const int POINTER_FLAG_NONE = 0x00000000;
+            public const int POINTER_FLAG_NEW = 0x00000001;
+            public const int POINTER_FLAG_INRANGE = 0x00000002;
+            public const int POINTER_FLAG_INCONTACT = 0x00000004;
+            public const int POINTER_FLAG_FIRSTBUTTON = 0x00000010;
+            public const int POINTER_FLAG_SECONDBUTTON = 0x00000020;
+            public const int POINTER_FLAG_THIRDBUTTON = 0x00000040;
+            public const int POINTER_FLAG_OTHERBUTTON = 0x00000080;
+            public const int POINTER_FLAG_PRIMARY = 0x00000100;
+            public const int POINTER_FLAG_CONFIDENCE = 0x00000200;
+            public const int POINTER_FLAG_CANCELLED = 0x00000400;
+            public const int POINTER_FLAG_DOWN = 0x00010000;
+            public const int POINTER_FLAG_UPDATE = 0x00020000;
+            public const int POINTER_FLAG_UP = 0x00040000;
+            public const int POINTER_FLAG_WHEEL = 0x00080000;
+            public const int POINTER_FLAG_HWHEEL = 0x00100000;
 
-            public const long PT_POINTER = 0x00000001;
-            public const long PT_TOUCH = 0x00000002;
-            public const long PT_PEN = 0x00000003;
+            public const int PT_POINTER = 0x00000001;
+            public const int PT_TOUCH = 0x00000002;
+            public const int PT_PEN = 0x00000003;
             public const long PT_MOUSE = 0x00000004;
 
             public const int TOUCH_MASK_NONE = 0x00000000; // Default. None of the optional fields are valid.
@@ -88,27 +107,12 @@ namespace InputEmulation
             internal static extern bool InitializeTouchInjection(uint maxCount, uint dwMode);
 
             [DllImport("user32.dll", SetLastError = true)]
-            internal static extern bool InjectTouchInput(uint count, POINTER_TOUCH_INFO[] contacts);
+            internal static extern bool InjectTouchInput(uint count, [MarshalAs(UnmanagedType.LPArray), In]POINTER_TOUCH_INFO[] contacts);
         }
 
         public Touch(uint touchPoints, FeedbackMode mode)
         {
-            uint m;
-            switch (mode)
-            {
-                case FeedbackMode.DefaultFeedback:
-                    m = 0x1;
-                    break;
-                case FeedbackMode.None:
-                    m = 0x3;
-                    break;
-                case FeedbackMode.Indirect:
-                    m = 0x2;
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException("mode");
-            }
-            if(!TouchApi.InitializeTouchInjection(touchPoints, m))
+            if(!TouchApi.InitializeTouchInjection(touchPoints, (uint) mode))
                 throw new ExternalException("Initialisation failed. Code: " + Marshal.GetLastWin32Error());
         }
 
@@ -128,14 +132,14 @@ namespace InputEmulation
             contact.pointerInfo.pointerFlags = TouchApi.POINTER_FLAG_DOWN | TouchApi.POINTER_FLAG_INRANGE | TouchApi.POINTER_FLAG_INCONTACT;
 
             // defining contact area (I have taken area of 4 x 4 pixel)
-            contact.rcContact.Top = contact.pointerInfo.ptPixelLocation.Y - 2;
-            contact.rcContact.Bottom = contact.pointerInfo.ptPixelLocation.Y + 2;
-            contact.rcContact.Left = contact.pointerInfo.ptPixelLocation.X - 2;
-            contact.rcContact.Right = contact.pointerInfo.ptPixelLocation.X + 2;
+            contact.rcContact.top = contact.pointerInfo.ptPixelLocation.Y - 2;
+            contact.rcContact.bottom = contact.pointerInfo.ptPixelLocation.Y + 2;
+            contact.rcContact.left = contact.pointerInfo.ptPixelLocation.X - 2;
+            contact.rcContact.right = contact.pointerInfo.ptPixelLocation.X + 2;
 
             POINTER_TOUCH_INFO[] args = new[]{contact};
             if (!TouchApi.InjectTouchInput(1,args))
-                throw new ExternalException("Initialisation failed. Code: " + Marshal.GetLastWin32Error());
+                throw new ExternalException("Injection failed. Code: " + Marshal.GetLastWin32Error());
         }
 
         public void Release(int x, int y)
@@ -154,10 +158,10 @@ namespace InputEmulation
             contact.pointerInfo.pointerFlags = TouchApi.POINTER_FLAG_UP;
 
             // defining contact area (I have taken area of 4 x 4 pixel)
-            contact.rcContact.Top = contact.pointerInfo.ptPixelLocation.Y - 2;
-            contact.rcContact.Bottom = contact.pointerInfo.ptPixelLocation.Y + 2;
-            contact.rcContact.Left = contact.pointerInfo.ptPixelLocation.X - 2;
-            contact.rcContact.Right = contact.pointerInfo.ptPixelLocation.X + 2;
+            contact.rcContact.top = contact.pointerInfo.ptPixelLocation.Y - 2;
+            contact.rcContact.bottom = contact.pointerInfo.ptPixelLocation.Y + 2;
+            contact.rcContact.left = contact.pointerInfo.ptPixelLocation.X - 2;
+            contact.rcContact.right = contact.pointerInfo.ptPixelLocation.X + 2;
 
             POINTER_TOUCH_INFO[] args = new[] { contact };
             if (!TouchApi.InjectTouchInput(1, args))
@@ -180,10 +184,10 @@ namespace InputEmulation
             contact.pointerInfo.pointerFlags = TouchApi.POINTER_FLAG_UPDATE | TouchApi.POINTER_FLAG_INRANGE | TouchApi.POINTER_FLAG_INCONTACT;
 
             // defining contact area (I have taken area of 4 x 4 pixel)
-            contact.rcContact.Top = contact.pointerInfo.ptPixelLocation.Y - 2;
-            contact.rcContact.Bottom = contact.pointerInfo.ptPixelLocation.Y + 2;
-            contact.rcContact.Left = contact.pointerInfo.ptPixelLocation.X - 2;
-            contact.rcContact.Right = contact.pointerInfo.ptPixelLocation.X + 2;
+            contact.rcContact.top = contact.pointerInfo.ptPixelLocation.Y - 2;
+            contact.rcContact.bottom = contact.pointerInfo.ptPixelLocation.Y + 2;
+            contact.rcContact.left = contact.pointerInfo.ptPixelLocation.X - 2;
+            contact.rcContact.right = contact.pointerInfo.ptPixelLocation.X + 2;
 
             POINTER_TOUCH_INFO[] args = new[] { contact };
             if (!TouchApi.InjectTouchInput(1, args))
@@ -206,10 +210,10 @@ namespace InputEmulation
             contact.pointerInfo.pointerFlags = TouchApi.POINTER_FLAG_UPDATE | TouchApi.POINTER_FLAG_INRANGE | TouchApi.POINTER_FLAG_INCONTACT;
 
             // defining contact area (I have taken area of 4 x 4 pixel)
-            contact.rcContact.Top = contact.pointerInfo.ptPixelLocation.Y - 2;
-            contact.rcContact.Bottom = contact.pointerInfo.ptPixelLocation.Y + 2;
-            contact.rcContact.Left = contact.pointerInfo.ptPixelLocation.X - 2;
-            contact.rcContact.Right = contact.pointerInfo.ptPixelLocation.X + 2;
+            contact.rcContact.top = contact.pointerInfo.ptPixelLocation.Y - 2;
+            contact.rcContact.bottom = contact.pointerInfo.ptPixelLocation.Y + 2;
+            contact.rcContact.left = contact.pointerInfo.ptPixelLocation.X - 2;
+            contact.rcContact.right = contact.pointerInfo.ptPixelLocation.X + 2;
 
             POINTER_TOUCH_INFO[] args = new[] { contact };
             if (!TouchApi.InjectTouchInput(1, args))

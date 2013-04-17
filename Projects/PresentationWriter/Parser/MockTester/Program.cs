@@ -4,6 +4,7 @@ using System.Threading;
 using HSR.PresWriter.DataSources.Cameras;
 using HSR.PresWriter.PenTracking;
 using HSR.PresWriter.PenTracking.Images;
+using InputEmulation;
 using WFVisuslizer;
 using Color = System.Drawing.Color;
 using HSR.PresWriter.PenTracking.Events;
@@ -18,7 +19,7 @@ namespace MockTester
 
         static void Main(string[] args)
         {
-            Main4(args);
+            Main5(args);
         }
 
         static void Main1(string[] args)
@@ -126,6 +127,18 @@ namespace MockTester
                 Debug.WriteLine("Drew Point");
             }
             Console.Read();
+        }
+
+        private static void Main5(string[] args)
+        {
+            var t = new Touch(1, Touch.FeedbackMode.DEFAULT);
+            t.Touchdown(100,100);
+            for (int i = 0; i < 30; i++)
+            {
+                t.Hold(100,100);
+                Thread.Sleep(30);
+            }
+            t.Release(100,100);
         }
     }
 }

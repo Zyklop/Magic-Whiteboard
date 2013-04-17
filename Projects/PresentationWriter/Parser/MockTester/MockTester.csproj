@@ -64,6 +64,10 @@
       <Project>{3AF7E3B7-7ED1-4F0D-9426-58150F6697F8}</Project>
       <Name>ImageVisualizer</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\InputEmulation\InputEmulation.csproj">
+      <Project>{ebe618e1-865a-477b-be85-4f9ecbc31551}</Project>
+      <Name>InputEmulation</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Visualizer\Visualizer.csproj">
       <Project>{9674e9a0-ec6b-44d9-9700-85b6acf9a5fb}</Project>
       <Name>Visualizer</Name>
