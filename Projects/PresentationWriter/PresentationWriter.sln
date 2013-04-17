@@ -26,6 +26,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Visualizer", "Visualizer\Vi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HSR.PresWriter", "Common\HSR.PresWriter.csproj", "{1386F52B-AB44-46F8-B442-EC2662DF1E3A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Prototyping", "Prototyping\Prototyping.csproj", "{84F8AA26-DA60-4226-8A2D-3E30CFDFD9F8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
