@@ -28,6 +28,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HSR.PresWriter", "Common\HS
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Prototyping", "Prototyping\Prototyping.csproj", "{84F8AA26-DA60-4226-8A2D-3E30CFDFD9F8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InputEmulation", "InputEmulation\InputEmulation.csproj", "{EBE618E1-865A-477B-BE85-4F9ECBC31551}"
+EndProject
+
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -74,6 +77,10 @@ Global
 		{1386F52B-AB44-46F8-B442-EC2662DF1E3A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1386F52B-AB44-46F8-B442-EC2662DF1E3A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1386F52B-AB44-46F8-B442-EC2662DF1E3A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EBE618E1-865A-477B-BE85-4F9ECBC31551}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EBE618E1-865A-477B-BE85-4F9ECBC31551}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EBE618E1-865A-477B-BE85-4F9ECBC31551}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EBE618E1-865A-477B-BE85-4F9ECBC31551}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -3,6 +3,7 @@ using HSR.PresWriter.IO;
 using HSR.PresWriter.IO.Cameras;
 using HSR.PresWriter.IO.Events;
 using HSR.PresWriter.PenTracking;
+using HSR.PresWriter.PenTracking.Events;
 using HSR.PresWriter.PenTracking.Strategies;
 using System;
 using System.Diagnostics;
@@ -20,6 +21,7 @@ namespace WinFormsGuiTester
         private AForgePenTracker tracker;
         private Graphics overlayGraphics;
         private StreamWriter streamWriter;
+        private Bitmap _bitmap;
 
         public LivePenTrackingForm()
         {
@@ -29,26 +31,31 @@ namespace WinFormsGuiTester
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            tracker = new AForgePenTracker(new RedLaserStrategy());
 
 #if DEBUG
             tracker.DebugPicture += tracker_DebugPicture;
 #endif
 
             camera = new AForgeCamera();
+            tracker = new AForgePenTracker(new RedLaserStrategy(), camera);
+            tracker.PenFound += Found;
             camera.FrameReady += camera_FrameReady;
             camera.Start();
             camera.ShowConfigurationDialog();
         }
 
+        private void camera_FrameReady(object sender, FrameReadyEventArgs e)
+        {
+            _bitmap = (Bitmap) e.Frame.Bitmap.Clone();
+        }
+
         //private int lastRandX = 100;
         //private int lastRandY = 100;
         //Random tempRandom = new Random();
-        private async void camera_FrameReady(object sender, FrameReadyEventArgs e)
+        private async void Found(object sender, PenPositionEventArgs penPositionEventArgs)
         {
-            Task<PointFrame> asyncPointFrame = tracker.ProcessAsync(e.Frame);
-            Bitmap redaction = (Bitmap)e.Frame.Bitmap.Clone();
-            PointFrame pointFrame = await asyncPointFrame;
+            //Bitmap redaction = (Bitmap)e.Frame.Bitmap.Clone();
+            PointFrame pointFrame = penPositionEventArgs.Frame;
 
             //// fake:
             //lastRandX += tempRandom.Next(15);
@@ -60,7 +67,7 @@ namespace WinFormsGuiTester
             }
 
             // draw points in buffer to image
-            using (Graphics g = Graphics.FromImage(redaction))
+            using (Graphics g = Graphics.FromImage(_bitmap))
             {
                 using (SolidBrush brush = new SolidBrush(Color.Black))
                 {
@@ -75,7 +82,7 @@ namespace WinFormsGuiTester
                         previousPoint = f.Point;
                     }
                 }
-                this.calibrationPictureBox.Image = redaction;
+                this.calibrationPictureBox.Image = _bitmap;
             }
         }
 

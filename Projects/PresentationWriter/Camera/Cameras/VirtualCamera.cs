@@ -48,7 +48,7 @@ namespace HSR.PresWriter.DataSources.Cameras
             {
                 if (FrameReady != null) FrameReady(this, new FrameReadyEventArgs(new VideoFrame(counter++, (Bitmap) _out.Clone())));
             }
-            Debug.WriteLine("Sent frame " + counter);
+            Debug.WriteLineIf(counter%300 == 0, "Sent frame " + counter);
             //SetTimer();
         }
 

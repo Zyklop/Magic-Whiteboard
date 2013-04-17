@@ -18,13 +18,19 @@ namespace HSR.PresWriter.Tester
     {
         public static void Main(string[] args)
         {
-            FilesystemCamera camera = new FilesystemCamera(new DirectoryInfo(@"C:\temp\images\light"));
-            camera.FrameReady += delegate(object sender, FrameReadyEventArgs e) {
-                Console.WriteLine(e.Frame.Number);
+            AForgeCamera c = new AForgeCamera();
+            c.FrameReady += delegate(object o, FrameReadyEventArgs e) {
+                e.Frame.Bitmap.Save(@"c:\temp\cap-"+CurrentMillis.Millis+".png");
             };
-            camera.Start();
-            Console.ReadLine();
-            camera.Stop();
+            c.Start();
+
+            //FilesystemCamera camera = new FilesystemCamera(new DirectoryInfo(@"C:\temp\images\light"));
+            //camera.FrameReady += delegate(object sender, FrameReadyEventArgs e) {
+            //    Console.WriteLine(e.Frame.Number);
+            //};
+            //camera.Start();
+            //Console.ReadLine();
+            //camera.Stop();
 
             ///*
             //AForgeCamera c = new AForgeCamera();
