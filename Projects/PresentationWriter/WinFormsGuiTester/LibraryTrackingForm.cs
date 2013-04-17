@@ -47,13 +47,13 @@ namespace WinFormsGuiTester
         private async void processAll()
         {
             penDrawingBuffer.Clear();
-            AForgePenTracker tracker = new AForgePenTracker(new LightBulbStrategy());
+            //AForgePenTracker tracker = new AForgePenTracker(new LightBulbStrategy(), ); //TODO dunno how to change
             int framenumber = 0;
             foreach (String s in this.inputListBox.Items)
             {
                 VideoFrame videoFrame = new VideoFrame(++framenumber, new Bitmap(s));
-                PointFrame pointFrame = await tracker.ProcessAsync(videoFrame);
-                penDrawingBuffer.Add(pointFrame);
+                //PointFrame pointFrame = await tracker.ProcessAsync(videoFrame); //Todo
+                //penDrawingBuffer.Add(pointFrame);
             }
         }
 

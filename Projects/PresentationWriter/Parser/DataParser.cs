@@ -61,6 +61,13 @@ namespace HSR.PresWriter.PenTracking
             _calibrator.Calibrate();
         }
 
+        public void Restart()
+        {
+            if(CalibratorGrid.TopLeft.IsEmpty)
+                throw new InvalidOperationException("Needs to be Calibrated first. Use Start()");
+            _penTracker.Start();
+        }
+
         public void Stop()
         {
             //_pictureProvider.FrameReady -= _camera_FrameReady; // TODO siehe _camera_FrameReady

@@ -55,49 +55,50 @@ namespace WinFormsGuiTester
             strategy.BlobCounter.MinWidth = minBlobWidth;
             strategy.BlobCounter.MinHeight = minBlobHeight;
 
-            AForgePenTracker t = new AForgePenTracker(strategy);
-            t.DebugPicture += t_DebugPicture;
+            //Todo: Fix
+            //AForgePenTracker t = new AForgePenTracker(strategy,);
+            //t.DebugPicture += t_DebugPicture;
 
-            int i = this.inputListBox.SelectedIndex;
-            if (i >= this.inputListBox.Items.Count - 1) // if index is  going to overflow
-            {
-                return;
-            }
-            VideoFrame v1 = new VideoFrame(1, new Bitmap((string)this.inputListBox.Items[i]));
-            PointFrame p1 = await t.ProcessAsync(v1);
-            VideoFrame v2 = new VideoFrame(1, new Bitmap((string)this.inputListBox.Items[++i]));
-            PointFrame p2 = await t.ProcessAsync(v2);
+            //int i = this.inputListBox.SelectedIndex;
+            //if (i >= this.inputListBox.Items.Count - 1) // if index is  going to overflow
+            //{
+            //    return;
+            //}
+            //VideoFrame v1 = new VideoFrame(1, new Bitmap((string)this.inputListBox.Items[i]));
+            //PointFrame p1 = await t.ProcessAsync(v1);
+            //VideoFrame v2 = new VideoFrame(1, new Bitmap((string)this.inputListBox.Items[++i]));
+            //PointFrame p2 = await t.ProcessAsync(v2);
 
-            if (p2 == null)
-            {
-                this.foundPointXLabel.Text = "?";
-                this.foundPointYLabel.Text = "?";
-            }
-            else
-            {
-                if (this.drawpointsCheckbox.Checked)
-                {
-                    penDrawingBuffer.Enqueue(p2);
-                    // draw points on picture
-                    using (Graphics g = Graphics.FromImage(this.filterPictureBox.Image))
-                    {
-                        Point previousPoint = Point.Empty;
-                        foreach (PointFrame f in penDrawingBuffer)
-                        {
-                            g.DrawEllipse(Pens.Green, f.Point.X-2, f.Point.Y-2, 3, 3);
-                            if (!previousPoint.IsEmpty)
-                            {
-                                g.DrawLine(Pens.Red, previousPoint, f.Point);
-                            }
-                            previousPoint = f.Point;
-                        }
-                    }
-                }
+            //if (p2 == null)
+            //{
+            //    this.foundPointXLabel.Text = "?";
+            //    this.foundPointYLabel.Text = "?";
+            //}
+            //else
+            //{
+            //    if (this.drawpointsCheckbox.Checked)
+            //    {
+            //        penDrawingBuffer.Enqueue(p2);
+            //        // draw points on picture
+            //        using (Graphics g = Graphics.FromImage(this.filterPictureBox.Image))
+            //        {
+            //            Point previousPoint = Point.Empty;
+            //            foreach (PointFrame f in penDrawingBuffer)
+            //            {
+            //                g.DrawEllipse(Pens.Green, f.Point.X-2, f.Point.Y-2, 3, 3);
+            //                if (!previousPoint.IsEmpty)
+            //                {
+            //                    g.DrawLine(Pens.Red, previousPoint, f.Point);
+            //                }
+            //                previousPoint = f.Point;
+            //            }
+            //        }
+            //    }
 
-                // coordinate output
-                this.foundPointXLabel.Text = p2.Point.X.ToString();
-                this.foundPointYLabel.Text = p2.Point.Y.ToString();
-            }
+            //    // coordinate output
+            //    this.foundPointXLabel.Text = p2.Point.X.ToString();
+            //    this.foundPointYLabel.Text = p2.Point.Y.ToString();
+            //}
         }
 
         private List<Bitmap> debugPictures;
