@@ -7,17 +7,9 @@ using System.Threading.Tasks;
 
 namespace InputEmulation
 {
-    public interface IInputMethod
+    public class Pen : IInputMethod
     {
-        void Touchdown(int x, int y);
-        void Release();
-        void DragTo(int x, int y);
-        void Hold();
-    }
-
-    public class Touch : IInputMethod
-    {
-        private POINTER_TOUCH_INFO _contact;
+        private POINTER_PEN_INFO _contact;
 
         public enum FeedbackMode
         {
@@ -36,20 +28,6 @@ namespace InputEmulation
             /// </summary>
             NONE = 0x3
         }
-
-        [StructLayout(LayoutKind.Explicit)]
-        public struct RECT
-        {
-            [FieldOffset(0)]
-            public int left;
-            [FieldOffset(4)]
-            public int top;
-            [FieldOffset(8)]
-            public int right;
-            [FieldOffset(12)]
-            public int bottom;
-        }
-
 
         [StructLayout(LayoutKind.Sequential)]
         internal struct POINTER_INFO
@@ -73,15 +51,15 @@ namespace InputEmulation
         }
 
         [StructLayout(LayoutKind.Sequential)]
-        internal struct POINTER_TOUCH_INFO
+        internal struct POINTER_PEN_INFO
         {
             public POINTER_INFO pointerInfo;
-            public uint touchFlags;
-            public uint touchMask;
-            public RECT rcContact;
-            public RECT rcContactRaw;
-            public uint orientation;
+            public uint penFlags;
+            public uint penMask;
             public uint pressure;
+            public uint rotation;
+            public int tiltX;
+            public int tiltY;
         }
 
         internal static class TouchApi
@@ -108,29 +86,35 @@ namespace InputEmulation
             public const int PT_PEN = 0x00000003;
             public const int PT_MOUSE = 0x00000004;
 
-            public const int TOUCH_MASK_NONE = 0x00000000; // Default. None of the optional fields are valid.
-            public const int TOUCH_MASK_CONTACTAREA = 0x00000001; // rcContact of the POINTER_TOUCH_INFO structure is valid.
-            public const int TOUCH_MASK_ORIENTATION = 0x00000002; // orientation of the POINTER_TOUCH_INFO structure is valid.
-            public const int TOUCH_MASK_PRESSURE =  0x00000004; //pressure of the POINTER_TOUCH_INFO structure is valid.
+            public const int PEN_FLAG_NONE = 0x00000000; //There is no pen flag. This is the default.
+            public const int PEN_FLAG_BARREL = 0x00000001;//The barrel button is pressed.
+            public const int PEN_FLAG_INVERTED = 0x00000002; //The pen is inverted.public const int 
+            public const int PEN_FLAG_ERASER = 0x00000004;
+
+            public const int PEN_MASK_NONE = 0x00000000;//Default. None of the optional fields are valid.
+            public const int PEN_MASK_PRESSURE = 0x00000001;// pressure of the POINTER_PEN_INFO structure is valid.
+            public const int PEN_MASK_ROTATION = 0x00000002;// rotation of the POINTER_PEN_INFO structure is valid.
+            public const int PEN_MASK_TILT_X = 0x00000004; // tiltX of the POINTER_PEN_INFO structure is valid.
+            public const int PEN_MASK_TILT_Y = 0x00000008; // tiltY of the POINTER_PEN_INFO structure is valid.
+
+
 
             [DllImport("user32.dll", SetLastError = true)]
             internal static extern bool InitializeTouchInjection(uint maxCount, uint dwMode);
 
             [DllImport("user32.dll", SetLastError = true)]
-            internal static extern bool InjectTouchInput(uint count, [MarshalAs(UnmanagedType.LPArray), In]POINTER_TOUCH_INFO[] contacts);
+            internal static extern bool InjectTouchInput(uint count, [MarshalAs(UnmanagedType.LPArray), In]POINTER_PEN_INFO[] contacts);
         }
 
-        public Touch(uint touchPoints, FeedbackMode mode)
+        public Pen(uint touchPoints, FeedbackMode mode)
         {
-            _contact = new POINTER_TOUCH_INFO();
-            _contact.pointerInfo.pointerType = TouchApi.PT_TOUCH;
-            _contact.pointerInfo.pointerId = 0;          //contact 0
-            _contact.orientation = 90; // Orientation of 90 means touching perpendicular to screen.
+            _contact = new POINTER_PEN_INFO();
+            _contact.pointerInfo.pointerType = TouchApi.PT_PEN;
+            _contact.pointerInfo.pointerId = 0;
             _contact.pressure = 32000;
-            _contact.touchFlags = TouchApi.POINTER_FLAG_NONE;
-            _contact.touchMask = TouchApi.TOUCH_MASK_CONTACTAREA | 
-                TouchApi.TOUCH_MASK_ORIENTATION | TouchApi.TOUCH_MASK_PRESSURE;
-            if(!TouchApi.InitializeTouchInjection(touchPoints, (uint) mode))
+            _contact.penFlags = TouchApi.PEN_FLAG_NONE;
+            _contact.penMask = TouchApi.PEN_MASK_PRESSURE;
+            if (!TouchApi.InitializeTouchInjection(touchPoints, (uint)mode))
                 throw new ExternalException("Initialisation failed. Code: " + Marshal.GetLastWin32Error());
         }
 
@@ -141,15 +125,31 @@ namespace InputEmulation
 
             _contact.pointerInfo.pointerFlags = TouchApi.POINTER_FLAG_DOWN | TouchApi.POINTER_FLAG_INRANGE | TouchApi.POINTER_FLAG_INCONTACT;
 
- 
-             // defining contact area (I have taken area of 4 x 4 pixel)
-            _contact.rcContact.top = _contact.pointerInfo.ptPixelLocation.Y - 2;
-            _contact.rcContact.bottom = _contact.pointerInfo.ptPixelLocation.Y + 2;
-            _contact.rcContact.left = _contact.pointerInfo.ptPixelLocation.X - 2;
-            _contact.rcContact.right = _contact.pointerInfo.ptPixelLocation.X + 2;
+            // defining contact area (I have taken area of 4 x 4 pixel)
 
             var args = new[] { _contact };
-            if (!TouchApi.InjectTouchInput(1,args))
+            if (!TouchApi.InjectTouchInput(1, args))
+                throw new ExternalException("Injection failed. Code: " + Marshal.GetLastWin32Error());
+        }
+
+        public void Hover(int x, int y)
+        {
+            _contact.pointerInfo.ptPixelLocation.X = x; // Y co-ordinate of touch on screen
+            _contact.pointerInfo.ptPixelLocation.Y = y; // X co-ordinate of touch on screen
+
+            _contact.pointerInfo.pointerFlags = TouchApi.POINTER_FLAG_UPDATE | TouchApi.POINTER_FLAG_INRANGE;
+
+            var args = new[] { _contact };
+            if (!TouchApi.InjectTouchInput(1, args))
+                throw new ExternalException("Injection failed. Code: " + Marshal.GetLastWin32Error());
+        }
+
+        public void OutOfRange()
+        {
+            _contact.pointerInfo.pointerFlags = TouchApi.POINTER_FLAG_UPDATE | TouchApi.POINTER_FLAG_UP;
+
+            var args = new[] { _contact };
+            if (!TouchApi.InjectTouchInput(1, args))
                 throw new ExternalException("Injection failed. Code: " + Marshal.GetLastWin32Error());
         }
 
@@ -158,7 +158,7 @@ namespace InputEmulation
             //_contact.pointerInfo.ptPixelLocation.X = x; // Y co-ordinate of touch on screen
             //_contact.pointerInfo.ptPixelLocation.Y = y; // X co-ordinate of touch on screen
 
-            _contact.pointerInfo.pointerFlags = TouchApi.POINTER_FLAG_UP;
+            _contact.pointerInfo.pointerFlags = TouchApi.POINTER_FLAG_UPDATE | TouchApi.POINTER_FLAG_UP | TouchApi.POINTER_FLAG_INRANGE;
 
             // defining contact area (I have taken area of 4 x 4 pixel)
             //_contact.rcContact.top = _contact.pointerInfo.ptPixelLocation.Y - 2;
@@ -166,7 +166,7 @@ namespace InputEmulation
             //_contact.rcContact.left = _contact.pointerInfo.ptPixelLocation.X - 2;
             //_contact.rcContact.right = _contact.pointerInfo.ptPixelLocation.X + 2;
 
-            POINTER_TOUCH_INFO[] args = new[] { _contact };
+            var args = new[] { _contact };
             if (!TouchApi.InjectTouchInput(1, args))
                 throw new ExternalException("Initialisation failed. Code: " + Marshal.GetLastWin32Error());
         }
@@ -178,13 +178,8 @@ namespace InputEmulation
 
             _contact.pointerInfo.pointerFlags = TouchApi.POINTER_FLAG_UPDATE | TouchApi.POINTER_FLAG_INRANGE | TouchApi.POINTER_FLAG_INCONTACT;
 
-            // defining contact area (I have taken area of 4 x 4 pixel)
-            _contact.rcContact.top = _contact.pointerInfo.ptPixelLocation.Y - 2;
-            _contact.rcContact.bottom = _contact.pointerInfo.ptPixelLocation.Y + 2;
-            _contact.rcContact.left = _contact.pointerInfo.ptPixelLocation.X - 2;
-            _contact.rcContact.right = _contact.pointerInfo.ptPixelLocation.X + 2;
 
-            POINTER_TOUCH_INFO[] args = new[] { _contact };
+            var args = new[] { _contact };
             if (!TouchApi.InjectTouchInput(1, args))
                 throw new ExternalException("Initialisation failed. Code: " + Marshal.GetLastWin32Error());
         }
@@ -202,7 +197,7 @@ namespace InputEmulation
             //_contact.rcContact.left = _contact.pointerInfo.ptPixelLocation.X - 2;
             //_contact.rcContact.right = _contact.pointerInfo.ptPixelLocation.X + 2;
 
-            POINTER_TOUCH_INFO[] args = new[] { _contact };
+            var args = new[] { _contact };
             if (!TouchApi.InjectTouchInput(1, args))
                 throw new ExternalException("Initialisation failed. Code: " + Marshal.GetLastWin32Error());
         }
