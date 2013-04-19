@@ -132,13 +132,26 @@ namespace MockTester
         private static void Main5(string[] args)
         {
             var t = new Touch(1, Touch.FeedbackMode.DEFAULT);
-            t.Touchdown(100,100);
-            for (int i = 0; i < 30; i++)
+            t.Touchdown(500,500);
+            for (int i = 0; i < 90; i++)
             {
-                t.Hold(100,100);
+                t.Hold();
                 Thread.Sleep(30);
             }
-            t.Release(100,100);
+            t.Release();
+            var p = new Pen(1, Pen.FeedbackMode.DEFAULT);
+            //p.Hover(200, 200);
+            Thread.Sleep(1000);
+            p.Touchdown(400, 400);
+            for (int i = 0; i < 90; i++)
+            {
+                t.Hold();
+                Thread.Sleep(30);
+            }
+            p.Release();
+            Thread.Sleep(1000);
+            p.OutOfRange();
+            Console.Read();
         }
     }
 }
