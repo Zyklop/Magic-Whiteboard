@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Drawing;
+using System.Drawing.Imaging;
 using HSR.PresWriter.PenTracking.Events;
 using HSR.PresWriter.PenTracking.Strategies;
 using HSR.PresWriter.IO.Cameras;
@@ -44,6 +46,22 @@ namespace HSR.PresWriter.PenTracking
             //_pictureProvider.ShowConfigurationDialog();
             //_pictureProvider.FrameReady += _camera_FrameReady; // TODO siehe _camera_FrameReady
             _calibrator.Grid.Calculate();
+#if DEBUG
+            var bm = new Bitmap(640, 480);
+            for (int i = 0; i < 640; i++)
+            {
+                for (int j = 0; j < 480; j++)
+                {
+                    var position = CalibratorGrid.GetPosition(i, j);
+                    if (position.X != 0 || position.Y != 0)
+                    {
+                        //Debug.WriteLine("Found at : " + i + "," + j + "-" + position.X + "/" + position.Y);
+                        bm.SetPixel(i, j, Color.FromArgb(255, (position.X / 5)%256, position.Y / 5, 255));
+                    }
+                }
+            }
+            bm.Save(@"C:\temp\daforge\grid.bmp", ImageFormat.MemoryBmp);
+#endif
             _penTracker.Start();
             //_calibrator.Grid.PredictFromCorners();
         }

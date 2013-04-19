@@ -141,8 +141,8 @@ namespace HSR.PresWriter.PenTracking
                                                      new IntRange(0, (int)stats.GreenWithoutBlack.Mean),
                                                      //new IntRange(50, 255));
                                                      new IntRange((int)stats.BlueWithoutBlack.Mean - BDiff, 255));
-                        //Debug.WriteLine("Green: " + stats.GreenWithoutBlack.Median + " Blue: " + stats.BlueWithoutBlack.Median);
-                        //Debug.WriteLine("Green: " + stats.GreenWithoutBlack.Mean + " Blue: " + stats.BlueWithoutBlack.Mean);
+                        Debug.WriteLine("Green: " + stats.GreenWithoutBlack.Median + " Blue: " + stats.BlueWithoutBlack.Median);
+                        Debug.WriteLine("Green: " + stats.GreenWithoutBlack.Mean + " Blue: " + stats.BlueWithoutBlack.Mean);
                         Bitmap bbm = bcf.Apply(gbm);
                         bbm.Save(@"C:\temp\daforge\bimg\img" + _calibrationStep + ".jpg", ImageFormat.Jpeg);
                         gcf.ApplyInPlace(gbm);
@@ -182,7 +182,7 @@ namespace HSR.PresWriter.PenTracking
                     {
                         case 2:
                             var bm = UnmanagedImage.FromManagedImage(e.Frame.Bitmap);
-                            diffFilter.OverlayImage.Save(@"C:\temp\daforge\diff\src" + _errors + ".jpg", ImageFormat.Jpeg);
+                            //diffFilter.OverlayImage.Save(@"C:\temp\daforge\diff\src" + _errors + ".jpg", ImageFormat.Jpeg);
                             bm = diffFilter.Apply(bm);
                             var gf = new GaussianBlur(9.0, 3);
                             gf.ApplyInPlace(bm);
@@ -207,9 +207,9 @@ namespace HSR.PresWriter.PenTracking
                                 Grid.TopRight = new Point(corners[1].X, corners[1].Y);
                                 Grid.BottomLeft = new Point(corners[2].X, corners[2].Y);
                                 Grid.BottomRight = new Point(corners[3].X, corners[3].Y);
-                                if (Grid.TopLeft.X > 10 && Grid.TopRight.X < _vs.Width - 10 && Grid.BottomLeft.X > 10 &&
-                                    Grid.BottomRight.X < _vs.Width - 10 && Grid.TopLeft.Y > 10 && Grid.TopRight.Y > 10 &&
-                                    Grid.BottomLeft.Y < _vs.Height - 10 && Grid.BottomRight.Y < _vs.Height - 10 &&
+                                if (Grid.TopLeft.X > 10 && Grid.TopRight.X < _vs.Width - 5 && Grid.BottomLeft.X > 5 &&
+                                    Grid.BottomRight.X < _vs.Width - 5 && Grid.TopLeft.Y > 10 && Grid.TopRight.Y > 5 &&
+                                    Grid.BottomLeft.Y < _vs.Height - 5 && Grid.BottomRight.Y < _vs.Height - 5 &&
                                     Grid.TopLeft.X < Grid.BottomRight.X && blobs[i - 1].Area > 60000 &&
                                     Grid.BottomLeft.X < Grid.TopRight.X && Grid.BottomLeft.X < Grid.BottomRight.X &&
                                     Grid.TopLeft.Y < Grid.BottomLeft.Y && Grid.TopLeft.Y < Grid.BottomRight.Y &&
@@ -240,7 +240,7 @@ namespace HSR.PresWriter.PenTracking
                             break;
                         case 1:
                             diffFilter.OverlayImage = e.Frame.Bitmap;
-                            diffFilter.OverlayImage.Save(@"C:\temp\daforge\diff\srcf" + _errors + ".jpg", ImageFormat.Jpeg);
+                            //diffFilter.OverlayImage.Save(@"C:\temp\daforge\diff\srcf" + _errors + ".jpg", ImageFormat.Jpeg);
                             //_vs.AddRect(0, 0, (int) _vs.Width, (int) _vs.Height, Color.FromArgb(255, 255, 255, 255));
                             _vs.Clear();
                             for (int y = 0; y < Columncount; y++)

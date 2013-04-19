@@ -15,8 +15,9 @@ namespace HSR.PresWriter.IO.Cameras
 {
     public class FilesystemCamera : ICamera
     {
-        private const int TIMER_INTERVAL = 1000;
+        private const int TIMER_INTERVAL = 2000;
         private Timer tim = new Timer();
+        private List<string> names = new List<string>(); 
         private List<Bitmap> imagelist;
         private int index = 0;
 
@@ -28,6 +29,7 @@ namespace HSR.PresWriter.IO.Cameras
             foreach(FileInfo i in d.GetFiles("*.jpg")) {
                 Debug.WriteLine(i.FullName);
                 this.imagelist.Add(new Bitmap(i.FullName));
+                names.Add(i.Name);
             }
         }
 
@@ -42,7 +44,7 @@ namespace HSR.PresWriter.IO.Cameras
             {
                 if (FrameReady != null) FrameReady(this, new FrameReadyEventArgs(new VideoFrame(index, imagelist[index])));
                 if (++index >= imagelist.Count) index = 0;
-                Debug.WriteLine("New Frame " + index);
+                Debug.WriteLine("New Frame " + names[index] + index);
             };
             tim.Start();
         }
