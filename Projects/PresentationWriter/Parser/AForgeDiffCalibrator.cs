@@ -34,8 +34,8 @@ namespace HSR.PresWriter.PenTracking
         private double _sqrheight;
         private double _sqrwidth;
         private bool _drawing;
-        private const int BDiff = 0;
-        private const int GDiff = 0;
+        private const int BDiff = 10;
+        private const int GDiff = 20;
         private Bitmap actImg;
 
 
@@ -125,28 +125,35 @@ namespace HSR.PresWriter.PenTracking
                         FillRects();
                         _calibrationStep--;
                         var gbm = diffFilter.Apply(e.Frame.Bitmap);
+                        gbm.Save(@"C:\temp\daforge\diff\img" + _calibrationStep + ".jpg", ImageFormat.Jpeg);
 #if DEBUG
                         actImg = (Bitmap) gbm.Clone();
 #endif
-                        var cf = new ColorFiltering(new IntRange(0, 255), new IntRange(0, 255), new IntRange(0, 255));
-                        cf.ApplyInPlace(gbm);
-                        gbm.Save(@"C:\temp\daforge\diff\img" + _calibrationStep + ".jpg", ImageFormat.Jpeg);
-                        var stats = new ImageStatistics(gbm);
-                        var gcf = new ColorFiltering(new IntRange(0, 255), //new IntRange(50,255),
-                                                     new IntRange((int)stats.GreenWithoutBlack.Mean - GDiff, 255),
-                                                     new IntRange(0, (int)stats.BlueWithoutBlack.Mean));
-                                                     //new IntRange(0, 255));
+                        var d = UnmanagedImage.FromManagedImage(gbm);
+                        var stats = new ImageStatistics(d);
+                        var gcf = new ColorFiltering(new IntRange(0, 255),
+                                                     new IntRange((int)stats.GreenWithoutBlack.Mean + GDiff, 255),
+                                                     new IntRange(0, 255));
                         var bcf = new ColorFiltering(new IntRange(0, 255),
-                                                     //new IntRange(0, 255),
-                                                     new IntRange(0, (int)stats.GreenWithoutBlack.Mean),
-                                                     //new IntRange(50, 255));
+                                                     new IntRange(0, 255),
+                                                     new IntRange((int)stats.BlueWithoutBlack.Mean + BDiff, 255));
+                        //Debug.WriteLine("Green: " + stats.GreenWithoutBlack.Median + " Blue: " + stats.BlueWithoutBlack.Median);
+                        //Debug.WriteLine("Green: " + stats.GreenWithoutBlack.Mean + " Blue: " + stats.BlueWithoutBlack.Mean);
+                        var bf = new Difference(gcf.Apply(d));
+                        bcf.ApplyInPlace(d);
+                        bf.ApplyInPlace(d);
+                        d.ToManagedImage().Save(@"C:\temp\daforge\diff\img" + _calibrationStep + ".jpg", ImageFormat.Jpeg);
+                        stats = new ImageStatistics(d);
+                        gcf = new ColorFiltering(new IntRange(0, 255),
+                                                     new IntRange((int)stats.GreenWithoutBlack.Mean - GDiff, 255),
+                                                     new IntRange(0, 255));
+                        bcf = new ColorFiltering(new IntRange(0, 255),
+                                                     new IntRange(0, 255),
                                                      new IntRange((int)stats.BlueWithoutBlack.Mean - BDiff, 255));
-                        Debug.WriteLine("Green: " + stats.GreenWithoutBlack.Median + " Blue: " + stats.BlueWithoutBlack.Median);
-                        Debug.WriteLine("Green: " + stats.GreenWithoutBlack.Mean + " Blue: " + stats.BlueWithoutBlack.Mean);
-                        Bitmap bbm = bcf.Apply(gbm);
-                        bbm.Save(@"C:\temp\daforge\bimg\img" + _calibrationStep + ".jpg", ImageFormat.Jpeg);
-                        gcf.ApplyInPlace(gbm);
-                        gbm.Save(@"C:\temp\daforge\gimg\img" + _calibrationStep + ".jpg", ImageFormat.Jpeg);
+                        var bbm = bcf.Apply(d);
+                        bbm.ToManagedImage().Save(@"C:\temp\daforge\bimg\img" + _calibrationStep + ".jpg", ImageFormat.Jpeg);
+                        gcf.ApplyInPlace(d);
+                        d.ToManagedImage().Save(@"C:\temp\daforge\gimg\img" + _calibrationStep + ".jpg", ImageFormat.Jpeg);
                         var gblobCounter = new BlobCounter
                             {
                                 ObjectsOrder = ObjectsOrder.YX,
@@ -157,7 +164,7 @@ namespace HSR.PresWriter.PenTracking
                                 FilterBlobs = true,
                                 CoupledSizeFiltering = false
                             };
-                        gblobCounter.ProcessImage(gbm);
+                        gblobCounter.ProcessImage(d);
                         var bblobCounter = new BlobCounter
                             {
                                 ObjectsOrder = ObjectsOrder.YX,

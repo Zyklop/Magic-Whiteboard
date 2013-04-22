@@ -120,8 +120,16 @@ namespace InputEmulation
             internal static extern bool InjectTouchInput(uint count, [MarshalAs(UnmanagedType.LPArray), In]POINTER_TOUCH_INFO[] contacts);
         }
 
+        public bool IsSupported { get
+        {
+            return (Environment.OSVersion.Version.Major >= 6 && Environment.OSVersion.Version.Minor >= 2) ||
+                   Environment.OSVersion.Version.Major > 6;
+        } }
+
         public Touch(uint touchPoints, FeedbackMode mode)
         {
+            if(!IsSupported)
+                throw new ExternalException("Not Supported on your OS.");
             _contact = new POINTER_TOUCH_INFO();
             _contact.pointerInfo.pointerType = TouchApi.PT_TOUCH;
             _contact.pointerInfo.pointerId = 0;          //contact 0
