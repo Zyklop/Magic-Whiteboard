@@ -37,6 +37,8 @@ namespace HSR.PresWriter.PenTracking
         private const int BDiff = 10;
         private const int GDiff = 20;
         private Bitmap actImg;
+        private static double _neighbourDist = 2.1;
+        private double _topDist = 1.1;
 
 
         public AForgeDiffCalibrator(IPictureProvider provider, IVisualizerControl visualizer)
@@ -209,7 +211,7 @@ namespace HSR.PresWriter.PenTracking
                                     corners =
                                         PointsCloud.FindQuadrilateralCorners(blobCounter.GetBlobsEdgePoints(blobs[i++]));
                                 } while (corners.Count != 4);
-                                InPlaceSort(corners);
+                                GridBlobs.InPlaceSort(corners);
                                 Grid.TopLeft = new Point(corners[0].X, corners[0].Y);
                                 Grid.TopRight = new Point(corners[1].X, corners[1].Y);
                                 Grid.BottomLeft = new Point(corners[2].X, corners[2].Y);
@@ -356,31 +358,43 @@ namespace HSR.PresWriter.PenTracking
             return res;
         }
 
-        private void ProcessBlobs(BlobCounter blobCounter, int offset)
+        private GridBlobs ProcessBlobs(BlobCounter blobCounter, int offset)
         {
             blobCounter.FilterBlobs = true;
             var blobs = blobCounter.GetObjectsInformation().ToList();
             // remove when outside
             blobs.RemoveAll(x => !Grid.Contains(x.CenterOfGravity));
+            var gb = new GridBlobs(blobCounter, this);
             //find topleft
             //var top = blobs.Where(x => x.CenterOfGravity.X == blobs.GetRange(0,Rowcount).
             //    Min(y => y.CenterOfGravity.X)).
             //    OrderBy(z=>z.CenterOfGravity.Y).First();
-            var top = blobs.Where(x => IsNextTo(x.CenterOfGravity, Grid.TopLeft, 0, 0, 1.5 + offset)).OrderBy(x => x.Area).ToList();
-            if (top.Any() && IsNextTo(top.First().CenterOfGravity, Grid.TopLeft, 0, 0, 1.5 + offset))
+            var top = blobs.Where(x => IsNextTo(x.CenterOfGravity, Grid.TopLeft, 0, 0, _topDist + offset))
+                .OrderBy(x => x.Area).ToList();
+            while (!top.Any() && _topDist < 2.5)
             {
-                blobs.Remove(top.Last());
-                if (ProcessBlobs(top.Last(), blobs, offset, offset, offset, blobCounter) < Rowcount * Columncount * 0.75)
+                _topDist += 0.05;
+                top = blobs.Where(x => IsNextTo(x.CenterOfGravity, Grid.TopLeft, 0, 0, _topDist + offset))
+                    .OrderBy(x => x.Area).ToList();
+            }
+            while (top.Count > 1)
+            {
+                _topDist -= 0.05;
+                top = blobs.Where(x => IsNextTo(x.CenterOfGravity, Grid.TopLeft, 0, 0, _topDist + offset))
+                    .OrderBy(x => x.Area).ToList();
+            }
+            if (top.Any())
+            {
+                gb.SetPosition(top.First(),new Point(0,0));
+                if (ProcessBlobs(gb, top.First(), offset, offset) < Rowcount*Columncount*0.75)
                     _errors++;
+                return gb;
             }
-            else
-            {
-                _errors++;
-                return;
-            }
+            _errors++;
+            return null;
         }
 
-        private int ProcessBlobs(Blob blob, List<Blob> rest, int x, int y, int offset, BlobCounter blobCounter)
+        private int ProcessBlobs(GridBlobs gb, Blob act, int x, int y)
         {
             if (x < 0 || y < 0 || y > Columncount || x > Rowcount)
             {
@@ -388,73 +402,45 @@ namespace HSR.PresWriter.PenTracking
                 Debug.WriteLine("X: " + x + " Y: " + y + " isn't a valid blob position");
                 return 0;
             }
+            //gb.SetPosition(act, new Point(x,y));
 #if DEBUG
             using (var g = Graphics.FromImage(actImg))
             {
                 g.DrawString(x + "," + y,new Font(FontFamily.GenericSansSerif, 8.0f), new SolidBrush(Color.White), 
-                    blob.CenterOfGravity.X, blob.CenterOfGravity.Y);
+                    act.CenterOfGravity.X, act.CenterOfGravity.Y);
                 g.Flush();
                 //Debug.WriteLine("wrote to image");
             }
 #endif
-            var corners =
-                PointsCloud.FindQuadrilateralCorners(blobCounter.GetBlobsEdgePoints(blob));
-            if (corners.Count == 4)
-            {
-                InPlaceSort(corners);
-                double xOff = ((_calibrationStep - 3) % (int)Math.Sqrt(CalibrationFrames - 3)) * _sqrwidth /
-                              (int)Math.Sqrt(CalibrationFrames - 3);
-                double yOff = Math.Floor((_calibrationStep - 3) / Math.Sqrt(CalibrationFrames - 3)) * _sqrwidth /
-                              (int)Math.Sqrt(CalibrationFrames - 3);
-                Grid.AddPoint((int)(x * _sqrwidth + xOff), (int)(y * _sqrheight + yOff), corners[0].X, corners[0].Y);
-                Grid.AddPoint((int)((x + 1) * _sqrwidth + xOff), (int)(y * _sqrheight + yOff), corners[1].X, corners[1].Y);
-                Grid.AddPoint((int)(x * _sqrwidth + xOff), (int)((y + 1) * _sqrheight + yOff), corners[2].X, corners[2].Y);
-                Grid.AddPoint((int)((x + 1) * _sqrwidth + xOff), (int)((y + 1) * _sqrheight + yOff), corners[3].X,
-                              corners[3].Y);
-            }
-            else
-            {
-                _errors++;
-            }
+            
             //find neighbours
-            int maxNeigbours = 4;
-            if (x == 0 || x == Rowcount)
-                maxNeigbours--;
-            if (y == 0 || y == Columncount)
-                maxNeigbours--;
-            var n = rest.Where(m => IsNextTo(blob.CenterOfGravity, m.CenterOfGravity, x, y, 2.10, false)).ToList();
-            if (n.Count() > maxNeigbours)
-                Debug.WriteLine("too many neighbours at " + x + "," + y);
-            //throw new InvalidOperationException("Too much Blobs");
+            var n = gb.FindNeighbours(act, x, y, false);
+            n = n.Where(b => !gb.IsIterated(b));
             int res = n.Count();
             foreach (var b in n)
             {
-                var xdiff = b.CenterOfGravity.X - blob.CenterOfGravity.X;
-                var ydiff = b.CenterOfGravity.Y - blob.CenterOfGravity.Y;
-                rest.Remove(b);
-                if (rest.Any())
+                var xdiff = b.CenterOfGravity.X - act.CenterOfGravity.X;
+                var ydiff = b.CenterOfGravity.Y - act.CenterOfGravity.Y;
+                if (Math.Abs(xdiff) > Math.Abs(ydiff))
                 {
-                    if (Math.Abs(xdiff) > Math.Abs(ydiff))
+                    if (xdiff > 0 && x + 2 < Rowcount)
                     {
-                        if (xdiff > 0)
-                        {
-                            res += ProcessBlobs(b, rest, x + 2, y, offset, blobCounter);
-                        }
-                        else
-                        {
-                            res += ProcessBlobs(b, rest, x - 2, y, offset, blobCounter);
-                        }
+                        res += ProcessBlobs(gb, b, x + 2, y);
                     }
-                    else
+                    else if (x > 1)
                     {
-                        if (ydiff > 0)
-                        {
-                            res += ProcessBlobs(b, rest, x, y + 2, offset, blobCounter);
-                        }
-                        else
-                        {
-                            res += ProcessBlobs(b, rest, x, y - 2, offset, blobCounter);
-                        }
+                        res += ProcessBlobs(gb, b, x - 2, y);
+                    }
+                }
+                else
+                {
+                    if (ydiff > 0 && y + 2 < Columncount)
+                    {
+                        res += ProcessBlobs(gb, b, x, y + 2);
+                    }
+                    else if (y > 1)
+                    {
+                        res += ProcessBlobs(gb, b, x, y - 2);
                     }
                 }
             }
@@ -484,7 +470,7 @@ namespace HSR.PresWriter.PenTracking
             //Debug.WriteLine("Dist: " + Distance(p1, new AForge.Point(p2.X, p2.Y)) + " diag: " + Math.Sqrt(columnDistance * columnDistance + rowDistance * rowDistance));
             return nextTo &&
                    Distance(p1, new AForge.Point(p2.X, p2.Y)) <
-                   maxDist/Math.Sqrt(2.0)*Math.Sqrt(columnDistance * columnDistance + rowDistance * rowDistance);
+                   maxDist*Math.Sqrt(columnDistance * columnDistance + rowDistance * rowDistance);
         }
 
         private int PredictRowDistance(int columnnr)
@@ -507,35 +493,35 @@ namespace HSR.PresWriter.PenTracking
         /// </summary>
         /// <remarks>Rects have to be sorted</remarks>
         /// <param name="rectlist"></param>
-        private void InPlaceSort(List<List<IntPoint>> rectlist)
-        {
-            var tmp = new List<List<IntPoint>>();
-            rectlist = rectlist.OrderBy(x => x.First().Y).ToList();
-            for (int i = 0; i < Rowcount; i++)
-            {
-                var tmp2 = new List<List<IntPoint>>();
-                tmp2.AddRange(rectlist.GetRange(0, Columncount));
-            }
-        }
+        //private void InPlaceSort(List<List<IntPoint>> rectlist)
+        //{
+        //    var tmp = new List<List<IntPoint>>();
+        //    rectlist = rectlist.OrderBy(x => x.First().Y).ToList();
+        //    for (int i = 0; i < Rowcount; i++)
+        //    {
+        //        var tmp2 = new List<List<IntPoint>>();
+        //        tmp2.AddRange(rectlist.GetRange(0, Columncount));
+        //    }
+        //}
 
-        private void InPlaceSort(List<IntPoint> rect)
-        {
-            if (rect == null || rect.Count != 4)
-                throw new ArgumentException("Not a rectancle");
-            var tmp = new List<IntPoint>(rect);
-            rect.Clear();
-            var tl = tmp.First(x => x.Y == tmp.Min(y => y.Y));
-            tmp.Remove(tl);
-            rect.Add(tl);
-            tl = tmp.First(x => x.Y == tmp.Min(y => y.Y));
-            tmp.Remove(tl);
-            rect.Add(tl);
-            rect.Sort((x, y) => x.X.CompareTo(y.X));
-            tmp = tmp.OrderBy(x => x.X).ToList();
-            //rect.AddRange(tmp);
-            rect.Add(tmp[0]);
-            rect.Add(tmp[1]);
-        }
+        //private void InPlaceSort(List<IntPoint> rect)
+        //{
+        //    if (rect == null || rect.Count != 4)
+        //        throw new ArgumentException("Not a rectancle");
+        //    var tmp = new List<IntPoint>(rect);
+        //    rect.Clear();
+        //    var tl = tmp.First(x => x.Y == tmp.Min(y => y.Y));
+        //    tmp.Remove(tl);
+        //    rect.Add(tl);
+        //    tl = tmp.First(x => x.Y == tmp.Min(y => y.Y));
+        //    tmp.Remove(tl);
+        //    rect.Add(tl);
+        //    rect.Sort((x, y) => x.X.CompareTo(y.X));
+        //    tmp = tmp.OrderBy(x => x.X).ToList();
+        //    //rect.AddRange(tmp);
+        //    rect.Add(tmp[0]);
+        //    rect.Add(tmp[1]);
+        //}
 
         private void FillRects()
         {
@@ -561,7 +547,7 @@ namespace HSR.PresWriter.PenTracking
                             (int)(_sqrwidth * 3.0), (int)_sqrheight,
                         Color.FromArgb(255, 0, 255, 0));
                     }
-                    if (y % 2 == 1 && x % 4 == 3 && _drawing)
+                    if (y % 2 == 1 && (x % 4 == 3 && _drawing || x == 0))
                     {
                         _vs.AddRect((int)((x - 3) * _sqrwidth + xOff), (int)(y * _sqrheight + yOff),
                             (int)(_sqrwidth * 3.0), (int)_sqrheight,
@@ -583,5 +569,158 @@ namespace HSR.PresWriter.PenTracking
 
 
         public event EventHandler CalibrationCompleted;
+
+        internal class BlobPositions
+        {
+            public bool Iterated { get; set; }
+
+            public List<Point> Points { get; set; }
+        }
+
+        internal class GridBlobs
+        {
+            private Dictionary<Blob, BlobPositions> _blobPositions;
+            private BlobCounter _bc;
+            private AForgeDiffCalibrator _adc;
+
+            public IEnumerable<Blob> Blobs { get { return _blobPositions.Keys; } }
+
+            public GridBlobs(BlobCounter bc, AForgeDiffCalibrator adc)
+            {
+                _blobPositions = new Dictionary<Blob, BlobPositions>();
+                _bc = bc;
+                _adc = adc;
+                var blobs = bc.GetObjectsInformation().Where(x => adc.Grid.Contains(
+                    new Point((int) x.CenterOfGravity.X, (int) x.CenterOfGravity.Y))).ToList();
+                foreach (var blob in blobs)
+                {
+                    _blobPositions.Add(blob, new BlobPositions{Iterated = false, Points = new List<Point>()});
+                }
+            }
+
+            public bool IsIterated(Blob b)
+            {
+                return _blobPositions[b].Iterated;
+            }
+
+            public void SetIterated(Blob b)
+            {
+                _blobPositions[b].Iterated = true;
+            }
+
+            public Point GetPosition(Blob b)
+            {
+                return !_blobPositions[b].Points.Any() ? new Point(-1, -1) : _blobPositions[b].Points.Last();
+            }
+
+            public void SetPosition(Blob b, Point p)
+            {
+                _blobPositions[b].Points.Add(p);
+            }
+
+            public List<IntPoint> FindCorners(Blob b)
+            {
+                var res = PointsCloud.FindQuadrilateralCorners(_bc.GetBlobsEdgePoints(b));
+                InPlaceSort(res);
+                return res;
+            }
+
+
+            public void VerifyAndAdd()
+            {
+                //var corners = gb.FindCorners(act);
+                //if (corners.Count == 4)
+                //{
+                //    double xOff = ((_calibrationStep - 3) % (int)Math.Sqrt(CalibrationFrames - 3)) * _sqrwidth /
+                //                  (int)Math.Sqrt(CalibrationFrames - 3);
+                //    double yOff = Math.Floor((_calibrationStep - 3) / Math.Sqrt(CalibrationFrames - 3)) * _sqrwidth /
+                //                  (int)Math.Sqrt(CalibrationFrames - 3);
+                //    Grid.AddPoint((int)(x * _sqrwidth + xOff), (int)(y * _sqrheight + yOff), corners[0].X, corners[0].Y);
+                //    Grid.AddPoint((int)((x + 1) * _sqrwidth + xOff), (int)(y * _sqrheight + yOff), corners[1].X, corners[1].Y);
+                //    Grid.AddPoint((int)(x * _sqrwidth + xOff), (int)((y + 1) * _sqrheight + yOff), corners[2].X, corners[2].Y);
+                //    Grid.AddPoint((int)((x + 1) * _sqrwidth + xOff), (int)((y + 1) * _sqrheight + yOff), corners[3].X,
+                //                  corners[3].Y);
+                //}
+            }
+
+            public IEnumerable<Blob> UnMapped { get { return _blobPositions.Where(x => !x.Value.Iterated).Select(x => x.Key); } }
+
+            public static void InPlaceSort(List<IntPoint> rect)
+            {
+                if (rect == null || rect.Count != 4)
+                    throw new ArgumentException("Not a rectancle");
+                var tmp = new List<IntPoint>(rect);
+                rect.Clear();
+                var tl = tmp.First(x => x.Y == tmp.Min(y => y.Y));
+                tmp.Remove(tl);
+                rect.Add(tl);
+                tl = tmp.First(x => x.Y == tmp.Min(y => y.Y));
+                tmp.Remove(tl);
+                rect.Add(tl);
+                rect.Sort((x, y) => x.X.CompareTo(y.X));
+                tmp = tmp.OrderBy(x => x.X).ToList();
+                //rect.AddRange(tmp);
+                rect.Add(tmp[0]);
+                rect.Add(tmp[1]);
+            }
+
+            public IEnumerable<Blob> FindNeighbours(Blob act, int x, int y, bool diagonal)
+            {
+                int maxNeigbours = diagonal ? 8 : 4;
+                int borders = diagonal ? 3 : 1;
+                if (x == 0 || x == Rowcount)
+                    maxNeigbours-=borders;
+                if (y == 0 || y == Columncount)
+                    maxNeigbours-=borders;
+                if (diagonal && maxNeigbours == 2)
+                    maxNeigbours = 3;
+                if (!_blobPositions[act].Points.Any(p => p.X == x && p.Y == y))
+                    throw new InvalidOperationException("Position not stored");
+                var n = _blobPositions.Where(m => _adc.IsNextTo(act.CenterOfGravity, m.Key.CenterOfGravity, x, y, _neighbourDist, diagonal)).Select(m=>m.Key);
+                while (n.Count() > maxNeigbours)
+                {
+                    Debug.WriteLine("too many neighbours at " + x + "," + y + " decreasing distance");
+                    _neighbourDist -= 0.05;
+                    n = _blobPositions.Where(m => _adc.IsNextTo(act.CenterOfGravity, m.Key.CenterOfGravity, x, y, _neighbourDist, diagonal)).Select(m => m.Key);
+                }
+                while (n.Count() < maxNeigbours && _neighbourDist < 3.0)
+                {
+                    Debug.WriteLine("no neighbours at " + x + "," + y + " increasing distance");
+                    _neighbourDist += 0.05;
+                    n = _blobPositions.Where(m => _adc.IsNextTo(act.CenterOfGravity, m.Key.CenterOfGravity, x, y, _neighbourDist, diagonal)).Select(m => m.Key);
+                }
+                if (!diagonal)
+                {
+                    foreach (var b in n)
+                    {
+                        var xdiff = b.CenterOfGravity.X - act.CenterOfGravity.X;
+                        var ydiff = b.CenterOfGravity.Y - act.CenterOfGravity.Y;
+                        if (Math.Abs(xdiff) > Math.Abs(ydiff))
+                        {
+                            if (xdiff > 0 && x + 2 < Rowcount)
+                            {
+                                _blobPositions[b].Points.Add(new Point(x + 2, y));
+                            }
+                            else if (x > 1)
+                            {
+                                _blobPositions[b].Points.Add(new Point(x - 2, y));
+                            }
+                        }
+                        else
+                        {
+                            if (ydiff > 0 && y + 2 < Columncount)
+                            {
+                                _blobPositions[b].Points.Add(new Point(x, y + 2));
+                            }
+                            else if (y > 1)
+                            {
+                                _blobPositions[b].Points.Add(new Point(x, y - 2));
+                            }
+                        }
+                    }
+                }
+                return n;
+            }
+        }
     }
 }
