@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.IO;
 using System.Threading;
 using System.Linq;
 using System.Threading.Tasks;
@@ -178,8 +179,13 @@ namespace HSR.PresWriter.PenTracking
                                 CoupledSizeFiltering = false
                             };
                         bblobCounter.ProcessImage(bbm);
-                        ProcessBlobs(gblobCounter, 0);
-                        ProcessBlobs(bblobCounter, 1);
+                        var ggb = ProcessBlobs(gblobCounter, 0);
+                        var bgb = ProcessBlobs(bblobCounter, 1);
+                        ggb.VerifyWith(new List<GridBlobs> { bgb }, new List<GridBlobs>());
+                        bgb.VerifyWith(new List<GridBlobs> { ggb }, new List<GridBlobs>());
+                        ggb.Insert();
+                        bgb.Insert();
+
 #if DEBUG
                         actImg.Save(@"C:\temp\daforge\squares\img" + _calibrationStep + ".jpg", ImageFormat.Jpeg);
 #endif
@@ -403,18 +409,9 @@ namespace HSR.PresWriter.PenTracking
                 return 0;
             }
             //gb.SetPosition(act, new Point(x,y));
-#if DEBUG
-            using (var g = Graphics.FromImage(actImg))
-            {
-                g.DrawString(x + "," + y,new Font(FontFamily.GenericSansSerif, 8.0f), new SolidBrush(Color.White), 
-                    act.CenterOfGravity.X, act.CenterOfGravity.Y);
-                g.Flush();
-                //Debug.WriteLine("wrote to image");
-            }
-#endif
-            
+            gb.SetIterated(act);
             //find neighbours
-            var n = gb.FindNeighbours(act, x, y, false);
+            var n = gb.TagDirectNeighbours(act, x, y);
             n = n.Where(b => !gb.IsIterated(b));
             int res = n.Count();
             foreach (var b in n)
@@ -572,9 +569,18 @@ namespace HSR.PresWriter.PenTracking
 
         internal class BlobPositions
         {
+            public BlobPositions()
+            {
+                Iterated = false;
+                Points = new List<Point>();
+                VerifiedPosition = new Point(-1, -1);
+            }
+
             public bool Iterated { get; set; }
 
             public List<Point> Points { get; set; }
+
+            public Point VerifiedPosition { get; set; }
         }
 
         internal class GridBlobs
@@ -594,7 +600,7 @@ namespace HSR.PresWriter.PenTracking
                     new Point((int) x.CenterOfGravity.X, (int) x.CenterOfGravity.Y))).ToList();
                 foreach (var blob in blobs)
                 {
-                    _blobPositions.Add(blob, new BlobPositions{Iterated = false, Points = new List<Point>()});
+                    _blobPositions.Add(blob, new BlobPositions());
                 }
             }
 
@@ -610,7 +616,28 @@ namespace HSR.PresWriter.PenTracking
 
             public Point GetPosition(Blob b)
             {
-                return !_blobPositions[b].Points.Any() ? new Point(-1, -1) : _blobPositions[b].Points.Last();
+                var res = new Dictionary<Point, int>();
+                foreach (var p in _blobPositions[b].Points)
+                {
+                    if (!res.Keys.Contains(p))
+                        res.Add(p, 1);
+                    else
+                        res[p]++;
+                }
+                if (!_blobPositions[b].Points.Any() || res.Values.Max() * 1.0 < 0.75 * _blobPositions[b].Points.Count)
+                    return new Point(-1, -1);
+                return res.First(x => x.Value == res.Values.Max()).Key;
+            }
+
+            public List<Point> GetUniquePositions(Blob b)
+            {
+                var res = new List<Point>();
+                foreach (var blobPosition in _blobPositions[b].Points)
+                {
+                    if (!res.Contains(blobPosition))
+                        res.Add(blobPosition);
+                }
+                return res;
             }
 
             public void SetPosition(Blob b, Point p)
@@ -623,24 +650,6 @@ namespace HSR.PresWriter.PenTracking
                 var res = PointsCloud.FindQuadrilateralCorners(_bc.GetBlobsEdgePoints(b));
                 InPlaceSort(res);
                 return res;
-            }
-
-
-            public void VerifyAndAdd()
-            {
-                //var corners = gb.FindCorners(act);
-                //if (corners.Count == 4)
-                //{
-                //    double xOff = ((_calibrationStep - 3) % (int)Math.Sqrt(CalibrationFrames - 3)) * _sqrwidth /
-                //                  (int)Math.Sqrt(CalibrationFrames - 3);
-                //    double yOff = Math.Floor((_calibrationStep - 3) / Math.Sqrt(CalibrationFrames - 3)) * _sqrwidth /
-                //                  (int)Math.Sqrt(CalibrationFrames - 3);
-                //    Grid.AddPoint((int)(x * _sqrwidth + xOff), (int)(y * _sqrheight + yOff), corners[0].X, corners[0].Y);
-                //    Grid.AddPoint((int)((x + 1) * _sqrwidth + xOff), (int)(y * _sqrheight + yOff), corners[1].X, corners[1].Y);
-                //    Grid.AddPoint((int)(x * _sqrwidth + xOff), (int)((y + 1) * _sqrheight + yOff), corners[2].X, corners[2].Y);
-                //    Grid.AddPoint((int)((x + 1) * _sqrwidth + xOff), (int)((y + 1) * _sqrheight + yOff), corners[3].X,
-                //                  corners[3].Y);
-                //}
             }
 
             public IEnumerable<Blob> UnMapped { get { return _blobPositions.Where(x => !x.Value.Iterated).Select(x => x.Key); } }
@@ -664,62 +673,330 @@ namespace HSR.PresWriter.PenTracking
                 rect.Add(tmp[1]);
             }
 
-            public IEnumerable<Blob> FindNeighbours(Blob act, int x, int y, bool diagonal)
+            public Dictionary<Point, double> FindPreference(Blob act, List<Point> possibilities, bool identicalChannel)
             {
-                int maxNeigbours = diagonal ? 8 : 4;
-                int borders = diagonal ? 3 : 1;
+                int maxNeigbours = identicalChannel?5:4;
+                var res = new Dictionary<Point, int>();
+                foreach (var point in possibilities)
+                {
+                    if (!res.Keys.Contains(point))
+                        res.Add(point, 1);
+                    else
+                        res[point]++;
+                }
+                var p = res.First(x => x.Value == res.Values.Max()).Key;
+                if (possibilities.Any(x => (p.X == 0 || p.X == Rowcount)))
+                    maxNeigbours-=1;
+                if (possibilities.Any(x => (p.Y == 0 || p.Y == Columncount)))
+                    maxNeigbours-=1;
+                var n = _blobPositions.Where(m => _adc.IsNextTo(act.CenterOfGravity, m.Key.CenterOfGravity, p.X, p.Y, 
+                    _neighbourDist/2)).Select(m=>m.Key).ToList();
+                while (n.Count() > maxNeigbours)
+                {
+                    //Debug.WriteLine("too many neighbours at " + p.X + "," + p.Y + " decreasing distance");
+                    _neighbourDist -= 0.05;
+                    n = _blobPositions.Where(m => _adc.IsNextTo(act.CenterOfGravity, m.Key.CenterOfGravity, p.X, p.Y, 
+                        _neighbourDist/2)).Select(m => m.Key).ToList();
+                }
+                while (n.Count() < maxNeigbours && _neighbourDist < 3.0)
+                {
+                    //Debug.WriteLine("no neighbours at " + p.X + "," + p.Y + " increasing distance");
+                    _neighbourDist += 0.05;
+                    n = _blobPositions.Where(m => _adc.IsNextTo(act.CenterOfGravity, m.Key.CenterOfGravity, p.X, p.Y, 
+                        _neighbourDist/2)).Select(m => m.Key).ToList();
+                }
+                int maxConfidance = res.Sum(x => x.Value);
+                if (identicalChannel)
+                {
+                    var id =
+                        n.OrderBy(
+                            x =>
+                            Math.Abs(x.CenterOfGravity.X - act.CenterOfGravity.X) + 
+                            Math.Abs(x.CenterOfGravity.Y - act.CenterOfGravity.Y));
+                    foreach (var position in _blobPositions[id.First()].Points)
+                    {
+                        if (res.ContainsKey(position))
+                            res[position] += possibilities.Count(x => x.Equals(position));
+                        else
+                            res.Add(position, 1);
+                    }
+                    n.Remove(id.First());
+                }
+                foreach (var b in n)
+                {
+                    var xdiff = b.CenterOfGravity.X - act.CenterOfGravity.X;
+                    var ydiff = b.CenterOfGravity.Y - act.CenterOfGravity.Y;
+                    if (!identicalChannel)
+                    {
+                        if (ydiff > 0)
+                        {
+                            if (xdiff > 0)
+                            {
+                                foreach (var position in _blobPositions[b].Points)
+                                {
+                                    var calc = new Point(position.X - 1, position.Y - 1);
+                                    if (res.ContainsKey(calc))
+                                        res[calc] += possibilities.Count(x => x.Equals(calc));
+                                    else
+                                        res.Add(calc, 1);
+                                }
+                                maxConfidance += _blobPositions[b].Points.Count*possibilities.Count;
+                            }
+                            else
+                            {
+                                foreach (var position in _blobPositions[b].Points)
+                                {
+                                    var calc = new Point(position.X + 1, position.Y - 1);
+                                    if (res.ContainsKey(calc))
+                                        res[calc] += possibilities.Count(x => x.Equals(calc));
+                                    else
+                                        res.Add(calc, 1);
+                                }
+                                maxConfidance += _blobPositions[b].Points.Count*possibilities.Count;
+                            }
+                        }
+                        else
+                        {
+                            if (xdiff > 0)
+                            {
+                                foreach (var position in _blobPositions[b].Points)
+                                {
+                                    var calc = new Point(position.X - 1, position.Y + 1);
+                                    if (res.ContainsKey(calc))
+                                        res[calc] += possibilities.Count(x => x.Equals(calc));
+                                    else
+                                        res.Add(calc, 1);
+                                }
+                                maxConfidance += _blobPositions[b].Points.Count*possibilities.Count;
+                            }
+                            else
+                            {
+                                foreach (var position in _blobPositions[b].Points)
+                                {
+                                    var calc = new Point(position.X + 1, position.Y + 1);
+                                    if (res.ContainsKey(calc))
+                                        res[calc] += possibilities.Count(x => x.Equals(calc));
+                                    else
+                                        res.Add(calc, 1);
+                                }
+                                maxConfidance += _blobPositions[b].Points.Count*possibilities.Count;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (Math.Abs(xdiff) > Math.Abs(ydiff))
+                        {
+                            if (xdiff > 0)
+                            {
+                                foreach (var position in _blobPositions[b].Points)
+                                {
+                                    var calc = new Point(position.X - 1, position.Y);
+                                    if (res.ContainsKey(calc))
+                                        res[calc] += possibilities.Count(x => x.Equals(calc));
+                                    else
+                                        res.Add(calc, 1);
+                                }
+                                maxConfidance += _blobPositions[b].Points.Count * possibilities.Count;
+                            }
+                            else
+                            {
+                                foreach (var position in _blobPositions[b].Points)
+                                {
+                                    var calc = new Point(position.X + 1, position.Y);
+                                    if (res.ContainsKey(calc))
+                                        res[calc] += possibilities.Count(x => x.Equals(calc));
+                                    else
+                                        res.Add(calc, 1);
+                                }
+                                maxConfidance += _blobPositions[b].Points.Count * possibilities.Count;
+                            }
+                        }
+                        else
+                        {
+                            if (ydiff > 0)
+                            {
+                                foreach (var position in _blobPositions[b].Points)
+                                {
+                                    var calc = new Point(position.X, position.Y - 1);
+                                    if (res.ContainsKey(calc))
+                                        res[calc] += possibilities.Count(x => x.Equals(calc));
+                                    else
+                                        res.Add(calc, 1);
+                                }
+                                maxConfidance += _blobPositions[b].Points.Count * possibilities.Count;
+                            }
+                            else
+                            {
+                                foreach (var position in _blobPositions[b].Points)
+                                {
+                                    var calc = new Point(position.X, position.Y + 1);
+                                    if (res.ContainsKey(calc))
+                                        res[calc] += possibilities.Count(x => x.Equals(calc));
+                                    else
+                                        res.Add(calc, 1);
+                                }
+                                maxConfidance += _blobPositions[b].Points.Count * possibilities.Count;
+                            }
+                        }
+                    }
+                }
+#if DEBUG
+                using (var fs = new StreamWriter(new FileStream(@"C:\Temp\daforge\blobs.csv", FileMode.Append, FileAccess.Write)))
+                {
+                    foreach (var point in res)
+                    {
+                        var s = act.CenterOfGravity.X + "," + act.CenterOfGravity.Y + "," + point.Key.X +
+                                "," + point.Key.Y + "," + 100.0*point.Value/maxConfidance + ",";
+                        fs.WriteLine(s);
+                    }
+                    fs.Flush();
+                }
+#endif
+                return new Dictionary<Point, double>(res.ToDictionary(x => x.Key, x => (double)x.Value/maxConfidance));
+            }
+
+            public IEnumerable<Blob> TagDirectNeighbours(Blob act, int x, int y)
+            {
+                int maxNeigbours = 4;
                 if (x == 0 || x == Rowcount)
-                    maxNeigbours-=borders;
+                    maxNeigbours -= 1;
                 if (y == 0 || y == Columncount)
-                    maxNeigbours-=borders;
-                if (diagonal && maxNeigbours == 2)
-                    maxNeigbours = 3;
+                    maxNeigbours -= 1;
                 if (!_blobPositions[act].Points.Any(p => p.X == x && p.Y == y))
                     throw new InvalidOperationException("Position not stored");
-                var n = _blobPositions.Where(m => _adc.IsNextTo(act.CenterOfGravity, m.Key.CenterOfGravity, x, y, _neighbourDist, diagonal)).Select(m=>m.Key);
+                var n = _blobPositions.Where(m => _adc.IsNextTo(act.CenterOfGravity, m.Key.CenterOfGravity, x, y, 
+                    _neighbourDist, false)).Select(m => m.Key);
                 while (n.Count() > maxNeigbours)
                 {
                     Debug.WriteLine("too many neighbours at " + x + "," + y + " decreasing distance");
                     _neighbourDist -= 0.05;
-                    n = _blobPositions.Where(m => _adc.IsNextTo(act.CenterOfGravity, m.Key.CenterOfGravity, x, y, _neighbourDist, diagonal)).Select(m => m.Key);
+                    n = _blobPositions.Where(m => _adc.IsNextTo(act.CenterOfGravity, m.Key.CenterOfGravity, x, y, 
+                        _neighbourDist, false)).Select(m => m.Key);
                 }
                 while (n.Count() < maxNeigbours && _neighbourDist < 3.0)
                 {
                     Debug.WriteLine("no neighbours at " + x + "," + y + " increasing distance");
                     _neighbourDist += 0.05;
-                    n = _blobPositions.Where(m => _adc.IsNextTo(act.CenterOfGravity, m.Key.CenterOfGravity, x, y, _neighbourDist, diagonal)).Select(m => m.Key);
+                    n = _blobPositions.Where(m => _adc.IsNextTo(act.CenterOfGravity, m.Key.CenterOfGravity, x, y, 
+                        _neighbourDist, false)).Select(m => m.Key);
                 }
-                if (!diagonal)
+                foreach (var b in n)
                 {
-                    foreach (var b in n)
+                    var xdiff = b.CenterOfGravity.X - act.CenterOfGravity.X;
+                    var ydiff = b.CenterOfGravity.Y - act.CenterOfGravity.Y;
+                    if (Math.Abs(xdiff) > Math.Abs(ydiff))
                     {
-                        var xdiff = b.CenterOfGravity.X - act.CenterOfGravity.X;
-                        var ydiff = b.CenterOfGravity.Y - act.CenterOfGravity.Y;
-                        if (Math.Abs(xdiff) > Math.Abs(ydiff))
+                        if (xdiff > 0 && x + 2 < Rowcount)
                         {
-                            if (xdiff > 0 && x + 2 < Rowcount)
-                            {
-                                _blobPositions[b].Points.Add(new Point(x + 2, y));
-                            }
-                            else if (x > 1)
-                            {
-                                _blobPositions[b].Points.Add(new Point(x - 2, y));
-                            }
+                            _blobPositions[b].Points.Add(new Point(x + 2, y));
                         }
-                        else
+                        else if (x > 1)
                         {
-                            if (ydiff > 0 && y + 2 < Columncount)
-                            {
-                                _blobPositions[b].Points.Add(new Point(x, y + 2));
-                            }
-                            else if (y > 1)
-                            {
-                                _blobPositions[b].Points.Add(new Point(x, y - 2));
-                            }
+                            _blobPositions[b].Points.Add(new Point(x - 2, y));
+                        }
+                    }
+                    else
+                    {
+                        if (ydiff > 0 && y + 2 < Columncount)
+                        {
+                            _blobPositions[b].Points.Add(new Point(x, y + 2));
+                        }
+                        else if (y > 1)
+                        {
+                            _blobPositions[b].Points.Add(new Point(x, y - 2));
                         }
                     }
                 }
                 return n;
+            }
+
+            internal void VerifyWith(List<GridBlobs> otherChannels, List<GridBlobs> sameChannel)
+            {
+                foreach (var blob in _blobPositions.Keys)
+                {
+                    var probabilities = new Dictionary<Point, double>();
+                    foreach (var gridBlob in otherChannels)
+                    {
+                        foreach (var pref in gridBlob.FindPreference(blob, _blobPositions[blob].Points, false))
+                        {
+                            if (!probabilities.ContainsKey(pref.Key))
+                            {
+                                probabilities.Add(pref.Key, pref.Value);
+                            }
+                            else
+                            {
+                                probabilities[pref.Key] += pref.Value/otherChannels.Count();
+                            }
+                        }
+                    }
+                    foreach (var gridBlob in sameChannel)
+                    {
+                        foreach (var pref in gridBlob.FindPreference(blob, _blobPositions[blob].Points, true))
+                        {
+                            if (!probabilities.ContainsKey(pref.Key))
+                            {
+                                probabilities.Add(pref.Key, pref.Value);
+                            }
+                            else
+                            {
+                                probabilities[pref.Key] += pref.Value/otherChannels.Count();
+                            }
+                        }
+                    }
+#if DEBUG
+                    using (
+                        var fs =
+                            new StreamWriter(new FileStream(@"C:\Temp\daforge\blobs.csv", FileMode.Append,
+                                                            FileAccess.Write)))
+                    {
+                        foreach (var point in probabilities)
+                        {
+                            var s = blob.CenterOfGravity.X + "," + blob.CenterOfGravity.Y + "," + point.Key.X +
+                                    "," + point.Key.Y + "," + 100.0*point.Value + ",";
+                            fs.WriteLine(s);
+                        }
+                        fs.Flush();
+                    }
+#endif
+                    _blobPositions[blob].VerifiedPosition =
+                        probabilities.First(x => x.Value == probabilities.Values.Max()).Key;
+                }
+            }
+
+            internal void Insert()
+            {
+                foreach (var act in _blobPositions.Where(x => x.Value.VerifiedPosition.X != -1 &&
+                                                              x.Value.VerifiedPosition.Y != -1))
+                {
+                    var corners = FindCorners(act.Key);
+                    int x = act.Value.VerifiedPosition.X;
+                    int y = act.Value.VerifiedPosition.Y;
+#if DEBUG
+                    using (var g = Graphics.FromImage(_adc.actImg))
+                    {
+                        g.DrawString(x + "," + y, new Font(FontFamily.GenericSansSerif, 8.0f), new SolidBrush(Color.White),
+                            act.Key.CenterOfGravity.X, act.Key.CenterOfGravity.Y);
+                        g.Flush();
+                        //Debug.WriteLine("wrote to image");
+                    }
+#endif
+                    if (corners.Count == 4)
+                    {
+                        double xOff = ((_adc._calibrationStep - 3) % (int)Math.Sqrt(CalibrationFrames - 3)) * _adc._sqrwidth /
+                                      (int) Math.Sqrt(CalibrationFrames - 3);
+                        double yOff = Math.Floor((_adc._calibrationStep - 3) / Math.Sqrt(CalibrationFrames - 3)) * _adc._sqrwidth /
+                                      (int) Math.Sqrt(CalibrationFrames - 3);
+                        _adc.Grid.AddPoint((int)(x * _adc._sqrwidth + xOff), (int)(y * _adc._sqrheight + yOff), corners[0].X,
+                                      corners[0].Y);
+                        _adc.Grid.AddPoint((int)((x + 1) * _adc._sqrwidth + xOff), (int)(y * _adc._sqrheight + yOff), corners[1].X,
+                                      corners[1].Y);
+                        _adc.Grid.AddPoint((int)(x * _adc._sqrwidth + xOff), (int)((y + 1) * _adc._sqrheight + yOff), corners[2].X,
+                                      corners[2].Y);
+                        _adc.Grid.AddPoint((int)((x + 1) * _adc._sqrwidth + xOff), (int)((y + 1) * _adc._sqrheight + yOff), corners[3].X,
+                                      corners[3].Y);
+                    }
+                }
             }
         }
     }
