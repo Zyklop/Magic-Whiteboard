@@ -642,6 +642,8 @@ namespace HSR.PresWriter.PenTracking
 
             public void SetPosition(Blob b, Point p)
             {
+                //if (!_blobPositions.ContainsKey(b))
+                //    _blobPositions.Add(b, new BlobPositions());
                 _blobPositions[b].Points.Add(p);
             }
 

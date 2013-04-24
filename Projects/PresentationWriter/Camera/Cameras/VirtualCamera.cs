@@ -91,7 +91,7 @@ namespace HSR.PresWriter.DataSources.Cameras
         }
 
 
-        public void AddRect(System.Drawing.Point topLeft, System.Drawing.Point bottomRight, Color fromRgb)
+        public void AddRect(Point topLeft, Point bottomRight, Color fromRgb)
         {
             lock (_g)
             {
@@ -103,7 +103,7 @@ namespace HSR.PresWriter.DataSources.Cameras
 
         public void Clear()
         {
-            _g.Clear(Color.Black);
+            _g.Clear(Color.DarkGray);
         }
 
         public void Close()
@@ -116,7 +116,7 @@ namespace HSR.PresWriter.DataSources.Cameras
             // impossible
         }
 
-        public void AddLine(System.Drawing.Point topLeft, System.Drawing.Point bottomRight, Color fromRgb)
+        public void AddLine(Point topLeft, Point bottomRight, Color fromRgb)
         {
             lock (_g)
             {
