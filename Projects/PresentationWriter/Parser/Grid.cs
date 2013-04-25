@@ -235,7 +235,7 @@ namespace HSR.PresWriter.PenTracking
             {
                 for (int j = 0; j < ymax; j++)
                 {
-                    var n = FindNearest(i, j, 4);
+                    var n = FindNearest(i, j, 3);
                     var p = Interpolate(i, j, n);
                     if (_calibratorData[p.X, p.Y] != null)
                         _calibratorData[p.X,p.Y].Add(new Point(i,j));
@@ -248,55 +248,76 @@ namespace HSR.PresWriter.PenTracking
             //_refPoints.Clear();
         }
 
-        private Point Interpolate(int i, int j, List<Point> n)
+        private Point Interpolate(int x, int y, List<PointMapping> n)
         {
             if(n.Count < 3) throw new ArgumentException("at least 3 neighbours needed");
-            return new Point();
+            var targ = new Point(x, y);
+            var poss = new List<Point>();
+            for (int i = 0; i < n.Count - 2; i++ )
+            {
+                for (int j = i + 1; j < n.Count; j++ )
+                {
+                    for (int k = j + 1; k < n.Count; k++)
+                    {
+                        var b = new BarycentricCoordinate(targ, n[i].Screen, n[j].Screen, n[k].Screen);
+                        poss.Add(b.GetCartesianCoordinates(n[i].Image, n[j].Image, n[k].Image));
+                    }
+                }
+            }
+            //TODO weight points
+            int xSum = 0;
+            int ySum = 0;
+            foreach (var p in poss)
+            {
+                xSum += p.X;
+                ySum += p.Y;
+            }
+            return new Point(xSum / poss.Count, ySum / poss.Count);
         }
 
-        private List<Point> FindNearest(int x, int y, int desired)
+        private List<PointMapping> FindNearest(int x, int y, int desired)
         {
             //TODO optimize
-            var res = new List<Point>();
+            var res = new List<PointMapping>();
             int dist = 0;
-               var cols = new SortedDictionary<int, SortedSet<int>>();
+               var cols = new SortedDictionary<int, SortedDictionary<int,Point>>();
                while (cols.Count < desired)
                {
                    if (_refPoints.ContainsKey(x - dist))
-                       cols.Add(x - dist, new SortedSet<int>(_refPoints[x - dist].Keys));
+                       cols.Add(x - dist, _refPoints[x - dist]);
                    if (_refPoints.ContainsKey(x + dist) && dist != 0)
-                       cols.Add(x + dist, new SortedSet<int>(_refPoints[x + dist].Keys));
+                       cols.Add(x + dist, _refPoints[x + dist]);
                    dist++;
                }
             dist = 0;
-            var p = new List<Point>();
+            var p = new List<PointMapping>();
             foreach (var col in cols)
             {
                 if (col.Value.Count < desired)
                     foreach (var pair in col.Value)
                     {
-                        p.Add(new Point(col.Key, pair));
+                        p.Add(new PointMapping{Screen = new Point(col.Key, pair.Key), Image = pair.Value} );
                     }
                 else
                 {
                     int count = 0;
                     while (count < desired)
                     {
-                        if (col.Value.Contains(y - dist))
+                        if (col.Value.ContainsKey(y - dist))
                         {
-                            p.Add(new Point(col.Key, y - dist));
+                            p.Add(new PointMapping{Screen = new Point(col.Key, y - dist), Image = col.Value[y - dist]});
                             count++;
                         }
-                        if (col.Value.Contains(y + dist) && dist != 0)
+                        if (col.Value.ContainsKey(y + dist) && dist != 0)
                         {
-                            p.Add(new Point(col.Key, y + dist));
+                            p.Add(new PointMapping { Screen = new Point(col.Key, y + dist), Image = col.Value[y + dist] });
                             count++;
                         }
                         dist++;
                     }
                 }
             }
-            p = p.OrderBy(p1 => DistanceTo(p1,new Point(x,y))).ToList();
+            p = p.OrderBy(p1 => DistanceTo(p1.Screen,new Point(x,y))).ToList();
             res.AddRange(p.GetRange(0,desired));
             return res;
         }
@@ -405,5 +426,39 @@ namespace HSR.PresWriter.PenTracking
         {
             return Contains(new Point((int) centerOfGravity.X, (int) centerOfGravity.Y));
         }
+    }
+
+    public class BarycentricCoordinate
+    {
+        public double Lambda1 { get; set; }
+
+        public double Lambda2 { get; set; }
+
+        public double Lambda3 { get; set; }
+
+        public BarycentricCoordinate(Point target, Point corner1, Point corner2, Point corner3)
+        {
+            Lambda1 = (corner2.Y - corner3.Y)*(target.X - corner3.X) + (corner3.X - corner2.X)*(target.Y - corner3.Y)/
+                      ((corner2.Y - corner3.Y)*(corner1.X - corner3.X) + (corner3.X - corner2.X)*(corner1.Y - corner3.Y));
+            Lambda1 = (corner3.Y - corner1.Y)*(target.X - corner3.X) + (corner1.X - corner3.X)*(target.Y - corner3.Y)/
+                ((corner2.Y - corner3.Y)*(corner1.X - corner3.X) + (corner3.X - corner2.X)*(corner1.Y - corner3.Y));
+            Lambda3 = 1 - Lambda1 - Lambda2;
+        }
+
+        public bool IsInside
+        { get { return Lambda1 >= 0 && Lambda1 <= 1 && Lambda2 >= 0 && Lambda2 <= 1 && Lambda3 >= 0 && Lambda3 <= 1; }}
+
+        public Point GetCartesianCoordinates(Point corner1, Point corner2, Point corner3)
+        {
+            return new Point((int) Math.Round(corner1.X*Lambda1 + Lambda2*corner2.X + corner3.X*Lambda3),
+                             (int) Math.Round(corner1.Y*Lambda1 + Lambda2*corner2.Y + corner3.Y*Lambda3));
+        }
+    }
+
+    public struct PointMapping
+    {
+        public Point Screen { get; set; }
+
+        public Point Image { get; set; }
     }
 }
