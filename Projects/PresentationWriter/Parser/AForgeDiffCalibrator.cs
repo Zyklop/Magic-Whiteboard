@@ -585,6 +585,26 @@ namespace HSR.PresWriter.PenTracking
 
         internal class GridBlobs
         {
+            internal class BlobComparer : IEqualityComparer<Blob>
+            {
+                public bool Equals(Blob x, Blob y)
+                {
+                    return x.ID == y.ID && x.Rectangle == y.Rectangle && x.CenterOfGravity == y.CenterOfGravity &&
+                           x.Area == y.Area && x.Fullness == y.Fullness && x.ColorMean == y.ColorMean &&
+                           x.ColorStdDev == y.ColorStdDev;
+                }
+
+                public int GetHashCode(Blob obj)
+                {
+                    long i = obj.ID*obj.Area*obj.ColorMean.R*obj.ColorMean.G*obj.ColorMean.B*obj.ColorStdDev.R*
+                             obj.ColorStdDev.G*obj.ColorStdDev.B*obj.Rectangle.Left*obj.Rectangle.Top*
+                             obj.Rectangle.Right* obj.Rectangle.Bottom;
+                    i = i%UInt32.MaxValue;
+                    i += Int32.MinValue;
+                    return (int) i;
+                }
+            }
+
             private Dictionary<Blob, BlobPositions> _blobPositions;
             private BlobCounter _bc;
             private AForgeDiffCalibrator _adc;
@@ -593,7 +613,7 @@ namespace HSR.PresWriter.PenTracking
 
             public GridBlobs(BlobCounter bc, AForgeDiffCalibrator adc)
             {
-                _blobPositions = new Dictionary<Blob, BlobPositions>();
+                _blobPositions = new Dictionary<Blob, BlobPositions>(new BlobComparer());
                 _bc = bc;
                 _adc = adc;
                 var blobs = bc.GetObjectsInformation().Where(x => adc.Grid.Contains(
