@@ -38,7 +38,8 @@ namespace HSR.PresWriter.PenTracking
         private const int BDiff = 10;
         private const int GDiff = 20;
         private Bitmap actImg;
-        private static double _neighbourDist = 2.1;
+        private double _absoluteNeighbourDist = 10;
+        private double _relativeNeighbourDist = 2.1;
         private double _topDist = 1.1;
 
 
@@ -455,6 +456,13 @@ namespace HSR.PresWriter.PenTracking
             return IsNextTo(p1, new Point((int)p2.X, (int)p2.Y), rownr, colnr, maxDist, diagonal);
         }
 
+
+
+        private bool IsNextTo(AForge.Point p1, AForge.Point p2, double absoluteDist)
+        {
+            return Distance(p1, new AForge.Point(p2.X, p2.Y)) < absoluteDist;
+        }
+
         private bool IsNextTo(AForge.Point p1, Point p2, int rownr, int colnr, double maxDist = 1.5, bool diagonal = true)
         {
             var rowDistance = PredictRowDistance(colnr);
@@ -697,35 +705,53 @@ namespace HSR.PresWriter.PenTracking
 
             public Dictionary<Point, double> FindPreference(Blob act, List<Point> possibilities, bool identicalChannel)
             {
-                int maxNeigbours = identicalChannel?5:4;
+                var maxNeigbours = identicalChannel?new IntRange(5,5):new IntRange(4,4);
                 var res = new Dictionary<Point, int>();
-                foreach (var point in possibilities)
+                if (possibilities.Any())
                 {
-                    if (!res.Keys.Contains(point))
-                        res.Add(point, 1);
-                    else
-                        res[point]++;
+                    foreach (var point in possibilities)
+                    {
+                        if (!res.ContainsKey(point))
+                            res.Add(point, 1);
+                        else
+                            res[point]++;
+                    }
+                    var p = res.First(x => x.Value == res.Values.Max()).Key;
+                    if (possibilities.Any(x => (p.X == 0 || p.X == Rowcount)))
+                    {
+                        maxNeigbours.Max -= 1;
+                        maxNeigbours.Min -= 1;
+                    }
+                    if (possibilities.Any(x => (p.Y == 0 || p.Y == Columncount)))
+                    {
+                        maxNeigbours.Max -= 1;
+                        maxNeigbours.Min -= 1;
+                    }
                 }
-                var p = res.First(x => x.Value == res.Values.Max()).Key;
-                if (possibilities.Any(x => (p.X == 0 || p.X == Rowcount)))
-                    maxNeigbours-=1;
-                if (possibilities.Any(x => (p.Y == 0 || p.Y == Columncount)))
-                    maxNeigbours-=1;
-                var n = _blobPositions.Where(m => _adc.IsNextTo(act.CenterOfGravity, m.Key.CenterOfGravity, p.X, p.Y, 
-                    _neighbourDist/2)).Select(m=>m.Key).ToList();
-                while (n.Count() > maxNeigbours)
+                else
                 {
-                    //Debug.WriteLine("too many neighbours at " + p.X + "," + p.Y + " decreasing distance");
-                    _neighbourDist -= 0.05;
-                    n = _blobPositions.Where(m => _adc.IsNextTo(act.CenterOfGravity, m.Key.CenterOfGravity, p.X, p.Y, 
-                        _neighbourDist/2)).Select(m => m.Key).ToList();
+                    maxNeigbours.Min -= 2;
                 }
-                while (n.Count() < maxNeigbours && _neighbourDist < 3.0)
+                var n =
+                        _blobPositions.Where(m => _adc.IsNextTo(act.CenterOfGravity, m.Key.CenterOfGravity,
+                                                                _adc._absoluteNeighbourDist/2)).Select(m => m.Key).ToList();
+                    while (n.Count() > maxNeigbours.Max)
+                    {
+                        //Debug.WriteLine("too many neighbours at " + p.X + "," + p.Y + " decreasing distance");
+                        _adc._absoluteNeighbourDist -= 0.2;
+                        n =
+                            _blobPositions.Where(
+                                m => _adc.IsNextTo(act.CenterOfGravity, m.Key.CenterOfGravity,
+                                                   _adc._absoluteNeighbourDist/2)).Select(m => m.Key).ToList();
+                    }
+                while (n.Count() < maxNeigbours.Min && _adc._absoluteNeighbourDist < 50)
                 {
                     //Debug.WriteLine("no neighbours at " + p.X + "," + p.Y + " increasing distance");
-                    _neighbourDist += 0.05;
-                    n = _blobPositions.Where(m => _adc.IsNextTo(act.CenterOfGravity, m.Key.CenterOfGravity, p.X, p.Y, 
-                        _neighbourDist/2)).Select(m => m.Key).ToList();
+                    _adc._absoluteNeighbourDist += 0.2;
+                    n =
+                        _blobPositions.Where(
+                            m => _adc.IsNextTo(act.CenterOfGravity, m.Key.CenterOfGravity, 
+                                               _adc._absoluteNeighbourDist/2)).Select(m => m.Key).ToList();
                 }
                 int maxConfidance = res.Sum(x => x.Value);
                 if (identicalChannel)
@@ -886,22 +912,23 @@ namespace HSR.PresWriter.PenTracking
                 if (y == 0 || y == Columncount)
                     maxNeigbours -= 1;
                 if (!_blobPositions[act].Points.Any(p => p.X == x && p.Y == y))
-                    throw new InvalidOperationException("Position not stored");
+                    //throw new InvalidOperationException("Position not stored");
+                    Debug.WriteLine("Pos: " + x + "/" + y + " not stored");
                 var n = _blobPositions.Where(m => _adc.IsNextTo(act.CenterOfGravity, m.Key.CenterOfGravity, x, y, 
-                    _neighbourDist, false)).Select(m => m.Key);
+                    _adc._relativeNeighbourDist, false)).Select(m => m.Key);
                 while (n.Count() > maxNeigbours)
                 {
                     Debug.WriteLine("too many neighbours at " + x + "," + y + " decreasing distance");
-                    _neighbourDist -= 0.05;
+                    _adc._relativeNeighbourDist -= 0.05;
                     n = _blobPositions.Where(m => _adc.IsNextTo(act.CenterOfGravity, m.Key.CenterOfGravity, x, y, 
-                        _neighbourDist, false)).Select(m => m.Key);
+                        _adc._relativeNeighbourDist, false)).Select(m => m.Key);
                 }
-                while (n.Count() < maxNeigbours && _neighbourDist < 3.0)
+                while (n.Count() < maxNeigbours && _adc._relativeNeighbourDist < 3.0)
                 {
                     Debug.WriteLine("no neighbours at " + x + "," + y + " increasing distance");
-                    _neighbourDist += 0.05;
+                    _adc._relativeNeighbourDist += 0.05;
                     n = _blobPositions.Where(m => _adc.IsNextTo(act.CenterOfGravity, m.Key.CenterOfGravity, x, y, 
-                        _neighbourDist, false)).Select(m => m.Key);
+                        _adc._relativeNeighbourDist, false)).Select(m => m.Key);
                 }
                 foreach (var b in n)
                 {
@@ -981,8 +1008,11 @@ namespace HSR.PresWriter.PenTracking
                         fs.Flush();
                     }
 #endif
-                    _blobPositions[blob].VerifiedPosition =
-                        probabilities.First(x => x.Value == probabilities.Values.Max()).Key;
+                    if (probabilities.Any())
+                    {
+                        _blobPositions[blob].VerifiedPosition =
+                            probabilities.First(x => x.Value == probabilities.Values.Max()).Key;
+                    }
                 }
             }
 
