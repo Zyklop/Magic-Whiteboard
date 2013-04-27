@@ -27,7 +27,7 @@ namespace MockTester
         {
             int i = 0;
             ThreeChannelBitmap tci = new ThreeChannelBitmap();
-            var parser = new DataParser(new FilesystemCamera(new DirectoryInfo(@"C:\temp\aforge\inp")),WFVisuslizer.VisualizerControl.GetVisualizer());
+            var parser = new DataParser(new TimedFilesystemCamera(new DirectoryInfo(@"C:\temp\aforge\inp")),WFVisuslizer.VisualizerControl.GetVisualizer());
             parser.Start();
             Thread.Sleep(10000);
             //cameraConnector.NewImage += delegate(object sender, NewImageEventArgs e)
@@ -49,7 +49,7 @@ namespace MockTester
             //var cam = new AForgeCamera();
             //cam.IsMirrored = true;
             //var visualizerControl = WFVisuslizer.VisualizerControl.GetVisualizer();
-            var cam = new FilesystemCamera(new DirectoryInfo(@"C:\temp\daforge\inph"));
+            var cam = new TimedFilesystemCamera(new DirectoryInfo(@"C:\temp\daforge\inph"));
             var visualizerControl = new VisualizerDummy();
             var parser = new DataParser(cam,visualizerControl);
             parser.Start();

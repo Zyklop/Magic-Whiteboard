@@ -15,38 +15,43 @@ namespace HSR.PresWriter.IO.Cameras
 {
     public class FilesystemCamera : ICamera
     {
-        private const int TIMER_INTERVAL = 2000;
-        private Timer tim = new Timer();
-        private List<string> names = new List<string>(); 
-        private List<Bitmap> imagelist;
-        private int index = 0;
+        private List<Bitmap> _images = new List<Bitmap>();
+        private DirectoryInfo _sourcePath;
+        private int _currentFrameNumber;
 
         public bool IsRunning { get; protected set; }
 
         public FilesystemCamera(DirectoryInfo d)
         {
-            this.imagelist = new List<Bitmap>();
-            foreach(FileInfo i in d.GetFiles("*.jpg")) {
-                Debug.WriteLine(i.FullName);
-                this.imagelist.Add(new Bitmap(i.FullName));
-                names.Add(i.Name);
-            }
+            _sourcePath = d;
         }
 
         public void Start()
         {
             IsRunning = true;
 
-            tim.Interval = TIMER_INTERVAL;
-            tim.AutoReset = true;
-            
-            tim.Elapsed += delegate
+            // Load Files
+            _currentFrameNumber = 0;
+            foreach (FileInfo i in _sourcePath.GetFiles("*.*"))
             {
-                if (FrameReady != null) FrameReady(this, new FrameReadyEventArgs(new VideoFrame(index, imagelist[index])));
-                if (++index >= imagelist.Count) index = 0;
-                Debug.WriteLine("New Frame " + names[index] + index);
-            };
-            tim.Start();
+                switch(i.Extension)
+                {
+                    case ".jpg":
+                    case ".png":
+                    case ".bmp":
+                        _images.Add(new Bitmap(i.FullName));
+                        break;
+                }
+            }
+        }
+
+        public void Next()
+        {
+            if (FrameReady != null && ++_currentFrameNumber <= _images.Count) 
+            {
+                VideoFrame f = new VideoFrame(_currentFrameNumber, _images[_currentFrameNumber]);
+                FrameReady(this, new FrameReadyEventArgs(f));
+            }
         }
 
         public void Stop()
@@ -56,7 +61,7 @@ namespace HSR.PresWriter.IO.Cameras
 
         public VideoFrame GetLastFrame()
         {
-            return new VideoFrame(index, imagelist[index]);
+            return new VideoFrame(++_currentFrameNumber, _images[_currentFrameNumber]);
         }
 
         public event EventHandler<FrameReadyEventArgs> FrameReady;
