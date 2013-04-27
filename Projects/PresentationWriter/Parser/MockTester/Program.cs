@@ -5,6 +5,7 @@ using HSR.PresWriter.DataSources.Cameras;
 using HSR.PresWriter.PenTracking;
 using HSR.PresWriter.PenTracking.Images;
 using InputEmulation;
+using Visualizer;
 using WFVisuslizer;
 using Color = System.Drawing.Color;
 using HSR.PresWriter.PenTracking.Events;
@@ -19,7 +20,7 @@ namespace MockTester
 
         static void Main(string[] args)
         {
-            Main5(args);
+            Main4(args);
         }
 
         static void Main1(string[] args)
@@ -46,11 +47,14 @@ namespace MockTester
         {
             int i = 0;
             //var cam = new AForgeCamera();
-            var cam = new FilesystemCamera(new DirectoryInfo(@"C:\temp\daforge\created"));
-            cam.Start();
-            var parser = new DataParser(cam,WFVisuslizer.VisualizerControl.GetVisualizer());
+            //cam.IsMirrored = true;
+            //var visualizerControl = WFVisuslizer.VisualizerControl.GetVisualizer();
+            var cam = new FilesystemCamera(new DirectoryInfo(@"C:\temp\daforge\inph"));
+            var visualizerControl = new VisualizerDummy();
+            var parser = new DataParser(cam,visualizerControl);
             parser.Start();
-            Thread.Sleep(15000);
+            Thread.Sleep(1000);
+            cam.Start();
             //cameraConnector.NewImage += delegate(object sender, NewImageEventArgs e)
             //    {
             //        if (i>0)

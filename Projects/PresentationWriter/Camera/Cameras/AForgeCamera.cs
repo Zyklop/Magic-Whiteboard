@@ -1,10 +1,12 @@
 ﻿using System;
+using AForge.Imaging.Filters;
 using AForge.Video;
 using AForge.Video.DirectShow;
 using System.Drawing;
 using System.Diagnostics;
 using HSR.PresWriter.IO.Events;
 using HSR.PresWriter.Containers;
+
 
 
 namespace HSR.PresWriter.IO.Cameras
@@ -16,8 +18,11 @@ namespace HSR.PresWriter.IO.Cameras
         private int lastFrameNumber = 0;
         private long lastTimestamp = 0;
         private Bitmap lastBitmap = null;
+        private Mirror filter = new Mirror( false, true );
 
         public bool IsRunning { get; protected set; }
+
+        public bool IsMirrored { get; set; }
 
         public event EventHandler<FrameReadyEventArgs> FrameReady;
 
@@ -61,7 +66,10 @@ namespace HSR.PresWriter.IO.Cameras
             lastTimestamp = CurrentMillis.Millis;
             lastFrameNumber++;
             lastBitmap = (Bitmap)eventArgs.Frame.Clone();
-
+            if (IsMirrored)
+            {
+                filter.ApplyInPlace(lastBitmap);
+            }
             if (FrameReady != null)
             {
                 FrameReady(this, new FrameReadyEventArgs(GetLastFrame()));
