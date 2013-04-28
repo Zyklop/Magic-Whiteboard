@@ -47,10 +47,14 @@ namespace HSR.PresWriter.IO.Cameras
 
         public void Next()
         {
-            if (FrameReady != null && ++_currentFrameNumber <= _images.Count) 
+            if (_currentFrameNumber < _images.Count-1) // is there a last frame to move on?
             {
-                VideoFrame f = new VideoFrame(_currentFrameNumber, _images[_currentFrameNumber]);
-                FrameReady(this, new FrameReadyEventArgs(f));
+                _currentFrameNumber++;
+                if (FrameReady != null)
+                {
+                    VideoFrame f = new VideoFrame(_currentFrameNumber, _images[_currentFrameNumber]);
+                    FrameReady(this, new FrameReadyEventArgs(f));
+                }
             }
         }
 
@@ -61,7 +65,7 @@ namespace HSR.PresWriter.IO.Cameras
 
         public VideoFrame GetLastFrame()
         {
-            return new VideoFrame(++_currentFrameNumber, _images[_currentFrameNumber]);
+            return new VideoFrame(_currentFrameNumber, _images[_currentFrameNumber]);
         }
 
         public event EventHandler<FrameReadyEventArgs> FrameReady;
