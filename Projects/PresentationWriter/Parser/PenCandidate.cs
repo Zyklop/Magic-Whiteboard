@@ -11,6 +11,5 @@ namespace HSR.PresWriter.PenTracking
     {
         public Rectangle Rectangle;
         public Point WeightedCenter;
-
     }
 }
