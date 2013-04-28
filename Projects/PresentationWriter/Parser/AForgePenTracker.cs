@@ -68,12 +68,14 @@ namespace HSR.PresWriter.PenTracking
 
             try
             {
-                // Find pen candidates and evaluate them → finding candidates is expensive!
-                var candidates = findPenCandidates((Bitmap) previousFrame.Bitmap.Clone(), (Bitmap) currentFrame.Bitmap.Clone()); //TODO Fast fix against locking
-
-                // Finding a new pen point and storing it must be atomic, because findPen(..) accesses the previously found pointframe for interpolation
-                lock (this._penPoints)
+                // Finding a new pen point and storing it must be atomic, because 
+                // - findPenCandidates(..) chooses its search area dependently on the last found point
+                // - findPen(..) accesses the previously found pointframe for interpolation
+                lock (this._penPoints) // TODO Eventually a barrier would be better
                 {
+                    // Find pen candidates and evaluate them → finding candidates is expensive!
+                    var candidates = findPenCandidates((Bitmap)previousFrame.Bitmap.Clone(), (Bitmap)currentFrame.Bitmap.Clone()); //TODO Fast fix against locking
+
                     // Evaluate the candidates (PenCandidate)
                     Point foundPoint = this.findPen(candidates);
                     if (foundPoint.IsEmpty)
@@ -99,19 +101,62 @@ namespace HSR.PresWriter.PenTracking
 
         /// <summary>
         /// This is the time consuming part. We try to find pen candidates in two pictures 
-        /// by their filtered difference.
-        /// ATTENTION: Bitmap previous is overwritten because of a performance gain. This makes 
-        /// the previous picture unusable for a second pass!!!
+        /// by their filtered difference. We choose the search area in a intelligent way.
         /// </summary>
         /// <param name="previous"></param>
         /// <param name="current"></param>
         /// <returns></returns>
         private IEnumerable<PenCandidate> findPenCandidates(Bitmap previous, Bitmap current)
         {
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+
+            IEnumerable<PenCandidate> candidates = null;
+            if (!_penPoints.IsEmpty) // TODO analyze timing. Discard too old images
+            {
+                // First, search near the last found point (in a rectangle of 100x100px)
+                // This means, that a point could have moved 50px in every direction. TODO: analyze moving direction and velocity
+                int areaX = _penPoints.Last().Point.X - 50;
+                int areaY = _penPoints.Last().Point.Y - 50;
+                Rectangle searchArea = new Rectangle(areaX, areaY, 100, 100);
+                candidates = findPenCandidatesInArea(previous, current, searchArea);
+            }
+
+            // if we could not use the information of a previously tracked point, we search the whole image
+            // WEAKNESS: if we detect one in our search area, but two are present on the whole picture, 
+            // we give false feedback. Therefore, the searcharea must be choosen carefully
+            if (candidates == null || candidates.Count() == 0)
+            {
+                candidates = findPenCandidatesInArea(previous, current, Rectangle.Empty);
+            }
+
+            long stage1 = sw.ElapsedMilliseconds;
+            Console.WriteLine("Time: {0}", stage1);
+            sw.Stop();
+
+            return candidates;
+        }
+
+        /// <summary>
+        /// This is the time consuming part. We try to find pen candidates in two pictures 
+        /// by their filtered difference in a specified area.
+        /// </summary>
+        /// <param name="previous"></param>
+        /// <param name="current"></param>
+        /// <returns></returns>
+        private IEnumerable<PenCandidate> findPenCandidatesInArea(Bitmap previous, Bitmap current, Rectangle searchArea)
+        {
+            if (!searchArea.IsEmpty)
+            {
+                Crop cropFilter = new Crop(searchArea);
+                previous = cropFilter.Apply(previous);
+                current = cropFilter.Apply(current);
+            }
+
             // calculate difference image
             this.Strategy.DifferenceFilter.OverlayImage = previous;
             Bitmap diffImage = this.Strategy.DifferenceFilter.Apply(current);
-            //b.Save(@"c:\temp\images\r1_diff16.bmp");
+            //diffImage.Save(@"c:\temp\images\diff-"+CurrentMillis.Millis+".png");
 
             // translate red parts to gray image
             Bitmap grayImage = this.Strategy.GrayFilter.Apply(diffImage);
@@ -119,6 +164,7 @@ namespace HSR.PresWriter.PenTracking
 
             // treshold the gray image
             Bitmap tresholdImage = this.Strategy.ThresholdFilter.Apply(grayImage);
+            //tresholdImage.Save(@"c:\temp\images\blobs-" + CurrentMillis.Millis + ".png");
 
 #if DEBUG
             if (DebugPicture != null)
@@ -131,13 +177,16 @@ namespace HSR.PresWriter.PenTracking
             this.Strategy.BlobCounter.ProcessImage(tresholdImage);
 
             // frame found blobs and add information
-            var candidates =
-                from r in this.Strategy.BlobCounter.GetObjectsRectangles()
-                select new PenCandidate()
-                {
+            Rectangle[] rawCandidates = this.Strategy.BlobCounter.GetObjectsRectangles();
+            List<PenCandidate> candidates = new List<PenCandidate>();
+            foreach (Rectangle r in rawCandidates)
+            {
+                r.Offset(searchArea.Location); // Adjust Blob Location to search area
+                candidates.Add(new PenCandidate(){
                     Rectangle = r,
                     WeightedCenter = PointTools.CalculateCenterPoint(r) // TODO more precise weightening
-                };
+                });
+            }
 
             return candidates;
         }
