@@ -28,6 +28,13 @@ namespace HSR.PresWriter.DataSources.Cameras
             _bm = new Bitmap(Width, Height, PixelFormat.Format24bppRgb);
             _out = new Bitmap(640,480,PixelFormat.Format24bppRgb);
             _g = Graphics.FromImage(_bm);
+            var g = Graphics.FromImage(_out);
+            //_tim.Stop();
+            lock (_g)
+            {
+                g.Clear(Color.DarkGray);
+            }
+            g.Dispose();
         }
 
         private void SetTimer()
@@ -103,7 +110,7 @@ namespace HSR.PresWriter.DataSources.Cameras
 
         public void Clear()
         {
-            _g.Clear(Color.DarkGray);
+            _g.Clear(Color.Black);
         }
 
         public void Close()
@@ -134,10 +141,9 @@ namespace HSR.PresWriter.DataSources.Cameras
                 //_tim.Stop();
                 lock (_g)
                 {
-                    g.Clear(Color.DarkGray);
                     g.DrawImage(_bm, 40, 60, 400, 300);
                 }
-            g.Dispose();
+                g.Dispose();
             }
             //await Task.Delay(1000);
             //if (FrameReady != null) FrameReady(this, new FrameReadyEventArgs(new VideoFrame(counter++, _out)));

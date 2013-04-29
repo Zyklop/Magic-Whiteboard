@@ -20,7 +20,7 @@ namespace MockTester
 
         static void Main(string[] args)
         {
-            Main4(args);
+            Main2(args);
         }
 
         static void Main1(string[] args)

@@ -39,7 +39,7 @@ namespace HSR.PresWriter.PenTracking
         private const int GDiff = 20;
         private Bitmap actImg;
         private double _absoluteNeighbourDist = 10;
-        private double _relativeNeighbourDist = 2.1;
+        private double _relativeNeighbourDist = 2.1000005;
         private double _topDist = 1.1;
 
 
@@ -74,6 +74,10 @@ namespace HSR.PresWriter.PenTracking
             _sem = new SemaphoreSlim(1, 1);
             _cc.FrameReady += BaseCalibration; // TODO
         }
+
+        public int VisibleColumns { get { return Columncount - ((Math.Floor((_calibrationStep - 3) / Math.Sqrt(CalibrationFrames - 3)) == 0.0) ? 0 : 1); } }
+
+        public int VisibleRows { get { return Rowcount - ((((_calibrationStep - 3)%(int) Math.Sqrt(CalibrationFrames - 3)) == 0) ? 0 : 1); } }
 
         public int CheckCalibration()
         {
@@ -182,8 +186,10 @@ namespace HSR.PresWriter.PenTracking
                         bblobCounter.ProcessImage(bbm);
                         var ggb = ProcessBlobs(gblobCounter, 0);
                         var bgb = ProcessBlobs(bblobCounter, 1);
-                        ggb.VerifyWith(new List<GridBlobs> { bgb }, new List<GridBlobs>());
-                        bgb.VerifyWith(new List<GridBlobs> { ggb }, new List<GridBlobs>());
+                        //ggb.VerifyWith(new List<GridBlobs> { bgb }, new List<GridBlobs>());
+                        //bgb.VerifyWith(new List<GridBlobs> { ggb }, new List<GridBlobs>());
+                        ggb.SingleInterpolation();
+                        bgb.SingleInterpolation();
                         ggb.Insert();
                         bgb.Insert();
 
@@ -370,38 +376,119 @@ namespace HSR.PresWriter.PenTracking
             blobCounter.FilterBlobs = true;
             var blobs = blobCounter.GetObjectsInformation().ToList();
             // remove when outside
-            blobs.RemoveAll(x => !Grid.Contains(x.CenterOfGravity));
-            var gb = new GridBlobs(blobCounter, this);
+            blobs.RemoveAll(b => !Grid.Contains(b.CenterOfGravity));
+            var gb = new GridBlobs(blobCounter, this, offset);
+            int x;
+            int y;
+            if (VisibleColumns == Columncount)
+            {
+                y = VisibleColumns - 1 - offset;
+            }
+            else
+            {
+                y = VisibleColumns - (2 - offset);
+            }
+            if (VisibleRows == Rowcount)
+            {
+                x = VisibleRows - (2 - offset);
+            }
+            else
+            {
+                x = VisibleRows - 1 - offset;
+            }
             //find topleft
-            //var top = blobs.Where(x => x.CenterOfGravity.X == blobs.GetRange(0,Rowcount).
-            //    Min(y => y.CenterOfGravity.X)).
-            //    OrderBy(z=>z.CenterOfGravity.Y).First();
-            var top = blobs.Where(x => IsNextTo(x.CenterOfGravity, Grid.TopLeft, 0, 0, _topDist + offset))
-                .OrderBy(x => x.Area).ToList();
-            while (!top.Any() && _topDist < 2.5)
+            List<Blob> topLeft;
+            do
             {
-                _topDist += 0.05;
-                top = blobs.Where(x => IsNextTo(x.CenterOfGravity, Grid.TopLeft, 0, 0, _topDist + offset))
-                    .OrderBy(x => x.Area).ToList();
-            }
-            while (top.Count > 1)
+                topLeft = blobs.Where(b => IsNextTo(b.CenterOfGravity, Grid.TopLeft, offset, offset, _topDist + offset))
+                   .OrderBy(b => b.Area).ToList();
+                if (!topLeft.Any() && _topDist < 2.5)
+                {
+                    _topDist += 0.05;
+                }
+                if (topLeft.Count > 1)
+                {
+                    _topDist -= 0.05;
+                }
+            } while (topLeft.Count != 1 && _topDist > 0 && _topDist < 3.0);
+            if (topLeft.Any())
             {
-                _topDist -= 0.05;
-                top = blobs.Where(x => IsNextTo(x.CenterOfGravity, Grid.TopLeft, 0, 0, _topDist + offset))
-                    .OrderBy(x => x.Area).ToList();
-            }
-            if (top.Any())
-            {
-                gb.SetPosition(top.First(),new Point(0,0));
-                if (ProcessBlobs(gb, top.First(), offset, offset) < Rowcount*Columncount*0.75)
+                gb.SetPosition(topLeft.First(), new Point(offset, offset), 2);
+                if (ProcessBlobs(gb, topLeft.First(), offset, offset, 4) < Rowcount * Columncount * 0.75)
                     _errors++;
-                return gb;
             }
-            _errors++;
-            return null;
+            else
+                _errors++;
+            List<Blob> topRight;
+            do
+            {
+                topRight = blobs.Where(b => IsNextTo(b.CenterOfGravity, Grid.TopRight, x, offset, _topDist + offset))
+                   .OrderBy(b => b.Area).ToList();
+                if (!topRight.Any() && _topDist < 2.5)
+                {
+                    _topDist += 0.05;
+                }
+                if (topRight.Count > 1)
+                {
+                    _topDist -= 0.05;
+                }
+            } while (topRight.Count != 1 && _topDist > 0 && _topDist < 3.0);
+            if (topRight.Any())
+            {
+                gb.SetPosition(topRight.First(), new Point(x, offset), 2);
+                if (ProcessBlobs(gb, topRight.First(), x, offset, 4) < Rowcount * Columncount * 0.75)
+                    _errors++;
+            }
+            else
+                _errors++;
+            List<Blob> bottomLeft;
+            do
+            {
+                bottomLeft = blobs.Where(b => IsNextTo(b.CenterOfGravity, Grid.BottomLeft, offset, y, _topDist + offset))
+                   .OrderBy(b => b.Area).ToList();
+                if (!bottomLeft.Any() && _topDist < 2.5)
+                {
+                    _topDist += 0.05;
+                }
+                if (bottomLeft.Count > 1)
+                {
+                    _topDist -= 0.05;
+                }
+            } while (bottomLeft.Count != 1 && _topDist > 0 && _topDist < 3.0);
+            if (bottomLeft.Any())
+            {
+                gb.SetPosition(bottomLeft.First(), new Point(offset, y), 2);
+                if (ProcessBlobs(gb, bottomLeft.First(), offset, y, 4) < Rowcount * Columncount * 0.75)
+                    _errors++;
+            }
+            else
+                _errors++;
+            List<Blob> bottomRight;
+            do
+            {
+                bottomRight = blobs.Where(b => IsNextTo(b.CenterOfGravity, Grid.BottomRight, x, y, _topDist + offset))
+                   .OrderBy(b => b.Area).ToList();
+                if (!bottomRight.Any() && _topDist < 2.5)
+                {
+                    _topDist += 0.05;
+                }
+                if (bottomRight.Count > 1)
+                {
+                    _topDist -= 0.05;
+                }
+            } while (bottomRight.Count != 1 && _topDist > 0 && _topDist < 3.0);
+            if (bottomRight.Any())
+            {
+                gb.SetPosition(bottomRight.First(), new Point(x, y), 2);
+                if (ProcessBlobs(gb, bottomRight.First(), x, y, 4) < Rowcount * Columncount * 0.75)
+                    _errors++;
+            }
+            else
+                _errors++;
+            return gb;
         }
 
-        private int ProcessBlobs(GridBlobs gb, Blob act, int x, int y)
+        private int ProcessBlobs(GridBlobs gb, Blob act, int x, int y, int iteration)
         {
             if (x < 0 || y < 0 || y > Columncount || x > Rowcount)
             {
@@ -410,10 +497,10 @@ namespace HSR.PresWriter.PenTracking
                 return 0;
             }
             //gb.SetPosition(act, new Point(x,y));
-            gb.SetIterated(act);
+            gb.SetIterated(act, iteration);
             //find neighbours
-            var n = gb.TagDirectNeighbours(act, x, y);
-            n = n.Where(b => !gb.IsIterated(b));
+            var n = gb.TagDirectNeighbours(act, x, y).ToList();
+            n.RemoveAll(b => gb.Iteration(b)>=iteration);
             int res = n.Count();
             foreach (var b in n)
             {
@@ -423,22 +510,22 @@ namespace HSR.PresWriter.PenTracking
                 {
                     if (xdiff > 0 && x + 2 < Rowcount)
                     {
-                        res += ProcessBlobs(gb, b, x + 2, y);
+                        res += ProcessBlobs(gb, b, x + 2, y, iteration);
                     }
                     else if (x > 1)
                     {
-                        res += ProcessBlobs(gb, b, x - 2, y);
+                        res += ProcessBlobs(gb, b, x - 2, y, iteration);
                     }
                 }
                 else
                 {
                     if (ydiff > 0 && y + 2 < Columncount)
                     {
-                        res += ProcessBlobs(gb, b, x, y + 2);
+                        res += ProcessBlobs(gb, b, x, y + 2, iteration);
                     }
                     else if (y > 1)
                     {
-                        res += ProcessBlobs(gb, b, x, y - 2);
+                        res += ProcessBlobs(gb, b, x, y - 2, iteration);
                     }
                 }
             }
@@ -453,29 +540,34 @@ namespace HSR.PresWriter.PenTracking
 
         private bool IsNextTo(AForge.Point p1, AForge.Point p2, int rownr, int colnr, double maxDist = 1.5, bool diagonal = true)
         {
-            return IsNextTo(p1, new Point((int)p2.X, (int)p2.Y), rownr, colnr, maxDist, diagonal);
+            if (p1 == p2)
+            {
+                return false;
+            }
+            var rowDistance = PredictRowDistance(colnr) * maxDist;
+            var columnDistance = PredictColumnDistance(rownr) * maxDist;
+            var nextTo = Math.Abs(p1.X - p2.X) < rowDistance && Math.Abs(p1.Y - p2.Y) < columnDistance;
+            if (diagonal)
+            {
+                return nextTo;
+            }
+            var distance = Distance(p1, p2);
+            var diag = Math.Sqrt(columnDistance*columnDistance + rowDistance*rowDistance);
+            //Debug.WriteLine("Dist: " + distance + " diag: " + diag);
+            return distance < diag;
         }
 
 
 
         private bool IsNextTo(AForge.Point p1, AForge.Point p2, double absoluteDist)
         {
-            return Distance(p1, new AForge.Point(p2.X, p2.Y)) < absoluteDist;
+            return Distance(p1, new AForge.Point(p2.X, p2.Y)) < absoluteDist && p1 != p2;
         }
 
         private bool IsNextTo(AForge.Point p1, Point p2, int rownr, int colnr, double maxDist = 1.5, bool diagonal = true)
         {
-            var rowDistance = PredictRowDistance(colnr);
-            var columnDistance = PredictColumnDistance(rownr);
-            var nextTo = Math.Abs(p1.X - p2.X) < rowDistance*maxDist && Math.Abs(p1.Y - p2.Y) < columnDistance*maxDist;
-            if (diagonal)
-            {
-                return nextTo;
-            }
-            //Debug.WriteLine("Dist: " + Distance(p1, new AForge.Point(p2.X, p2.Y)) + " diag: " + Math.Sqrt(columnDistance * columnDistance + rowDistance * rowDistance));
-            return nextTo &&
-                   Distance(p1, new AForge.Point(p2.X, p2.Y)) <
-                   maxDist*Math.Sqrt(columnDistance * columnDistance + rowDistance * rowDistance);
+
+            return IsNextTo(p1, new AForge.Point(p2.X, p2.Y), rownr, colnr, maxDist, diagonal);
         }
 
         private int PredictRowDistance(int columnnr)
@@ -535,30 +627,30 @@ namespace HSR.PresWriter.PenTracking
                 _sqrwidth / Math.Sqrt(CalibrationFrames - 3);
             double yOff = Math.Floor((_calibrationStep - 3) / Math.Sqrt(CalibrationFrames - 3)) *
                 _sqrwidth / Math.Sqrt(CalibrationFrames - 3);
-            for (int y = 0; y < Columncount; y++)
+            for (int y = 0; y < ((Math.Round(yOff) != 0.0)?Columncount-1:Columncount); y++)
             {
                 for (int x = -1; x < Rowcount + 3; x++)
                 {
-                    if (y % 2 == 0 && x % 4 == 2 && _drawing)
+                    if (y % 2 == 0 && (x % 4 == 2 && _drawing))
                     {
                         _vs.AddRect((int)((x - 3) * _sqrwidth + xOff), (int)(y * _sqrheight + yOff),
                             (int)(_sqrwidth * 3.0), (int)_sqrheight,
                         Color.FromArgb(255, 0, 255, 0));
                     }
 
-                    if (y % 2 == 0 && x % 4 == 0 && !_drawing)
+                    if (y % 2 == 0 && (x % 4 == 0 && !_drawing))
                     {
                         _vs.AddRect((int)((x - 3) * _sqrwidth + xOff), (int)(y * _sqrheight + yOff),
                             (int)(_sqrwidth * 3.0), (int)_sqrheight,
                         Color.FromArgb(255, 0, 255, 0));
                     }
-                    if (y % 2 == 1 && (x % 4 == 3 && _drawing || x == 0))
+                    if (y % 2 == 1 && (x % 4 == 3 && _drawing || x == 0 || (Math.Round(xOff) != 0.0 && x > Rowcount)))
                     {
                         _vs.AddRect((int)((x - 3) * _sqrwidth + xOff), (int)(y * _sqrheight + yOff),
                             (int)(_sqrwidth * 3.0), (int)_sqrheight,
                         Color.FromArgb(255, 0, 0, 255));
                     }
-                    if (y % 2 == 1 && x % 4 == 1 && !_drawing)
+                    if (y % 2 == 1 && (x % 4 == 1 && !_drawing || (Math.Round(xOff) != 0.0 && x > Rowcount)))
                     {
                         _vs.AddRect((int)((x - 3) * _sqrwidth + xOff), (int)(y * _sqrheight + yOff),
                             (int)(_sqrwidth * 3.0), (int)_sqrheight,
@@ -579,16 +671,18 @@ namespace HSR.PresWriter.PenTracking
         {
             public BlobPositions()
             {
-                Iterated = false;
+                Iterated = 0;
                 Points = new List<Point>();
                 VerifiedPosition = new Point(-1, -1);
             }
 
-            public bool Iterated { get; set; }
+            public int Iterated { get; set; }
 
             public List<Point> Points { get; set; }
 
             public Point VerifiedPosition { get; set; }
+
+            public int MaxNeighbours { get; set; }
         }
 
         internal class GridBlobs
@@ -616,14 +710,16 @@ namespace HSR.PresWriter.PenTracking
             private Dictionary<Blob, BlobPositions> _blobPositions;
             private BlobCounter _bc;
             private AForgeDiffCalibrator _adc;
+            private int _offset;
 
             public IEnumerable<Blob> Blobs { get { return _blobPositions.Keys; } }
 
-            public GridBlobs(BlobCounter bc, AForgeDiffCalibrator adc)
+            public GridBlobs(BlobCounter bc, AForgeDiffCalibrator adc, int offset)
             {
                 _blobPositions = new Dictionary<Blob, BlobPositions>(new BlobComparer());
                 _bc = bc;
                 _adc = adc;
+                _offset = offset;
                 var blobs = bc.GetObjectsInformation().Where(x => adc.Grid.Contains(
                     new Point((int) x.CenterOfGravity.X, (int) x.CenterOfGravity.Y))).ToList();
                 foreach (var blob in blobs)
@@ -632,14 +728,19 @@ namespace HSR.PresWriter.PenTracking
                 }
             }
 
-            public bool IsIterated(Blob b)
+            public int Iteration(Blob b)
             {
                 return _blobPositions[b].Iterated;
             }
 
-            public void SetIterated(Blob b)
+            public void SetIterated(Blob b, int i)
             {
-                _blobPositions[b].Iterated = true;
+                //if (!(_blobPositions[b].Iterated < i))
+                //    Debug.WriteLine("Iterated too much");
+                //else
+                {
+                    _blobPositions[b].Iterated = i;
+                }
             }
 
             public Point GetPosition(Blob b)
@@ -668,11 +769,12 @@ namespace HSR.PresWriter.PenTracking
                 return res;
             }
 
-            public void SetPosition(Blob b, Point p)
+            public void SetPosition(Blob b, Point p, int maxNeighbours)
             {
                 //if (!_blobPositions.ContainsKey(b))
                 //    _blobPositions.Add(b, new BlobPositions());
                 _blobPositions[b].Points.Add(p);
+                _blobPositions[b].MaxNeighbours = maxNeighbours;
             }
 
             public List<IntPoint> FindCorners(Blob b)
@@ -682,7 +784,7 @@ namespace HSR.PresWriter.PenTracking
                 return res;
             }
 
-            public IEnumerable<Blob> UnMapped { get { return _blobPositions.Where(x => !x.Value.Iterated).Select(x => x.Key); } }
+            //public IEnumerable<Blob> UnMapped { get { return _blobPositions.Where(x => !x.Value.Iterated).Select(x => x.Key); } }
 
             public static void InPlaceSort(List<IntPoint> rect)
             {
@@ -703,9 +805,15 @@ namespace HSR.PresWriter.PenTracking
                 rect.Add(tmp[1]);
             }
 
-            public Dictionary<Point, double> FindPreference(Blob act, List<Point> possibilities, bool identicalChannel)
+            public Dictionary<Point, double> FindPreference(Blob act, List<Point> possibilities, bool identicalChannel, int maxNeighbours)
             {
-                var maxNeigbours = identicalChannel?new IntRange(5,5):new IntRange(4,4);
+                var maxNeigbours = identicalChannel?new IntRange(1,1):new IntRange(0,0);
+                maxNeigbours.Min += maxNeighbours;
+                maxNeigbours.Min += maxNeighbours;
+                if (maxNeigbours.Max < 2)
+                {
+                    maxNeigbours = identicalChannel ? new IntRange(3, 5) : new IntRange(2, 4);
+                }
                 var res = new Dictionary<Point, int>();
                 if (possibilities.Any())
                 {
@@ -716,43 +824,25 @@ namespace HSR.PresWriter.PenTracking
                         else
                             res[point]++;
                     }
-                    var p = res.First(x => x.Value == res.Values.Max()).Key;
-                    if (possibilities.Any(x => (p.X == 0 || p.X == Rowcount)))
-                    {
-                        maxNeigbours.Max -= 1;
-                        maxNeigbours.Min -= 1;
-                    }
-                    if (possibilities.Any(x => (p.Y == 0 || p.Y == Columncount)))
-                    {
-                        maxNeigbours.Max -= 1;
-                        maxNeigbours.Min -= 1;
-                    }
                 }
-                else
+                List<Blob> n;
+                do
                 {
-                    maxNeigbours.Min -= 2;
-                }
-                var n =
+                    n =
                         _blobPositions.Where(m => _adc.IsNextTo(act.CenterOfGravity, m.Key.CenterOfGravity,
                                                                 _adc._absoluteNeighbourDist/2)).Select(m => m.Key).ToList();
-                    while (n.Count() > maxNeigbours.Max)
+                    if (n.Count > maxNeigbours.Max)
                     {
                         //Debug.WriteLine("too many neighbours at " + p.X + "," + p.Y + " decreasing distance");
                         _adc._absoluteNeighbourDist -= 0.2;
-                        n =
-                            _blobPositions.Where(
-                                m => _adc.IsNextTo(act.CenterOfGravity, m.Key.CenterOfGravity,
-                                                   _adc._absoluteNeighbourDist/2)).Select(m => m.Key).ToList();
                     }
-                while (n.Count() < maxNeigbours.Min && _adc._absoluteNeighbourDist < 50)
-                {
-                    //Debug.WriteLine("no neighbours at " + p.X + "," + p.Y + " increasing distance");
-                    _adc._absoluteNeighbourDist += 0.2;
-                    n =
-                        _blobPositions.Where(
-                            m => _adc.IsNextTo(act.CenterOfGravity, m.Key.CenterOfGravity, 
-                                               _adc._absoluteNeighbourDist/2)).Select(m => m.Key).ToList();
-                }
+                    else if (n.Count() < maxNeigbours.Min)
+                    {
+                        //Debug.WriteLine("no neighbours at " + p.X + "," + p.Y + " increasing distance");
+                        _adc._absoluteNeighbourDist += 0.2;
+                    }
+                } while (n.Count != maxNeigbours.Max && _adc._absoluteNeighbourDist > 2 &&
+                         _adc._absoluteNeighbourDist < 50);
                 int maxConfidance = res.Sum(x => x.Value);
                 if (identicalChannel)
                 {
@@ -907,29 +997,61 @@ namespace HSR.PresWriter.PenTracking
             public IEnumerable<Blob> TagDirectNeighbours(Blob act, int x, int y)
             {
                 int maxNeigbours = 4;
-                if (x == 0 || x == Rowcount)
-                    maxNeigbours -= 1;
-                if (y == 0 || y == Columncount)
-                    maxNeigbours -= 1;
+                if (_adc.VisibleRows == Rowcount)
+                {
+                    if (x == _offset || x == _adc.VisibleRows - (2 - _offset))
+                        maxNeigbours -= 1;
+                }
+                else
+                {
+                    if (x == _offset || x == _adc.VisibleRows - 1 - _offset)
+                        maxNeigbours -= 1;
+                }
+                if (_adc.VisibleColumns == Columncount)
+                {
+                    if (y == _offset || y == _adc.VisibleColumns - (2 - _offset))
+                        maxNeigbours -= 1;
+                }
+                else
+                {
+                    if (y == _offset || y == _adc.VisibleColumns - 1 - _offset)
+                        maxNeigbours -= 1;
+                }
+                if (_blobPositions[act].MaxNeighbours == 0)
+                {
+                    _blobPositions[act].MaxNeighbours = maxNeigbours;
+                }
+                else if (_blobPositions[act].MaxNeighbours != maxNeigbours)
+                {
+                    Debug.WriteLine("Inconsistant Neighbours at " + new Point(x,y));
+                }
                 if (!_blobPositions[act].Points.Any(p => p.X == x && p.Y == y))
+                {
                     //throw new InvalidOperationException("Position not stored");
-                    Debug.WriteLine("Pos: " + x + "/" + y + " not stored");
-                var n = _blobPositions.Where(m => _adc.IsNextTo(act.CenterOfGravity, m.Key.CenterOfGravity, x, y, 
-                    _adc._relativeNeighbourDist, false)).Select(m => m.Key);
-                while (n.Count() > maxNeigbours)
-                {
-                    Debug.WriteLine("too many neighbours at " + x + "," + y + " decreasing distance");
-                    _adc._relativeNeighbourDist -= 0.05;
-                    n = _blobPositions.Where(m => _adc.IsNextTo(act.CenterOfGravity, m.Key.CenterOfGravity, x, y, 
-                        _adc._relativeNeighbourDist, false)).Select(m => m.Key);
+                    Debug.WriteLine("Pos: " + x + "/" + y + " not stored, adding now");
+                    _blobPositions[act].Points.Add(new Point(x,y));
                 }
-                while (n.Count() < maxNeigbours && _adc._relativeNeighbourDist < 3.0)
+                List<Blob> n;
+                int loopcount = 0;
+                do
                 {
-                    Debug.WriteLine("no neighbours at " + x + "," + y + " increasing distance");
-                    _adc._relativeNeighbourDist += 0.05;
-                    n = _blobPositions.Where(m => _adc.IsNextTo(act.CenterOfGravity, m.Key.CenterOfGravity, x, y, 
-                        _adc._relativeNeighbourDist, false)).Select(m => m.Key);
-                }
+                    loopcount++;
+                    n = _blobPositions.Where(m => _adc.IsNextTo(act.CenterOfGravity, m.Key.CenterOfGravity, x, y,
+                                                                _adc._relativeNeighbourDist, false))
+                                      .Select(m => m.Key)
+                                      .ToList();
+                    if (n.Count < maxNeigbours)
+                    {
+                        //Debug.WriteLine("no neighbours at " + x + "," + y + " increasing distance");
+                        _adc._relativeNeighbourDist += 0.023;
+                    }
+                    else if (n.Count > maxNeigbours)
+                    {
+                        //Debug.WriteLine("too many neighbours at " + x + "," + y + " decreasing distance");
+                        _adc._relativeNeighbourDist -= 0.05;
+                    }
+                } while (n.Count != maxNeigbours && _adc._relativeNeighbourDist > 0.8 &&
+                         _adc._relativeNeighbourDist < 3.0 && (loopcount < 100 || n.Count >= maxNeigbours));
                 foreach (var b in n)
                 {
                     var xdiff = b.CenterOfGravity.X - act.CenterOfGravity.X;
@@ -967,7 +1089,7 @@ namespace HSR.PresWriter.PenTracking
                     var probabilities = new Dictionary<Point, double>();
                     foreach (var gridBlob in otherChannels)
                     {
-                        foreach (var pref in gridBlob.FindPreference(blob, _blobPositions[blob].Points, false))
+                        foreach (var pref in gridBlob.FindPreference(blob, _blobPositions[blob].Points, false, _blobPositions[blob].MaxNeighbours))
                         {
                             if (!probabilities.ContainsKey(pref.Key))
                             {
@@ -981,7 +1103,7 @@ namespace HSR.PresWriter.PenTracking
                     }
                     foreach (var gridBlob in sameChannel)
                     {
-                        foreach (var pref in gridBlob.FindPreference(blob, _blobPositions[blob].Points, true))
+                        foreach (var pref in gridBlob.FindPreference(blob, _blobPositions[blob].Points, true, _blobPositions[blob].MaxNeighbours))
                         {
                             if (!probabilities.ContainsKey(pref.Key))
                             {
@@ -1012,6 +1134,25 @@ namespace HSR.PresWriter.PenTracking
                     {
                         _blobPositions[blob].VerifiedPosition =
                             probabilities.First(x => x.Value == probabilities.Values.Max()).Key;
+                    }
+                }
+            }
+
+            public void SingleInterpolation()
+            {
+                foreach (var blobPosition in _blobPositions)
+                {
+                    var res = new Dictionary<Point, int>();
+                    if (blobPosition.Value.Points.Count > 0)
+                    {
+                        foreach (var point in blobPosition.Value.Points)
+                        {
+                            if (!res.ContainsKey(point))
+                                res.Add(point, 1);
+                            else
+                                res[point]++;
+                        }
+                        blobPosition.Value.VerifiedPosition = res.First(x => x.Value == res.Values.Max()).Key;
                     }
                 }
             }
