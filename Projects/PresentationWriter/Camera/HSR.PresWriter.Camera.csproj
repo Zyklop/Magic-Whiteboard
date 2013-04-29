@@ -73,8 +73,9 @@
   <ItemGroup>
     <Compile Include="Cameras\AForgeCamera.cs" />
     <Compile Include="Cameras\AvicapCamera.cs" />
-    <Compile Include="Cameras\DirectShowCamera.cs" />
     <Compile Include="Cameras\FilesystemCamera.cs" />
+    <Compile Include="Cameras\DirectShowCamera.cs" />
+    <Compile Include="Cameras\TimedFilesystemCamera.cs" />
     <Compile Include="Cameras\VirtualCamera.cs" />
     <Compile Include="ICamera.cs" />
     <Compile Include="NativeMethods.cs" />

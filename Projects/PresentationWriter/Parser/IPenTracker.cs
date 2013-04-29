@@ -14,6 +14,5 @@ namespace HSR.PresWriter.PenTracking
         event EventHandler<PenPositionEventArgs> PenFound;
         void Start();
         void Stop();
-        void ProcessAsync(object sender, FrameReadyEventArgs frameReadyEventArgs);
     }
 }

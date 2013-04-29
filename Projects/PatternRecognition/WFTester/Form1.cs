@@ -18,11 +18,10 @@ namespace WFTester
         public Form1()
         {
             //pictureList = BaseRecognition.Recognize();
-            pictureList = BaseRecognition.RecognizeLines();
+            HandPositionTracker t = new HandPositionTracker(@"c:\temp\recognition\base.png", @"c:\temp\recognition\pics");
+            t.RecognizeOne(3);
 
             InitializeComponent();
-
-            this.pictureBox1.Image = pictureList[pictureIndex++];
         }
 
         private void pictureBox1_Click(object sender, EventArgs e)

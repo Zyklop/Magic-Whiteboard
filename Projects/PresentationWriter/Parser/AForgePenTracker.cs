@@ -22,61 +22,62 @@ namespace HSR.PresWriter.PenTracking
         /// Max count of frames to be included in pen discovering process.</summary>
         private const int MAX_FRAMEBUFFER_LENGTH = 3;
         private const int MAX_POINTBUFFER_LENGTH = 3;
-        private FixedSizedQueue<VideoFrame> frameBuffer;
-        private FixedSizedQueue<PointFrame> penPoints;
+        private IPictureProvider _source;
+        private FixedSizedQueue<VideoFrame> _frameBuffer;
+        private FixedSizedQueue<PointFrame> _penPoints;
 
         public FilterStrategy Strategy { get; set; }
 
-        public AForgePenTracker(FilterStrategy strategy, IPictureProvider provider)
+        public AForgePenTracker(FilterStrategy strategy, IPictureProvider source)
         {
-            _provider = provider;
+            _source = source;
             this.Strategy = strategy;
-            this.frameBuffer = new FixedSizedQueue<VideoFrame>(MAX_FRAMEBUFFER_LENGTH);
-            this.penPoints = new FixedSizedQueue<PointFrame>(MAX_POINTBUFFER_LENGTH);
+            this._frameBuffer = new FixedSizedQueue<VideoFrame>(MAX_FRAMEBUFFER_LENGTH);
+            this._penPoints = new FixedSizedQueue<PointFrame>(MAX_POINTBUFFER_LENGTH);
         }
 
         public void Start()
         {
-            _provider.FrameReady += ProcessAsync;
+            _source.FrameReady += this.processAsync;
         }
 
         public void Stop()
         {
-            _provider.FrameReady -= ProcessAsync;
+            _source.FrameReady -= this.processAsync;
         }
 
-        public async void ProcessAsync(object sender, FrameReadyEventArgs frameReadyEventArgs)
+        private async void processAsync(object sender, FrameReadyEventArgs frameReadyEventArgs)
         {
             VideoFrame previousFrame;
             var currentFrame = frameReadyEventArgs.Frame;
             // Lock buffer for adding elements in dependency of queue length
-            lock (this.frameBuffer) 
+            lock (this._frameBuffer) 
             {
                 // We can only do our work if there is at least one frame in the buffer already
-                if (this.frameBuffer.Count < 1)
+                if (this._frameBuffer.Count < 1)
                 {
-                    this.frameBuffer.Enqueue(currentFrame);
+                    this._frameBuffer.Enqueue(currentFrame);
                     return;
                 }
                 else
                 {
-                    previousFrame = this.frameBuffer.Last();
-                    this.frameBuffer.Enqueue(currentFrame);
+                    previousFrame = this._frameBuffer.Last();
+                    this._frameBuffer.Enqueue(currentFrame);
                 }
             }
 
             try
             {
-                // Find pen candidates and evaluate them → finding candidates is expensive!
-                var candidates = findPenCandidates((Bitmap) previousFrame.Bitmap.Clone(), (Bitmap) currentFrame.Bitmap.Clone()); //TODO Fast fix against locking
-
-                // Finding a new pen point and storing it must be atomic, because findPen(..) accesses the previously found pointframe for interpolation
-                lock (this.penPoints)
+                // Finding a new pen point and storing it must be atomic, because 
+                // - findPenCandidates(..) chooses its search area dependently on the last found point
+                // - findPen(..) accesses the previously found pointframe for interpolation
+                lock (this._penPoints) // TODO Eventually a barrier would be better
                 {
+                    // Find pen candidates and evaluate them → finding candidates is expensive!
+                    var candidates = findPenCandidates((Bitmap)previousFrame.Bitmap.Clone(), (Bitmap)currentFrame.Bitmap.Clone()); //TODO Fast fix against locking
+
                     // Evaluate the candidates (PenCandidate)
                     Point foundPoint = this.findPen(candidates);
-
-                    
                     if (foundPoint.IsEmpty)
                     {
                         return;
@@ -84,7 +85,7 @@ namespace HSR.PresWriter.PenTracking
 
                     // Put the qualified result in a new point frame and fire event
                     PointFrame resultFrame = new PointFrame(currentFrame.Number + 1, foundPoint, currentFrame.Timestamp);
-                    this.penPoints.Enqueue(resultFrame);
+                    this._penPoints.Enqueue(resultFrame);
                     if (this.PenFound != null)
                     {
                         this.PenFound(this, new PenPositionEventArgs(resultFrame));
@@ -100,26 +101,70 @@ namespace HSR.PresWriter.PenTracking
 
         /// <summary>
         /// This is the time consuming part. We try to find pen candidates in two pictures 
-        /// by their filtered difference.
-        /// ATTENTION: Bitmap previous is overwritten because of a performance gain. This makes 
-        /// the previous picture unusable for a second pass!!!
+        /// by their filtered difference. We choose the search area in a intelligent way.
         /// </summary>
         /// <param name="previous"></param>
         /// <param name="current"></param>
         /// <returns></returns>
         private IEnumerable<PenCandidate> findPenCandidates(Bitmap previous, Bitmap current)
         {
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+
+            IEnumerable<PenCandidate> candidates = null;
+            if (!_penPoints.IsEmpty) // TODO analyze timing. Discard too old images
+            {
+                // First, search near the last found point (in a rectangle of 100x100px)
+                // This means, that a point could have moved 50px in every direction. TODO: analyze moving direction and velocity
+                int areaX = _penPoints.Last().Point.X - 50;
+                int areaY = _penPoints.Last().Point.Y - 50;
+                Rectangle searchArea = new Rectangle(areaX, areaY, 100, 100);
+                candidates = findPenCandidatesInArea(previous, current, searchArea);
+            }
+
+            // if we could not use the information of a previously tracked point, we search the whole image
+            // WEAKNESS: if we detect one in our search area, but two are present on the whole picture, 
+            // we give false feedback. Therefore, the searcharea must be choosen carefully
+            if (candidates == null || candidates.Count() == 0)
+            {
+                candidates = findPenCandidatesInArea(previous, current, Rectangle.Empty);
+            }
+
+            long stage1 = sw.ElapsedMilliseconds;
+            Console.WriteLine("Time: {0}", stage1);
+            sw.Stop();
+
+            return candidates;
+        }
+
+        /// <summary>
+        /// This is the time consuming part. We try to find pen candidates in two pictures 
+        /// by their filtered difference in a specified area.
+        /// </summary>
+        /// <param name="previous"></param>
+        /// <param name="current"></param>
+        /// <returns></returns>
+        private IEnumerable<PenCandidate> findPenCandidatesInArea(Bitmap previous, Bitmap current, Rectangle searchArea)
+        {
+            if (!searchArea.IsEmpty)
+            {
+                Crop cropFilter = new Crop(searchArea);
+                previous = cropFilter.Apply(previous);
+                current = cropFilter.Apply(current);
+            }
+
             // calculate difference image
-            Strategy.DifferenceFilter.OverlayImage = previous;
-            Bitmap diffImage = Strategy.DifferenceFilter.Apply(current);
-            //b.Save(@"c:\temp\images\r1_diff16.bmp");
+            this.Strategy.DifferenceFilter.OverlayImage = previous;
+            Bitmap diffImage = this.Strategy.DifferenceFilter.Apply(current);
+            //diffImage.Save(@"c:\temp\images\diff-"+CurrentMillis.Millis+".png");
 
             // translate red parts to gray image
-            Bitmap grayImage = Strategy.GrayFilter.Apply(diffImage);
+            Bitmap grayImage = this.Strategy.GrayFilter.Apply(diffImage);
             //a.Save(@"c:\temp\images\r2_grey16.bmp");
 
             // treshold the gray image
-            Bitmap tresholdImage = Strategy.ThresholdFilter.Apply(grayImage);
+            Bitmap tresholdImage = this.Strategy.ThresholdFilter.Apply(grayImage);
+            //tresholdImage.Save(@"c:\temp\images\blobs-" + CurrentMillis.Millis + ".png");
 
 #if DEBUG
             if (DebugPicture != null)
@@ -129,16 +174,19 @@ namespace HSR.PresWriter.PenTracking
 #endif
 
             // count white blobs (TODO ev. kann man den thresholdFilter wegschmeissen, siehe ctr parameter von BlobCounter)
-            Strategy.BlobCounter.ProcessImage(tresholdImage);
+            this.Strategy.BlobCounter.ProcessImage(tresholdImage);
 
             // frame found blobs and add information
-            var candidates = 
-                from r in Strategy.BlobCounter.GetObjectsRectangles()
-                select new PenCandidate()
-                {
+            Rectangle[] rawCandidates = this.Strategy.BlobCounter.GetObjectsRectangles();
+            List<PenCandidate> candidates = new List<PenCandidate>();
+            foreach (Rectangle r in rawCandidates)
+            {
+                r.Offset(searchArea.Location); // Adjust Blob Location to search area
+                candidates.Add(new PenCandidate(){
                     Rectangle = r,
                     WeightedCenter = PointTools.CalculateCenterPoint(r) // TODO more precise weightening
-                };
+                });
+            }
 
             return candidates;
         }
@@ -196,9 +244,9 @@ namespace HSR.PresWriter.PenTracking
         /// <returns></returns>
         public PointFrame GetLastFrame()
         {
-            if (penPoints.Count > 0)
+            if (_penPoints.Count > 0)
             {
-                return penPoints.Last();
+                return _penPoints.Last();
             }
             return null;
         }
@@ -212,7 +260,7 @@ namespace HSR.PresWriter.PenTracking
         {
             PointFrame previousFrame = null;
 
-            var enumerator = this.penPoints.GetEnumerator();
+            var enumerator = this._penPoints.GetEnumerator();
             while (enumerator.MoveNext() && timestamp < enumerator.Current.Timestamp)
             {
                 if (timestamp == enumerator.Current.Timestamp)
@@ -236,7 +284,6 @@ namespace HSR.PresWriter.PenTracking
 
 #if DEBUG
         public event EventHandler<DebugPictureEventArgs> DebugPicture;
-        private IPictureProvider _provider;
 #endif
     }
 
