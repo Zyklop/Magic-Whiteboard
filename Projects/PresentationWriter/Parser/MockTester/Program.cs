@@ -21,7 +21,7 @@ namespace MockTester
 
         static void Main(string[] args)
         {
-            Main6(args);
+            Main7(args);
         }
 
         static void Main1(string[] args)
@@ -182,6 +182,19 @@ namespace MockTester
                 _virtualCam.Draw();
                 Debug.WriteLine("Drew Point");
             }
+            Console.Read();
+        }
+
+        static void Main7(string[] args)
+        {
+            var cam = new TimedFilesystemCamera(new DirectoryInfo(@"C:\temp\daforge\inph"));
+            var visualizerControl = new VisualizerDummy();
+            cam.Start();
+            var calib = new SimpleAForgeCalibrator(cam, visualizerControl);
+            var pt = new AForgePenTracker(new RedLaserStrategy(), cam);
+            var parser = new DataParser(calib, pt);
+            parser.Start();
+            parser.PenPositionChanged += NewPoint;
             Console.Read();
         }
     }

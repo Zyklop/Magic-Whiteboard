@@ -5,16 +5,13 @@ using System.Drawing.Drawing2D;
 using System.IO;
 using System.Windows;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Drawing;
 using Point = System.Drawing.Point;
 
 namespace HSR.PresWriter.PenTracking
 {
     public class Grid
     {
-        private List<Point>[,] _calibratorData;
+        private SortedDictionary<int, SortedDictionary<int, List<Point>>> _calibratorData;
         private Point[,] _mapData;
         private bool _needed = true;
         private Point _topLeft;
@@ -31,7 +28,7 @@ namespace HSR.PresWriter.PenTracking
         public Grid(int width, int height)
         {
             _mapData = new Point[width,height];
-            _calibratorData = new List<Point>[width,height];
+            _calibratorData = new SortedDictionary<int, SortedDictionary<int, List<Point>>>();
             _refPoints = new SortedDictionary<int, SortedDictionary<int, Point>>();
         }
 
@@ -155,10 +152,14 @@ namespace HSR.PresWriter.PenTracking
         /// </summary>
         public void Reset()
         {
-            foreach (List<Point> l in _calibratorData)
-            {
-                l.Clear();
-            }
+            _calibratorData = new SortedDictionary<int, SortedDictionary<int, List<Point>>>();
+            //foreach (var l in _calibratorData)
+            //{
+            //    foreach (var pl in l.Value)
+            //    {
+            //        pl.Value.Clear();
+            //    }
+            //}
         }
 
         /// <summary>
@@ -170,9 +171,7 @@ namespace HSR.PresWriter.PenTracking
         /// <param name="imgY"></param>
         public void AddPoint(int screenX, int screenY, int imgX, int imgY)
         {
-            if (_calibratorData[imgX,imgY] == null)
-                _calibratorData[imgX, imgY] = new List<Point>();
-            _calibratorData[imgX,imgY].Add(new Point{X = screenX, Y = screenY});
+            AddCalibratorPoint(imgX, imgY, new Point(screenX, screenY));
             AddRefPoints(screenX, screenY, new Point(imgX, imgY));
 
 #if DEBUG
@@ -183,6 +182,16 @@ namespace HSR.PresWriter.PenTracking
                 fs.Flush();
             }
 #endif
+        }
+
+        private void AddCalibratorPoint(int imgX, int imgY, Point screen)
+        {
+            if (!_calibratorData.ContainsKey(imgX))
+                _calibratorData.Add(imgX, new SortedDictionary<int, List<Point>>());
+            if (!_calibratorData[imgX].ContainsKey(imgY))
+                _calibratorData[imgX].Add(imgY, new List<Point>{screen});
+            else
+                _calibratorData[imgX][imgY].Add(screen);
         }
 
         /// <summary>
@@ -200,11 +209,7 @@ namespace HSR.PresWriter.PenTracking
                 fs.Flush();
             }
 #endif
-            if (_calibratorData[img.X, img.Y] == null)
-            {
-                _calibratorData[img.X, img.Y] = new List<Point>();
-            }
-            _calibratorData[img.X, img.Y].Add(new Point { X = screen.X, Y = screen.Y });
+            AddCalibratorPoint(img.X,img.Y,screen);
             AddRefPoints(screen.X, screen.Y, new Point(img.X, img.Y));
         }
 
@@ -229,18 +234,19 @@ namespace HSR.PresWriter.PenTracking
         /// </summary>
         public void Calculate()
         {
-            int xmax = _calibratorData[BottomRight.X, BottomRight.Y].First().X;
-            int ymax = _calibratorData[BottomRight.X, BottomRight.Y].First().Y;
+            int xmax = _calibratorData[BottomRight.X][BottomRight.Y].First().X;
+            int ymax = _calibratorData[BottomRight.X][BottomRight.Y].First().Y;
             for (int i = 0; i < xmax; i++)
             {
                 for (int j = 0; j < ymax; j++)
                 {
                     var n = FindNearest(i, j, 3);
                     var p = Interpolate(i, j, n);
-                    if (_calibratorData[p.X, p.Y] != null)
-                        _calibratorData[p.X,p.Y].Add(new Point(i,j));
-                    else 
-                        _calibratorData[p.X,p.Y] = new List<Point>{new Point(i,j)};
+                    AddCalibratorPoint(p.X, p.Y, new Point(i,j));
+                    //if (_calibratorData.ContainsKey(p.X) && _calibratorData[p.X].ContainsKey(p.Y))
+                    //    _calibratorData[p.X,p.Y].Add();
+                    //else 
+                    //    _calibratorData[p.X,p.Y] = new List<Point>{new Point(i,j)};
                 }
             }
             SetMapData();
@@ -281,7 +287,7 @@ namespace HSR.PresWriter.PenTracking
             var res = new List<PointMapping>();
             int dist = 0;
                var cols = new SortedDictionary<int, SortedDictionary<int,Point>>();
-               while (cols.Count < desired)
+               while (cols.Count < desired && dist < _refPoints.Keys.Last())
                {
                    if (_refPoints.ContainsKey(x - dist))
                        cols.Add(x - dist, _refPoints[x - dist]);
@@ -293,29 +299,29 @@ namespace HSR.PresWriter.PenTracking
             var p = new List<PointMapping>();
             foreach (var col in cols)
             {
-                if (col.Value.Count < desired)
+                //if (col.Value.Count < desired)
                     foreach (var pair in col.Value)
                     {
                         p.Add(new PointMapping{Screen = new Point(col.Key, pair.Key), Image = pair.Value} );
                     }
-                else
-                {
-                    int count = 0;
-                    while (count < desired)
-                    {
-                        if (col.Value.ContainsKey(y - dist))
-                        {
-                            p.Add(new PointMapping{Screen = new Point(col.Key, y - dist), Image = col.Value[y - dist]});
-                            count++;
-                        }
-                        if (col.Value.ContainsKey(y + dist) && dist != 0)
-                        {
-                            p.Add(new PointMapping { Screen = new Point(col.Key, y + dist), Image = col.Value[y + dist] });
-                            count++;
-                        }
-                        dist++;
-                    }
-                }
+                //else
+                //{
+                //    int count = 0;
+                //    while (count < desired)
+                //    {
+                //        if (col.Value.ContainsKey(y - dist))
+                //        {
+                //            p.Add(new PointMapping{Screen = new Point(col.Key, y - dist), Image = col.Value[y - dist]});
+                //            count++;
+                //        }
+                //        if (col.Value.ContainsKey(y + dist) && dist != 0)
+                //        {
+                //            p.Add(new PointMapping { Screen = new Point(col.Key, y + dist), Image = col.Value[y + dist] });
+                //            count++;
+                //        }
+                //        dist++;
+                //    }
+                //}
             }
             p = p.OrderBy(p1 => DistanceTo(p1.Screen,new Point(x,y))).ToList();
             res.AddRange(p.GetRange(0,desired));
@@ -334,13 +340,13 @@ namespace HSR.PresWriter.PenTracking
             {
                 for (int j = 0; j < _mapData.GetLength(1); j++)
                 {
-                    if (_calibratorData[i, j] != null && _calibratorData[i, j].Count > 0)
+                    if (_calibratorData.ContainsKey(i) && _calibratorData[i].ContainsKey(j) && _calibratorData[i][j].Count > 0)
                     {
                         try
                         {
                             var k = new Point();
-                            k.X = _calibratorData[i, j].Sum(x => x.X)/_calibratorData[i, j].Count;
-                            k.Y = _calibratorData[i, j].Sum(x => x.Y)/_calibratorData[i, j].Count;
+                            k.X = _calibratorData[i][j].Sum(x => x.X)/_calibratorData[i][j].Count;
+                            k.Y = _calibratorData[i][j].Sum(x => x.Y)/_calibratorData[i][j].Count;
                             _mapData[i, j] = k;
                         }
                         catch (Exception e)
@@ -358,25 +364,20 @@ namespace HSR.PresWriter.PenTracking
         public void PredictFromCorners()
         {
             // TODO index out of bound exception möglich
-            var stor = _calibratorData.Clone();
-            int xmax = _calibratorData[BottomRight.X, BottomRight.Y].First().X;
-            int ymax = _calibratorData[BottomRight.X, BottomRight.Y].First().Y;
-            for (int i = 0; i < _calibratorData.GetLength(0); i++)
-            {
-                for (int j = 0; j < _calibratorData.GetLength(1); j++)
-                {
-                    if (_calibratorData[i, j]!=null)
-                    {
-                        _calibratorData[i, j].Clear();
-                    }
-                    else
-                    {
-                        _calibratorData[i, j] = new List<Point>();
-                    }
-                }
-            }
+            int xmax = _calibratorData[BottomRight.X][BottomRight.Y].First().X;
+            int ymax = _calibratorData[BottomRight.X][BottomRight.Y].First().Y;
+            var stor = _calibratorData;
+            _calibratorData = new SortedDictionary<int, SortedDictionary<int, List<Point>>>(_calibratorData);
+            //foreach(var i in _calibratorData)
+            //{
+            //    foreach (var j in i.Value)
+            //    {
+                    
+            //    }
+            //}
             for (int i = 0; i < xmax; i++)
             {
+                //Debug.WriteLine(i);
                 for (int j = 0; j < ymax; j++)
                 {
                 //Debug.WriteLineIf(i > 1278, j);
@@ -400,7 +401,7 @@ namespace HSR.PresWriter.PenTracking
                         int y = (int) Math.Round((A1*C2 - A2*C1)/det);
                     try
                     {
-                        _calibratorData[x, y].Add(new Point(i,j));
+                        AddCalibratorPoint(x, y, new Point(i,j));
                     }
                     catch (Exception e)
                     {
@@ -409,7 +410,7 @@ namespace HSR.PresWriter.PenTracking
                 }
             }
             SetMapData();
-            _calibratorData = (List<Point>[,]) stor;
+            _calibratorData = stor;
         }
 
         /// <summary>

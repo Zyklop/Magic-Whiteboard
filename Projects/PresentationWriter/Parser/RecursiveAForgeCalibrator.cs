@@ -1038,8 +1038,6 @@ namespace HSR.PresWriter.PenTracking
                     b =>
                     Math.Abs(b.CenterOfGravity.X - act.CenterOfGravity.X) >
                     n.Average(c => Math.Abs(c.CenterOfGravity.X - act.CenterOfGravity.X)));
-                n = n.OrderBy(b => Math.Abs(b.CenterOfGravity.Y - act.CenterOfGravity.Y)).
-                      ToList();
                 n.RemoveAll(b => b.CenterOfGravity.Y - act.CenterOfGravity.Y !=
                                  n.Where(c => c.CenterOfGravity.Y - act.CenterOfGravity.Y > 0).DefaultIfEmpty().
                                    Min(c => c.CenterOfGravity.Y - act.CenterOfGravity.Y) ||
@@ -1050,10 +1048,14 @@ namespace HSR.PresWriter.PenTracking
                     ToList().GetRange(0, Columncount).Select(b => b.Key));
                 t.RemoveAll(
                     b =>
-                    Math.Abs(b.CenterOfGravity.X - act.CenterOfGravity.X) >
-                    t.Average(c => Math.Abs(c.CenterOfGravity.X - act.CenterOfGravity.X)));
-                t = t.OrderBy(b => Math.Abs(b.CenterOfGravity.Y - act.CenterOfGravity.Y)).
-                      ToList().GetRange(0, 2);
+                    Math.Abs(b.CenterOfGravity.Y - act.CenterOfGravity.Y) >
+                    t.Average(c => Math.Abs(c.CenterOfGravity.Y - act.CenterOfGravity.Y)));
+                t.RemoveAll(b => b.CenterOfGravity.X - act.CenterOfGravity.X !=
+                                 n.Where(c => c.CenterOfGravity.X - act.CenterOfGravity.X > 0).DefaultIfEmpty().
+                                   Min(c => c.CenterOfGravity.X - act.CenterOfGravity.X) ||
+                                 b.CenterOfGravity.X - act.CenterOfGravity.X !=
+                                 n.Where(c => c.CenterOfGravity.X - act.CenterOfGravity.X < 0).DefaultIfEmpty().
+                                   Max(c => c.CenterOfGravity.X - act.CenterOfGravity.X));
                 n.AddRange(t);
                 //int loopcount = 0;
                 //do

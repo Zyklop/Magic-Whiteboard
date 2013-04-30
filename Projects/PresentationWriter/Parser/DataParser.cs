@@ -54,7 +54,7 @@ namespace HSR.PresWriter.PenTracking
         {
             //_pictureProvider.ShowConfigurationDialog();
             //_pictureProvider.FrameReady += _camera_FrameReady; // TODO siehe _camera_FrameReady
-            _calibrator.Grid.Calculate();
+            //_calibrator.Grid.Calculate();
 #if DEBUG
             var bm = new Bitmap(640, 480);
             for (int i = 0; i < 640; i++)
