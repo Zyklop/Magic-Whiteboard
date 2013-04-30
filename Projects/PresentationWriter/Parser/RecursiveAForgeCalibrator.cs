@@ -20,7 +20,7 @@ using Point = System.Drawing.Point;
 namespace HSR.PresWriter.PenTracking
 {
 
-    class AForgeDiffCalibrator : ICalibrator
+    class RecursiveAForgeCalibrator : ICalibrator
     {
         private IPictureProvider _cc;
         private int _calibrationStep;
@@ -43,7 +43,7 @@ namespace HSR.PresWriter.PenTracking
         private double _topDist = 1.1;
 
 
-        public AForgeDiffCalibrator(IPictureProvider provider, IVisualizerControl visualizer)
+        public RecursiveAForgeCalibrator(IPictureProvider provider, IVisualizerControl visualizer)
         {
             _cc = provider;
             _vs = visualizer;
@@ -709,12 +709,12 @@ namespace HSR.PresWriter.PenTracking
 
             private Dictionary<Blob, BlobPositions> _blobPositions;
             private BlobCounter _bc;
-            private AForgeDiffCalibrator _adc;
+            private RecursiveAForgeCalibrator _adc;
             private int _offset;
 
             public IEnumerable<Blob> Blobs { get { return _blobPositions.Keys; } }
 
-            public GridBlobs(BlobCounter bc, AForgeDiffCalibrator adc, int offset)
+            public GridBlobs(BlobCounter bc, RecursiveAForgeCalibrator adc, int offset)
             {
                 _blobPositions = new Dictionary<Blob, BlobPositions>(new BlobComparer());
                 _bc = bc;
@@ -1032,26 +1032,49 @@ namespace HSR.PresWriter.PenTracking
                     _blobPositions[act].Points.Add(new Point(x,y));
                 }
                 List<Blob> n;
-                int loopcount = 0;
-                do
-                {
-                    loopcount++;
-                    n = _blobPositions.Where(m => _adc.IsNextTo(act.CenterOfGravity, m.Key.CenterOfGravity, x, y,
-                                                                _adc._relativeNeighbourDist, false))
-                                      .Select(m => m.Key)
-                                      .ToList();
-                    if (n.Count < maxNeigbours)
-                    {
-                        //Debug.WriteLine("no neighbours at " + x + "," + y + " increasing distance");
-                        _adc._relativeNeighbourDist += 0.023;
-                    }
-                    else if (n.Count > maxNeigbours)
-                    {
-                        //Debug.WriteLine("too many neighbours at " + x + "," + y + " decreasing distance");
-                        _adc._relativeNeighbourDist -= 0.05;
-                    }
-                } while (n.Count != maxNeigbours && _adc._relativeNeighbourDist > 0.8 &&
-                         _adc._relativeNeighbourDist < 3.0 && (loopcount < 100 || n.Count >= maxNeigbours));
+                n = new List<Blob>(_blobPositions.OrderBy(b => Math.Abs(b.Key.CenterOfGravity.X - act.CenterOfGravity.X)).
+                    ToList().GetRange(0,Rowcount).Select(b => b.Key));
+                n.RemoveAll(
+                    b =>
+                    Math.Abs(b.CenterOfGravity.X - act.CenterOfGravity.X) >
+                    n.Average(c => Math.Abs(c.CenterOfGravity.X - act.CenterOfGravity.X)));
+                n = n.OrderBy(b => Math.Abs(b.CenterOfGravity.Y - act.CenterOfGravity.Y)).
+                      ToList();
+                n.RemoveAll(b => b.CenterOfGravity.Y - act.CenterOfGravity.Y !=
+                                 n.Where(c => c.CenterOfGravity.Y - act.CenterOfGravity.Y > 0).DefaultIfEmpty().
+                                   Min(c => c.CenterOfGravity.Y - act.CenterOfGravity.Y) ||
+                                 b.CenterOfGravity.Y - act.CenterOfGravity.Y !=
+                                 n.Where(c => c.CenterOfGravity.Y - act.CenterOfGravity.Y < 0).DefaultIfEmpty().
+                                   Max(c => c.CenterOfGravity.Y - act.CenterOfGravity.Y));
+                var t = new List<Blob>(_blobPositions.OrderBy(b => Math.Abs(b.Key.CenterOfGravity.Y - act.CenterOfGravity.Y)).
+                    ToList().GetRange(0, Columncount).Select(b => b.Key));
+                t.RemoveAll(
+                    b =>
+                    Math.Abs(b.CenterOfGravity.X - act.CenterOfGravity.X) >
+                    t.Average(c => Math.Abs(c.CenterOfGravity.X - act.CenterOfGravity.X)));
+                t = t.OrderBy(b => Math.Abs(b.CenterOfGravity.Y - act.CenterOfGravity.Y)).
+                      ToList().GetRange(0, 2);
+                n.AddRange(t);
+                //int loopcount = 0;
+                //do
+                //{
+                //    loopcount++;
+                //    n = _blobPositions.Where(m => _adc.IsNextTo(act.CenterOfGravity, m.Key.CenterOfGravity, x, y,
+                //                                                _adc._relativeNeighbourDist, false))
+                //                      .Select(m => m.Key)
+                //                      .ToList();
+                //    if (n.Count < maxNeigbours)
+                //    {
+                //        //Debug.WriteLine("no neighbours at " + x + "," + y + " increasing distance");
+                //        _adc._relativeNeighbourDist += 0.023;
+                //    }
+                //    else if (n.Count > maxNeigbours)
+                //    {
+                //        //Debug.WriteLine("too many neighbours at " + x + "," + y + " decreasing distance");
+                //        _adc._relativeNeighbourDist -= 0.05;
+                //    }
+                //} while (n.Count != maxNeigbours && _adc._relativeNeighbourDist > 0.8 &&
+                //         _adc._relativeNeighbourDist < 3.0 && (loopcount < 100 || n.Count >= maxNeigbours));
                 foreach (var b in n)
                 {
                     var xdiff = b.CenterOfGravity.X - act.CenterOfGravity.X;

@@ -12,7 +12,7 @@ using Point = System.Drawing.Point;
 
 namespace HSR.PresWriter.PenTracking
 {
-    internal interface ICalibrator
+    public interface ICalibrator
     {
         /// <summary>
         /// Calibrating colors
@@ -45,7 +45,7 @@ namespace HSR.PresWriter.PenTracking
         /// <summary>
         /// Data from color calibration
         /// </summary>
-        Colorfilter ColorFilter { get; }
+        //Colorfilter ColorFilter { get; }
 
         event EventHandler CalibrationCompleted;
     }

@@ -4,6 +4,7 @@ using System.Threading;
 using HSR.PresWriter.DataSources.Cameras;
 using HSR.PresWriter.PenTracking;
 using HSR.PresWriter.PenTracking.Images;
+using HSR.PresWriter.PenTracking.Strategies;
 using InputEmulation;
 using Visualizer;
 using WFVisuslizer;
@@ -20,7 +21,7 @@ namespace MockTester
 
         static void Main(string[] args)
         {
-            Main2(args);
+            Main6(args);
         }
 
         static void Main1(string[] args)
@@ -155,6 +156,32 @@ namespace MockTester
             p.Release();
             Thread.Sleep(1000);
             p.OutOfRange();
+            Console.Read();
+        }
+
+        static void Main6(string[] args)
+        {
+            _virtualCam = new VirtualCamera();
+            _virtualCam.Start();
+            var calib = new SimpleAForgeCalibrator(_virtualCam, _virtualCam);
+            var pt = new AForgePenTracker(new RedLaserStrategy(), _virtualCam);
+            var parser = new DataParser(calib, pt);
+            parser.Start();
+            parser.PenPositionChanged += NewPoint;
+            while (true)
+            {
+                Thread.Sleep(10000);
+                //_virtualCam.Clear();
+                _virtualCam.AddRect(500, 500, 15, 15, Color.Red);
+                _virtualCam.AddRect(530, 530, 15, 15, Color.Black);
+                _virtualCam.Draw();
+                Thread.Sleep(30);
+                //_virtualCam.Clear();
+                _virtualCam.AddRect(500, 500, 15, 15, Color.Black);
+                _virtualCam.AddRect(530, 530, 15, 15, Color.Red);
+                _virtualCam.Draw();
+                Debug.WriteLine("Drew Point");
+            }
             Console.Read();
         }
     }

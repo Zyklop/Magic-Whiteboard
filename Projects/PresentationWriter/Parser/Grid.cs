@@ -379,6 +379,7 @@ namespace HSR.PresWriter.PenTracking
             {
                 for (int j = 0; j < ymax; j++)
                 {
+                //Debug.WriteLineIf(i > 1278, j);
                     //find intersection
                     int y1 = (int)Math.Round(TopLeft.Y - (double)(TopLeft.Y - TopRight.Y) * ((double)i / (double)xmax));
                     int y2 = (int)Math.Round(BottomLeft.Y - (double)(BottomLeft.Y - BottomRight.Y) * ((double)i / (double)xmax));
@@ -407,7 +408,7 @@ namespace HSR.PresWriter.PenTracking
                     }
                 }
             }
-            Calculate();
+            SetMapData();
             _calibratorData = (List<Point>[,]) stor;
         }
 

@@ -16,7 +16,6 @@ namespace HSR.PresWriter.PenTracking
 {
     public class DataParser
     {
-        private IPictureProvider _pictureProvider;
         private ICalibrator _calibrator; // TODO Interface anpassen an StartCalibration etc
         private IPenTracker _penTracker;
         private int _gridcheck=1000;
@@ -30,14 +29,24 @@ namespace HSR.PresWriter.PenTracking
         /// <param name="provider"></param>
         public DataParser(IPictureProvider provider, IVisualizerControl visualizer)
         {
-            _pictureProvider = provider;
-
             // Initialize Calibration Tools
-            _calibrator = new AForgeDiffCalibrator(_pictureProvider, visualizer);
+            _calibrator = new RecursiveAForgeCalibrator(provider, visualizer);
             _calibrator.CalibrationCompleted += StartTracking; // begin pen tracking after calibration immediately
 
             // Initialize Pen Tracking Tools
-            _penTracker = new AForgePenTracker(new RedLaserStrategy(), _pictureProvider);
+            _penTracker = new AForgePenTracker(new RedLaserStrategy(), provider);
+            _penTracker.PenFound += PenFound;
+        }
+
+
+        public DataParser(ICalibrator calibrator, IPenTracker tracker)
+        {
+            // Initialize Calibration Tools
+            _calibrator = calibrator;
+            _calibrator.CalibrationCompleted += StartTracking; // begin pen tracking after calibration immediately
+
+            // Initialize Pen Tracking Tools
+            _penTracker = tracker;
             _penTracker.PenFound += PenFound;
         }
 
