@@ -57,15 +57,20 @@ namespace HSR.PresWriter.PenTracking
             //_calibrator.Grid.Calculate();
 #if DEBUG
             var bm = new Bitmap(640, 480);
+            //for (int i = CalibratorGrid.TopLeft.X; i < CalibratorGrid.BottomRight.X; i++)
             for (int i = 0; i < 640; i++)
             {
+                //Debug.WriteLine(i);
                 for (int j = 0; j < 480; j++)
+                //for (int j = CalibratorGrid.TopLeft.Y; j < CalibratorGrid.BottomRight.Y; j++)
                 {
-                    var position = CalibratorGrid.GetPosition(i, j);
+                    //Debug.WriteLine(j);
+                    //var position = CalibratorGrid.GetPosition(i, j);
+                    var position = CalibratorGrid.PredictPosition(i, j);
                     if (position.X != 0 || position.Y != 0)
                     {
                         //Debug.WriteLine("Found at : " + i + "," + j + "-" + position.X + "/" + position.Y);
-                        bm.SetPixel(i, j, Color.FromArgb(255, (position.X / 5)%256, position.Y / 5, 255));
+                        bm.SetPixel(i, j, Color.FromArgb(255, (position.X / 5) % 256, (position.Y / 4) % 256, 255));
                     }
                 }
             }

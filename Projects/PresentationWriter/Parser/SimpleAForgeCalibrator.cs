@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
-using System.Drawing.Imaging;
-using System.IO;
 using System.Threading;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,7 +10,6 @@ using AForge.Imaging;
 using AForge.Imaging.Filters;
 using AForge.Math.Geometry;
 using HSR.PresWriter.IO.Events;
-using HSR.PresWriter.PenTracking;
 using HSR.PresWriter.IO;
 using Visualizer;
 using Point = System.Drawing.Point;
@@ -103,9 +100,9 @@ namespace HSR.PresWriter.PenTracking
             {
                 _cc.FrameReady -= BaseCalibration; // TODO
                 //Grid.Calculate();
-                Grid.PredictFromCorners();
+                //Grid.PredictFromCorners();
                 _vs.Close();
-                Debug.WriteLine("Calibration complete");
+                Console.WriteLine("Calibration complete");
                 CalibrationCompleted(this, new EventArgs());
             }
             else
@@ -194,6 +191,7 @@ namespace HSR.PresWriter.PenTracking
                         break;
                     case 0:
                         Grid = new Grid(e.Frame.Bitmap.Width, e.Frame.Bitmap.Height);
+                        Grid.ScreenSize = new Rectangle(0, 0, _vs.Width, _vs.Height);
                         var thread = new Thread(() =>
                             {
                                 _vs.Show();

@@ -12,7 +12,6 @@ using AForge.Imaging;
 using AForge.Imaging.Filters;
 using AForge.Math.Geometry;
 using HSR.PresWriter.IO.Events;
-using HSR.PresWriter.PenTracking;
 using HSR.PresWriter.IO;
 using Visualizer;
 using Point = System.Drawing.Point;
@@ -282,6 +281,7 @@ namespace HSR.PresWriter.PenTracking
                             break;
                         case 0:
                             Grid = new Grid(e.Frame.Bitmap.Width, e.Frame.Bitmap.Height);
+                            Grid.ScreenSize = new Rectangle(0, 0, _vs.Width, _vs.Height);
                             var thread = new Thread(() =>
                             {
                                 _vs.Show();

@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing.Drawing2D;
 using System.IO;
-using System.Windows;
 using System.Linq;
+using System.Drawing;
+using System.Windows;
 using Point = System.Drawing.Point;
 
 namespace HSR.PresWriter.PenTracking
@@ -63,6 +63,8 @@ namespace HSR.PresWriter.PenTracking
             }
         }
 
+        public System.Drawing.Rectangle ScreenSize { get; set; }
+
         /// <summary>
         /// More data needed for Calibration
         /// </summary>
@@ -72,9 +74,9 @@ namespace HSR.PresWriter.PenTracking
         /// A good area for calibration
         /// </summary>
         /// <returns></returns>
-        public Rect Needed()
+        public Rectangle Needed()
         {
-            return new Rect();
+            return new Rectangle();
         }
 
         /// <summary>
@@ -126,26 +128,12 @@ namespace HSR.PresWriter.PenTracking
 
         public bool Contains(Point p)
         {
-            //var at = Angle(TopLeft, p, TopRight);
-            //var al = Angle(TopLeft, p, BottomLeft);
-            //var ar = Angle(TopRight, p, BottomRight);
-            //var ab = Angle(BottomLeft, p, BottomRight);
-            //return at > 180 && al < 180 && ar < 180 && ab < 180;
-            // internal method
-            var gp = new GraphicsPath();
-            gp.AddLine((int) TopLeft.X, (int) TopLeft.Y, (int)TopRight.X, (int)TopRight.Y);
-            gp.AddLine((int)TopRight.X, (int)TopRight.Y, (int)BottomRight.X, (int)BottomRight.Y);
-            gp.AddLine((int)BottomRight.X, (int)BottomRight.Y, (int)BottomLeft.X, (int)BottomLeft.Y);
-            gp.AddLine((int)BottomLeft.X, (int)BottomLeft.Y, (int)TopLeft.X, (int)TopLeft.Y);
-            return gp.IsVisible((int) p.X,(int) p.Y);
+            var b1 = new BarycentricCoordinate(p, TopLeft, TopRight, BottomLeft);
+            if (b1.IsInside)
+                return true;
+            var b2 = new BarycentricCoordinate(p, TopRight, BottomLeft, BottomRight);
+            return b2.IsInside;
         }
-
-        //private double Azimuth(Point start, Point finish)
-        //{
-        //    var a = new Vector(p.X - left.X, p.Y - left.Y);
-        //    var b = new Vector(p.X - right.X, p.Y - right.Y);
-        //    return Math.Acos((a.X * b.X + a.Y * b.Y) / Math.Sqrt(a.X*a.X+a.Y*a.Y)*Math.Sqrt(b.X*b.X+b.Y*b.Y));
-        //}
 
         /// <summary>
         /// Reset temporary calibration data
@@ -234,8 +222,8 @@ namespace HSR.PresWriter.PenTracking
         /// </summary>
         public void Calculate()
         {
-            int xmax = _calibratorData[BottomRight.X][BottomRight.Y].First().X;
-            int ymax = _calibratorData[BottomRight.X][BottomRight.Y].First().Y;
+            int xmax = (int) ScreenSize.Width;
+            int ymax = (int) ScreenSize.Height;
             for (int i = 0; i < xmax; i++)
             {
                 for (int j = 0; j < ymax; j++)
@@ -364,8 +352,8 @@ namespace HSR.PresWriter.PenTracking
         public void PredictFromCorners()
         {
             // TODO index out of bound exception möglich
-            int xmax = _calibratorData[BottomRight.X][BottomRight.Y].First().X;
-            int ymax = _calibratorData[BottomRight.X][BottomRight.Y].First().Y;
+            int xmax = ScreenSize.Width;
+            int ymax = ScreenSize.Height;
             var stor = _calibratorData;
             _calibratorData = new SortedDictionary<int, SortedDictionary<int, List<Point>>>(_calibratorData);
             //foreach(var i in _calibratorData)
@@ -424,6 +412,28 @@ namespace HSR.PresWriter.PenTracking
             return _mapData[x, y];
         }
 
+        public Point PredictPosition(int x, int y)
+        {
+            var b1 = new BarycentricCoordinate(new Point(x, y), TopLeft, TopRight, BottomLeft);
+            var p1 = b1.GetCartesianCoordinates(new Point(ScreenSize.Left,ScreenSize.Top),
+                new Point(ScreenSize.Right, ScreenSize.Top), new Point(ScreenSize.Left, ScreenSize.Bottom));
+            if (b1.IsInside)
+                return p1;
+                //return new Point(1270,0);
+            var b2 = new BarycentricCoordinate(new Point(x, y), TopRight, BottomLeft, BottomRight);
+            var p2 = b2.GetCartesianCoordinates(new Point(ScreenSize.Right,ScreenSize.Top),
+                new Point(ScreenSize.Left, ScreenSize.Bottom), new Point(ScreenSize.Right, ScreenSize.Bottom));
+            if (b2.IsInside)
+            {
+                return p2;
+                return new Point(1270, 1000);
+            }
+            return new Point();
+            //if (!b1.IsInside && !b2.IsInside)
+            //    return new Point();
+            //return new Point((int) Math.Round((p1.X + p2.X)/2.0), (int) Math.Round((p1.Y + p2.Y)/2.0));
+        }
+
         public bool Contains(AForge.Point centerOfGravity)
         {
             return Contains(new Point((int) centerOfGravity.X, (int) centerOfGravity.Y));
@@ -438,14 +448,43 @@ namespace HSR.PresWriter.PenTracking
 
         public double Lambda3 { get; set; }
 
-        public BarycentricCoordinate(Point target, Point corner1, Point corner2, Point corner3)
+        public BarycentricCoordinate(Point target, Point corner1, Point corner2, Point corner3) //:
+            //this(new Point(target.X - corner1.X, target.Y - corner1.Y), 
+            //new Vector(corner1.X - corner2.X, corner1.Y - corner2.Y),
+            //     new Vector(corner1.X - corner3.X, corner1.Y - corner3.Y),
+            //     new Vector(corner2.X - corner3.X, corner2.Y - corner3.Y))
         {
-            Lambda1 = (corner2.Y - corner3.Y)*(target.X - corner3.X) + (corner3.X - corner2.X)*(target.Y - corner3.Y)/
-                      ((corner2.Y - corner3.Y)*(corner1.X - corner3.X) + (corner3.X - corner2.X)*(corner1.Y - corner3.Y));
-            Lambda1 = (corner3.Y - corner1.Y)*(target.X - corner3.X) + (corner1.X - corner3.X)*(target.Y - corner3.Y)/
-                ((corner2.Y - corner3.Y)*(corner1.X - corner3.X) + (corner3.X - corner2.X)*(corner1.Y - corner3.Y));
-            Lambda3 = 1 - Lambda1 - Lambda2;
+            //var v0 = new Vector(corner2.X - corner1.X, corner2.Y - corner1.Y);
+            //var v1 = new Vector(corner3.X - corner1.X, corner3.Y - corner1.Y);
+            //var v2 = new Vector(target.X - corner1.X, target.Y - corner1.Y);
+            //var d00 = Dot(v0, v0);
+            //var d01 = Dot(v0, v1);
+            //var d11 = Dot(v1, v1);
+            //var d20 = Dot(v2, v0);
+            //var d21 = Dot(v2, v1);
+            //var denom = d00 * d11 - d01 * d01;
+            //Lambda1 = (d11 * d20 - d01 * d21) / denom;
+            //Lambda2 = (d00 * d21 - d01 * d20) / denom;
+            var den = 1.0 / ((corner2.Y - corner3.Y) * (corner1.X - corner3.X) + (corner3.X - corner2.X) * (corner1.Y - corner3.Y));
+            Lambda1 = ((corner2.Y - corner3.Y) * (target.X - corner3.X) + (corner3.X - corner2.X) * (target.Y - corner3.Y)) * den;
+            Lambda2 = ((corner3.Y - corner1.Y) * (target.X - corner3.X) + (corner1.X - corner3.X) * (target.Y - corner3.Y)) * den;
+            Lambda3 = 1.0 - Lambda1 - Lambda2;
+            //Debug.WriteLine("L1: " + Lambda1 + " L2: " + Lambda2 + " L3: " + Lambda3);
         }
+
+        private double Dot(Vector v1, Vector v2)
+        {
+            return v1.X*v2.X + v1.Y + v2.Y;
+        }
+
+        //public BarycentricCoordinate(Point target, Vector v1, Vector v2, Vector v3)
+        //{
+        //    Lambda1 = (v2.Y - v3.Y) * (target.X - v3.X) + (v3.X - v2.X) * (target.Y - v3.Y) /
+        //              ((v2.Y - v3.Y) * (v1.X - v3.X) + (v3.X - v2.X) * (v1.Y - v3.Y));
+        //    Lambda2 = (v3.Y - v1.Y) * (target.X - v3.X) + (v1.X - v3.X) * (target.Y - v3.Y) /
+        //        ((v2.Y - v3.Y) * (v1.X - v3.X) + (v3.X - v2.X) * (v1.Y - v3.Y));
+        //    Lambda3 = 1 - Lambda1 - Lambda2;
+        //}
 
         public bool IsInside
         { get { return Lambda1 >= 0 && Lambda1 <= 1 && Lambda2 >= 0 && Lambda2 <= 1 && Lambda3 >= 0 && Lambda3 <= 1; }}
