@@ -5,7 +5,7 @@ using System.Text;
 
 namespace HSR.PresWriter.PenTracking
 {
-    struct Colorfilter
+    internal struct Colorfilter
     {
         /// <summary>
         /// Red matching

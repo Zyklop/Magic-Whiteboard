@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace HSR.PresWriter.PenTracking
 {
-    internal interface IPenTracker
+    public interface IPenTracker
     {
         PointFrame GetLastFrame();
         Point GetPenPoint(long timestamp);
