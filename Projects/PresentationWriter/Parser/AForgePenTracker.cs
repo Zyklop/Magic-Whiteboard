@@ -25,6 +25,7 @@ namespace HSR.PresWriter.PenTracking
         private IPictureProvider _source;
         private FixedSizedQueue<VideoFrame> _frameBuffer;
         private FixedSizedQueue<PointFrame> _penPoints;
+        private SemaphoreSlim _semaphore = new SemaphoreSlim(Environment.ProcessorCount + 1);
 
         public FilterStrategy Strategy { get; set; }
 
@@ -38,19 +39,46 @@ namespace HSR.PresWriter.PenTracking
 
         public void Start()
         {
-            _source.FrameReady += this.processAsync;
+            _source.FrameReady += onTrackPen;
         }
 
         public void Stop()
         {
-            _source.FrameReady -= this.processAsync;
+            _source.FrameReady -= onTrackPen;
         }
 
-        private async void processAsync(object sender, FrameReadyEventArgs frameReadyEventArgs)
+        private void onTrackPen(object sender, FrameReadyEventArgs e)
+        {
+            /* We allow #CPUs + 1 Pictures to be processed at the same time.
+             * If there is no free logigal CPU, we discard the current frame
+             */
+            if (_semaphore.Wait(0))
+            {
+                var task = Task.Run(() =>
+                {
+                    try
+                    {
+                        processFrame(e.Frame);
+                    }
+                    finally
+                    {
+                        _semaphore.Release();
+                    }
+                });
+
+                // rethrow Exception if necessary
+                if (task.Exception != null)
+                {
+                    throw task.Exception;
+                }
+            }
+        }
+
+        private void processFrame(VideoFrame currentFrame)
         {
             VideoFrame previousFrame;
-            var currentFrame = frameReadyEventArgs.Frame;
-            // Lock buffer for adding elements in dependency of queue length
+
+            // Lock buffer for adding elements in dependency of queue length and preserving order.
             lock (this._frameBuffer) 
             {
                 // We can only do our work if there is at least one frame in the buffer already
@@ -61,10 +89,13 @@ namespace HSR.PresWriter.PenTracking
                 }
                 else
                 {
-                    previousFrame = this._frameBuffer.Last();
+                    // we can do our work, since there is a previous frame.
+                    previousFrame = this._frameBuffer.Last(); 
                     this._frameBuffer.Enqueue(currentFrame);
                 }
             }
+
+            // Status: We now have references to a previous and a current frame in the correct order.
 
             try
             {
@@ -95,7 +126,7 @@ namespace HSR.PresWriter.PenTracking
             catch (Exception e)
             {
                 Debug.WriteLine(e.Message);
-                // TODO Error Handling: Maybe we should catch everything for bug containment.
+                // TODO Error Handling: Maybe we should catch everything for stability.
             }
         }
 
