@@ -20,6 +20,38 @@ namespace HSR.PresWriter.Tester
     {
         public static void Main(string[] args)
         {
+            //CameraConfig();
+            TakeVideo();
+        }
+
+        public static void CameraConfig()
+        {
+            AForgeCamera camera = new AForgeCamera();
+            camera.ShowConfigurationDialog();
+        }
+
+        public static void TakeVideo()
+        {
+            String saveDir = @"C:\temp\images\video";
+            if (!Directory.Exists(saveDir))
+            {
+                Directory.CreateDirectory(saveDir);
+            }
+
+            AForgeCamera camera = new AForgeCamera();
+            camera.FrameReady += delegate(object o, FrameReadyEventArgs e)
+            {
+                Console.WriteLine("Frame {0}", e.Frame.Number);
+                e.Frame.Bitmap.Save(Path.Combine(saveDir,"pic-"+e.Frame.Number+".png"));
+            };
+
+            camera.Start();
+            Console.ReadLine();
+            camera.Stop();
+        }
+
+        public static void PenTrackingPerformance()
+        {
             FilesystemCamera camera = new FilesystemCamera(new DirectoryInfo(@"C:\temp\images\laser"));
             camera.FrameReady += delegate(object o, FrameReadyEventArgs e) {
                 Console.WriteLine("got image nr {0}.", e.Frame.Number);
