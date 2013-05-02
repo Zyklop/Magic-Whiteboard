@@ -125,7 +125,7 @@ namespace HSR.PresWriter.PenTracking
             }
             catch (Exception e)
             {
-                Debug.WriteLine(e.Message);
+                Debug.WriteLine("Error in Frame Processin: "+e.Message);
                 // TODO Error Handling: Maybe we should catch everything for stability.
             }
         }
@@ -162,8 +162,11 @@ namespace HSR.PresWriter.PenTracking
             }
 
             long stage1 = sw.ElapsedMilliseconds;
-            Console.WriteLine("Time: {0}", stage1);
             sw.Stop();
+            if (stage1 >= 40)
+            {
+                Console.WriteLine("Pen Tracking Overtime: {0}", stage1);
+            }
 
             return candidates;
         }
