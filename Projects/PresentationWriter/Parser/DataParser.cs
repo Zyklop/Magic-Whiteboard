@@ -30,7 +30,7 @@ namespace HSR.PresWriter.PenTracking
         public DataParser(IPictureProvider provider, IVisualizerControl visualizer)
         {
             // Initialize Calibration Tools
-            _calibrator = new RecursiveAForgeCalibrator(provider, visualizer);
+            _calibrator = new PredictiveAForgeCalibrator(provider, visualizer);
             _calibrator.CalibrationCompleted += StartTracking; // begin pen tracking after calibration immediately
 
             // Initialize Pen Tracking Tools
@@ -67,10 +67,10 @@ namespace HSR.PresWriter.PenTracking
                     //Debug.WriteLine(j);
                     //var position = CalibratorGrid.GetPosition(i, j);
                     var position = CalibratorGrid.PredictPosition(i, j);
-                    if (position.X != 0 || position.Y != 0)
+                    if (position.X >= 0 && position.Y >= 0)
                     {
                         //Debug.WriteLine("Found at : " + i + "," + j + "-" + position.X + "/" + position.Y);
-                        bm.SetPixel(i, j, Color.FromArgb(255, (position.X / 5) % 256, (position.Y / 4) % 256, 255));
+                        bm.SetPixel(i, j, Color.FromArgb(255, (position.X / 5 + 1024) % 256, (position.Y / 4 + 1024) % 256, 255));
                     }
                 }
             }

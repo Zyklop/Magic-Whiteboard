@@ -21,7 +21,7 @@ namespace MockTester
 
         static void Main(string[] args)
         {
-            Main7(args);
+            Main2(args);
         }
 
         static void Main1(string[] args)
@@ -50,7 +50,7 @@ namespace MockTester
             //var cam = new AForgeCamera();
             //cam.IsMirrored = true;
             //var visualizerControl = WFVisuslizer.VisualizerControl.GetVisualizer();
-            var cam = new TimedFilesystemCamera(new DirectoryInfo(@"C:\temp\daforge\inph"));
+            var cam = new TimedFilesystemCamera(new DirectoryInfo(@"C:\temp\daforge\inpd"));
             var visualizerControl = new VisualizerDummy();
             var parser = new DataParser(cam,visualizerControl);
             parser.Start();

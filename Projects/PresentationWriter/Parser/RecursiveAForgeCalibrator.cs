@@ -1031,32 +1031,35 @@ namespace HSR.PresWriter.PenTracking
                     Debug.WriteLine("Pos: " + x + "/" + y + " not stored, adding now");
                     _blobPositions[act].Points.Add(new Point(x,y));
                 }
-                List<Blob> n;
-                n = new List<Blob>(_blobPositions.OrderBy(b => Math.Abs(b.Key.CenterOfGravity.X - act.CenterOfGravity.X)).
+                List<Blob> n = new List<Blob>();
+                List<Blob> hor;
+                hor = new List<Blob>(_blobPositions.OrderBy(b => Math.Abs(b.Key.CenterOfGravity.X - act.CenterOfGravity.X)).
                     ToList().GetRange(0,Rowcount).Select(b => b.Key));
-                n.RemoveAll(
+                hor.RemoveAll(
                     b =>
                     Math.Abs(b.CenterOfGravity.X - act.CenterOfGravity.X) >
-                    n.Average(c => Math.Abs(c.CenterOfGravity.X - act.CenterOfGravity.X)));
-                n.RemoveAll(b => b.CenterOfGravity.Y - act.CenterOfGravity.Y !=
-                                 n.Where(c => c.CenterOfGravity.Y - act.CenterOfGravity.Y > 0).DefaultIfEmpty().
-                                   Min(c => c.CenterOfGravity.Y - act.CenterOfGravity.Y) ||
-                                 b.CenterOfGravity.Y - act.CenterOfGravity.Y !=
-                                 n.Where(c => c.CenterOfGravity.Y - act.CenterOfGravity.Y < 0).DefaultIfEmpty().
-                                   Max(c => c.CenterOfGravity.Y - act.CenterOfGravity.Y));
-                var t = new List<Blob>(_blobPositions.OrderBy(b => Math.Abs(b.Key.CenterOfGravity.Y - act.CenterOfGravity.Y)).
+                    hor.Average(c => Math.Abs(c.CenterOfGravity.X - act.CenterOfGravity.X)));
+                var l = hor.Where(c => c.CenterOfGravity.Y - act.CenterOfGravity.Y > 0);
+                if (l.Any())
+                    n.Add(l.First(b => b.CenterOfGravity.Y - act.CenterOfGravity.Y ==
+                                   l.Min(c => c.CenterOfGravity.Y - act.CenterOfGravity.Y)));
+                var r = hor.Where(c => c.CenterOfGravity.Y - act.CenterOfGravity.Y < 0);
+                if (r.Any())
+                    n.Add(r.First(b => b.CenterOfGravity.Y - act.CenterOfGravity.Y ==
+                                   r.Max(c => c.CenterOfGravity.Y - act.CenterOfGravity.Y)));
+                var vert = new List<Blob>(_blobPositions.OrderBy(b => Math.Abs(b.Key.CenterOfGravity.Y - act.CenterOfGravity.Y)).
                     ToList().GetRange(0, Columncount).Select(b => b.Key));
-                t.RemoveAll(
-                    b =>
+                vert.RemoveAll( b =>
                     Math.Abs(b.CenterOfGravity.Y - act.CenterOfGravity.Y) >
-                    t.Average(c => Math.Abs(c.CenterOfGravity.Y - act.CenterOfGravity.Y)));
-                t.RemoveAll(b => b.CenterOfGravity.X - act.CenterOfGravity.X !=
-                                 n.Where(c => c.CenterOfGravity.X - act.CenterOfGravity.X > 0).DefaultIfEmpty().
-                                   Min(c => c.CenterOfGravity.X - act.CenterOfGravity.X) ||
-                                 b.CenterOfGravity.X - act.CenterOfGravity.X !=
-                                 n.Where(c => c.CenterOfGravity.X - act.CenterOfGravity.X < 0).DefaultIfEmpty().
-                                   Max(c => c.CenterOfGravity.X - act.CenterOfGravity.X));
-                n.AddRange(t);
+                    vert.Average(c => Math.Abs(c.CenterOfGravity.Y - act.CenterOfGravity.Y)));
+                var t = hor.Where(c => c.CenterOfGravity.X - act.CenterOfGravity.X > 0);
+                if (t.Any())
+                    n.Add(t.First(b => b.CenterOfGravity.X - act.CenterOfGravity.X ==
+                                   t.Min(c => c.CenterOfGravity.X - act.CenterOfGravity.X)));
+                var bott = hor.Where(c => c.CenterOfGravity.X - act.CenterOfGravity.X < 0);
+                if (bott.Any())
+                    n.Add(bott.First(b => b.CenterOfGravity.X - act.CenterOfGravity.X ==
+                                   bott.Max(c => c.CenterOfGravity.X - act.CenterOfGravity.X)));
                 //int loopcount = 0;
                 //do
                 //{
