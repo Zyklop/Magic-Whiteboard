@@ -55,6 +55,8 @@ namespace HSR.PresWriter.PenTracking
             //_pictureProvider.ShowConfigurationDialog();
             //_pictureProvider.FrameReady += _camera_FrameReady; // TODO siehe _camera_FrameReady
             //_calibrator.Grid.Calculate();
+
+            /*
 #if DEBUG
             var bm = new Bitmap(640, 480);
             //for (int i = CalibratorGrid.TopLeft.X; i < CalibratorGrid.BottomRight.X; i++)
@@ -76,6 +78,8 @@ namespace HSR.PresWriter.PenTracking
             }
             bm.Save(@"C:\temp\daforge\grid.bmp", ImageFormat.MemoryBmp);
 #endif
+             */
+
             _penTracker.Start();
             //_calibrator.Grid.PredictFromCorners();
         }
@@ -120,6 +124,8 @@ namespace HSR.PresWriter.PenTracking
         private void PenFound(object sender, PenPositionEventArgs e)
         {
             // TODO Loswerden!!! Why???
+            Debug.WriteLine("Pen Nr\t{0} at {1},{2}", e.Frame.Number, e.Frame.Point.X, e.Frame.Point.Y);
+
             Point point = _calibrator.Grid.GetPosition(e.Frame.Point.X, e.Frame.Point.Y);
             PointFrame frame = e.Frame.ApplyRebase(point);
             if (PenPositionChanged != null)
