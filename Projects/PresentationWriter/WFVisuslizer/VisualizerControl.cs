@@ -24,8 +24,11 @@ namespace WFVisuslizer
 
         protected VisualizerControl()
         {
+            
             Task.Factory.StartNew(() => Application.Run(_cw));
+            Thread.Sleep(10);
             _cw.Hide();
+
             //var thread2 = new Thread(() => Application.Run(_cw));
             //_cw.Hide();
         }

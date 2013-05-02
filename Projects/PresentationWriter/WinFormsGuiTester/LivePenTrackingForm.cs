@@ -19,8 +19,6 @@ namespace WinFormsGuiTester
         private FixedSizedQueue<PointFrame> penDrawingBuffer;
         private AForgeCamera camera;
         private AForgePenTracker tracker;
-        private Graphics overlayGraphics;
-        private StreamWriter streamWriter;
         private Bitmap _bitmap;
 
         public LivePenTrackingForm()
@@ -31,22 +29,23 @@ namespace WinFormsGuiTester
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            camera = new AForgeCamera();
+            camera.FrameReady += camera_FrameReady;
+            camera.Start();
+            camera.ShowConfigurationDialog();
+
+            tracker = new AForgePenTracker(new WhiteLedStrategy(), camera);
+            tracker.PenFound += Found;
+            tracker.Start();
 
 #if DEBUG
             tracker.DebugPicture += tracker_DebugPicture;
 #endif
-
-            camera = new AForgeCamera();
-            tracker = new AForgePenTracker(new RedLaserStrategy(), camera);
-            tracker.PenFound += Found;
-            camera.FrameReady += camera_FrameReady;
-            camera.Start();
-            camera.ShowConfigurationDialog();
         }
 
         private void camera_FrameReady(object sender, FrameReadyEventArgs e)
         {
-            _bitmap = (Bitmap) e.Frame.Bitmap.Clone();
+            _bitmap = (Bitmap)e.Frame.Bitmap.Clone();
         }
 
         //private int lastRandX = 100;
@@ -56,10 +55,6 @@ namespace WinFormsGuiTester
         {
             //Bitmap redaction = (Bitmap)e.Frame.Bitmap.Clone();
             PointFrame pointFrame = penPositionEventArgs.Frame;
-
-            //// fake:
-            //lastRandX += tempRandom.Next(15);
-            //lastRandY += tempRandom.Next(15);
 
             if (pointFrame != null)
             {
@@ -82,6 +77,7 @@ namespace WinFormsGuiTester
                         previousPoint = f.Point;
                     }
                 }
+                g.Save();
                 this.calibrationPictureBox.Image = _bitmap;
             }
         }

@@ -100,7 +100,7 @@ namespace HSR.PresWriter.PenTracking
         private async Task CalibThread(FrameReadyEventArgs e)
         {
             Debug.WriteLine("Calibrating " + _calibrationStep + " " + _drawing);
-            e.Frame.Bitmap.Save(@"C:\temp\daforge\src\img" + (_calibrationStep<10?"0":"") + _calibrationStep + "-" + (_drawing?"1":"0") + "-" + _errors + ".jpg", ImageFormat.Jpeg);
+            //e.Frame.Bitmap.Save(@"C:\temp\daforge\src\img" + (_calibrationStep<10?"0":"") + _calibrationStep + "-" + (_drawing?"1":"0") + "-" + _errors + ".jpg", ImageFormat.Jpeg);
             if (_errors > 100)
             {
                 //calibration not possible
@@ -149,7 +149,7 @@ namespace HSR.PresWriter.PenTracking
                         var bf = new Difference(gcf.Apply(d));
                         bcf.ApplyInPlace(d);
                         bf.ApplyInPlace(d);
-                        d.ToManagedImage().Save(@"C:\temp\daforge\diff\img" + _calibrationStep + ".jpg", ImageFormat.Jpeg);
+                        //d.ToManagedImage().Save(@"C:\temp\daforge\diff\img" + _calibrationStep + ".jpg", ImageFormat.Jpeg);
                         stats = new ImageStatistics(d);
                         gcf = new ColorFiltering(new IntRange(0, 255),
                                                      new IntRange((int)stats.GreenWithoutBlack.Mean - GDiff, 255),
@@ -158,9 +158,9 @@ namespace HSR.PresWriter.PenTracking
                                                      new IntRange(0, 255),
                                                      new IntRange((int)stats.BlueWithoutBlack.Mean - BDiff, 255));
                         var bbm = bcf.Apply(d);
-                        bbm.ToManagedImage().Save(@"C:\temp\daforge\bimg\img" + _calibrationStep + ".jpg", ImageFormat.Jpeg);
+                        //bbm.ToManagedImage().Save(@"C:\temp\daforge\bimg\img" + _calibrationStep + ".jpg", ImageFormat.Jpeg);
                         gcf.ApplyInPlace(d);
-                        d.ToManagedImage().Save(@"C:\temp\daforge\gimg\img" + _calibrationStep + ".jpg", ImageFormat.Jpeg);
+                        //d.ToManagedImage().Save(@"C:\temp\daforge\gimg\img" + _calibrationStep + ".jpg", ImageFormat.Jpeg);
                         var gblobCounter = new BlobCounter
                             {
                                 ObjectsOrder = ObjectsOrder.YX,
@@ -193,7 +193,7 @@ namespace HSR.PresWriter.PenTracking
                         bgb.Insert();
 
 #if DEBUG
-                        actImg.Save(@"C:\temp\daforge\squares\img" + _calibrationStep + ".jpg", ImageFormat.Jpeg);
+                        //actImg.Save(@"C:\temp\daforge\squares\img" + _calibrationStep + ".jpg", ImageFormat.Jpeg);
 #endif
                         _calibrationStep++;
                     }
@@ -212,7 +212,7 @@ namespace HSR.PresWriter.PenTracking
                             cf.ApplyInPlace(bm);
                             var blobCounter = new BlobCounter { ObjectsOrder = ObjectsOrder.Size, BackgroundThreshold = Color.FromArgb(255, 15, 20, 20), FilterBlobs = true };
                             blobCounter.ProcessImage(bm);
-                            bm.ToManagedImage().Save(@"C:\temp\daforge\diff\img" + _calibrationStep + "-" + _errors + ".jpg", ImageFormat.Jpeg);
+                            //bm.ToManagedImage().Save(@"C:\temp\daforge\diff\img" + _calibrationStep + "-" + _errors + ".jpg", ImageFormat.Jpeg);
                             var blobs = blobCounter.GetObjectsInformation();
                             if (blobs.Any())
                             {
