@@ -38,7 +38,7 @@ namespace WinFormsGuiTester
             _camera.FrameReady += _camera_FrameReady;
 
             // Initialize Calibration and Pen Parsing Mechanism
-            _parser = new DataParser(_camera,VisualizerControl.GetVisualizer());
+            _parser = new DataParser(_camera, VisualizerControl.GetVisualizer());
             _parser.PenPositionChanged += parser_PenPositionChanged;
 
             // Form for visual feedback of tracking process
@@ -47,22 +47,28 @@ namespace WinFormsGuiTester
 
         private void _camera_FrameReady(object sender, FrameReadyEventArgs e)
         {
+
+
             Bitmap redaction = (Bitmap)e.Frame.Bitmap.Clone();
 
             // draw points in buffer to image
             using (Graphics g = Graphics.FromImage(redaction))
             {
-                using (SolidBrush brush = new SolidBrush(Color.Black))
+                if (_parser.CalibratorGrid != null)
                 {
-                    Point bottomLeft = _parser.CalibratorGrid.BottomLeft;
-                    Point topLeft = _parser.CalibratorGrid.TopLeft;
-                    Point bottomRight = _parser.CalibratorGrid.BottomRight;
-                    Point topRight = _parser.CalibratorGrid.TopRight;
-                    g.DrawLine(Pens.Red, bottomLeft, bottomRight);
-                    g.DrawLine(Pens.Red, bottomLeft, topLeft);
-                    g.DrawLine(Pens.Red, topRight, bottomRight);
-                    g.DrawLine(Pens.Red, topRight, topLeft);
+                    using (SolidBrush brush = new SolidBrush(Color.Black))
+                    {
+                        Point bottomLeft = _parser.CalibratorGrid.BottomLeft;
+                        Point topLeft = _parser.CalibratorGrid.TopLeft;
+                        Point bottomRight = _parser.CalibratorGrid.BottomRight;
+                        Point topRight = _parser.CalibratorGrid.TopRight;
+                        g.DrawLine(Pens.Red, bottomLeft, bottomRight);
+                        g.DrawLine(Pens.Red, bottomLeft, topLeft);
+                        g.DrawLine(Pens.Red, topRight, bottomRight);
+                        g.DrawLine(Pens.Red, topRight, topLeft);
+                    }
                 }
+
                 this.cameraPictureBox.Image = redaction;
             }
 

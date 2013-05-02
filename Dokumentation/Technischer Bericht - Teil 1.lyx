@@ -1,0 +1,224 @@
+#LyX 2.0 created this file. For more info see http://www.lyx.org/
+\lyxformat 413
+\begin_document
+\begin_header
+\textclass article
+\use_default_options false
+\maintain_unincluded_children false
+\language ngerman
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_amsmath 0
+\use_esint 0
+\use_mhchem 1
+\use_mathdots 1
+\cite_engine basic
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\use_refstyle 0
+\index Stichwortverzeichnis
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language german
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+Magic-Whiteboard
+\end_layout
+
+\begin_layout Section*
+Abstract
+\end_layout
+
+\begin_layout Standard
+Das Ziel der Bachelorarbeit ist die Entwicklung eines elektronischen Stiftes
+ für ein virtuelles Whiteboard.
+ Der Stift soll von einer einfachen Laptopkamera erkannt und getrackt werden.
+ So kann auf ein von einem Beamer an die Wand projiziertes digitales Bild
+ geschrieben werden.
+ Weiter wird untersucht ob es denn wirklich einen Stift braucht um an eine
+ Leinwand zu schreiben.
+\end_layout
+
+\begin_layout Section
+Erkennen eines Stiftes
+\end_layout
+
+\begin_layout Subsection
+Umgebung
+\end_layout
+
+\begin_layout Standard
+- Das Licht hat eine wichtige Rolle gespielt.
+\begin_inset Newline newline
+\end_inset
+
+- Es wurde eine einfache Laptopkamera eines T430s verwendet (640x480px à
+ 40ms).
+\begin_inset Newline newline
+\end_inset
+
+- Der Weissabgleich ist lästig.
+\begin_inset Newline newline
+\end_inset
+
+- Die Einstellungen zum Weissabgleich können unter Windows nur per DirectShow
+ Menu eingestellt werden.
+ 
+\end_layout
+
+\begin_layout Subsection
+Wahl des Stiftes
+\end_layout
+
+\begin_layout Standard
+Leuchtwerkzeug über optisches Licht für Proof Of Concept.
+ Wahrscheinlich würde in einem Produkt Infrarot-Technologie eingesetzt.
+\end_layout
+
+\begin_layout Itemize
+Glühbirne
+\end_layout
+
+\begin_layout Itemize
+LED
+\end_layout
+
+\begin_layout Itemize
+Laser Pointer, Frequenzband
+\end_layout
+
+\begin_layout Itemize
+Infrarot Lambsa 1/4 Pass-Filter
+\end_layout
+
+\begin_layout Subsection
+Software
+\end_layout
+
+\begin_layout Standard
+Werkzeug: AForge.
+ CSharp.
+ Architektur.
+ Mathematica.
+\end_layout
+
+\begin_layout Subsection
+Verfahren
+\end_layout
+
+\begin_layout Standard
+- Über Differenzbilder wird die Bewegung der gefundenen Stiftpositionen
+ interpoliert.
+ 
+\begin_inset Newline newline
+\end_inset
+
+- Differenz-Bilder Thresholded Blobs zählen Punkte mittels Interpolation
+ finden 
+\begin_inset Newline newline
+\end_inset
+
+- ca.
+ alle 40ms ein Punkt finden ca.
+ 20ms Rückstand, da zwischen aktuellem und letztem Bild interpoliert wird.
+ Multithreading gut möglich 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename RedDot ohne Weissabgleich/1_source16.bmp
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename RedDot ohne Weissabgleich/2_overlay16.bmp
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename RedDot ohne Weissabgleich/3_diff16.bmp
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename RedDot ohne Weissabgleich/4_grey16.bmp
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename RedDot ohne Weissabgleich/5_treshold16.bmp
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Erkennen einer Hand
+\end_layout
+
+\begin_layout Standard
+Zuerst Peron über Beine finden.
+\end_layout
+
+\begin_layout Standard
+Daten über schlechtigkeit zeigen
+\end_layout
+
+\end_body
+\end_document

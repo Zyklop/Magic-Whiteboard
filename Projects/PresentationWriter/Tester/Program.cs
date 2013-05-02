@@ -20,8 +20,8 @@ namespace HSR.PresWriter.Tester
     {
         public static void Main(string[] args)
         {
-            //CameraConfig();
-            TakeVideo();
+            CameraConfig();
+            //TakeVideo();
         }
 
         public static void CameraConfig()

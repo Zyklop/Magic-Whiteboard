@@ -191,6 +191,14 @@ Zuerst zu komplexer Ansatz für Blob-Auswertung gewählt.
 Algorithmus braucht zu viel Zeit (mehr als Framerate)
 \end_layout
 
+\begin_layout Enumerate
+Threading mit Semaphore bringt guten Performance Gewinn
+\end_layout
+
+\begin_layout Enumerate
+Ansatz für selektiertes Suchen bringts
+\end_layout
+
 \end_deeper
 \end_body
 \end_document

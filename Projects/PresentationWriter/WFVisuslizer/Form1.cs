@@ -80,7 +80,7 @@ namespace WFVisuslizer
                 var g = Graphics.FromImage(bm);
                 g.Clear(Color.DarkGray);
                 g.DrawImageUnscaled(_bm, 40, 60);
-                bm.Save(@"C:\temp\daforge\outp\img" + _counter++ + ".jpg");
+                //bm.Save(@"C:\temp\daforge\outp\img" + _counter++ + ".jpg");
             }
 #endif
         }
