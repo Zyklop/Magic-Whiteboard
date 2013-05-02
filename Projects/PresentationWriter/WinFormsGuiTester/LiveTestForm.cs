@@ -4,6 +4,7 @@ using HSR.PresWriter.IO.Cameras;
 using HSR.PresWriter.IO.Events;
 using HSR.PresWriter.PenTracking;
 using HSR.PresWriter.PenTracking.Events;
+using HSR.PresWriter.PenTracking.Strategies;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -38,7 +39,10 @@ namespace WinFormsGuiTester
             _camera.FrameReady += _camera_FrameReady;
 
             // Initialize Calibration and Pen Parsing Mechanism
-            _parser = new DataParser(_camera, VisualizerControl.GetVisualizer());
+            _parser = new DataParser(
+                new SimpleAForgeCalibrator(_camera, VisualizerControl.GetVisualizer()), 
+                new AForgePenTracker(new RedLaserStrategy(), _camera));
+            //_parser = new DataParser(_camera, VisualizerControl.GetVisualizer());
             _parser.PenPositionChanged += parser_PenPositionChanged;
 
             // Form for visual feedback of tracking process
@@ -105,6 +109,7 @@ namespace WinFormsGuiTester
 
         private void parser_PenPositionChanged(object sender, PenPositionEventArgs e)
         {
+            this.foundPointLabel.Text = "Found Point: " + e.Frame.Point.X + ", " + e.Frame.Point.Y;
             Bitmap redaction = (Bitmap)this.cameraPictureBox.Image.Clone();
 
             if (e.Frame != null)
@@ -173,7 +178,6 @@ namespace WinFormsGuiTester
             //    this.cameraPictureBox.Image = redaction;
             //}
 
-            this.foundPointLabel.Text = "Found Point: " + e.Frame.Point.X + ", " + e.Frame.Point.Y;
         }
 
         private void toggleCameraButton_Click(object sender, EventArgs e)
