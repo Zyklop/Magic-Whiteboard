@@ -417,18 +417,18 @@ namespace HSR.PresWriter.PenTracking
             var b1 = new BarycentricCoordinate(new Point(x, y), TopLeft, TopRight, BottomLeft);
             var p1 = b1.GetCartesianCoordinates(new Point(ScreenSize.Left,ScreenSize.Top),
                 new Point(ScreenSize.Right, ScreenSize.Top), new Point(ScreenSize.Left, ScreenSize.Bottom));
+            //return p1;
             if (b1.IsInside)
                 return p1;
-                //return new Point(1270,0);
             var b2 = new BarycentricCoordinate(new Point(x, y), TopRight, BottomLeft, BottomRight);
             var p2 = b2.GetCartesianCoordinates(new Point(ScreenSize.Right,ScreenSize.Top),
                 new Point(ScreenSize.Left, ScreenSize.Bottom), new Point(ScreenSize.Right, ScreenSize.Bottom));
+            //return p2;
             if (b2.IsInside)
             {
                 return p2;
-                return new Point(1270, 1000);
             }
-            return new Point();
+            return new Point(-1,-1);
             //if (!b1.IsInside && !b2.IsInside)
             //    return new Point();
             //return new Point((int) Math.Round((p1.X + p2.X)/2.0), (int) Math.Round((p1.Y + p2.Y)/2.0));
@@ -437,6 +437,11 @@ namespace HSR.PresWriter.PenTracking
         public bool Contains(AForge.Point centerOfGravity)
         {
             return Contains(new Point((int) centerOfGravity.X, (int) centerOfGravity.Y));
+        }
+
+        public Point PredictPosition(AForge.Point p)
+        {
+            return PredictPosition((int) p.X, (int) p.Y);
         }
     }
 

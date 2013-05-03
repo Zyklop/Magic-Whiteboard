@@ -53,6 +53,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AForgeCalibrator.cs" />
+    <Compile Include="PredictiveAForgeCalibrator.cs" />
     <Compile Include="SimpleAForgeCalibrator.cs" />
     <Compile Include="RecursiveAForgeCalibrator.cs" />
     <Compile Include="AForgePenTracker.cs" />
