@@ -128,7 +128,7 @@ namespace HSR.PresWriter.PenTracking
             // TODO Loswerden!!! Why???
             Debug.WriteLine("Pen Nr\t{0} at {1},{2}", e.Frame.Number, e.Frame.Point.X, e.Frame.Point.Y);
 
-            Point point = _calibrator.Grid.GetPosition(e.Frame.Point.X, e.Frame.Point.Y);
+            Point point = _calibrator.Grid.PredictPosition(e.Frame.Point.X, e.Frame.Point.Y);
             PointFrame frame = e.Frame.ApplyRebase(point);
             if (PenPositionChanged != null)
             {
