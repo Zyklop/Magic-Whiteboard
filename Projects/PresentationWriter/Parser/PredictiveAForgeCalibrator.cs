@@ -25,10 +25,10 @@ namespace HSR.PresWriter.PenTracking
         private int _calibrationStep;
         private int _errors;
         private IVisualizerControl _vs;
-        private const int CalibrationFrames = 12; //must be n^2+3
+        private const int CalibrationFrames = 28; //must be n^2+3
         private Difference diffFilter = new Difference();
-        private const int Rowcount = 20;
-        private const int Columncount = 15;
+        private const int Rowcount = 12;
+        private const int Columncount = 9;
         private SemaphoreSlim _sem;
         private Task _t;
         private double _sqrheight;
@@ -159,9 +159,9 @@ namespace HSR.PresWriter.PenTracking
                         var gblobCounter = new BlobCounter
                             {
                                 ObjectsOrder = ObjectsOrder.YX,
-                                MaxHeight = 30,
+                                MaxHeight = 60,
                                 MinHeight = 15,
-                                MaxWidth = 30,
+                                MaxWidth = 60,
                                 MinWidth = 15,
                                 FilterBlobs = true,
                                 CoupledSizeFiltering = false
@@ -170,9 +170,9 @@ namespace HSR.PresWriter.PenTracking
                         var bblobCounter = new BlobCounter
                             {
                                 ObjectsOrder = ObjectsOrder.YX,
-                                MaxHeight = 30,
+                                MaxHeight = 60,
                                 MinHeight = 15,
-                                MaxWidth = 30,
+                                MaxWidth = 60,
                                 MinWidth = 15,
                                 FilterBlobs = true,
                                 CoupledSizeFiltering = false

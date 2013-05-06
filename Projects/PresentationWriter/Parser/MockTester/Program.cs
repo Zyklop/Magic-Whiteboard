@@ -50,12 +50,12 @@ namespace MockTester
             //var cam = new AForgeCamera();
             //cam.IsMirrored = true;
             //var visualizerControl = WFVisuslizer.VisualizerControl.GetVisualizer();
-            var cam = new TimedFilesystemCamera(new DirectoryInfo(@"C:\temp\daforge\inpd"));
+            var cam = new TimedFilesystemCamera(new DirectoryInfo(@"C:\temp\daforge\inpv2"));
             var visualizerControl = new VisualizerDummy();
             var parser = new DataParser(cam,visualizerControl);
             parser.Start();
-            Thread.Sleep(1000);
             cam.Start();
+            Thread.Sleep(1000);
             //cameraConnector.NewImage += delegate(object sender, NewImageEventArgs e)
             //    {
             //        if (i>0)
@@ -195,6 +195,10 @@ namespace MockTester
             var parser = new DataParser(calib, pt);
             parser.Start();
             parser.PenPositionChanged += NewPoint;
+            Console.Read();
+            Console.WriteLine("again");
+            Thread.Sleep(1000);
+            parser.Start();
             Console.Read();
         }
     }

@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AdvancedInputEmulator.cs" />
     <Compile Include="DirectInput.cs" />
     <Compile Include="KeyBoardEvent.cs" />
     <Compile Include="Mouse.cs" />
@@ -51,6 +52,12 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="DInput.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Common\HSR.PresWriter.csproj">
+      <Project>{1386f52b-ab44-46f8-b442-ec2662df1e3a}</Project>
+      <Name>HSR.PresWriter</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
