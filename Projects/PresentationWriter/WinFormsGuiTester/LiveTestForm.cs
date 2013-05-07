@@ -1,4 +1,5 @@
-﻿using HSR.PresWriter.Containers;
+﻿using HSR.PresWriter;
+using HSR.PresWriter.Containers;
 using HSR.PresWriter.IO;
 using HSR.PresWriter.IO.Cameras;
 using HSR.PresWriter.IO.Events;
@@ -37,6 +38,16 @@ namespace WinFormsGuiTester
             _camera = new AForgeCamera();
             //_camera = new FilesystemCamera(new DirectoryInfo(@"C:\temp\aforge\inph"));
             _camera.FrameReady += _camera_FrameReady;
+            /*
+            _camera.FrameReady += delegate(object o, FrameReadyEventArgs e) {
+                String path = @"C:\temp\live\cap-" + DateTime.Now.DayOfYear;
+                if (!Directory.Exists(path))
+                {
+                    Directory.CreateDirectory(path);
+                }
+                e.Frame.Bitmap.Save(Path.Combine(path, "cap-" + CurrentMillis.Millis + ".png"));
+            };
+            */
 
             // Initialize Calibration and Pen Parsing Mechanism
             _parser = new DataParser(
@@ -73,6 +84,7 @@ namespace WinFormsGuiTester
                     }
                 }
 
+                // TODO: Object is currently in use elsewhere..
                 this.cameraPictureBox.Image = redaction;
             }
 

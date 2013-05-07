@@ -111,6 +111,10 @@ namespace HSR.PresWriter.PenTracking
                     Point foundPoint = this.findPen(candidates);
                     if (foundPoint.IsEmpty)
                     {
+                        if (this.NoPenFound != null)
+                        {
+                            this.NoPenFound(this, null);
+                        }
                         return;
                     }
 
@@ -232,6 +236,7 @@ namespace HSR.PresWriter.PenTracking
             {
                 case 0:
                     // No pen found or pen is not moving
+                    // TODO (0,0) is actually valid!
                     return Point.Empty;
                 case 1:
                     // Take center of the only found rectangle
@@ -314,6 +319,7 @@ namespace HSR.PresWriter.PenTracking
         }
 
         public event EventHandler<PenPositionEventArgs> PenFound;
+        public event EventHandler<EventArgs> NoPenFound;
 
 
 #if DEBUG
