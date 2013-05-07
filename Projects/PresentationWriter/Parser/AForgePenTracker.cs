@@ -120,7 +120,7 @@ namespace HSR.PresWriter.PenTracking
                     }
 
                     // Put the qualified result in a new point frame and fire event
-                    PointFrame resultFrame = new PointFrame(currentFrame.Number + 1, foundPoint, currentFrame.Timestamp);
+                    PointFrame resultFrame = new PointFrame(currentFrame.Number, foundPoint, currentFrame.Timestamp);
                     this._penPoints.Enqueue(resultFrame);
                     if (this.PenFound != null)
                     {
