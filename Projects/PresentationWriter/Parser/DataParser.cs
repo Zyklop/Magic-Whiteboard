@@ -56,29 +56,24 @@ namespace HSR.PresWriter.PenTracking
             //_pictureProvider.FrameReady += _camera_FrameReady; // TODO siehe _camera_FrameReady
             //_calibrator.Grid.Calculate();
 
-            /*
 #if DEBUG
-            var bm = new Bitmap(640, 480);
-            //for (int i = CalibratorGrid.TopLeft.X; i < CalibratorGrid.BottomRight.X; i++)
-            for (int i = 0; i < 640; i++)
-            {
-                //Debug.WriteLine(i);
-                for (int j = 0; j < 480; j++)
-                //for (int j = CalibratorGrid.TopLeft.Y; j < CalibratorGrid.BottomRight.Y; j++)
-                {
-                    //Debug.WriteLine(j);
-                    //var position = CalibratorGrid.GetPosition(i, j);
-                    var position = CalibratorGrid.PredictPosition(i, j);
-                    if (position.X >= 0 && position.Y >= 0)
-                    {
-                        //Debug.WriteLine("Found at : " + i + "," + j + "-" + position.X + "/" + position.Y);
-                        bm.SetPixel(i, j, Color.FromArgb(255, (position.X / 5 + 1024) % 256, (position.Y / 4 + 1024) % 256, 255));
-                    }
-                }
-            }
-            bm.Save(@"C:\temp\daforge\grid.bmp", ImageFormat.MemoryBmp);
+            //var bm = new Bitmap(640, 480);
+            ////for (int i = CalibratorGrid.TopLeft.X; i < CalibratorGrid.BottomRight.X; i++)
+            //for (int i = 0; i < 640; i++)
+            //{
+            //    //Debug.WriteLine(i);
+            //    for (int j = 0; j < 480; j++)
+            //    //for (int j = CalibratorGrid.TopLeft.Y; j < CalibratorGrid.BottomRight.Y; j++)
+            //    {
+            //        //Debug.WriteLine(j);
+            //        //var position = CalibratorGrid.GetPosition(i, j);
+            //        var position = CalibratorGrid.PredictPosition(i, j);
+            //        if (position.X >= 0 && position.Y >= 0)
+            //            bm.SetPixel(i, j, Color.FromArgb(255, (position.X + 8192) % 256, (position.Y + 4096) % 256, 255));
+            //    }
+            //}
+            //bm.Save(@"C:\temp\daforge\grid.bmp", ImageFormat.MemoryBmp);
 #endif
-             */
 
             _penTracker.Start();
             //_calibrator.Grid.PredictFromCorners();
@@ -109,6 +104,13 @@ namespace HSR.PresWriter.PenTracking
             //_pictureProvider.FrameReady -= _camera_FrameReady; // TODO siehe _camera_FrameReady
             _penTracker.Stop();
             this.IsRunning = false;
+        }
+
+        public void ReCalibrate()
+        {
+            _penTracker.Stop();
+            _calibrator.Calibrate();
+            Console.WriteLine("Recalibrating");
         }
 
         //private async void _camera_FrameReady(object sender, FrameReadyEventArgs e)

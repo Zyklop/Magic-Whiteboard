@@ -269,51 +269,71 @@ namespace HSR.PresWriter.PenTracking
             return new Point(xSum / poss.Count, ySum / poss.Count);
         }
 
+        private SortedDictionary<int, T> PickNearest<T>(SortedDictionary<int, T> src, int target, int count)
+        {
+            var lower = new Queue<int>(src.Keys.Where(x => x <= target));
+            var upper = new Queue<int>(src.Keys.Where(x => x > target).Reverse());
+            var res = new SortedDictionary<int, T>();
+            while (res.Count < count && (lower.Count > 0 || upper.Count > 0))
+            {
+                if (lower.Count > 0)
+                {
+                    if (upper.Count > 0)
+                    {
+                        if (Math.Abs(lower.Peek() - target) < Math.Abs(upper.Peek() - target))
+                            res.Add(lower.Peek(), src[lower.Dequeue()]);
+                        else
+                            res.Add(upper.Peek(), src[upper.Dequeue()]);
+                    }
+                    else
+                        res.Add(lower.Peek(), src[lower.Dequeue()]);
+                }
+                else
+                    res.Add(upper.Peek(), src[upper.Dequeue()]);
+            }
+            return res;
+        }
+
         private List<PointMapping> FindNearest(int x, int y, int desired)
         {
-            //TODO optimize
-            var res = new List<PointMapping>();
-            int dist = 0;
-               var cols = new SortedDictionary<int, SortedDictionary<int,Point>>();
-               while (cols.Count < desired && dist < _refPoints.Keys.Last())
-               {
-                   if (_refPoints.ContainsKey(x - dist))
-                       cols.Add(x - dist, _refPoints[x - dist]);
-                   if (_refPoints.ContainsKey(x + dist) && dist != 0)
-                       cols.Add(x + dist, _refPoints[x + dist]);
-                   dist++;
-               }
-            dist = 0;
+            var cols = PickNearest(_calibratorData, x, desired);
             var p = new List<PointMapping>();
             foreach (var col in cols)
             {
-                //if (col.Value.Count < desired)
-                    foreach (var pair in col.Value)
-                    {
-                        p.Add(new PointMapping{Screen = new Point(col.Key, pair.Key), Image = pair.Value} );
-                    }
-                //else
-                //{
-                //    int count = 0;
-                //    while (count < desired)
-                //    {
-                //        if (col.Value.ContainsKey(y - dist))
-                //        {
-                //            p.Add(new PointMapping{Screen = new Point(col.Key, y - dist), Image = col.Value[y - dist]});
-                //            count++;
-                //        }
-                //        if (col.Value.ContainsKey(y + dist) && dist != 0)
-                //        {
-                //            p.Add(new PointMapping { Screen = new Point(col.Key, y + dist), Image = col.Value[y + dist] });
-                //            count++;
-                //        }
-                //        dist++;
-                //    }
-                //}
+                var tmp = PickNearest(col.Value, y, desired);
+                foreach (var range in tmp)
+                {
+                    p.Add(new PointMapping{Image = new Point(col.Key, range.Key), Screen = Average(range.Value)});
+                }
             }
             p = p.OrderBy(p1 => DistanceTo(p1.Screen,new Point(x,y))).ToList();
-            res.AddRange(p.GetRange(0,desired));
+            if (desired >= p.Count)
+                return p;
+            return p.GetRange(0,desired);
+        }
+
+        private Point Average(List<Point> points)
+        {
+            if(points.Count == 0)
+                throw new ArgumentException("List is empty");
+            if (points.Count == 1)
+                return points.First();
+            var res = new Point(points.Sum(x => x.X), points.Sum(x => x.Y));
+            res.X = (int)Math.Round(res.X * 1.0 / points.Count);
+            res.Y = (int)Math.Round(res.Y * 1.0 / points.Count);
             return res;
+        }
+
+        private Point Average(Dictionary<double, Point> points)
+        {
+            if (points.Count == 0)
+                throw new ArgumentException("List is empty");
+            if (points.Count == 1)
+                return points.First().Value;
+            var rx = points.Sum(x => x.Value.X*x.Key);
+            var ry = points.Sum(x => x.Value.X * x.Key);
+            var sWeights = points.Sum(x => x.Key);
+            return new Point((int)Math.Round(rx / sWeights), (int)Math.Round(ry / sWeights));
         }
 
         private double DistanceTo(Point p1, Point p2)
@@ -418,17 +438,25 @@ namespace HSR.PresWriter.PenTracking
             var p1 = b1.GetCartesianCoordinates(new Point(ScreenSize.Left,ScreenSize.Top),
                 new Point(ScreenSize.Right, ScreenSize.Top), new Point(ScreenSize.Left, ScreenSize.Bottom));
             //return p1;
-            if (b1.IsInside)
-                return p1;
-            var b2 = new BarycentricCoordinate(new Point(x, y), TopRight, BottomLeft, BottomRight);
-            var p2 = b2.GetCartesianCoordinates(new Point(ScreenSize.Right,ScreenSize.Top),
+            //if (b1.IsInside)
+            //    return p1;
+            var b2 = new BarycentricCoordinate(new Point(x, y), TopLeft, BottomLeft, BottomRight);
+            var p2 = b2.GetCartesianCoordinates(new Point(ScreenSize.Left,ScreenSize.Top),
                 new Point(ScreenSize.Left, ScreenSize.Bottom), new Point(ScreenSize.Right, ScreenSize.Bottom));
+            var b3 = new BarycentricCoordinate(new Point(x, y), TopRight, BottomLeft, BottomRight);
+            var p3 = b3.GetCartesianCoordinates(new Point(ScreenSize.Right, ScreenSize.Top),
+                new Point(ScreenSize.Left, ScreenSize.Bottom), new Point(ScreenSize.Right, ScreenSize.Bottom));
+            var b4 = new BarycentricCoordinate(new Point(x, y), TopLeft, TopRight, BottomRight);
+            var p4 = b4.GetCartesianCoordinates(new Point(ScreenSize.Left, ScreenSize.Top),
+                new Point(ScreenSize.Right, ScreenSize.Top), new Point(ScreenSize.Right, ScreenSize.Bottom));
             //return p2;
-            if (b2.IsInside)
-            {
-                return p2;
-            }
-            return new Point(-1,-1);
+            //if (b2.IsInside)
+            //{
+            //    return p2;
+            //}
+            if (!(b1.IsInside || b3.IsInside || b2.IsInside || b4.IsInside))
+                return new Point(-1, -1);
+            return new Point((p1.X + p2.X + p3.X + p4.X)/4, (p1.Y + p2.Y + p3.Y + p4.Y)/4);
             //if (!b1.IsInside && !b2.IsInside)
             //    return new Point();
             //return new Point((int) Math.Round((p1.X + p2.X)/2.0), (int) Math.Round((p1.Y + p2.Y)/2.0));
