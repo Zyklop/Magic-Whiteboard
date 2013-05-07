@@ -21,11 +21,12 @@ namespace HSR.PresWriter.PenTracking
         /// <summary>
         /// Max count of frames to be included in pen discovering process.</summary>
         private const int MAX_FRAMEBUFFER_LENGTH = 3;
-        private const int MAX_POINTBUFFER_LENGTH = 3;
+        // How much points we keep
+        private const int MAX_POINTBUFFER_LENGTH = 10000;
         private IPictureProvider _source;
         private FixedSizedQueue<VideoFrame> _frameBuffer;
         private FixedSizedQueue<PointFrame> _penPoints;
-        private SemaphoreSlim _semaphore = new SemaphoreSlim(Environment.ProcessorCount + 1);
+        private SemaphoreSlim _semaphore = new SemaphoreSlim(Environment.ProcessorCount);
 
         public FilterStrategy Strategy { get; set; }
 
@@ -49,7 +50,7 @@ namespace HSR.PresWriter.PenTracking
 
         private void onTrackPen(object sender, FrameReadyEventArgs e)
         {
-            /* We allow #CPUs + 1 Pictures to be processed at the same time.
+            /* We allow #CPUs Pictures to be processed at the same time.
              * If there is no free logigal CPU, we discard the current frame
              */
             if (_semaphore.Wait(0))
