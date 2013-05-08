@@ -5,7 +5,7 @@ namespace HSR.PresWriter.Containers
 {
     /// <summary>
     /// Container for a time dependent capture</summary>
-    public abstract class Frame
+    public abstract class Frame : IComparable
     {
         /// <summary>
         /// Frame Index</summary>
@@ -29,6 +29,12 @@ namespace HSR.PresWriter.Containers
         {
             this.Number = number;
             this.Timestamp = timestamp != 0 ? timestamp : CurrentMillis.Millis;
+        }
+
+        public int CompareTo(object obj)
+        {
+            Frame right = obj as Frame;
+            return this.Number.CompareTo(right.Number);
         }
     }
 }
