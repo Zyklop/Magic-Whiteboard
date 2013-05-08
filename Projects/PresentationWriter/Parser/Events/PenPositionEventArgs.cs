@@ -6,16 +6,17 @@ namespace HSR.PresWriter.PenTracking.Events
 {
     public class PenPositionEventArgs : EventArgs
     {
-
         /// <summary>
         /// Location of the pen
         /// </summary>
         // why PointFrame? 
         // TODO use a common type!
         public PointFrame Frame { get; private set; }
+        public bool IsOutOfOrder { get; private set; }
 
-        public PenPositionEventArgs(PointFrame frame)
+        public PenPositionEventArgs(PointFrame frame, bool isOutOfOrder = false)
         {
+            IsOutOfOrder = isOutOfOrder;
             Frame = frame;
         }
     }
