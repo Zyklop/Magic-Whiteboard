@@ -1,0 +1,2542 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 9.0' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       157,          7]
+NotebookDataLength[    119853,       2533]
+NotebookOptionsPosition[    117935,       2473]
+NotebookOutlinePosition[    118279,       2488]
+CellTagsIndexPosition[    118236,       2485]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"SetDirectory", "[", 
+   RowBox[{"NotebookDirectory", "[", "]"}], "]"}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"imgs", " ", "=", " ", 
+   RowBox[{"Import", "[", "\"\<pics-sample/*.png\>\"", "]"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{"Length", "[", "imgs", "]"}]}], "Input",
+ CellChangeTimes->{{3.576907132323063*^9, 3.576907136626309*^9}, {
+  3.576907193689573*^9, 3.5769071955406785`*^9}, {3.576907229679631*^9, 
+  3.5769072342738943`*^9}}],
+
+Cell[BoxData["30"], "Output",
+ CellChangeTimes->{3.576907237443075*^9, 3.577020821716943*^9, 
+  3.5770220435698285`*^9, 3.577022225852255*^9, 3.577023183997181*^9, 
+  3.5770530155867505`*^9, 3.577053101164645*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["\<\
+Eigenschaften einer weissen LED\
+\>", "Section",
+ CellChangeTimes->{{3.5763175621345406`*^9, 3.5763175686609135`*^9}, {
+  3.5763178272767057`*^9, 3.5763178392823925`*^9}, {3.5763979508330345`*^9, 
+  3.5763979538952103`*^9}, {3.5769072047002025`*^9, 3.576907212819667*^9}}],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"extractPenImage", "[", "diffImgParam_", "]"}], ":=", 
+  RowBox[{"Module", "[", "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"{", 
+     RowBox[{"diffBin", ",", "whites", ",", "xRange", ",", "yRange", ",", 
+      RowBox[{"framePlus", "=", 
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"-", "5"}], ",", "5"}], "}"}]}]}], "}"}], ",", 
+    "\[IndentingNewLine]", 
+    RowBox[{
+     RowBox[{"diffBin", "=", 
+      RowBox[{"Binarize", "[", 
+       RowBox[{"diffImgParam", ",", "0.5"}], "]"}]}], ";", 
+     "\[IndentingNewLine]", 
+     RowBox[{"whites", "=", 
+      RowBox[{"ImageValuePositions", "[", 
+       RowBox[{"diffBin", ",", "White"}], "]"}]}], ";", "\[IndentingNewLine]", 
+     RowBox[{"xRange", "=", 
+      RowBox[{"Round", "[", 
+       RowBox[{"Through", "[", 
+        RowBox[{
+         RowBox[{"{", 
+          RowBox[{"Min", ",", "Max"}], "}"}], "[", 
+         RowBox[{"First", "/@", "whites"}], "]"}], "]"}], "]"}]}], ";", 
+     "\[IndentingNewLine]", 
+     RowBox[{"yRange", "=", 
+      RowBox[{"480", "-", 
+       RowBox[{"Round", "[", 
+        RowBox[{"Through", "[", 
+         RowBox[{
+          RowBox[{"{", 
+           RowBox[{"Max", ",", "Min"}], "}"}], "[", 
+          RowBox[{"Last", "/@", "whites"}], "]"}], "]"}], "]"}]}]}], ";", 
+     "\[IndentingNewLine]", 
+     RowBox[{"ImageTake", "[", 
+      RowBox[{"diffImgParam", ",", 
+       RowBox[{"yRange", "+", "framePlus"}], ",", 
+       RowBox[{"xRange", "+", "framePlus"}]}], "]"}]}]}], 
+   "\[IndentingNewLine]", "]"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"(*", "\[IndentingNewLine]", 
+   RowBox[{"ArrayPlot", "[", 
+    RowBox[{
+     RowBox[{
+      RowBox[{"ImageData", "[", "diffImg", "]"}], "[", 
+      RowBox[{"[", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"480", "-", "220"}], ";;", 
+         RowBox[{"480", "-", "230"}]}], ",", 
+        RowBox[{
+         RowBox[{"640", "-", "170"}], ";;", 
+         RowBox[{"640", "-", "177"}]}]}], "]"}], "]"}], ",", " ", 
+     "\[IndentingNewLine]", 
+     RowBox[{"Mesh", "\[Rule]", "True"}], ",", 
+     RowBox[{"ColorFunction", "\[Rule]", "RGBColor"}]}], "]"}], 
+   "\[IndentingNewLine]", "*)"}]}]}], "Input",
+ CellChangeTimes->{{3.5770222164627175`*^9, 3.577022221087982*^9}, {
+   3.5770222741060143`*^9, 3.5770223124602084`*^9}, 3.577022497495915*^9, {
+   3.577022545961687*^9, 3.577022595757535*^9}, 3.57702269287109*^9, 
+   3.5770227454540977`*^9, {3.577022779838064*^9, 3.577022850199088*^9}, {
+   3.577022915054798*^9, 3.5770229302066646`*^9}, {3.577022997861534*^9, 
+   3.5770230377198143`*^9}, {3.577023111934059*^9, 3.5770231635210094`*^9}, {
+   3.577023198788027*^9, 3.5770231993100567`*^9}, {3.5770232532491417`*^9, 
+   3.5770234847533827`*^9}, {3.5770235186783233`*^9, 3.577023521470483*^9}, {
+   3.577023558392595*^9, 3.577023560269702*^9}, {3.5770235923915396`*^9, 
+   3.5770235989169126`*^9}, {3.577023930951028*^9, 3.577023960433714*^9}, {
+   3.57702399358361*^9, 3.5770243437686396`*^9}, {3.5770243786926374`*^9, 
+   3.577024488235903*^9}, {3.577024561396087*^9, 3.5770247531460543`*^9}, {
+   3.5770248071231422`*^9, 3.5770248089862485`*^9}, {3.5770248447122917`*^9, 
+   3.5770248458823586`*^9}, {3.577025081899169*^9, 3.5770250826062093`*^9}, {
+   3.577053093517208*^9, 3.577053098395487*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"pens", "=", 
+   RowBox[{"{", "}"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{"For", "[", 
+  RowBox[{
+   RowBox[{"i", "=", "2"}], ",", 
+   RowBox[{"i", "<", 
+    RowBox[{"Length", "[", "imgs", "]"}]}], ",", 
+   RowBox[{"i", "++"}], ",", "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"imgPrevious", "=", 
+     RowBox[{"imgs", "[", 
+      RowBox[{"[", 
+       RowBox[{"i", "-", "1"}], "]"}], "]"}]}], ";", "\[IndentingNewLine]", 
+    RowBox[{"imgCurrent", "=", 
+     RowBox[{"imgs", "[", 
+      RowBox[{"[", "i", "]"}], "]"}]}], ";", "\[IndentingNewLine]", 
+    RowBox[{"previousAreaImg", "=", 
+     RowBox[{"extractPenImage", "[", "imgPrevious", "]"}]}], ";", 
+    "\[IndentingNewLine]", 
+    RowBox[{"currentAreaImg", "=", 
+     RowBox[{"extractPenImage", "[", "imgCurrent", "]"}]}], ";", 
+    "\[IndentingNewLine]", 
+    RowBox[{"penAreaImg", "=", 
+     RowBox[{"extractPenImage", "[", 
+      RowBox[{"ImageDifference", "[", 
+       RowBox[{"imgPrevious", ",", "imgCurrent"}], "]"}], "]"}]}], ";", 
+    "\[IndentingNewLine]", 
+    RowBox[{"pens", "=", 
+     RowBox[{"Append", "[", 
+      RowBox[{"pens", ",", "previousAreaImg"}], "]"}]}], ";", 
+    "\[IndentingNewLine]", 
+    RowBox[{"Print", "[", 
+     RowBox[{"Grid", "[", 
+      RowBox[{
+       RowBox[{"{", "\[IndentingNewLine]", 
+        RowBox[{
+         RowBox[{"{", 
+          RowBox[{
+          "\"\<Pen 1\>\"", ",", "\"\<Pen 2\>\"", ",", " ", 
+           "\"\<Differenz\>\""}], "}"}], ",", 
+         RowBox[{"{", "\[IndentingNewLine]", 
+          RowBox[{
+           RowBox[{"Show", "[", 
+            RowBox[{"previousAreaImg", ",", 
+             RowBox[{"ImageSize", "\[Rule]", "100"}]}], "]"}], ",", 
+           "\[IndentingNewLine]", 
+           RowBox[{"Show", "[", 
+            RowBox[{"currentAreaImg", ",", 
+             RowBox[{"ImageSize", "\[Rule]", "100"}]}], "]"}], ",", 
+           "\[IndentingNewLine]", 
+           RowBox[{"Show", "[", 
+            RowBox[{"penAreaImg", ",", 
+             RowBox[{"ImageSize", "\[Rule]", "100"}]}], "]"}]}], 
+          "\[IndentingNewLine]", "}"}]}], "}"}], ",", 
+       RowBox[{"Frame", "\[Rule]", "All"}]}], "]"}], "]"}], ";"}]}], 
+  "\[IndentingNewLine]", "]"}]}], "Input",
+ CellChangeTimes->{{3.57702505866784*^9, 3.577025086393426*^9}, {
+  3.5770314917349896`*^9, 3.5770315378006244`*^9}, {3.5770531196277013`*^9, 
+  3.5770531898367167`*^9}, {3.577053313975817*^9, 3.5770533754283323`*^9}, {
+  3.577053406830128*^9, 3.577053493254071*^9}, {3.5770535933487964`*^9, 
+  3.577053624113556*^9}, {3.5770536661969633`*^9, 3.5770536686181016`*^9}, {
+  3.57705378467974*^9, 3.577053886147544*^9}, {3.577054130466518*^9, 
+  3.5770541334576893`*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ TagBox[GridBox[{
+    {"\<\"Pen 1\"\>", "\<\"Pen 2\"\>", "\<\"Differenz\"\>"},
+    {
+     GraphicsBox[RasterBox[CompressedData["
+1:eJw9kT9LxDAYxpPrNWnSpml6d23vpPeHO0VPVDi8QRBRQQdFEB3E0RsEb1Fx
+cBHc3PwaOvox3B2cXLzJc9FBBBWpby/ShzZNk1+eJM/b6B3v9AyEkPh/0376
+MQzLsqSUgVIF6SpXCtuhlJqmCVMYY43Br+S8XCq2Q78hWIEYysAwCGuhzeVy
+wABMCFGC18ai5fZE1cqDbavV8jyPMQakNgQY/IvC9m22NtnZX1y/Ojzrb+yF
+xK2KkidcTlNSY77nkrxRRuj+5i55/02ehgebu1GOuRiXbRs8AYNNfekxQuuG
+SN6+Xh8ek8/v29OLrbA57/tTlNqMgWGKea7DLROh4WCQfPwkzy/9haU2QjPE
+nMSYmkRjQCkpAmFvrq5cn59cHvW2u51uJbIpgccYCTDOeRAEcRxHURSWCrV4
+rFWPq5XQcdIAMwz6ekQp1azGc9Pt2fGJWhBAOBqDK0ALMQKc1SIqFuCcJelk
+bjo6LZ08HwmyBQDW6pLpeuGRMmetbC/QHyWUONI=
+       "], {{0, 0}, {13, 13}}, {0, 255},
+       ColorFunction->RGBColor],
+      ImageSize->100,
+      PlotRange->{{0, 13}, {0, 13}}], 
+     GraphicsBox[RasterBox[CompressedData["
+1:eJxlkb9Lw0AUx1+aNLk2uUty+dHaxpa2pELtImK7dXAQdKjQRdRB6D9QRBwc
+7Cy4uTm5O4mDkzhJJ5fif+Di5FwUIb70MET7JQd37z75vi/3asPRYCgDAMVl
+4or3KEmSZFnWNC0/l2EYjDFKKSEkm83iVSaTkeYSMB6xjqRpmkXXsalRKQdU
+x/8MVVUXYSyiWy6Xa9ZrS57LdV1XFKygA5oLMomBTQsOR6zL7ZPd/nj/4LDT
+FR1FGOlXuI89LeYBjHqt2eQ+ent5v7vmTPe56bou3ia8gI08URV5ensafT5H
+X6/Rx+RiwHdcaNv5ahbQPx0jsBkB6Lchmj1G39Ppw+XZtrQKEDK1LAMy6adD
+liiwwuHqfO/p5nh8tFZ3oECgyIil/nEWPKriqc1ltrle2+qEvY0wDKhtUgwo
+YMEnyeM8QVBynFaj0cZ3LPuWZaGJiJF+wHg0GrGZWfCcUtFv+LzKKQ5UjCYN
+41HwaC7mjkPED9thMZnLIv9PwvYHvTM3sQ==
+       "], {{0, 0}, {15, 13}}, {0, 255},
+       ColorFunction->RGBColor],
+      ImageSize->100,
+      PlotRange->{{0, 15}, {0, 13}}], 
+     GraphicsBox[RasterBox[CompressedData["
+1:eJxdkktoFEEQQKenp6d7pnt6eue7y5jNbnYTs4TIQuIH9RI8JCGBJJKz4IaQ
+KIk5qOQsXr0I4lk8CQbBgx43SPAmCHpTkRjED3HBIAbWk7UZGQaLaeipqldV
+XVXV1sbFFtY0zYHjw+ndQRBCGGNKqX0kQgjOOSEENAUhlOCucITNTdMEJXiC
+fwbqug5KoFzXLQa+YNQteMJmZW4mFBcMpHTNMAzGGLiBcx6EgI7jWJY1WK34
+rkQ6CuJgrK8U6CbUUKvVlFJgBTZLmpYKmtj3SmFwUrlrU5NXZ+emR05cGGou
+np64dfnayuRiRJyyEypH2vQfm4IQbUjJUNPWzw//3H7cedP+tHWfSv703oP9
+D98P3+5empov6pZEqMQ5ZMmD8CiC9dePrnd/tTv7O4dft1fnyLP33faLV7sH
+fx6ubc5GA+Oe16CUW1a+1GMFSRGaaeDuwfPOj52XW7dvTKP23t67L78/f/y2
+cupcA6FRkxzXNNMg+XEUJKMY1V18Z3Phyd3l9fm6MPn42YmbV1Y3llozzdGx
+YsSpCR/4Z2DKQm8TD1didqYRNytutcgcozfBMAz7k2ISB9BhcEvBlM0KhklF
+UeQLUY7jwf5E2cSXznC9NjJQ6wsCGHQezPICxYgpufCUDDyVSFthHbrvSQfr
+euiK/zJmawAa2BCoDVLDIjGTEmyAqReQsfQt6eJpOclYMBlHAvd0wVJl+ps2
+5C8dxlpi
+       "], {{0, 0}, {19, 13}}, {0, 255},
+       ColorFunction->RGBColor],
+      ImageSize->100,
+      PlotRange->{{0, 19}, {0, 13}}]}
+   },
+   AutoDelete->False,
+   GridBoxFrame->{"Columns" -> {{True}}, "Rows" -> {{True}}},
+   GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}],
+  "Grid"]], "Print",
+ CellChangeTimes->{
+  3.577053141539954*^9, 3.5770531913678045`*^9, 3.577053497584319*^9, {
+   3.5770535981620717`*^9, 3.577053624810596*^9}, 3.577053669575156*^9, {
+   3.577053858756977*^9, 3.5770538866995754`*^9}, 3.5770541349487743`*^9}],
+
+Cell[BoxData[
+ TagBox[GridBox[{
+    {"\<\"Pen 1\"\>", "\<\"Pen 2\"\>", "\<\"Differenz\"\>"},
+    {
+     GraphicsBox[RasterBox[CompressedData["
+1:eJxlkb9Lw0AUx1+aNLk2uUty+dHaxpa2pELtImK7dXAQdKjQRdRB6D9QRBwc
+7Cy4uTm5O4mDkzhJJ5fif+Di5FwUIb70MET7JQd37z75vi/3asPRYCgDAMVl
+4or3KEmSZFnWNC0/l2EYjDFKKSEkm83iVSaTkeYSMB6xjqRpmkXXsalRKQdU
+x/8MVVUXYSyiWy6Xa9ZrS57LdV1XFKygA5oLMomBTQsOR6zL7ZPd/nj/4LDT
+FR1FGOlXuI89LeYBjHqt2eQ+ent5v7vmTPe56bou3ia8gI08URV5ensafT5H
+X6/Rx+RiwHdcaNv5ahbQPx0jsBkB6Lchmj1G39Ppw+XZtrQKEDK1LAMy6adD
+liiwwuHqfO/p5nh8tFZ3oECgyIil/nEWPKriqc1ltrle2+qEvY0wDKhtUgwo
+YMEnyeM8QVBynFaj0cZ3LPuWZaGJiJF+wHg0GrGZWfCcUtFv+LzKKQ5UjCYN
+41HwaC7mjkPED9thMZnLIv9PwvYHvTM3sQ==
+       "], {{0, 0}, {15, 13}}, {0, 255},
+       ColorFunction->RGBColor],
+      ImageSize->100,
+      PlotRange->{{0, 15}, {0, 13}}], 
+     GraphicsBox[RasterBox[CompressedData["
+1:eJxtkqtPw1AUxlua27VdX7fPbaXdGvYSJJBAAoZkQWPA4pYgCAIMAkMCHjFC
+gsQgcBgcCX8BHoHEEgSGlyjfetgYG19um/bc3z3nu/fctLu70ZUEQbB+nv63
+KIpTuSRJYozJuVguBIW/IhhThUJBVVVd1zVNU3Nh1b88YDAu557jutzCgBBB
+OcxOwshZc81m2YtllhRkT5a5JCH/GI9vRAA3PLvpO+122/d90zQxZRT7tsi/
+OBBgFK0aRlzUet2di72Dm+Pe1sJqVbUTxVIUBQD5/4UDLzT17P4he/nInr/O
+NrcDgbV0XxskB0ynQdsJgiB7y/rjNbs7v5w3vLqgFFWVDZwTjL2EYYjf26vr
+7D37fHxaLqcVpmGM2hjCjShRBHFtbuVk7/B0/2h9sdMqxZHBCabM5BlN4aZl
+6kbqRBh1O+rMLrWiNHFKYzAlRxDOHctuztSrlelaFOMdcJdOm0gSXQ+0GNtB
+Ceom55xaiVRjfRwuGVahewKHk30fXUVV6AbSUSD4DYDRPB4=
+       "], {{0, 0}, {15, 15}}, {0, 255},
+       ColorFunction->RGBColor],
+      ImageSize->100,
+      PlotRange->{{0, 15}, {0, 15}}], 
+     GraphicsBox[RasterBox[CompressedData["
+1:eJxlUj1oFEEU3tn/mZ2Znd29vb1z7z/ZC5IQDnKNAX9AMAZsEhAUBUkac1W0
+8RCLYKNWNgqprkhhpZWCBLHSKinEQkFRLISACErU8w7lCl9udDnixwy8ffO+
+972frS6vLi5riqIwuAHcPRuAEDIMgxASeF7g+YJTSmzwwBPGmA1h23seTdNU
+VUVDpERKaSXgSS6IdS2vIqLrKqWuQzjBxQMxc+Cdmqa5jwipwJ9kRJLx6vW6
+67rgBLl8FDKHMNPEKqShUBVEpixJBGeZsQLBty+srK9c7qyunSpN5zA6PXf0
+ysLimZkmBOu6LgseVQRiKQyyzBlsvert7L59/2XtXOvskeTlk87PN88+3r8r
+KM4IFgQBVALxQISy5XDACMNw0B30vvZ+fOpv3tnY6Cy9+/W0+2379+fnNxe8
+k746KXDZUOToJBHyRFEE6pv3HvR3+x+2Xzfy1eYE2fn+sN/devHoVnsOHVTV
+cWbEmjKqCMQkLllImZ+avdFqX794db5xTDGL7UsnHq+3rp2frvooa6Ect4X5
+V1H2aFmWx10Ye8nNwSnizKGkgc3YdsjsZP74TO1wczwpMM9lxDZTohSFLUOn
+QE9qY4UoH/kZOKaDPUImKpWpeq0aZ4UQICEHKwFc+IQVOxgLxgUHeW4RrCKF
+OTgMvLGsX/YZ51z+Bso/jNJhX/AKmaEM2QhMgBIHGgFDOpX/kGYAejo9mc0Y
+Qsr9AensXpg=
+       "], {{0, 0}, {19, 13}}, {0, 255},
+       ColorFunction->RGBColor],
+      ImageSize->100,
+      PlotRange->{{0, 19}, {0, 13}}]}
+   },
+   AutoDelete->False,
+   GridBoxFrame->{"Columns" -> {{True}}, "Rows" -> {{True}}},
+   GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}],
+  "Grid"]], "Print",
+ CellChangeTimes->{
+  3.577053141539954*^9, 3.5770531913678045`*^9, 3.577053497584319*^9, {
+   3.5770535981620717`*^9, 3.577053624810596*^9}, 3.577053669575156*^9, {
+   3.577053858756977*^9, 3.5770538866995754`*^9}, 3.5770541349997773`*^9}],
+
+Cell[BoxData[
+ TagBox[GridBox[{
+    {"\<\"Pen 1\"\>", "\<\"Pen 2\"\>", "\<\"Differenz\"\>"},
+    {
+     GraphicsBox[RasterBox[CompressedData["
+1:eJxtkqtPw1AUxlua27VdX7fPbaXdGvYSJJBAAoZkQWPA4pYgCAIMAkMCHjFC
+gsQgcBgcCX8BHoHEEgSGlyjfetgYG19um/bc3z3nu/fctLu70ZUEQbB+nv63
+KIpTuSRJYozJuVguBIW/IhhThUJBVVVd1zVNU3Nh1b88YDAu557jutzCgBBB
+OcxOwshZc81m2YtllhRkT5a5JCH/GI9vRAA3PLvpO+122/d90zQxZRT7tsi/
+OBBgFK0aRlzUet2di72Dm+Pe1sJqVbUTxVIUBQD5/4UDLzT17P4he/nInr/O
+NrcDgbV0XxskB0ynQdsJgiB7y/rjNbs7v5w3vLqgFFWVDZwTjL2EYYjf26vr
+7D37fHxaLqcVpmGM2hjCjShRBHFtbuVk7/B0/2h9sdMqxZHBCabM5BlN4aZl
+6kbqRBh1O+rMLrWiNHFKYzAlRxDOHctuztSrlelaFOMdcJdOm0gSXQ+0GNtB
+Ceom55xaiVRjfRwuGVahewKHk30fXUVV6AbSUSD4DYDRPB4=
+       "], {{0, 0}, {15, 15}}, {0, 255},
+       ColorFunction->RGBColor],
+      ImageSize->100,
+      PlotRange->{{0, 15}, {0, 15}}], 
+     GraphicsBox[RasterBox[CompressedData["
+1:eJxdkjtLxEAUhWeTTSbJTmazm5e7azYkGhVLQYtVfGChiDY22thYKQhiYaGI
+lY2I/8BOBCsbrfwHgp2VvSBYi4WF8WRHh9XLZDhMvntyc+cmm7urmyohpPrz
+FLpUKimKommaruuUUuzab6hqAfSGgMFYluXY3K4wCMaKHbng8RZMLw+Yc950
+a/2B2/aL1fC9ms0MwxCfQIqEqabXq86IY3XSaMhhWGmaIj0KAk4peOkPYerU
+d71BZnbSeGN6cntpYX99bTZNxtrtsPtHMJewpWvcNDKd7KxMvN2e5Y+Xr3fn
+Bwtx4lr1MkGR0hlZTFMrZaVFyOnWXP75XKyP+5vD6biqhrSApTME1coOZ9BZ
+luXvD/nXU/5ytbtsD3GS2US0RZaBqtAraIiTvcX76+OLo9n5QRKWSEP5A2Mv
+zCm1KElirz+0k1Z9arQxPlAf7vMi2xQNFN2T94JDpHBWSeJofm6m2Re0Gy3f
+qZmm+Q+GOU5w7lZ5M/Cj0MMdoZ/oPyqUrRawCMEXN24ZFZPi1jEAwlnWLFOE
+vxgntRtyqHonRNYjQ76V4hueajpV
+       "], {{0, 0}, {15, 15}}, {0, 255},
+       ColorFunction->RGBColor],
+      ImageSize->100,
+      PlotRange->{{0, 15}, {0, 15}}], 
+     GraphicsBox[RasterBox[CompressedData["
+1:eJxtUz1oFEEUnt3Z2dmZnduZ/bvbuzUXjrsQU0j0JGI4kUAEm4BipRILE9TC
+E9OkCAjaCEGxEASxEkVM508tNmKhlU0QFIuzSfwpFPQ0kcD5bscch8nHzPL2
+2/e99+bN28rMxWMzGCEkYYewu7ZhGKZpEkLsDJZlYYyB6X7GGBiSQTP90EJw
+4JxLkXMZ157Aw5NmcBwHHLbVAu95Xin00zgoKi9ymQ2ZCXUZ9QQXQoAWCgDP
+/4SU2IFUOxUfr+youLRkIVNGiWsj5StkSKO7tmqhBmbTOIxqgo1Xyicb+08d
+bBw9dLiUk1C/GYaMMZAI7grO9Xm1HAxuE485NWKcnxpbfbLYfnHn1dKV6QPx
+3JHTN5oLjy5dn90zUXYkLJ231z1BsGuZKUKL5yY2fr9tf3/Taj283ay3ni9/
+Wl1fX2nfPH42NqxhEfPNpFpIiaU8AXa1Wv3z7WX75+uNj/dP7GPvPnfef+ms
+fV17duveqAhryHEZI5sn1fcIoXSQy83Jp3fnr54ZmayhB0uPV351fix/GMuX
+ixYrEd5fKsi7SSnlFA0OBIXASQJWkGRX1R8qjMzNzl+7sDA12hjKp2nO7+9t
+bwb0RbvMKSX5+t7dQjBMkTB5SoPGcH2oOFgOkq1CeIWCgfdzIvZVLIViFFtW
+FEWxCtJ8MpCU8v6/q9EqLdQGzKqTgVFCcMZgDAeTOU8pJaXUXe1NTk+u8wIg
+Qm9IdAdYBjC2nT2zD/0B9b8DAXVLgfwL5OZdNw==
+       "], {{0, 0}, {19, 15}}, {0, 255},
+       ColorFunction->RGBColor],
+      ImageSize->100,
+      PlotRange->{{0, 19}, {0, 15}}]}
+   },
+   AutoDelete->False,
+   GridBoxFrame->{"Columns" -> {{True}}, "Rows" -> {{True}}},
+   GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}],
+  "Grid"]], "Print",
+ CellChangeTimes->{
+  3.577053141539954*^9, 3.5770531913678045`*^9, 3.577053497584319*^9, {
+   3.5770535981620717`*^9, 3.577053624810596*^9}, 3.577053669575156*^9, {
+   3.577053858756977*^9, 3.5770538866995754`*^9}, 3.57705413505278*^9}],
+
+Cell[BoxData[
+ TagBox[GridBox[{
+    {"\<\"Pen 1\"\>", "\<\"Pen 2\"\>", "\<\"Differenz\"\>"},
+    {
+     GraphicsBox[RasterBox[CompressedData["
+1:eJxdkjtLxEAUhWeTTSbJTmazm5e7azYkGhVLQYtVfGChiDY22thYKQhiYaGI
+lY2I/8BOBCsbrfwHgp2VvSBYi4WF8WRHh9XLZDhMvntyc+cmm7urmyohpPrz
+FLpUKimKommaruuUUuzab6hqAfSGgMFYluXY3K4wCMaKHbng8RZMLw+Yc950
+a/2B2/aL1fC9ms0MwxCfQIqEqabXq86IY3XSaMhhWGmaIj0KAk4peOkPYerU
+d71BZnbSeGN6cntpYX99bTZNxtrtsPtHMJewpWvcNDKd7KxMvN2e5Y+Xr3fn
+Bwtx4lr1MkGR0hlZTFMrZaVFyOnWXP75XKyP+5vD6biqhrSApTME1coOZ9BZ
+luXvD/nXU/5ytbtsD3GS2US0RZaBqtAraIiTvcX76+OLo9n5QRKWSEP5A2Mv
+zCm1KElirz+0k1Z9arQxPlAf7vMi2xQNFN2T94JDpHBWSeJofm6m2Re0Gy3f
+qZmm+Q+GOU5w7lZ5M/Cj0MMdoZ/oPyqUrRawCMEXN24ZFZPi1jEAwlnWLFOE
+vxgntRtyqHonRNYjQ76V4hueajpV
+       "], {{0, 0}, {15, 15}}, {0, 255},
+       ColorFunction->RGBColor],
+      ImageSize->100,
+      PlotRange->{{0, 15}, {0, 15}}], 
+     GraphicsBox[RasterBox[CompressedData["
+1:eJxtkj9Lw0AYxi8JaXJJ7l+Spk1rUi1tbS04KB0cRD+BFr+AWCcHERwcHQTB
+j+An6Ojs5BewILg5OTgVHBwVwfgmp0cQHxK4XH7vc+89d0uTk72JgRBiP28+
+1jTNMAzLshzHwRjbtg3jSqViFNJ1HZUkYVyxOKE1wWKfVznzKfE8DwpN05Ql
+gCkYrCilnZAPGtFgIe7VoziqBULAcrAQlEhewvAJVi3ujHqLYEgIqfkhsTFx
+PeoR4IGRMFRJ2EFotNzd3x2fTiY7m9uJx5pMRE7ej4RVJ+AWUXN92P6Y3WTz
+++z14fp4nAgntFEZznMpJEzUid3s8yV/3p+mF4cbg0ZCEKT0B4a91EKHefrz
+4132Nc/eZmcHmx0fdQMEvwBQAebpYVyvujDVrutX50e308vVBJkGcrEpnctR
+w5YhPZjnnKdputZPt0bDldRvBVa5DZUetkwXW/2ENhhqMkQ11Itxy9dlGwrW
+C8nTgQi5oMInXHiBIIK54AxWaoPar2TmkJW8J7iQPEQFl6+K5JXUjfoXVl2p
+5dTfbwY1OG4=
+       "], {{0, 0}, {15, 15}}, {0, 255},
+       ColorFunction->RGBColor],
+      ImageSize->100,
+      PlotRange->{{0, 15}, {0, 15}}], 
+     GraphicsBox[RasterBox[CompressedData["
+1:eJyNUztoFEEYnp19z+7Ozr5fub3cJZdcSCMJIWDMQ1IEghhJo4UQPLAICBHR
+QoUgiCKItYWlD6zSaCEprAUDglapLBQkYiEI4gOy/neDy3KY4McszP4z8833
+/f8/jc7GakdECDnwRfB154IgiKKoqiohRNd1TdNgLssyBDHGsIr+A5xEV1Rm
+0cixE5f5NnUs0zAMYJMkqeQR/uIgEkVRKKXDPhtLw3YWt6IgDkLHtkESbABJ
+Ug9yD7D/nySwZJpmnZGpkUFwBPPQ8QwFjCkS7uokGnjVIQ6uQWGfWX4RJyEI
+TY221lZOXep0Ts4uDBg00A1Nwq6hJx6r+W4eeEngg1m4qMxbVYxlWSGVJ8eb
+P3e2ir3XxZc39y+shKaEVTao4el62rKNEWY2m00wXgtD2st/VY/YgyOj4cQo
+fn/ojh+7j26cOzLkaYqfiWi6PnB29uj68tKVM6cXmo2JPI96+uFUlQTMRj6x
+Tfz+7ctif6/4unN5bSY15YhomUTWlyc/P7tb7Dz89Pze1aV6wyOuhKAcfUog
+b3FgQN6bMb6zuf7iya3xVFSxiGTR1fXb5+eKX7vd8X1769pc3RYjtUtSKin7
+DcwCFWMsz/OJdn5soj2UUCgzBCEV+99eFfvvio+PN05YIxS1LMTLVCUBg7oq
+G7rartHURpmNTAE3fCnQNHAKsm9eXNp+uvng+vziMIoElOB+EtwD7zooNXOo
+41o2MxglRJMErA+kdhaajcydGYunhtzR2K9ZOi90tcocvGdgFSyoPfC7IG4Z
+pFGvLR6fT+MwT7KAObCnSlJtYM4DgD7nHQ4RYHOplYZBLfJTzwk837UZ2DyI
+hPOUTktauBdOmUSDvEH3W4bJlRz+0qseeeYhY7zB+G9fsx2OMvMc1XfHJ38A
+6RVqHw==
+       "], {{0, 0}, {23, 17}}, {0, 255},
+       ColorFunction->RGBColor],
+      ImageSize->100,
+      PlotRange->{{0, 23}, {0, 17}}]}
+   },
+   AutoDelete->False,
+   GridBoxFrame->{"Columns" -> {{True}}, "Rows" -> {{True}}},
+   GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}],
+  "Grid"]], "Print",
+ CellChangeTimes->{
+  3.577053141539954*^9, 3.5770531913678045`*^9, 3.577053497584319*^9, {
+   3.5770535981620717`*^9, 3.577053624810596*^9}, 3.577053669575156*^9, {
+   3.577053858756977*^9, 3.5770538866995754`*^9}, 3.577054135103783*^9}],
+
+Cell[BoxData[
+ TagBox[GridBox[{
+    {"\<\"Pen 1\"\>", "\<\"Pen 2\"\>", "\<\"Differenz\"\>"},
+    {
+     GraphicsBox[RasterBox[CompressedData["
+1:eJxtkj9Lw0AYxi8JaXJJ7l+Spk1rUi1tbS04KB0cRD+BFr+AWCcHERwcHQTB
+j+An6Ojs5BewILg5OTgVHBwVwfgmp0cQHxK4XH7vc+89d0uTk72JgRBiP28+
+1jTNMAzLshzHwRjbtg3jSqViFNJ1HZUkYVyxOKE1wWKfVznzKfE8DwpN05Ql
+gCkYrCilnZAPGtFgIe7VoziqBULAcrAQlEhewvAJVi3ujHqLYEgIqfkhsTFx
+PeoR4IGRMFRJ2EFotNzd3x2fTiY7m9uJx5pMRE7ej4RVJ+AWUXN92P6Y3WTz
+++z14fp4nAgntFEZznMpJEzUid3s8yV/3p+mF4cbg0ZCEKT0B4a91EKHefrz
+4132Nc/eZmcHmx0fdQMEvwBQAebpYVyvujDVrutX50e308vVBJkGcrEpnctR
+w5YhPZjnnKdputZPt0bDldRvBVa5DZUetkwXW/2ENhhqMkQ11Itxy9dlGwrW
+C8nTgQi5oMInXHiBIIK54AxWaoPar2TmkJW8J7iQPEQFl6+K5JXUjfoXVl2p
+5dTfbwY1OG4=
+       "], {{0, 0}, {15, 15}}, {0, 255},
+       ColorFunction->RGBColor],
+      ImageSize->100,
+      PlotRange->{{0, 15}, {0, 15}}], 
+     GraphicsBox[RasterBox[CompressedData["
+1:eJxlUbtKA0EUvcm6O/ua3Z3NZDe7GpOVEAsN2qQTfESRQBCJhdgKgmBhYS22
+1tb+goJoIfZCWgux9AfstE48ycAS9HBnmMe55547kx2f9481IuIYPsZ4DRSL
+RcaY67r+BEEQeJ5nmqamaYUJaArY6roOQloS1VjW4ygVgWEY+gRIgdp/cj1J
+sjR1iCLHjuMYh7i1LAsLpY8ZidjicKWatuaSbqdz0OudHh02ZJiJsMo5TCpx
+kFEIRXESGrS7tvrz9jL6HHy93l/02ilR02G2bef+FRniZpHOTvZHw49xfD/d
+XXd7S7LFyXO5MaNDXNkAmXOuF2hnc3U0fB/H18PeMm3XC21BwucW05V47lm5
+urnsDh6vnm9Pt5oUM2pIxh13WhlZ8BwIL8tqJZ1qIfU3GuvLwXzkp6GLq9yz
+IsMJGomiqBLJhXptMQmasd+oiFmfqdeYfj3Fh5mS71akKJfLUsqqMBOuqd/8
+8zV5syhhO6ZlM9c2EQCamibnUP2qj8ZsTKDIv0taOeE=
+       "], {{0, 0}, {15, 13}}, {0, 255},
+       ColorFunction->RGBColor],
+      ImageSize->100,
+      PlotRange->{{0, 15}, {0, 13}}], 
+     GraphicsBox[RasterBox[CompressedData["
+1:eJx1kj1oFEEUx3dmP2ZnZz9mbi+3t5e7HCeJcjkJwkGQoEeEnBJUIjYWcimC
+jSJqYxPB2k6wFERSWqiksFKCCIIkqaJdLOQkSFJEEsuk8G8GlvXQP7PD2933
+ex8zr7Fw9+qCaRhGhCfG88eGKKWMMd/3wzDEzjm3LIsQYtu24zjYzSPBzfhb
+2gdUWpCVokpU5FlUCV4MhBReJDzIdV0dATj8B8B6uTySJEjjmlZgstEh1aym
+tSgoqkJBSuAoDJ6ahWDgFRVOVNPxtDTT6VyYnp6dvawKYco9aRhSBMJhgfBD
+PwCLvBqEgV7wRdmkOzXxc/3Nr8/v+h9fdcZkd+7KpWvXZ9qTFe5XQlnyfNQ8
+ACKpS41bN+YOD77s761ub71e7J14ufR04+va3rcPT25eHI7cmJE8iFIBBkFg
+E6N77tThwQbW7o/l8Vi83eyv7nzf3V5/9mB+8nhS9Qk6yoO6R31QjxfPr7y4
+v/Rovl2hn9ZWNnf6+1vv7/VOH5N0LDZwRAC1J0DY6FGqsNGoS2qWOJ9qpWdO
+SosGd273lp8/bFVMixLBbZ0xD6JaRBuCYjWcllNBa6FTdIkZJa1GcrbdbNZU
+PWZZqQMsepc+jyOMkeS4Bd8h1IyZK6g5mrARRXSp2QxoXAvzBpy5tmkRjKPF
+HO7ZwmcqEljIiAPJg/kI1pH0X12MPgRQenj+B2Yt6CAazIz8uP5T2WVlw5n3
+/w2pMVkc
+       "], {{0, 0}, {19, 15}}, {0, 255},
+       ColorFunction->RGBColor],
+      ImageSize->100,
+      PlotRange->{{0, 19}, {0, 15}}]}
+   },
+   AutoDelete->False,
+   GridBoxFrame->{"Columns" -> {{True}}, "Rows" -> {{True}}},
+   GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}],
+  "Grid"]], "Print",
+ CellChangeTimes->{
+  3.577053141539954*^9, 3.5770531913678045`*^9, 3.577053497584319*^9, {
+   3.5770535981620717`*^9, 3.577053624810596*^9}, 3.577053669575156*^9, {
+   3.577053858756977*^9, 3.5770538866995754`*^9}, 3.5770541351527863`*^9}],
+
+Cell[BoxData[
+ TagBox[GridBox[{
+    {"\<\"Pen 1\"\>", "\<\"Pen 2\"\>", "\<\"Differenz\"\>"},
+    {
+     GraphicsBox[RasterBox[CompressedData["
+1:eJxlUbtKA0EUvcm6O/ua3Z3NZDe7GpOVEAsN2qQTfESRQBCJhdgKgmBhYS22
+1tb+goJoIfZCWgux9AfstE48ycAS9HBnmMe55547kx2f9481IuIYPsZ4DRSL
+RcaY67r+BEEQeJ5nmqamaYUJaArY6roOQloS1VjW4ygVgWEY+gRIgdp/cj1J
+sjR1iCLHjuMYh7i1LAsLpY8ZidjicKWatuaSbqdz0OudHh02ZJiJsMo5TCpx
+kFEIRXESGrS7tvrz9jL6HHy93l/02ilR02G2bef+FRniZpHOTvZHw49xfD/d
+XXd7S7LFyXO5MaNDXNkAmXOuF2hnc3U0fB/H18PeMm3XC21BwucW05V47lm5
+urnsDh6vnm9Pt5oUM2pIxh13WhlZ8BwIL8tqJZ1qIfU3GuvLwXzkp6GLq9yz
+IsMJGomiqBLJhXptMQmasd+oiFmfqdeYfj3Fh5mS71akKJfLUsqqMBOuqd/8
+8zV5syhhO6ZlM9c2EQCamibnUP2qj8ZsTKDIv0taOeE=
+       "], {{0, 0}, {15, 13}}, {0, 255},
+       ColorFunction->RGBColor],
+      ImageSize->100,
+      PlotRange->{{0, 15}, {0, 13}}], 
+     GraphicsBox[RasterBox[CompressedData["
+1:eJxdUrtOwzAUdZMSx4nzcJqmNIRAWwi0C0ywgPiAduGhDkwVMCEkPoSBlQFR
+PqACwYzUEYlP4DuQeAmVk1gNEUfX1kl0fO+5124cne8dqYQQB8vCSrmiKDMZ
+VFUFL00hOZlCynRdNzIwxsAppZqm4WCuBIGMG3pFOHG1MucJEOFYOAJxsQqI
+w7T5mr8RVdcDZ4mzlkFdjXoszY+0kKUWVdVmehzW1+q1mGpmuRxVU6C6EAJ7
+LrNMw3PtGimd7h+Mr64fLy4H3W4ihM0Mk+rSZObNMBlD9w83t5O3T8Tr6G63
+tew5LtNSh9IbNGkQ8jS6n3x8I95fnnsLUeL7kcHQi5wJSGqDkLPByeTrBzEe
+Dld12rZ5YjJ0kc8ETbmuC3LY6x33+5vtZtO3tBIRloGfcnqoC1kQBOiLc97p
+dHa2t9oryWw94PxPJutCCU0YhnEctxqLcRT6njAZRZL8LqDEJ8S2bcMn7sK1
+eXG8RUhl8Vr/vYE8rZpByZA/lV+jPDrA
+       "], {{0, 0}, {13, 15}}, {0, 255},
+       ColorFunction->RGBColor],
+      ImageSize->100,
+      PlotRange->{{0, 13}, {0, 15}}], 
+     GraphicsBox[RasterBox[CompressedData["
+1:eJxtUztoFEEY3tnHzO7M7M7N7es25u4S7wyE0xzBFzEgCNFT8QqDWlhYnAhi
+IxZ2Vhap7CxSiNoFzmgaCzGVj8IIYilcq6AgRsNdjDkr/9sxSwx+zAz/DP/7
+/2a0dX22ZWiaJmD7sAeyrutWCsMwEEJwNVOgFPoWQNb+hTK0bZtS6jgOxlip
+KQ8kBSjAdYch6MA7p7YvRSn0k5wA2TKQ8sZSgDcVcXtckCFJ4eBiHBwaDuuh
+VyZmaBLqUubRyOUBoxAadNS5PTRcPccuDSX1JC5iC7x7hDDTTPJ5LKVn6GEY
+qg5ADpBJFhceXUbzOS9C2tWzs8t359u35yYnJgmzp49MnTw+c+XCuYovR3Jy
+mHMoWQXdqpEyx+EILd273//e21ztriws0YR9fPVoo/Pyy4v2jdP7E4TGGIEe
+quiqRrCCRRF63n7c7/783dv4sfKmfOJA5+vrT+vvN789WZxrnKkF+1zN4y42
+/zYZTkhASkkQunap1V//1V1dW37wsDg1/mHtbaf3rv95sVlDMyPooNSkcB0y
+GHqWLeQghICX843GxWbz8PjuUZ/fuXXq2cLNp/OXj+1BMdGqAXEZzyKq/sD0
+oXswMhAqlUp974SNiRVEPqbN6fLRmihFYig/aI6qMeOPMoG4cRwXCoUkjmw8
+GB3cqpE7FotqQe4SRHU1M1QcA1dgzjn3PM9lg1IcS897zPf9IAiK0k5cA0a5
+gwZZzoqf4EFRBTQdSmABFWEpDvyXukaK7FMosqm/gFMowz9CHV+9
+       "], {{0, 0}, {19, 15}}, {0, 255},
+       ColorFunction->RGBColor],
+      ImageSize->100,
+      PlotRange->{{0, 19}, {0, 15}}]}
+   },
+   AutoDelete->False,
+   GridBoxFrame->{"Columns" -> {{True}}, "Rows" -> {{True}}},
+   GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}],
+  "Grid"]], "Print",
+ CellChangeTimes->{
+  3.577053141539954*^9, 3.5770531913678045`*^9, 3.577053497584319*^9, {
+   3.5770535981620717`*^9, 3.577053624810596*^9}, 3.577053669575156*^9, {
+   3.577053858756977*^9, 3.5770538866995754`*^9}, 3.5770541352047887`*^9}],
+
+Cell[BoxData[
+ TagBox[GridBox[{
+    {"\<\"Pen 1\"\>", "\<\"Pen 2\"\>", "\<\"Differenz\"\>"},
+    {
+     GraphicsBox[RasterBox[CompressedData["
+1:eJxdUrtOwzAUdZMSx4nzcJqmNIRAWwi0C0ywgPiAduGhDkwVMCEkPoSBlQFR
+PqACwYzUEYlP4DuQeAmVk1gNEUfX1kl0fO+5124cne8dqYQQB8vCSrmiKDMZ
+VFUFL00hOZlCynRdNzIwxsAppZqm4WCuBIGMG3pFOHG1MucJEOFYOAJxsQqI
+w7T5mr8RVdcDZ4mzlkFdjXoszY+0kKUWVdVmehzW1+q1mGpmuRxVU6C6EAJ7
+LrNMw3PtGimd7h+Mr64fLy4H3W4ihM0Mk+rSZObNMBlD9w83t5O3T8Tr6G63
+tew5LtNSh9IbNGkQ8jS6n3x8I95fnnsLUeL7kcHQi5wJSGqDkLPByeTrBzEe
+Dld12rZ5YjJ0kc8ETbmuC3LY6x33+5vtZtO3tBIRloGfcnqoC1kQBOiLc97p
+dHa2t9oryWw94PxPJutCCU0YhnEctxqLcRT6njAZRZL8LqDEJ8S2bcMn7sK1
+eXG8RUhl8Vr/vYE8rZpByZA/lV+jPDrA
+       "], {{0, 0}, {13, 15}}, {0, 255},
+       ColorFunction->RGBColor],
+      ImageSize->100,
+      PlotRange->{{0, 13}, {0, 15}}], 
+     GraphicsBox[RasterBox[CompressedData["
+1:eJxVUj1Lw0AYvjTm63JpLslVg22xwSpVSam2gksnwbqJH4OrXRxdHJx08R/4
+B4qjrurmIjg4FwQdK1L8Ay4V6pMejfXh7uUled737nnei9one22VEOJiO9hJ
+riiKqqq6rhuGgYg8MwZ+kTEkzTRNx3G4k2WUIjdG0DQN5JQJGqNmLvDnpv2i
+4IHnei6KHEqp7K+MgBLLssIwXI8KFcFlIac0YCxlgoMImud5Qtc3lldarVaz
+2YzjGATOOe6A08FBZIy5rmsTcnV5/n5/+3Z3c3Z8lLem0BkNU5pvW3nhQ32v
++zgc9LG+Xq4PGg41dZ5laCuV2oZuZBTQnh86w5+P4aDXudjdiclqJPI2AU16
+ggTScOj+VuO73/18fTo9rJVNktPILP2jJZ4wJkVtxkvba9X6fGlxJqAj4FaT
+DkMFIjRCab1aq5QXhBApTXqCHM4nrupaVCyUQgGrfZ61rWQcqcPpcPEdQ3Fs
+iiVNmxzZ5DPQxkhfAvkPeQHZXEaZ/AImLTki
+       "], {{0, 0}, {13, 15}}, {0, 255},
+       ColorFunction->RGBColor],
+      ImageSize->100,
+      PlotRange->{{0, 13}, {0, 15}}], 
+     GraphicsBox[RasterBox[CompressedData["
+1:eJxdUktrFEEQnp5HT7/m0bOzm2F2J86yk03ck2QVH4cIQYKEQBJPCSJoEARR
+/AEeQg7eBREMxIMiEryIeNGTKIoImlNAFCMefIAYYrKbkwSsnZZhsehuuqvr
+q/q6+qsvXDm1YGia5sGUMHt7hJBhGBhj27ZN09R1HY7g1HJDuYGz8BQQQojj
+OC4XtmX1cuUGGVQqWPvzqADBSBjIwbKMPA4xkFYSLIntcOoKRikFp2VZEKkq
+wgrOKIoOptUh6XgUx6FsBjxhRqyjxESOYUpCGWNQTkEACxApZYjxoeGRo2PH
+9zUyPaxESLOECB3H932oAgHAX88NKgohPM/jmnZ96eq7B3de31s5d+Hs9OTM
+s1srq0vXTk9MZJ7nUsZtop4JkIDTahgIhDbWnnS2N7o7nz+9uXvm4o3dX52t
+75vr91en643A8ynuvUgR4za2dQSQF49vdzsfuzsfbi7OXl58uPb+x9fNP9sv
+n08mcTMMa6zXB9VneBc0GYjNnhjd+vJ2/dWjS3MHTs6d/7m79+333tPl5Sa2
+9ruiySlEFl8Dz1ENGRvJYDRKfj1wZ8bH56emRrMkDThGmnSYlX9c8ZvQAVhb
+rVa73U6iOK0lcEzT9NiRw8ND2UBUFuIfRIkE9sAT6BHTiCvlisskMQkTpfLA
+YK1ai6OS9Dm1lQwKFSmxMaKGjc3eEQhLz1EaUMy1PitQVm5wq2QGe6XY//Sp
+TJFUV6p6f1rl/wtg7F2T
+       "], {{0, 0}, {17, 15}}, {0, 255},
+       ColorFunction->RGBColor],
+      ImageSize->100,
+      PlotRange->{{0, 17}, {0, 15}}]}
+   },
+   AutoDelete->False,
+   GridBoxFrame->{"Columns" -> {{True}}, "Rows" -> {{True}}},
+   GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}],
+  "Grid"]], "Print",
+ CellChangeTimes->{
+  3.577053141539954*^9, 3.5770531913678045`*^9, 3.577053497584319*^9, {
+   3.5770535981620717`*^9, 3.577053624810596*^9}, 3.577053669575156*^9, {
+   3.577053858756977*^9, 3.5770538866995754`*^9}, 3.577054135256792*^9}],
+
+Cell[BoxData[
+ TagBox[GridBox[{
+    {"\<\"Pen 1\"\>", "\<\"Pen 2\"\>", "\<\"Differenz\"\>"},
+    {
+     GraphicsBox[RasterBox[CompressedData["
+1:eJxVUj1Lw0AYvjTm63JpLslVg22xwSpVSam2gksnwbqJH4OrXRxdHJx08R/4
+B4qjrurmIjg4FwQdK1L8Ay4V6pMejfXh7uUled737nnei9one22VEOJiO9hJ
+riiKqqq6rhuGgYg8MwZ+kTEkzTRNx3G4k2WUIjdG0DQN5JQJGqNmLvDnpv2i
+4IHnei6KHEqp7K+MgBLLssIwXI8KFcFlIac0YCxlgoMImud5Qtc3lldarVaz
+2YzjGATOOe6A08FBZIy5rmsTcnV5/n5/+3Z3c3Z8lLem0BkNU5pvW3nhQ32v
++zgc9LG+Xq4PGg41dZ5laCuV2oZuZBTQnh86w5+P4aDXudjdiclqJPI2AU16
+ggTScOj+VuO73/18fTo9rJVNktPILP2jJZ4wJkVtxkvba9X6fGlxJqAj4FaT
+DkMFIjRCab1aq5QXhBApTXqCHM4nrupaVCyUQgGrfZ61rWQcqcPpcPEdQ3Fs
+iiVNmxzZ5DPQxkhfAvkPeQHZXEaZ/AImLTki
+       "], {{0, 0}, {13, 15}}, {0, 255},
+       ColorFunction->RGBColor],
+      ImageSize->100,
+      PlotRange->{{0, 13}, {0, 15}}], 
+     GraphicsBox[RasterBox[CompressedData["
+1:eJxdUrtKA0EUnc26r8lMZl9J3EVDnmqCqJ2ijWlMZ6H+gOms7PwUwTKVIKks
+LGzEykatLCJYphVBiUgs1pNcWIKHnWEe59w5996tdE8PujpjTGIojMmaYBiG
+ZVn2DLDFYWYKTdPYDHRdB8HNicBTxcAveB62juOYpgkJbv+RcRW5qlUth4x5
+jOWDMDN9kXMOCeKDpk1Bh5HvF5TaX9vYmo9XhduuNHwuA5GDJUQjJlTQ5gAh
+l2r1u4ve5+PL7+vwpHOYdRzLMPEokRGcyFJK0OM4/hkMku9RMvp67l9tNsqt
+KCAJkTGTZ4WkdH34dJ+M35Pxx03vfGdR7zRzYRgiX7KdBoc3CG3Gbq8v3x76
+Z8d7oZzDhxJx20xrQmSVtaVtcMbW68HRbqkiWXu7VXSZciWqnhYE1QAZToQQ
+cF4DqqXmSn25UVuII6UUbtMEiUxOwJ/0QtcEt4v5IB/4IINAHihBgJqLBcjU
+dNRBcE59SZv+7wdI5QA9ihmHf3aCOC8=
+       "], {{0, 0}, {15, 13}}, {0, 255},
+       ColorFunction->RGBColor],
+      ImageSize->100,
+      PlotRange->{{0, 15}, {0, 13}}], 
+     GraphicsBox[RasterBox[CompressedData["
+1:eJx1Us1rE0Ecnc3s18zOZj+TmsS2SbNtU9qk0VY8SKioFA/FL3rwJNiDHj3o
+obf+A148Kh5UkIKCoOhFD+pFqHpREKtepFpE9FC0YEMT6mvGLDHoYzf8+GXf
+2zdvX2Hu3Ik5SghxcKdwb88SmqYZhmGaptGGruuJREJVVa0FSmmiDUVRyN/A
+v+C6SeG7ybTvpT0vVsDe5pbgPBaHGvZddMZYxnVGCv2BonhwF4QKpYZGLWZm
+XJHzk4HneI4NcM6hDIrSBgSxzPh+2nGOVKp7ezKjljPVX2SKqgleyaYGPRuP
+geJyHgjRqQAnmJOAsIeK0ePL19eev66/XTlz6BgscmFZlO4ZLk1PT9dqtXK5
+jIdd18VZ8FI4l3S4gkA2m91YXm6u/2z8WFtavDmaCXNcJYxdXJh/d/8Wrvmz
+p3NMBQsGJF26wtkd02SUfnr5pLnxrfHr+92rl0Z8fSylGmH4/sWDZn11a/PL
+16Ubs5M2N3XkjJfK6KQBpAopk5CH9xY/PLt9/tRBpidsi+qe8+jOlUb949bm
+yrWF40fLZFchzFmki+5Ypm1qnJDxKJjd35cXyr7JiFNbde2ZqfH11Vef3zy9
+cLIamSSlkSz/Q5fJY4Z/IQQSKAIDfaXhYjSQd5M29jjdgbHS4d2ViWJ+qCfg
+LcTRSbr0DwUMGlUsZoS+a1tcFgOZI/mJSrUUDYZh2BVdXEsMoOO7bP9CsNVY
+yDJNLfTuzO8Ie0MX5YS4pEsDnU2WZZBL1F7WA2kLbsIMLvnRu6rbiVhBish8
+YsRW/0eXljrp/xx+A7+uZso=
+       "], {{0, 0}, {21, 15}}, {0, 255},
+       ColorFunction->RGBColor],
+      ImageSize->100,
+      PlotRange->{{0, 21}, {0, 15}}]}
+   },
+   AutoDelete->False,
+   GridBoxFrame->{"Columns" -> {{True}}, "Rows" -> {{True}}},
+   GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}],
+  "Grid"]], "Print",
+ CellChangeTimes->{
+  3.577053141539954*^9, 3.5770531913678045`*^9, 3.577053497584319*^9, {
+   3.5770535981620717`*^9, 3.577053624810596*^9}, 3.577053669575156*^9, {
+   3.577053858756977*^9, 3.5770538866995754`*^9}, 3.577054135309795*^9}],
+
+Cell[BoxData[
+ TagBox[GridBox[{
+    {"\<\"Pen 1\"\>", "\<\"Pen 2\"\>", "\<\"Differenz\"\>"},
+    {
+     GraphicsBox[RasterBox[CompressedData["
+1:eJxdUrtKA0EUnc26r8lMZl9J3EVDnmqCqJ2ijWlMZ6H+gOms7PwUwTKVIKks
+LGzEykatLCJYphVBiUgs1pNcWIKHnWEe59w5996tdE8PujpjTGIojMmaYBiG
+ZVn2DLDFYWYKTdPYDHRdB8HNicBTxcAveB62juOYpgkJbv+RcRW5qlUth4x5
+jOWDMDN9kXMOCeKDpk1Bh5HvF5TaX9vYmo9XhduuNHwuA5GDJUQjJlTQ5gAh
+l2r1u4ve5+PL7+vwpHOYdRzLMPEokRGcyFJK0OM4/hkMku9RMvp67l9tNsqt
+KCAJkTGTZ4WkdH34dJ+M35Pxx03vfGdR7zRzYRgiX7KdBoc3CG3Gbq8v3x76
+Z8d7oZzDhxJx20xrQmSVtaVtcMbW68HRbqkiWXu7VXSZciWqnhYE1QAZToQQ
+cF4DqqXmSn25UVuII6UUbtMEiUxOwJ/0QtcEt4v5IB/4IINAHihBgJqLBcjU
+dNRBcE59SZv+7wdI5QA9ihmHf3aCOC8=
+       "], {{0, 0}, {15, 13}}, {0, 255},
+       ColorFunction->RGBColor],
+      ImageSize->100,
+      PlotRange->{{0, 15}, {0, 13}}], 
+     GraphicsBox[RasterBox[CompressedData["
+1:eJxNUrlOw0AQHYzPtddrJ8axiGMcckFwwVWBRINEKqSIjoIiNHRAh0QDPQWi
+QKKjoaWmID/AJ6SBBr4AKprw4iVRnmZXszNvjp3d6vHZwfEsEQksjjXSFUXR
+NG02x8wYEyMUygEjjsYYeg7TNC3LggIaCBMa7K7remP4vo+dMYacSg7QoCO2
+WCxWy0Ecijmfu0yvVVPbMsBEBtkPaMw2G81amStbWYrYMAxr5VIaBVmWCSFk
+dewIj6PAJjo57Pbvb95fnh+vLzcCsezxGjNkQtB8U+XajEd0d3U+/B6M5Gdw
+19uL4xh9Oo4j724buqWpBaKL3v7w92Mkn6+nnWS3qa24xDn/H4imO4zh4kmS
+9J9uh79fP28PnQr5RJFGLHchoRwdeoBldV7tbjeOOhs7S0G24FQ8gkuOTpYu
+2JatKo1K2ExKm+36emuxnUaROxq45EgaM3XPdYSlttJ4rZ625ufSUlhyHWRT
+piBLC9vEhCFF4fiCc5vJbNOQTDwK+pTvK/8ATUE2AOPke8hYuP4AV447tw==
+
+       "], {{0, 0}, {13, 15}}, {0, 255},
+       ColorFunction->RGBColor],
+      ImageSize->100,
+      PlotRange->{{0, 13}, {0, 15}}], 
+     GraphicsBox[RasterBox[CompressedData["
+1:eJxlUjFoFEEU3Z3ZmdmZ2Z3Zvd273fP0iNwlkOuCIqJNEIlgExIUFLHwyliI
+pWCXQrAQRLAKh5AmCKKNYKGlkEJQK7EQRRAbjaRRsPJdPiySDMznz5/35/3/
+5h8d31gd8yAIPHaOPfUZY0IIzjnbW2EY7gsGBxYwuFJKSSmjKKIjfEToSJiD
+KXEcO+estVpr+GSJF7cEaxLhoAZgiqLo13nplOChUDrBC7GhUpEFRsptUoyN
+Z+cGtQkXBlXl0jIxvlf5uqy6deo9MCBFtdQaLPxUi15VSCGuLi9trt/a3pqs
+rJ4XkeUR71d9w0SmLWAgaprNFLc8NFKu3xzvfn/z8d3zxSsnr12/9/nV9qUT
+ZwBiwZSIUkhPq6TiLJFy7cLi7o/33768VsmR+08/vHy7szl5PKqL2dJBGiUk
+6TAVWUhE4LTb7Scbd37/+ZpF8y8+/dz5+2uy8XChUGfnbFmWJCO18//XzBd8
++dTw4rljt+8+eLb16PLKUip5y7Ii9yaWjeZUXgZmFnVarttpjUZDzv1oRupQ
+nj4+bDvms1Thfk92+jK8jx/BOzIQvTIbdFqRdtzGrUP1TP9wr1t771FGg28q
+REQL5ozUIky1TJIEkNynRZ4hBZU0k9BMIyzi6ItuqU0wQxxjDLHsmzcSkMa4
+qYEiwMMi+A+VvESP
+       "], {{0, 0}, {17, 15}}, {0, 255},
+       ColorFunction->RGBColor],
+      ImageSize->100,
+      PlotRange->{{0, 17}, {0, 15}}]}
+   },
+   AutoDelete->False,
+   GridBoxFrame->{"Columns" -> {{True}}, "Rows" -> {{True}}},
+   GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}],
+  "Grid"]], "Print",
+ CellChangeTimes->{
+  3.577053141539954*^9, 3.5770531913678045`*^9, 3.577053497584319*^9, {
+   3.5770535981620717`*^9, 3.577053624810596*^9}, 3.577053669575156*^9, {
+   3.577053858756977*^9, 3.5770538866995754`*^9}, 3.5770541353617983`*^9}],
+
+Cell[BoxData[
+ TagBox[GridBox[{
+    {"\<\"Pen 1\"\>", "\<\"Pen 2\"\>", "\<\"Differenz\"\>"},
+    {
+     GraphicsBox[RasterBox[CompressedData["
+1:eJxNUrlOw0AQHYzPtddrJ8axiGMcckFwwVWBRINEKqSIjoIiNHRAh0QDPQWi
+QKKjoaWmID/AJ6SBBr4AKprw4iVRnmZXszNvjp3d6vHZwfEsEQksjjXSFUXR
+NG02x8wYEyMUygEjjsYYeg7TNC3LggIaCBMa7K7remP4vo+dMYacSg7QoCO2
+WCxWy0Ecijmfu0yvVVPbMsBEBtkPaMw2G81amStbWYrYMAxr5VIaBVmWCSFk
+dewIj6PAJjo57Pbvb95fnh+vLzcCsezxGjNkQtB8U+XajEd0d3U+/B6M5Gdw
+19uL4xh9Oo4j724buqWpBaKL3v7w92Mkn6+nnWS3qa24xDn/H4imO4zh4kmS
+9J9uh79fP28PnQr5RJFGLHchoRwdeoBldV7tbjeOOhs7S0G24FQ8gkuOTpYu
+2JatKo1K2ExKm+36emuxnUaROxq45EgaM3XPdYSlttJ4rZ625ufSUlhyHWRT
+piBLC9vEhCFF4fiCc5vJbNOQTDwK+pTvK/8ATUE2AOPke8hYuP4AV447tw==
+
+       "], {{0, 0}, {13, 15}}, {0, 255},
+       ColorFunction->RGBColor],
+      ImageSize->100,
+      PlotRange->{{0, 13}, {0, 15}}], 
+     GraphicsBox[RasterBox[CompressedData["
+1:eJxdUrtOwzAUdeLmZZw0pi1Rmz6oKCStqFBbsaBCEQyVWBBlY2AoExMDIyyM
+DHxFJfgBkGBgZACJhRkJBhYGfqAM5TSWQtUrO7qxzz0+99jl/kmvTwkhNmYS
+c5yrqkop1aMwDMM0TcaYZVnINU1TFIVMBMBYtJjhONwTtp9xcynhiaTjOMCD
+R41CglEL8IxlZFKz9XymWc66hMwlaCJCcM7lERIPMBKsCCFWcn47CBqNRhiG
+W53NpYWKSNqcmVCII6QkSW7bdsD5dhh+3j++3z08DQbH3S4zTI1SNCL1xGAw
+19Pk/Kg7Gn6Px8/LzcVhrzW/5psQM6lEGpLVyH6nNPr9GI/h6+leZSNPmoI4
+3NYT/86gCnbJ/Ops9+vt+vn2cr1KUL4oFGyBbdJA2SMcc1RSK5KDnUp7WXc1
+1XdtbMXuSSWQAW1oE99CobDabNXCalAsZV2BBqfAaAEMuD7XdT3PYzp1mF5K
+CzBPyYjvXeIlvzwIv1My4tuJ34kWhUywLq34A+uTOaU=
+       "], {{0, 0}, {15, 13}}, {0, 255},
+       ColorFunction->RGBColor],
+      ImageSize->100,
+      PlotRange->{{0, 15}, {0, 13}}], 
+     GraphicsBox[RasterBox[CompressedData["
+1:eJxdUr+L1EAUTuZnMj8yk0yy2WVJ5CB3eOAPjoMVrrEQFkSOEwXRa5Rt5Tys
+z39AsBav3Gutra7S01aw02obEaxsrLTx5UaH4Ad5vEy+971v3sva4vDOAkdR
+ZP4+fY4QwhgTQuI4hkgpTdM0SRLGmD+HCJzoHJAAIUmZlKkVrMxSp0Quez6U
+QwnwgQa5j0AWCSusWS9152RkLVNaZZnJc68cZIEMERSUUht5sVmWdtSoYnL5
+yvZ40haFC/a8Gf8KfZuYtIh+eH168vz4bLm8u7U1Kc20yruuA6ngB3pJKS8I
+9ujW9s9f318tj2/cv35ttre7u885b0jc0r57MA9IMJnvtD9+r548O4y4enHy
+5u3nLw9vzzNrpFagFv0DdJGcpZQcHe0dPH0wm99792n1bXV6c9bsNOSixFpr
+z/S2hZKIkAxFKmoX+4/PPq6+vn95SWvB+QgjIcSQDOvwg3XO0fHVDUdmm+X6
+GHc1mWYIzA/J9ByIcuWqae3GZV6NXF1Xa7WpJPYXHC6oHyYiuJ9PMi1tV7vG
+yok1lRJB2W8njBGiYNiqxEieCW60VCIdKgeyB3wCKX8Fby/s/b+S4a8YAOd/
+ALv1Ox8=
+       "], {{0, 0}, {15, 15}}, {0, 255},
+       ColorFunction->RGBColor],
+      ImageSize->100,
+      PlotRange->{{0, 15}, {0, 15}}]}
+   },
+   AutoDelete->False,
+   GridBoxFrame->{"Columns" -> {{True}}, "Rows" -> {{True}}},
+   GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}],
+  "Grid"]], "Print",
+ CellChangeTimes->{
+  3.577053141539954*^9, 3.5770531913678045`*^9, 3.577053497584319*^9, {
+   3.5770535981620717`*^9, 3.577053624810596*^9}, 3.577053669575156*^9, {
+   3.577053858756977*^9, 3.5770538866995754`*^9}, 3.5770541354138007`*^9}],
+
+Cell[BoxData[
+ TagBox[GridBox[{
+    {"\<\"Pen 1\"\>", "\<\"Pen 2\"\>", "\<\"Differenz\"\>"},
+    {
+     GraphicsBox[RasterBox[CompressedData["
+1:eJxdUrtOwzAUdeLmZZw0pi1Rmz6oKCStqFBbsaBCEQyVWBBlY2AoExMDIyyM
+DHxFJfgBkGBgZACJhRkJBhYGfqAM5TSWQtUrO7qxzz0+99jl/kmvTwkhNmYS
+c5yrqkop1aMwDMM0TcaYZVnINU1TFIVMBMBYtJjhONwTtp9xcynhiaTjOMCD
+R41CglEL8IxlZFKz9XymWc66hMwlaCJCcM7lERIPMBKsCCFWcn47CBqNRhiG
+W53NpYWKSNqcmVCII6QkSW7bdsD5dhh+3j++3z08DQbH3S4zTI1SNCL1xGAw
+19Pk/Kg7Gn6Px8/LzcVhrzW/5psQM6lEGpLVyH6nNPr9GI/h6+leZSNPmoI4
+3NYT/86gCnbJ/Ops9+vt+vn2cr1KUL4oFGyBbdJA2SMcc1RSK5KDnUp7WXc1
+1XdtbMXuSSWQAW1oE99CobDabNXCalAsZV2BBqfAaAEMuD7XdT3PYzp1mF5K
+CzBPyYjvXeIlvzwIv1My4tuJ34kWhUywLq34A+uTOaU=
+       "], {{0, 0}, {15, 13}}, {0, 255},
+       ColorFunction->RGBColor],
+      ImageSize->100,
+      PlotRange->{{0, 15}, {0, 13}}], 
+     GraphicsBox[RasterBox[CompressedData["
+1:eJxtUj1Lw1AUTWLafDTJS5s0aVL7SYtapX4MWqVFEUFxECyIIOjQsaBuzoLg
+4A/wXziIi0NxcnZwFEEQf4La8Xma14ZaPSSPm5dz7z33vFdonTZbYxzHkf7b
+iwFBEKIBxgaIBECAX9xvYEeSJE3TdF3HqqqqoiiyLLN0nuf/kgkhvmONp+yU
+YyethGmaSMQ+q88HABkrmqJs0XcKXhKPJnIoixaO46AF08YkgcziSrlUry0t
+L9Wq0zONRgPFs65PZJXpGSajeCWTXl2Yu7m6fOvcv97dnu/v5XI5KMEI+MvE
+YAXZMIy85y3OztKPD9rt0q/ua+fheGun7mbiBlGiUlgZAfPKdd2XxyfapfST
+Xp9dZCJ61cnauh4TxdBGNqNt24hPjtrvz2/0mx5u7BbjnsGJcDMqRkL3GBlK
+MLsiRDbX1tvNg+2FlfnStKOazMDQcEbGIJZl4RMtiKpmfa8yOZVK9t0LyWxG
+8LEPgWbcKGfNiXyimE74id6BDgsWAoST9lI0OU5iSSJbehQyRsj8AKwLDkIK
+8O8NYVnhBWCqRi7GD1SOPrQ=
+       "], {{0, 0}, {15, 15}}, {0, 255},
+       ColorFunction->RGBColor],
+      ImageSize->100,
+      PlotRange->{{0, 15}, {0, 15}}], 
+     GraphicsBox[RasterBox[CompressedData["
+1:eJxlUjtLA0EQvrvdvdt77D2Sy8X4ujx8oBgjlkJEbKwVBEWwEBR8gLY2Imrt
+AxXESrQUwULQQsFfoG0aGyv9F37JajjiB7fMznwz8+3cFJY2Z5aIoije71e3
+AVVVaQMwNE0jhDDG5FVGlQRwRdQ0TasBGIZhwCNzgf9kx3FCX0QpN/CEsC1d
+19ECUZDVP0g+/JzznO+lbdPi3Av8UNjCYHD+FyOlxp1d/b29TkeJWulytao7
+oj3TJni9C54gGzXJpSgcLsQ7W+s35ye3e7tzlXIpX0AFrlODkeQEhBAdYThQ
+LNZqtef397g6phhsbmG2PDKI91JCUV/qAR+JOOG5u3/bP3tS9Gj1YOXz62V7
+fWK8L13JUgwqOeogCECenV87On1VWP768fDj+2F5Oj+asoYEcx3RMj0Ypsam
+JiZLA/bl1cbF8WJ/7Kc0o+hqmEySDG3gy/oqtxyaGymynqzPid4mLKm5OQ0p
+G4mEqrkUtYidzhb8KO7ORFnXk5WTvxUp0iaU69yxTcaIgrI518YaNMlqAnKv
+0BfacDYXpmVJpCSpqmUJYf8AsD41FQ==
+       "], {{0, 0}, {15, 15}}, {0, 255},
+       ColorFunction->RGBColor],
+      ImageSize->100,
+      PlotRange->{{0, 15}, {0, 15}}]}
+   },
+   AutoDelete->False,
+   GridBoxFrame->{"Columns" -> {{True}}, "Rows" -> {{True}}},
+   GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}],
+  "Grid"]], "Print",
+ CellChangeTimes->{
+  3.577053141539954*^9, 3.5770531913678045`*^9, 3.577053497584319*^9, {
+   3.5770535981620717`*^9, 3.577053624810596*^9}, 3.577053669575156*^9, {
+   3.577053858756977*^9, 3.5770538866995754`*^9}, 3.577054135466804*^9}],
+
+Cell[BoxData[
+ TagBox[GridBox[{
+    {"\<\"Pen 1\"\>", "\<\"Pen 2\"\>", "\<\"Differenz\"\>"},
+    {
+     GraphicsBox[RasterBox[CompressedData["
+1:eJxtUj1Lw1AUTWLafDTJS5s0aVL7SYtapX4MWqVFEUFxECyIIOjQsaBuzoLg
+4A/wXziIi0NxcnZwFEEQf4La8Xma14ZaPSSPm5dz7z33vFdonTZbYxzHkf7b
+iwFBEKIBxgaIBECAX9xvYEeSJE3TdF3HqqqqoiiyLLN0nuf/kgkhvmONp+yU
+YyethGmaSMQ+q88HABkrmqJs0XcKXhKPJnIoixaO46AF08YkgcziSrlUry0t
+L9Wq0zONRgPFs65PZJXpGSajeCWTXl2Yu7m6fOvcv97dnu/v5XI5KMEI+MvE
+YAXZMIy85y3OztKPD9rt0q/ua+fheGun7mbiBlGiUlgZAfPKdd2XxyfapfST
+Xp9dZCJ61cnauh4TxdBGNqNt24hPjtrvz2/0mx5u7BbjnsGJcDMqRkL3GBlK
+MLsiRDbX1tvNg+2FlfnStKOazMDQcEbGIJZl4RMtiKpmfa8yOZVK9t0LyWxG
+8LEPgWbcKGfNiXyimE74id6BDgsWAoST9lI0OU5iSSJbehQyRsj8AKwLDkIK
+8O8NYVnhBWCqRi7GD1SOPrQ=
+       "], {{0, 0}, {15, 15}}, {0, 255},
+       ColorFunction->RGBColor],
+      ImageSize->100,
+      PlotRange->{{0, 15}, {0, 15}}], 
+     GraphicsBox[RasterBox[CompressedData["
+1:eJxNUrtOAkEUHXbZmd1hZmfZBUEXsjwkEEkwRgngD9ATOzt+gMRCKys7NVZ+
+gJgYP4PeWBgLC0stKCgtKNcDIxtPZpK7d8+cOffeqY4no7FJCJHYCnsVa5im
+SSm1bdtxHMaYtYFhGKk1EiZi5EHLKpnzs4CUknOOs1Aw1kj4iJEEIcrLRhg0
+o1BaKYMQzmwhBH6Za+gjCBxmea7YD+Vgt1AQTlHygDvbnip4gcsc3PufzKw0
+yDVKTvrtm4uzx7vrp+nDYacDfZq24Efz/5Qpc4VE4b29Zvw2i+cf8c/8dXo/
+bNfaiuZdV1IK/kaZrsgZ3usexfPPeLnAWrzMRnWBVfaVb6dhXheou6ELvxqP
+4q/3ePn9fDXhhOy46ZzMiJULU7dON8TzvCAIIkIuT4e35+PhQRlJiKCN2rAm
+azPKtuulUivntYtBvxkNWpVqVA6yCg3UhpO5aDMQwWcYho1q5bjbjUrlYn5L
+KYWxgpAwAd185CGFaQpu+56LAEAysZHMNLmCbsDW0O/kF/xnPK4=
+       "], {{0, 0}, {15, 13}}, {0, 255},
+       ColorFunction->RGBColor],
+      ImageSize->100,
+      PlotRange->{{0, 15}, {0, 13}}], 
+     GraphicsBox[RasterBox[CompressedData["
+1:eJx1Uj1MFEEU3tn5n9mdYdhjb7lLgD1dCKAxkQRNyMVSaMCcQEgsDBQGjYmN
+JQRLYyONhbEyIXQ2Giso1EpCQkFibWtiYyEFlT4YnayFX3Ze3s6+771vv5ly
+7VFvDUdRZGE5WGe5B8aYEBLHcUgAfh8ShFD0L2CHUso5V4IJRoHiayBCfXit
+A/YZY1rrwrA8IakUNsvyvKETBfXwCWJo7gHTJac21RO5uNRU2qQy0cYmaWKd
+SglGzjmQ4Yd6nUDhlABlGOPe9Phqb/7e8u2HD9Ypjme6XZXo3PYrTKHMs/5M
+YTwFHRhfrTpf3u18eL/bu7+atS++ePp8aXZBOccQAnnBDUgYoYnSSvDxsdGv
+Rx8PPu9HGW9cvv7m+Puzl29vTd+YsINaSE6odxIiSBVCeFef3F34drhXTQ2s
+PN4++flrY31Lirjj2k4pdT4lmAnOWGuNMbrR2Lxzc6gQr15/Ov1xujgzW3Cr
+MdJSgpi6ddDfcD7UbLZYfKFPX6lapujMTXWvlZNVMeyohp7egcDypwYKpZQg
+sipHRsuyrz9jFLcHW87YOqVuuP81cn5pCGeZiXNHBwzNNIY+/kcCBdUQjoCz
+WAliBIIHBNQpHmFQiOQv/nc/6x18Ei52vdVvqNE6qg==
+       "], {{0, 0}, {17, 15}}, {0, 255},
+       ColorFunction->RGBColor],
+      ImageSize->100,
+      PlotRange->{{0, 17}, {0, 15}}]}
+   },
+   AutoDelete->False,
+   GridBoxFrame->{"Columns" -> {{True}}, "Rows" -> {{True}}},
+   GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}],
+  "Grid"]], "Print",
+ CellChangeTimes->{
+  3.577053141539954*^9, 3.5770531913678045`*^9, 3.577053497584319*^9, {
+   3.5770535981620717`*^9, 3.577053624810596*^9}, 3.577053669575156*^9, {
+   3.577053858756977*^9, 3.5770538866995754`*^9}, 3.5770541355188065`*^9}],
+
+Cell[BoxData[
+ TagBox[GridBox[{
+    {"\<\"Pen 1\"\>", "\<\"Pen 2\"\>", "\<\"Differenz\"\>"},
+    {
+     GraphicsBox[RasterBox[CompressedData["
+1:eJxNUrtOAkEUHXbZmd1hZmfZBUEXsjwkEEkwRgngD9ATOzt+gMRCKys7NVZ+
+gJgYP4PeWBgLC0stKCgtKNcDIxtPZpK7d8+cOffeqY4no7FJCJHYCnsVa5im
+SSm1bdtxHMaYtYFhGKk1EiZi5EHLKpnzs4CUknOOs1Aw1kj4iJEEIcrLRhg0
+o1BaKYMQzmwhBH6Za+gjCBxmea7YD+Vgt1AQTlHygDvbnip4gcsc3PufzKw0
+yDVKTvrtm4uzx7vrp+nDYacDfZq24Efz/5Qpc4VE4b29Zvw2i+cf8c/8dXo/
+bNfaiuZdV1IK/kaZrsgZ3usexfPPeLnAWrzMRnWBVfaVb6dhXheou6ELvxqP
+4q/3ePn9fDXhhOy46ZzMiJULU7dON8TzvCAIIkIuT4e35+PhQRlJiKCN2rAm
+azPKtuulUivntYtBvxkNWpVqVA6yCg3UhpO5aDMQwWcYho1q5bjbjUrlYn5L
+KYWxgpAwAd185CGFaQpu+56LAEAysZHMNLmCbsDW0O/kF/xnPK4=
+       "], {{0, 0}, {15, 13}}, {0, 255},
+       ColorFunction->RGBColor],
+      ImageSize->100,
+      PlotRange->{{0, 15}, {0, 13}}], 
+     GraphicsBox[RasterBox[CompressedData["
+1:eJxtUbtOwzAUdevEcVInqRPTpO9UBQGqqvKWEGIGhko8FjakLrABI0gINibE
+yMDMyMTEB/AJTGVhgJ0ZUDjUKkKCI9u6ts899/i60dvf7FFCiI/pYn7Hpmky
+xrBms9nMH5AhKKWWZdm2zTm3BkAKHQK5moYAV3lPhNIfCZUKQtCQxQZArDWx
+YqtyIoni+SRpx3GjVAmFh0N7AGiCAzWUi10hmbk+N7dQLjdzskAMbSafz+NW
+G0BK03cnVLA9PXN1cHhzdHp3fnG2s9dxC4qLgDnaLWijvlF3yOHaTPr0kL49
+p6+PL/e3u0sd22BSeJoG2cgjOUqWK+Sjf52+9zEernqrJdIpjtS4gerwBrfC
+YQ430MuTg2762cfoTmWajLQlH7OJpn13wKLMzCCIomhvq3V5vNEo0Ngl43EQ
+2xQ6eCzqgoDSNiFJ5Cy2qiuLrdm6P10RdSUDbujuQfCHCf2kVuq0J0drxWY1
+Vkr9bp3+UG1ACCGlDEMpA9/zPN038gvaAJzwISCO7b80cwj99RpfUlY8pw==
+
+       "], {{0, 0}, {13, 15}}, {0, 255},
+       ColorFunction->RGBColor],
+      ImageSize->100,
+      PlotRange->{{0, 13}, {0, 15}}], 
+     GraphicsBox[RasterBox[CompressedData["
+1:eJxNUktrE1EUnrn3zr0zc1/ziJNpJhoboxghoUhdaBYWcaWFWLuraGGqgqIU
+XBTpH3DlY6voWlDoQoTiStxINj4SUHwiIuiioJitG0/mktAP7uHMuefjfPOd
+O52vns6xZVkSTghnlCOEGGOBEnGooyBUQmI8qtsFICGEQM/k01xRSktc1JLy
+TJY1tA64tinmnEMz3DoF7DHMFNd1Uyk0wSfa7aZSxCc6041qShFVQYBsy/M8
+MwsEmAiVuhJ7Q9090LqRX1g7d219Ze3S4nLZEjbCzHciriR1YdZ2yh6Fqwxf
+Pt7+8/rZ163vjzceLR3rdBbP3H9wr17fjR2HAJcxwwKAsETaroVnE/b7za3h
+v8+9/tMjh89uvnr/9tNg4+6duUa2X+CSlJJSYMEg+H3uOcyxqUNXz88Nh/1e
+7+GTzY9f/m4Nfv54+eL5yapzatrfGenIJdAMFCB6DBM8ckMpdXGhefN6N5/v
+/no3+PCtf3v9CvSlApUkF4Uu8A0isEAqQ6gSkmYmZ/elpZqeP9q5mi8cak5B
+D4j3fd/0A4wJYCOQIIZJJEJJfA88asR8plbeVa3AooUQkwWhAiYHLisQx6Hv
+iXIcHWy1qlOVdEeitS6EIGuMyX6NTkhgou9SSpCWHF4UGAaUybPZTiEFzNbI
+GGCU2QsU/wO7f1Ep
+       "], {{0, 0}, {17, 13}}, {0, 255},
+       ColorFunction->RGBColor],
+      ImageSize->100,
+      PlotRange->{{0, 17}, {0, 13}}]}
+   },
+   AutoDelete->False,
+   GridBoxFrame->{"Columns" -> {{True}}, "Rows" -> {{True}}},
+   GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}],
+  "Grid"]], "Print",
+ CellChangeTimes->{
+  3.577053141539954*^9, 3.5770531913678045`*^9, 3.577053497584319*^9, {
+   3.5770535981620717`*^9, 3.577053624810596*^9}, 3.577053669575156*^9, {
+   3.577053858756977*^9, 3.5770538866995754`*^9}, 3.57705413557181*^9}],
+
+Cell[BoxData[
+ TagBox[GridBox[{
+    {"\<\"Pen 1\"\>", "\<\"Pen 2\"\>", "\<\"Differenz\"\>"},
+    {
+     GraphicsBox[RasterBox[CompressedData["
+1:eJxtUbtOwzAUdevEcVInqRPTpO9UBQGqqvKWEGIGhko8FjakLrABI0gINibE
+yMDMyMTEB/AJTGVhgJ0ZUDjUKkKCI9u6ts899/i60dvf7FFCiI/pYn7Hpmky
+xrBms9nMH5AhKKWWZdm2zTm3BkAKHQK5moYAV3lPhNIfCZUKQtCQxQZArDWx
+YqtyIoni+SRpx3GjVAmFh0N7AGiCAzWUi10hmbk+N7dQLjdzskAMbSafz+NW
+G0BK03cnVLA9PXN1cHhzdHp3fnG2s9dxC4qLgDnaLWijvlF3yOHaTPr0kL49
+p6+PL/e3u0sd22BSeJoG2cgjOUqWK+Sjf52+9zEernqrJdIpjtS4gerwBrfC
+YQ430MuTg2762cfoTmWajLQlH7OJpn13wKLMzCCIomhvq3V5vNEo0Ngl43EQ
+2xQ6eCzqgoDSNiFJ5Cy2qiuLrdm6P10RdSUDbujuQfCHCf2kVuq0J0drxWY1
+Vkr9bp3+UG1ACCGlDEMpA9/zPN038gvaAJzwISCO7b80cwj99RpfUlY8pw==
+
+       "], {{0, 0}, {13, 15}}, {0, 255},
+       ColorFunction->RGBColor],
+      ImageSize->100,
+      PlotRange->{{0, 13}, {0, 15}}], 
+     GraphicsBox[RasterBox[CompressedData["
+1:eJxlkrFPFEEUxt/tws7OMDs7szt7C3cnd1yMx0HIETQkNARDbCwsTLSykc7E
+aGUjCQWFnZ2d1hYmxtKggZjYQAMhVpQ2/gOSkECxfDjchOBLdvfbN7/37ct7
+O7X28uFaSETp5XWhLx5hODqMcBj+NQiCWq1Gw4BGnjHGORdCxHEM7e7IO9jz
+EHAAmRtT5NZmeZZqY0yapkhGUXTV3zlLKbu56TfGxzhXMlFKIaO1ttbiE+Ad
+DIFynE6EtcFE2W42BrMz9/rzi40pS+ymKVEFNw+jFiYlowfLg48bT/7sfDg5
++PLz/frq7Z4mwhEAdOJgHjGj0qU23e2x4/131emP6uyw+v1148XjtqLxoi6F
+gDlglEBgDgWnuqBfW6+q6ltVHWx/ev3m2dxCnbqlLQRDq34a0PgcXrOAjvbe
+Vn93v3/ebHGattTJdBFHztmbSym4QHesKIrnT1ce3e/3W7KpKNOKs1HXszcX
+8UhukslWQyt5p1dON8cWb5U3EsK0/eiumiOPGWIj3U67M9lCoc3M/zC0492u
+kyTBBrFTnSi3R9+Gh/0vhFM2jGsbv8YH/8L/gR47B+NzPvw=
+       "], {{0, 0}, {15, 15}}, {0, 255},
+       ColorFunction->RGBColor],
+      ImageSize->100,
+      PlotRange->{{0, 15}, {0, 15}}], 
+     GraphicsBox[RasterBox[CompressedData["
+1:eJxlUj1oFEEUvvnd2ZnJzOzuXe6SC6eHnhdzUQghKohJpaVBq4CprrERYqGF
+haCkEBVFbOxMESsFC0sR/yqbEBtRuCYQLOxEU1r49h4ZTvxgdmffzve+7715
+7f7axT6rVCoeVgar3JcvxoQQnHPcU0oJIXwI3EMcnxHwCRQ5BFDIPuJfuo9R
+CpxM0zTz3tkxzhNCCadMsFKIDYGio3lAxVrbzsOhap5SlhvTzfO2tZm2REk4
+AAaUUugB/UPEOVcnpJv5xLlWp2MMrxDpjXZZAQbAlfceWUhJkiSEUOXs7MKR
+9bXlt8/vbTy9OdvT/XMrm3ceXF1emZY+lzoTKfhBSiqTMOZOTLFTLfr53aOd
+n+8fvtqoCHd7/f7Oty9bz55cmutAJV5bbCyIAhfUc8kcVW9eXN/78/rj7vbS
+XPvG45db3webt87Ph+Ro4ackBT+xY1hO2Wgltz/c/fX70+KZhd29wdcfg2Mt
+76ictuywIkiJQlorLqD73Ifq5dXTi/P50skD165c8NJ4KTrjoZGWmf+5moQF
+pyfqNSV5r1tXnDAhZ2Z7M+Py+ETaKkIOKYflRyEoDXSNMXBHk406cEGy2Ww0
+a+HgZK0oym5jk6MQakEeJGqtEyEIZ2DY2BTyxHsZnSWkIHBCMI6ROIT/s+IA
+4zRiJOIvoBlGgw==
+       "], {{0, 0}, {17, 15}}, {0, 255},
+       ColorFunction->RGBColor],
+      ImageSize->100,
+      PlotRange->{{0, 17}, {0, 15}}]}
+   },
+   AutoDelete->False,
+   GridBoxFrame->{"Columns" -> {{True}}, "Rows" -> {{True}}},
+   GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}],
+  "Grid"]], "Print",
+ CellChangeTimes->{
+  3.577053141539954*^9, 3.5770531913678045`*^9, 3.577053497584319*^9, {
+   3.5770535981620717`*^9, 3.577053624810596*^9}, 3.577053669575156*^9, {
+   3.577053858756977*^9, 3.5770538866995754`*^9}, 3.577054135626813*^9}],
+
+Cell[BoxData[
+ TagBox[GridBox[{
+    {"\<\"Pen 1\"\>", "\<\"Pen 2\"\>", "\<\"Differenz\"\>"},
+    {
+     GraphicsBox[RasterBox[CompressedData["
+1:eJxlkrFPFEEUxt/tws7OMDs7szt7C3cnd1yMx0HIETQkNARDbCwsTLSykc7E
+aGUjCQWFnZ2d1hYmxtKggZjYQAMhVpQ2/gOSkECxfDjchOBLdvfbN7/37ct7
+O7X28uFaSETp5XWhLx5hODqMcBj+NQiCWq1Gw4BGnjHGORdCxHEM7e7IO9jz
+EHAAmRtT5NZmeZZqY0yapkhGUXTV3zlLKbu56TfGxzhXMlFKIaO1ttbiE+Ad
+DIFynE6EtcFE2W42BrMz9/rzi40pS+ymKVEFNw+jFiYlowfLg48bT/7sfDg5
++PLz/frq7Z4mwhEAdOJgHjGj0qU23e2x4/131emP6uyw+v1148XjtqLxoi6F
+gDlglEBgDgWnuqBfW6+q6ltVHWx/ev3m2dxCnbqlLQRDq34a0PgcXrOAjvbe
+Vn93v3/ebHGattTJdBFHztmbSym4QHesKIrnT1ce3e/3W7KpKNOKs1HXszcX
+8UhukslWQyt5p1dON8cWb5U3EsK0/eiumiOPGWIj3U67M9lCoc3M/zC0492u
+kyTBBrFTnSi3R9+Gh/0vhFM2jGsbv8YH/8L/gR47B+NzPvw=
+       "], {{0, 0}, {15, 15}}, {0, 255},
+       ColorFunction->RGBColor],
+      ImageSize->100,
+      PlotRange->{{0, 15}, {0, 15}}], 
+     GraphicsBox[RasterBox[CompressedData["
+1:eJxdUstKw0AUTaKTSdLJs00TE2uttZV24Wvh27oS3LgRXdilK4uoCApuXAjd
+iqDgr/gl+gHiRrcqigrxtFdD8TIZJnfOOXPn3CntHG7s9EmSZP9+nbWiKIwx
+zrmmaZjVbiDT1w3syrIs/QV+kQTMNE3b6QzLsoQQ4KYsYAgMItbIu647GAdx
+lC8VC2E+hy3DMMDSdR0U0icw5ywI/fHhYHmiWi5EOTPj2U7WdYG3bRvnkjjA
+OCjD1fJQYdwT65P10+3Ni4PWSbO5Wq/7Sn/EdZQEjNwNsHBWGIZjqny53/q8
+v0teX5Kn56tWa21quqjpljA5U0kcs8V5VghPkg62NpKP9854e7m9uV7yghU/
+ytqOwTjECYwLojDcvFQsPj08Jt9J8vF1trvnyv0jnu+awlAZgQmPwqIo6qwl
+pX3ePj48WpyZQwHCMDK6jjLgSQqGOBwGxXEcOFCpVBqNRq1Ww3WQJMNTMH4p
+CcPjOJ6bmV2aX6iWR0M/DwMhlbaGwNRrSAE/kA/gc5zL+ZaFDFnX20d6D4Sn
+3hmaigGdVDaNlNL7nFg3/r2otJ7eYH9B4B/abED7
+       "], {{0, 0}, {15, 15}}, {0, 255},
+       ColorFunction->RGBColor],
+      ImageSize->100,
+      PlotRange->{{0, 15}, {0, 15}}], 
+     GraphicsBox[RasterBox[CompressedData["
+1:eJxlUL1LwzEQTe6S/PLRNLGaFqu2VQRpUWsdFKpYrYjFbqJUQRzq4tZJxM3B
+zX/a02gXAwnvLu/ee9z6dHY9RcaY+73fWHKWYkjBNWqL9yf9x/PBXq8TouGA
+1paFEACgtY6cn3X7N3dvywcTXT/q7VckuKANCCQFANxqsp3dses8MThkamM0
+3hw+DFpFXSrFOUfEqNClZrU9Y3jBiu3TYXh5bkeRFqwmArlYaylPBLgdmc+P
+yfvrVRn9qrXJFNT/4QgO3BijlLo8XqmVEvNrFWmsVlkBmCiXtHfG+SBCa6nR
+jeilruZfypCTSClJkMa8d0izArN+PsScYzIyximpaQ//OdQhkFeUy8yZv3+x
+Ibt/AYoaF/w=
+       "], {{0, 0}, {11, 11}}, {0, 255},
+       ColorFunction->RGBColor],
+      ImageSize->100,
+      PlotRange->{{0, 11}, {0, 11}}]}
+   },
+   AutoDelete->False,
+   GridBoxFrame->{"Columns" -> {{True}}, "Rows" -> {{True}}},
+   GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}],
+  "Grid"]], "Print",
+ CellChangeTimes->{
+  3.577053141539954*^9, 3.5770531913678045`*^9, 3.577053497584319*^9, {
+   3.5770535981620717`*^9, 3.577053624810596*^9}, 3.577053669575156*^9, {
+   3.577053858756977*^9, 3.5770538866995754`*^9}, 3.577054135678816*^9}],
+
+Cell[BoxData[
+ TagBox[GridBox[{
+    {"\<\"Pen 1\"\>", "\<\"Pen 2\"\>", "\<\"Differenz\"\>"},
+    {
+     GraphicsBox[RasterBox[CompressedData["
+1:eJxdUstKw0AUTaKTSdLJs00TE2uttZV24Wvh27oS3LgRXdilK4uoCApuXAjd
+iqDgr/gl+gHiRrcqigrxtFdD8TIZJnfOOXPn3CntHG7s9EmSZP9+nbWiKIwx
+zrmmaZjVbiDT1w3syrIs/QV+kQTMNE3b6QzLsoQQ4KYsYAgMItbIu647GAdx
+lC8VC2E+hy3DMMDSdR0U0icw5ywI/fHhYHmiWi5EOTPj2U7WdYG3bRvnkjjA
+OCjD1fJQYdwT65P10+3Ni4PWSbO5Wq/7Sn/EdZQEjNwNsHBWGIZjqny53/q8
+v0teX5Kn56tWa21quqjpljA5U0kcs8V5VghPkg62NpKP9854e7m9uV7yghU/
+ytqOwTjECYwLojDcvFQsPj08Jt9J8vF1trvnyv0jnu+awlAZgQmPwqIo6qwl
+pX3ePj48WpyZQwHCMDK6jjLgSQqGOBwGxXEcOFCpVBqNRq1Ww3WQJMNTMH4p
+CcPjOJ6bmV2aX6iWR0M/DwMhlbaGwNRrSAE/kA/gc5zL+ZaFDFnX20d6D4Sn
+3hmaigGdVDaNlNL7nFg3/r2otJ7eYH9B4B/abED7
+       "], {{0, 0}, {15, 15}}, {0, 255},
+       ColorFunction->RGBColor],
+      ImageSize->100,
+      PlotRange->{{0, 15}, {0, 15}}], 
+     GraphicsBox[RasterBox[CompressedData["
+1:eJxdkr1LHEEYxmdvb2dnZudrd+8j3pm7i5icx50RiV9o1EKCHwhKEATtREgV
+0qTybwip7Cz9DwRBWysJWFhokzSxtZOUCetzN3gEX2ZmH3Z+88w778yrvS8f
+93xCiEI36F3d/fh+xHmsTRrHVmkhBGMsDENKKaY8z3OYE7lcjodBGpuRshlO
+I818K6i1VmuNVUEQ+E8BHiOnYSFJxxuVD+/ettttzjmleWeolMIubglsIQSj
+5WLaLIi5kdra/MzG0sLW9Dhao5SUJQffTwmwFAx8Q5PPuyu/To+y35d/fpwc
+bE5XPIKWGCtCBtjlDK2lShnZ31nOHi6yf1fZ3+ub8+9fN4enEjIY25gGDnbm
+SAy6Vh98uDvLspssu/52sN5JSMt2YRvkHezMkZXTnRq5vTy8/3n8abtuZK6U
+8tioMMj/X0OYo1ao2FCFTHai+TE6N5ofe63qRSKlfFbw3jGp1QJbVKvVjdnR
+1Ynm+1a9PWAcTJ7CFRDVxlWWItp8WU4ImaoVFluNNzEDjFnnjBFw/5rgjNmi
+kSWrXpioIFnvjiiYfhrQXi/cYVkv3AtBwBn/HwG6FD7k
+       "], {{0, 0}, {15, 13}}, {0, 255},
+       ColorFunction->RGBColor],
+      ImageSize->100,
+      PlotRange->{{0, 15}, {0, 13}}], 
+     GraphicsBox[RasterBox[CompressedData["
+1:eJxNkD1PwzAQhs93tpPYTgikTQiU5kMiQMNGSQcGvoYuSFRISB2QkCq2DiCY
+mPhlbPwUfggO4aOPZMnSnd97zsXi8WZBAKB/Tnu3MMYIGDHsCxqlm8oEa76W
+kiuljDFt1cIYEDrGR8fdy4cnzdHFfnFe5bFxbQIiMsI0TgJu8nr4cDd9frl/
+e5ofV75g3Ca0U5Apo3vI6qgUgwi8CqL0crZ7mAWdg4dohNgAmDWNH5+CU4Iq
+68E0hKQbwXkbJYiKLHv/+DwYL3s783j9CjX+L0JkncMwzLfw+vZ1crYEb1yk
+8NdgQe66ErvtRn1XqyQCBStYVcm5kNogr5qJ3K5SybvnnQn9IoTgjibGSXir
+CfiNFbY9nbb9wC9PGBl6
+       "], {{0, 0}, {11, 11}}, {0, 255},
+       ColorFunction->RGBColor],
+      ImageSize->100,
+      PlotRange->{{0, 11}, {0, 11}}]}
+   },
+   AutoDelete->False,
+   GridBoxFrame->{"Columns" -> {{True}}, "Rows" -> {{True}}},
+   GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}],
+  "Grid"]], "Print",
+ CellChangeTimes->{
+  3.577053141539954*^9, 3.5770531913678045`*^9, 3.577053497584319*^9, {
+   3.5770535981620717`*^9, 3.577053624810596*^9}, 3.577053669575156*^9, {
+   3.577053858756977*^9, 3.5770538866995754`*^9}, 3.5770541357308187`*^9}],
+
+Cell[BoxData[
+ TagBox[GridBox[{
+    {"\<\"Pen 1\"\>", "\<\"Pen 2\"\>", "\<\"Differenz\"\>"},
+    {
+     GraphicsBox[RasterBox[CompressedData["
+1:eJxdkr1LHEEYxmdvb2dnZudrd+8j3pm7i5icx50RiV9o1EKCHwhKEATtREgV
+0qTybwip7Cz9DwRBWysJWFhokzSxtZOUCetzN3gEX2ZmH3Z+88w778yrvS8f
+93xCiEI36F3d/fh+xHmsTRrHVmkhBGMsDENKKaY8z3OYE7lcjodBGpuRshlO
+I818K6i1VmuNVUEQ+E8BHiOnYSFJxxuVD+/ettttzjmleWeolMIubglsIQSj
+5WLaLIi5kdra/MzG0sLW9Dhao5SUJQffTwmwFAx8Q5PPuyu/To+y35d/fpwc
+bE5XPIKWGCtCBtjlDK2lShnZ31nOHi6yf1fZ3+ub8+9fN4enEjIY25gGDnbm
+SAy6Vh98uDvLspssu/52sN5JSMt2YRvkHezMkZXTnRq5vTy8/3n8abtuZK6U
+8tioMMj/X0OYo1ao2FCFTHai+TE6N5ofe63qRSKlfFbw3jGp1QJbVKvVjdnR
+1Ynm+1a9PWAcTJ7CFRDVxlWWItp8WU4ImaoVFluNNzEDjFnnjBFw/5rgjNmi
+kSWrXpioIFnvjiiYfhrQXi/cYVkv3AtBwBn/HwG6FD7k
+       "], {{0, 0}, {15, 13}}, {0, 255},
+       ColorFunction->RGBColor],
+      ImageSize->100,
+      PlotRange->{{0, 15}, {0, 13}}], 
+     GraphicsBox[RasterBox[CompressedData["
+1:eJxlUstOwkAUHah9QV9DaQVKaVoQjNGABsW40YUSNsbE+NjzAbowceF/sNSl
+/oCJcalsXRA/wqW4MCQmYj0yplY9uW2md84991W/e7zb5Qgh+vfzdQYSiQTH
+cfwEOCQniDy4Jb+BK1EUZVlOxYBPQRAQ+IeMcJAzhpazs8VpG5azbJNShIAP
+qbg+PqHjUb0eeIs5a45qaloxVA1QVVWSJMYHkAjhcAZWZsFzlz13rRzsdDqt
+RqNRqVpyWtd1Vg/rDjVAZNY2q1bm7GD/4ery6b5/d36x126bPA8d5GXiCEHX
+iqLUqGoQctPrhcNhOBrD+te3G0utcrkMKYiz7sBHYbau84Rsrqy+P7+E4/Dt
+deSX/Pp83XEciDMy40McTU0hC0meHp2EH+HjYNBsNimlruuymcT3Ios8DBnR
+0fbW+uFOp1jIVysBG0g08GiJbBdBEEAN75JXrNYqIEA5GjUrG3w42R7ztlZy
+zBnfKhU0g2qiyMdXGf8lkJRqgmlIWZ2DaUo6Jf3UzMSjHYGPFBi+EAOc5B+i
+kpIxcBN8Ai9zQNk=
+       "], {{0, 0}, {15, 15}}, {0, 255},
+       ColorFunction->RGBColor],
+      ImageSize->100,
+      PlotRange->{{0, 15}, {0, 15}}], 
+     GraphicsBox[RasterBox[CompressedData["
+1:eJxNUk1rFEEQ7eqP6u6Znu7t2QmbGdgkuptIiOhEFnPwJuIH3hQ8KCIsQXIJ
+/gJvyUE9JYcccxQ8C0LQs/4P7/4Ha6fdcR89w5vuVzWvqvra/N2zuWCMhX/P
+ggMA51yIBRcd6JM2iagOxNkSxNMmnSauO5gOiEixbAUky4zJtKF8xmJZuCr4
+6EOR5xTV50m/oFiUPDNokeWhmgzKRhuhJAdGmSk/6ZMsOREMtMKQm/UqZs7v
+N/WT+w8O2rad7hjJSQ9LLAoEsFoBt2tD19bj94dH55/Oj98ez9qZ1DJZ7T1r
+JbhELYrXrx5vbyHzN/KbT08///zy9Wpn/yBWQ6kx6Sm5UYhSCR3evHz0/cdH
+ESYMbk3vHT2/I3RzG7JcUhVLsZSSzBS5a8bNn9/fPpzNSfzwxYm5PluHCK7I
+gK92mwLJNq2Ngf91dXp5cTgwu4UfDWItOQMhV6dDma211Ks62mE22ipHdb4R
+Mehy6pzrC+zLtJqmI4nEGO9ON/fqamSygkwq3tnkfdpFT6SiAUeEzbUAHife
+7TXjkityoQT0Q+EroGJpysEirdIqj/+vWV9gumwJpKcRk396yw7p9C9RrCu4
+
+       "], {{0, 0}, {15, 15}}, {0, 255},
+       ColorFunction->RGBColor],
+      ImageSize->100,
+      PlotRange->{{0, 15}, {0, 15}}]}
+   },
+   AutoDelete->False,
+   GridBoxFrame->{"Columns" -> {{True}}, "Rows" -> {{True}}},
+   GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}],
+  "Grid"]], "Print",
+ CellChangeTimes->{
+  3.577053141539954*^9, 3.5770531913678045`*^9, 3.577053497584319*^9, {
+   3.5770535981620717`*^9, 3.577053624810596*^9}, 3.577053669575156*^9, {
+   3.577053858756977*^9, 3.5770538866995754`*^9}, 3.577054135783822*^9}],
+
+Cell[BoxData[
+ TagBox[GridBox[{
+    {"\<\"Pen 1\"\>", "\<\"Pen 2\"\>", "\<\"Differenz\"\>"},
+    {
+     GraphicsBox[RasterBox[CompressedData["
+1:eJxlUstOwkAUHah9QV9DaQVKaVoQjNGABsW40YUSNsbE+NjzAbowceF/sNSl
+/oCJcalsXRA/wqW4MCQmYj0yplY9uW2md84991W/e7zb5Qgh+vfzdQYSiQTH
+cfwEOCQniDy4Jb+BK1EUZVlOxYBPQRAQ+IeMcJAzhpazs8VpG5azbJNShIAP
+qbg+PqHjUb0eeIs5a45qaloxVA1QVVWSJMYHkAjhcAZWZsFzlz13rRzsdDqt
+RqNRqVpyWtd1Vg/rDjVAZNY2q1bm7GD/4ery6b5/d36x126bPA8d5GXiCEHX
+iqLUqGoQctPrhcNhOBrD+te3G0utcrkMKYiz7sBHYbau84Rsrqy+P7+E4/Dt
+deSX/Pp83XEciDMy40McTU0hC0meHp2EH+HjYNBsNimlruuymcT3Ios8DBnR
+0fbW+uFOp1jIVysBG0g08GiJbBdBEEAN75JXrNYqIEA5GjUrG3w42R7ztlZy
+zBnfKhU0g2qiyMdXGf8lkJRqgmlIWZ2DaUo6Jf3UzMSjHYGPFBi+EAOc5B+i
+kpIxcBN8Ai9zQNk=
+       "], {{0, 0}, {15, 15}}, {0, 255},
+       ColorFunction->RGBColor],
+      ImageSize->100,
+      PlotRange->{{0, 15}, {0, 15}}], 
+     GraphicsBox[RasterBox[CompressedData["
+1:eJxlUj1P21AUdez449l+fn6On5NQtyJxIoiCxJfUUomkVdUOXduhU4cwVSwZ
+8wOQ2qF7Jwa2Sl2y8AuyIMTML0BIbAgEIgt1D9zWipor+em+53POve/c19gZ
+ftgxNE0Tf7+HHFEqlUzTdB7DmgkcGoah6zoA2r/AFr9835eCR2FQEUEUcGzB
+tW2bKITHihznYRg2YtFJq916kpRLqOrZThAEruuCQnjqwWN2HMnVBfGyVV+u
+q81scX2lm0i5kFRVKIEHhsBguY4FcINpm2k0fP927/OnL9u9j0vL/Wb7iaYL
+ISCObqln5FJK7rlvXvdPD3/l1xf5zeVk/8fuu95WxXsaicgpQ7xwA+3hJv3t
+3vnxJL+7yqe3ZydHG572quq3VFBjBkwo7sgYQwmY8PPgIJ9O89/33799zULW
+rcnFiq+YTuBCHL3RdjQajcfjwWCAPEmSmHu+aVAbBRi3RjOcc6xKqSzL2u12
+HMcoB1lUn50L3KZZpGm69fzF+upap9lMlYKwbVrkBoGhTFMGGMo1JdJa9Czh
+dcngklU2iqGT4aCgFlhw0vXwABzuO75r0QS1uZilUMy/pXkKsf6D/QGHfEBh
+
+       "], {{0, 0}, {15, 15}}, {0, 255},
+       ColorFunction->RGBColor],
+      ImageSize->100,
+      PlotRange->{{0, 15}, {0, 15}}], 
+     GraphicsBox[RasterBox[CompressedData["
+1:eJxtU01LVFEYvp77fc/9OvdrPq4zd645mjrBWIQooVFJ2M6ZReBSEGoRtWtl
+i9ZuKjeBtatfkEGrEq1+RLQrzVHEFB0Iop6ZQ9Mw+HIvnPPyPO/znPe8J128
+X1sUBUFg+H38rTWirx2dtSzLWjuUrkBSFEVCSAfJwaQdfAGYaZqu3fqYZXq2
+hS3qqKrK6d0q2CIpSRK2INq2XWTmYMYbClgotpxRVUPSMAzQu7lYI4OyoKOM
+oallV67G7oDvjKfF8cpYxFg+yoQuA7eN+S8KInOs0Gee44Kvm1GJ9i3NTC3f
+nl+anKoNDU8PlGOBOI4DJE7UUdR1PWHOhVJhlNm5ljty8VL18+u1o+9fmvs7
+758/u3vjyoRnFDzH0yQuyhtiWdZA6FWK/dV8thIGt2ZnVdNaf7XWONg+3N3+
++nGjqpPpiA6GdlYXgeedgTrOfj7yywF7WK9tvnzx7cPG+pOn9YWF/ePjo5+H
+jx8tlyxlJHISj4Y64UQoQho9H2aWKwhvV1d/NRqHOwd/Tn9vvnk3MXt1ZWWl
+Xq8D7Pu+R3VTbl1B5x7R0shxsL9+eaK5u3dyfLK3/SNgQVpMQYmiKEkSdIZ3
+FSa7B8aipkSISIQHd+41T5uftrYqlQqlNM7lx0ZGh5Ik50HQUGWl01V+Ul2V
+8cEzyt6cmZyfuxZ4LBsFVCOBa/QHNOtqFjUU6YzhAQWe0zSN4xjecvlMUioY
+FGaJSVXTUPjk9IwrMkDgQkHPRXYh751L/DhDqanDmtiOnjlH8DnnuhBltuK7
+WuCIvk1gT1OkHny3KA9+O5CGq86b4k+g+wGeWYFLk3/BO9Dj8y8XVmjI
+       "], {{0, 0}, {19, 17}}, {0, 255},
+       ColorFunction->RGBColor],
+      ImageSize->100,
+      PlotRange->{{0, 19}, {0, 17}}]}
+   },
+   AutoDelete->False,
+   GridBoxFrame->{"Columns" -> {{True}}, "Rows" -> {{True}}},
+   GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}],
+  "Grid"]], "Print",
+ CellChangeTimes->{
+  3.577053141539954*^9, 3.5770531913678045`*^9, 3.577053497584319*^9, {
+   3.5770535981620717`*^9, 3.577053624810596*^9}, 3.577053669575156*^9, {
+   3.577053858756977*^9, 3.5770538866995754`*^9}, 3.577054135838825*^9}],
+
+Cell[BoxData[
+ TagBox[GridBox[{
+    {"\<\"Pen 1\"\>", "\<\"Pen 2\"\>", "\<\"Differenz\"\>"},
+    {
+     GraphicsBox[RasterBox[CompressedData["
+1:eJxlUj1P21AUdez449l+fn6On5NQtyJxIoiCxJfUUomkVdUOXduhU4cwVSwZ
+8wOQ2qF7Jwa2Sl2y8AuyIMTML0BIbAgEIgt1D9zWipor+em+53POve/c19gZ
+ftgxNE0Tf7+HHFEqlUzTdB7DmgkcGoah6zoA2r/AFr9835eCR2FQEUEUcGzB
+tW2bKITHihznYRg2YtFJq916kpRLqOrZThAEruuCQnjqwWN2HMnVBfGyVV+u
+q81scX2lm0i5kFRVKIEHhsBguY4FcINpm2k0fP927/OnL9u9j0vL/Wb7iaYL
+ISCObqln5FJK7rlvXvdPD3/l1xf5zeVk/8fuu95WxXsaicgpQ7xwA+3hJv3t
+3vnxJL+7yqe3ZydHG572quq3VFBjBkwo7sgYQwmY8PPgIJ9O89/33799zULW
+rcnFiq+YTuBCHL3RdjQajcfjwWCAPEmSmHu+aVAbBRi3RjOcc6xKqSzL2u12
+HMcoB1lUn50L3KZZpGm69fzF+upap9lMlYKwbVrkBoGhTFMGGMo1JdJa9Czh
+dcngklU2iqGT4aCgFlhw0vXwABzuO75r0QS1uZilUMy/pXkKsf6D/QGHfEBh
+
+       "], {{0, 0}, {15, 15}}, {0, 255},
+       ColorFunction->RGBColor],
+      ImageSize->100,
+      PlotRange->{{0, 15}, {0, 15}}], 
+     GraphicsBox[RasterBox[CompressedData["
+1:eJxdUstKw0AUTZumzSSZSSZNUxttINGqjYIvunAngog7deFKXCiCIugXdKcr
+cS2CK/0C8QME3QviJ+jKjRRBqiLxNKMheEjCycy59565d4LNg9VNWZIk8/ft
+cSCXyymKUiqVisUiiCzLyh/AsStlkM/nISOEUN3Ao2kauKqqxQQIgUCE4AuO
+FcMwXIv2O/ZApVKzbc5MESiiREhqA+JhS5upV2cDP+LMUBS9UOAGs5mJLZiE
+JSEGQZIm16e9ykIUtTwviqJ6vY5cjXCQcw5jSJiK8evkpWbVPllfe7w4797e
+3J0c7yzOjxHF1TVHVSEWnoV4qEznJprXh+248xK/v+G5Omov1Ljf5+I4cCK6
+ATG4pam2TvZXluPOa9z9+Hx6XmpNhkxr9dsjtICTpg3BkU2z130mSU/3D/HX
+9+XpGZJgq8lJLSdBkJ2LaBTQaDT2NrZ317emovGBStW2GCn9ti4dDZxQSh3H
+SThhzBpNIDqQnaNYQS1kdl3X9/0gCMIw9DwPFUXfUqWAmGZv9JRallUul9Fk
+cBTN2sj6EfeKJBCnQMV/TrJ+oE8vkpwA6z/k1UET
+       "], {{0, 0}, {15, 15}}, {0, 255},
+       ColorFunction->RGBColor],
+      ImageSize->100,
+      PlotRange->{{0, 15}, {0, 15}}], 
+     GraphicsBox[RasterBox[CompressedData["
+1:eJx1UztoFEEY3ufM7Mzs4/Z1clmTXA5POWM4FXIRSRC1CAQsAhZC8PAQiyu0
+sxAEe7FIYZpDhNiIBJt0ooUBG0GxEMFGG8FKuCuSsxH97sYMAfFj9+efnfnm
++19b7dxa7diGYZT+viMfME3TsixYx3EopYQQ13Vt23b3AR+7xgFgae+DMSa5
+EB5nY6gb1CXqWk3B/fgOCmzEaRbIPAxT3w+EBN3zPNA1ERRYLIUQkjPiWInp
+VEN+IotnPIITxDQDT5T8QEoJURWkiicMw8mSnIp9i4kiT883Go0kLooiSRKX
+0pmp6SiKIAchUGCFR5NSNFuWzYkoLWdcBmvN46/W73/Zevr87p2riwt1x8i4
+lzKmKFDxqBtH4SSxG4m3Mt+6MDe3snxu6+3O64/vv+0NNm/fXIo5pPPIR2wq
+FzgIjDN69kzrzbPNH9+/rj95vHj5ysPtlzsfPs/WqhEhzdyvy1EKqmKQ830f
+iS3Mtz692P49HAx+7ho2f9f/df3eg2oscmrWhH3IMFEo3RekBgdyjzY2hv3+
+cG/3Rufa8qW1pYurpfI0lRnqOSrouMhaCLGpILvdbq/Xa7fblKIjJJ04XNSO
+oHf6vKZwzhEeLAL2xwAdNs/zNE3hg6Upqpv4iIbCViqV0ydPHasfLbJMui5h
+lEuhtrQQHKiocYJEEAR54pfxhCRihmOZluOqeUPWOjA1z2qAsetxF61m1CaO
+obf+HWn9IyiiM4Z5AMb/oUX1wB+k/AH44lOK
+       "], {{0, 0}, {17, 17}}, {0, 255},
+       ColorFunction->RGBColor],
+      ImageSize->100,
+      PlotRange->{{0, 17}, {0, 17}}]}
+   },
+   AutoDelete->False,
+   GridBoxFrame->{"Columns" -> {{True}}, "Rows" -> {{True}}},
+   GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}],
+  "Grid"]], "Print",
+ CellChangeTimes->{
+  3.577053141539954*^9, 3.5770531913678045`*^9, 3.577053497584319*^9, {
+   3.5770535981620717`*^9, 3.577053624810596*^9}, 3.577053669575156*^9, {
+   3.577053858756977*^9, 3.5770538866995754`*^9}, 3.5770541358918285`*^9}],
+
+Cell[BoxData[
+ TagBox[GridBox[{
+    {"\<\"Pen 1\"\>", "\<\"Pen 2\"\>", "\<\"Differenz\"\>"},
+    {
+     GraphicsBox[RasterBox[CompressedData["
+1:eJxdUstKw0AUTZumzSSZSSZNUxttINGqjYIvunAngog7deFKXCiCIugXdKcr
+cS2CK/0C8QME3QviJ+jKjRRBqiLxNKMheEjCycy59565d4LNg9VNWZIk8/ft
+cSCXyymKUiqVisUiiCzLyh/AsStlkM/nISOEUN3Ao2kauKqqxQQIgUCE4AuO
+FcMwXIv2O/ZApVKzbc5MESiiREhqA+JhS5upV2cDP+LMUBS9UOAGs5mJLZiE
+JSEGQZIm16e9ykIUtTwviqJ6vY5cjXCQcw5jSJiK8evkpWbVPllfe7w4797e
+3J0c7yzOjxHF1TVHVSEWnoV4qEznJprXh+248xK/v+G5Omov1Ljf5+I4cCK6
+ATG4pam2TvZXluPOa9z9+Hx6XmpNhkxr9dsjtICTpg3BkU2z130mSU/3D/HX
+9+XpGZJgq8lJLSdBkJ2LaBTQaDT2NrZ317emovGBStW2GCn9ti4dDZxQSh3H
+SThhzBpNIDqQnaNYQS1kdl3X9/0gCMIw9DwPFUXfUqWAmGZv9JRallUul9Fk
+cBTN2sj6EfeKJBCnQMV/TrJ+oE8vkpwA6z/k1UET
+       "], {{0, 0}, {15, 15}}, {0, 255},
+       ColorFunction->RGBColor],
+      ImageSize->100,
+      PlotRange->{{0, 15}, {0, 15}}], 
+     GraphicsBox[RasterBox[CompressedData["
+1:eJxTTMoPSmJmYGDgB2JeIAaxGRkZmZiYmJmZgSScCwEMqACohgMMuLi4gCQ7
+OzsbGxtQEKgFWRkrKysvL6+oqKiEqJiosIiAgACQy8nJCVQMNJMRBoDKhPi4
+5aTEjeRklPl5+cAAqJ6XmweoGCgLcQNQlzgvu5qMmLuhrqWyvIWUtLmkFAcD
+AxCxs7Jxw1QCHSMkwMPNyaopzDChKuLM0u5N3UV9aUEeCjxaAtxyzAxAB0OV
+8XPKSAgp8TPcPDb///dDQPTj5Ox5+Y6sDAxSwoICvHxAZUAzBTkZ+NkZdHgZ
+Hhwo///nMgi9WJtiwxiiw2MvziDExwv0AtDv3KwMnCwMfAwMefG2///eBKI5
+9QFSDAymwiDEw8UBD16gR4CBIyMj05QROq06M9HXXp6bQY6XVZqLCSIFUQl0
+IcRkf0vTQGtzJy11ExlJeWkpoOeAroKEMMSFPFxcQvwCWrKSBspydtoqFqpy
+CmJCYtwcENPgBgK5wPgSEuDj5eYS4WET5+cQFeAHmga3FAIgKtnBAM4AAoil
+8ChGTi0QwAwDANiIP+s=
+       "], {{0, 0}, {13, 15}}, {0, 255},
+       ColorFunction->RGBColor],
+      ImageSize->100,
+      PlotRange->{{0, 13}, {0, 15}}], 
+     GraphicsBox[RasterBox[CompressedData["
+1:eJxlUs9r1EAUziaZzCSZmUx+sjGbuKXVhRpb6GqxgoIXT7YVWxRUKFTQg4gX
+EQ+uQsGLt4JaRMGCF/0DKqKCIEKLiCe9iHoSpIoHKdRW/PU2IyHYDzJ88ybf
+9968eT3TZw9Na4qiuP++LpeoFZBELVDlclsFHGmahhCCFTghBGMsV4BhGDL+
+nwT+l6ewtSxLCOELV3CHMUYpNU0TjiBXWQxwiECcWjYxMNFrocv7oyA1u7kg
+7rseHAEBZymEFTi4BdwOOUWEM0sf7s3yuj8g3EHXA8eibt0uVGVhtm33cZJH
+ouV6m4mZcnTl/OTjm535zomZo/v3xajFSKp2b1peH/K2HHObz9tJT6wSkvQ/
+uT/z6/uzt2/ufHp49frJXQpCddcRjFclnqL2eezixOHnt26/XHiatoO5hdnX
+K6+W3989uAOPt/DeqOZxJu8iJb0e3ZNvvXe5s/r187fVldm5B2MXjj/6uHTp
+1G5dsAGK265KLSI7BhJosmNiYeLTY6PrX5b/rK1/WFwaaW85d2YqH9pOVD1C
+WkwU+RAyEXDHcYBTVX23+OL3j5/z124cGB4aH9kZx1mSxHEYOLYlO1Y2DR4R
+GgLaZrM5NXnsyOgEZn7AcZ5Eg1mcBSKyicwiAYmgNnhu3/cLE03Xjai+KUkz
+30YBRaFwBLWrknLSQBiGYaPRSAqAg67r0hBQLawEBLvDQynnHIYNLgivDEHp
+CVA2QM4PGJoFpDkkKmdyI8oKjQLlKJaSv3mBW5w=
+       "], {{0, 0}, {17, 17}}, {0, 255},
+       ColorFunction->RGBColor],
+      ImageSize->100,
+      PlotRange->{{0, 17}, {0, 17}}]}
+   },
+   AutoDelete->False,
+   GridBoxFrame->{"Columns" -> {{True}}, "Rows" -> {{True}}},
+   GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}],
+  "Grid"]], "Print",
+ CellChangeTimes->{
+  3.577053141539954*^9, 3.5770531913678045`*^9, 3.577053497584319*^9, {
+   3.5770535981620717`*^9, 3.577053624810596*^9}, 3.577053669575156*^9, {
+   3.577053858756977*^9, 3.5770538866995754`*^9}, 3.577054135946831*^9}],
+
+Cell[BoxData[
+ TagBox[GridBox[{
+    {"\<\"Pen 1\"\>", "\<\"Pen 2\"\>", "\<\"Differenz\"\>"},
+    {
+     GraphicsBox[RasterBox[CompressedData["
+1:eJxTTMoPSmJmYGDgB2JeIAaxGRkZmZiYmJmZgSScCwEMqACohgMMuLi4gCQ7
+OzsbGxtQEKgFWRkrKysvL6+oqKiEqJiosIiAgACQy8nJCVQMNJMRBoDKhPi4
+5aTEjeRklPl5+cAAqJ6XmweoGCgLcQNQlzgvu5qMmLuhrqWyvIWUtLmkFAcD
+AxCxs7Jxw1QCHSMkwMPNyaopzDChKuLM0u5N3UV9aUEeCjxaAtxyzAxAB0OV
+8XPKSAgp8TPcPDb///dDQPTj5Ox5+Y6sDAxSwoICvHxAZUAzBTkZ+NkZdHgZ
+Hhwo///nMgi9WJtiwxiiw2MvziDExwv0AtDv3KwMnCwMfAwMefG2///eBKI5
+9QFSDAymwiDEw8UBD16gR4CBIyMj05QROq06M9HXXp6bQY6XVZqLCSIFUQl0
+IcRkf0vTQGtzJy11ExlJeWkpoOeAroKEMMSFPFxcQvwCWrKSBspydtoqFqpy
+CmJCYtwcENPgBgK5wPgSEuDj5eYS4WET5+cQFeAHmga3FAIgKtnBAM4AAoil
+8ChGTi0QwAwDANiIP+s=
+       "], {{0, 0}, {13, 15}}, {0, 255},
+       ColorFunction->RGBColor],
+      ImageSize->100,
+      PlotRange->{{0, 13}, {0, 15}}], 
+     GraphicsBox[RasterBox[CompressedData["
+1:eJxlUstKw1AQvU1omqRp3rE1fYSmqUX7wJa6KCiCa0F87RSkrlz5Bb72/Qvd
+uPCBC1cuiiD4B/6CK10UESwSTx0NRYeby72Tc2bOzNxid3+tyzPGtJ9vdIbF
+YjGO4+LxuCAIPM/Hvo387J/BCaQkSYqiYE8kEriCHrH+gBETSNs0HMu0LCuV
+Sv2hRCwCq6patpV6zqkW3AkpTulEUSQWyRtJ53l4NE1rlwqtYrZVmeo06q7r
+AinLMg7QBjzFpwiQ0bC0pYp/sr11dnx4enSwu7hQy+Xzv5LGwbBCgi23a8/9
+u3DwivV0cd4pV6rpyXQ6jb/QDxnUCsMwZI41p0vh4CX8eAuH7w+3N6vt+ZVW
+x3dypqBALWkGEQVSvY/3/fBziLXX3dEZCxTTtRxNlBEz6jPwCE7XXq93fXm1
+ub6hKkn001C1pCShY+MTRO26rqMttm17ntdsNn3fz2azqB01kgwgcQAYHuAR
+PwiCUj4z15iZLRc8JwUndYMiExg7ciGjqemWwIKMUc0ZnjEaLgmOZNBkSQ9S
+oAQQOZ7JSZGGMv48oiykatyicX8BeZNC/A==
+       "], {{0, 0}, {15, 15}}, {0, 255},
+       ColorFunction->RGBColor],
+      ImageSize->100,
+      PlotRange->{{0, 15}, {0, 15}}], 
+     GraphicsBox[RasterBox[CompressedData["
+1:eJxlUz1oFEEU3r+Z3Zmd/b39vY17d+Eu94MGT0+NEhArNREviJWIkusCQoyo
+jYVoGyNYCWIhRLCx0sIgFnKdKFiIIFZ2EqJJESTiX3y5icvhPXaHNzvve+99
+b74tdWZPdWRBEJztd8vPTBRFSZIQQhhjWZbFnvHvwoCJ/wziCSGMMU3TAAhb
+SJJh/0vO00KYruuubeUc23EcwzBUVe0HZliIh7RwqigKoFIDVQOrloS+pvDS
+/BQcnhkg4ENC13Ud08IKKufMimfW0x17a9UoiiAYuo3jGFaIzCg4Bo19txF4
+oSwWkdiKvQsTx+5euXTv6uVzh8Ya+STRdc6OEwE/YLgUOofrlWYS5nOJn7if
+Xr7YWF/7vrr85uGDVnG45gVg0KHUMyjt2gwrQpGS6zNHu4vzNzrtuYX7zz4u
+v1/58ujpk+M7WxO7WiUvcTEDOtsQi8S+lVe110t3Nje68OxWK9O3n//4/bPd
+bguGmWA9dj1Lo3yAW1yIYGKxqqEPS7OrK93NX+/+fH5cm5o/e3MxGD+tSBJl
+zDZMnRBgAXSglo4ETRaZJM2cGfu2/nbt66uFi0ew5wWsoKTNIMr7YQRXBv3w
+OfOrhEuBNQzDa9Mnb82dnxofRXEZ2bl8udYoRKnHKKV8YpkAoCKfxon9eyb3
+NQ+U0mGDMD/vMTwSsoKDQUgAyWQDkVCFaho0XB+KRktDB0cKzTSMTGojSZEx
+oSq/ykEZw3fXNhklLlU8hlyDGUTjg+0XTCY53h5whJXrDfUsozz4R/SrOtv2
+C5j7fwENRF+w
+       "], {{0, 0}, {17, 17}}, {0, 255},
+       ColorFunction->RGBColor],
+      ImageSize->100,
+      PlotRange->{{0, 17}, {0, 17}}]}
+   },
+   AutoDelete->False,
+   GridBoxFrame->{"Columns" -> {{True}}, "Rows" -> {{True}}},
+   GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}],
+  "Grid"]], "Print",
+ CellChangeTimes->{
+  3.577053141539954*^9, 3.5770531913678045`*^9, 3.577053497584319*^9, {
+   3.5770535981620717`*^9, 3.577053624810596*^9}, 3.577053669575156*^9, {
+   3.577053858756977*^9, 3.5770538866995754`*^9}, 3.5770541359988346`*^9}],
+
+Cell[BoxData[
+ TagBox[GridBox[{
+    {"\<\"Pen 1\"\>", "\<\"Pen 2\"\>", "\<\"Differenz\"\>"},
+    {
+     GraphicsBox[RasterBox[CompressedData["
+1:eJxlUstKw1AQvU1omqRp3rE1fYSmqUX7wJa6KCiCa0F87RSkrlz5Bb72/Qvd
+uPCBC1cuiiD4B/6CK10UESwSTx0NRYeby72Tc2bOzNxid3+tyzPGtJ9vdIbF
+YjGO4+LxuCAIPM/Hvo387J/BCaQkSYqiYE8kEriCHrH+gBETSNs0HMu0LCuV
+Sv2hRCwCq6patpV6zqkW3AkpTulEUSQWyRtJ53l4NE1rlwqtYrZVmeo06q7r
+AinLMg7QBjzFpwiQ0bC0pYp/sr11dnx4enSwu7hQy+Xzv5LGwbBCgi23a8/9
+u3DwivV0cd4pV6rpyXQ6jb/QDxnUCsMwZI41p0vh4CX8eAuH7w+3N6vt+ZVW
+x3dypqBALWkGEQVSvY/3/fBziLXX3dEZCxTTtRxNlBEz6jPwCE7XXq93fXm1
+ub6hKkn001C1pCShY+MTRO26rqMttm17ntdsNn3fz2azqB01kgwgcQAYHuAR
+PwiCUj4z15iZLRc8JwUndYMiExg7ciGjqemWwIKMUc0ZnjEaLgmOZNBkSQ9S
+oAQQOZ7JSZGGMv48oiykatyicX8BeZNC/A==
+       "], {{0, 0}, {15, 15}}, {0, 255},
+       ColorFunction->RGBColor],
+      ImageSize->100,
+      PlotRange->{{0, 15}, {0, 15}}], 
+     GraphicsBox[RasterBox[CompressedData["
+1:eJx1krtKA0EUhie32c1k9j7JJjEX3QRNMBpstBRJbVhiEcROW0E7Qwpb7awt
+7GwEEX0BwdLWFxARS7EVFOOfjBmC4s/JcHL2O5c9szPbe53tGCHE+vkN/Ugk
+EovFEmPBR4T8IzyKRqOU0mQyyRjDqWkaUqIj/U1EBLBpmum0J4TrOA7nHClo
+JPnJFETwSAgxX87WpkSzmC1ymqQa03Q0UimSRFNd133fbzVrK9ViwOL+KO55
+XrVaVbyCTU2zGatQsr+xfnty/HB+1tvqLgnb49ygQ0lYbgOVMckcZ/dXl4O3
+16E9Pl0c9JYXFvOOi+IKRhekwzghdzfXg/cP2Nfzy27YaboFGN4XBRXMdKol
+4johO93NwecAdnp45BJix1nJzQIGo8bAVIjgL5x2u93v98MwDIIAb43xMKTa
+CU74iGDDOBv1WmttFV0zrlUq5G2To4K8JgnDRwUUt0Yql8uN2aBeKU3nfI8z
+uY3IWPLzAG8YhvAsP+3kMjYsKxzXTAFWl6iKS55JpXQYeslL+QWrFKnEhOSS
+oW+JdEDW
+       "], {{0, 0}, {15, 15}}, {0, 255},
+       ColorFunction->RGBColor],
+      ImageSize->100,
+      PlotRange->{{0, 15}, {0, 15}}], 
+     GraphicsBox[RasterBox[CompressedData["
+1:eJxlU0uL01AUbpo2z+YmuWna9JF20iltZ7QpjM5KXQg+BkQZZlHFheBsZuFC
+mc5CBFGE4j9wVm60uHLhahBERAQ3LsfHLIYulIo6WhdlrOJCv/ZiiJ1Dcjk5
+OV/Od8754i1fXlrmI5GIidvCPfInjOf5+D+Dz3Hc3pwJi44NmYIgyLKsKApO
+URQBD15NQBBBHCUAYY6mabZtWZYJSyQSgCPIsGE4fMTxfZaDiK7rM26qmrX8
+fNpNCLIgKqKEhAAeAFFLVVVq6LjggOfhmjdXdKakaGpchVJaLpcDbBgIetNU
+mc1QN20JXLwU5y6dWdi4ffPV3Tut5pJvalRVNUFg7QSTBEPQO1ByGwVntliY
+q1Y0Yjx/0Nntfei92fzxdquz2prfX8+aFEUZkDUoSRIarFNypOSunW2uX7u6
+fuP6hdXW5nb3/U5/uN1dOXXaN3MNmkcaCoWBMFfgTjaq3ccbP/s7w8H3tebi
+y3dbr3sfb61cUSSJRKUCdQBEPqPKRorJyxznV6Z+ffs06H/+83v47NFDPkv3
+LRz1Dx008qlkMomO8P1gPiiNR0IIW+iLp0+Gu4P+1y8Xz5/Lz9SK8/W0ZYtK
+PJO2dU3FcJgkwmwNw2AiabfbnXv3Txw7zvExVSM5xypk7Sz0oEhsqmyVgXJA
+GLNFFzgdx8HiiG7FBEVTYlSXbZOYmgJgIACgmLbRAsN6nldwLL86XcklbZWP
+cNG4wEMYTABh5TAgO6Fsk+hmLOrZpJYhecIzHbJfJth+QJUxZ5zZ9Ebt8BFF
+HW2KH9vefySQPcPy/1ug7TDwL3kLZ2M=
+       "], {{0, 0}, {19, 17}}, {0, 255},
+       ColorFunction->RGBColor],
+      ImageSize->100,
+      PlotRange->{{0, 19}, {0, 17}}]}
+   },
+   AutoDelete->False,
+   GridBoxFrame->{"Columns" -> {{True}}, "Rows" -> {{True}}},
+   GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}],
+  "Grid"]], "Print",
+ CellChangeTimes->{
+  3.577053141539954*^9, 3.5770531913678045`*^9, 3.577053497584319*^9, {
+   3.5770535981620717`*^9, 3.577053624810596*^9}, 3.577053669575156*^9, {
+   3.577053858756977*^9, 3.5770538866995754`*^9}, 3.5770541360558376`*^9}],
+
+Cell[BoxData[
+ TagBox[GridBox[{
+    {"\<\"Pen 1\"\>", "\<\"Pen 2\"\>", "\<\"Differenz\"\>"},
+    {
+     GraphicsBox[RasterBox[CompressedData["
+1:eJx1krtKA0EUhie32c1k9j7JJjEX3QRNMBpstBRJbVhiEcROW0E7Qwpb7awt
+7GwEEX0BwdLWFxARS7EVFOOfjBmC4s/JcHL2O5c9szPbe53tGCHE+vkN/Ugk
+EovFEmPBR4T8IzyKRqOU0mQyyRjDqWkaUqIj/U1EBLBpmum0J4TrOA7nHClo
+JPnJFETwSAgxX87WpkSzmC1ymqQa03Q0UimSRFNd133fbzVrK9ViwOL+KO55
+XrVaVbyCTU2zGatQsr+xfnty/HB+1tvqLgnb49ygQ0lYbgOVMckcZ/dXl4O3
+16E9Pl0c9JYXFvOOi+IKRhekwzghdzfXg/cP2Nfzy27YaboFGN4XBRXMdKol
+4johO93NwecAdnp45BJix1nJzQIGo8bAVIjgL5x2u93v98MwDIIAb43xMKTa
+CU74iGDDOBv1WmttFV0zrlUq5G2To4K8JgnDRwUUt0Yql8uN2aBeKU3nfI8z
+uY3IWPLzAG8YhvAsP+3kMjYsKxzXTAFWl6iKS55JpXQYeslL+QWrFKnEhOSS
+oW+JdEDW
+       "], {{0, 0}, {15, 15}}, {0, 255},
+       ColorFunction->RGBColor],
+      ImageSize->100,
+      PlotRange->{{0, 15}, {0, 15}}], 
+     GraphicsBox[RasterBox[CompressedData["
+1:eJxdkr1PwkAYxou1LS3Xj+OuUD4FQYJoTTAMGAeImrgSYDBOhujspvE/0ZFJ
+/wEXV40bLsbE2RkTBwc/ovWRiw3xyV3y5u53zz33tsXBYXcgS5JkY5qYv7Us
+y8pEKGamFIlEpClhBUw0GtUn0jRNVVWs/CNRY92xSNJlXoLrmuI4DiEEvICn
+sZStr5TzjVK+lmJ5y8wQA/7AACOMuBS1PSv5pVyvtb6z1dput5v1OrY8z0MM
+mIABDIyqCsZxp3N3cf45Gt2enR71+xuFwhxncU2VJwKGBIzSk143GI+Dt3eM
+6+Fwt9lkthW3THE1bFEbqrJZXA6enoOP4Pvlda3q5wjNcO5aVogZhoEwmDeX
+V8FX8Hj/kE6n8WS/XOYxIuKJvkFmjDTqqwd7+xhLlVrcpJ6bIIYBAA0R8XDW
+dXGDBR59SyWS1UqFMYbHhj2BLbY459lsNpNKL8yX/MVqIZvhcRbTddFkYQgS
+B+HmOnaCUkWSkpTath26CVKEBIwA0T+JTzyNCVI0PPxtwj/nB+oJQZQ=
+       "], {{0, 0}, {13, 15}}, {0, 255},
+       ColorFunction->RGBColor],
+      ImageSize->100,
+      PlotRange->{{0, 13}, {0, 15}}], 
+     GraphicsBox[RasterBox[CompressedData["
+1:eJxdU02L00AYbpM0H5NkkknSJJpm27itu7IKxY+6rrV+gFhFRauIR9mbHiqI
+4MGT4D/Qg4dF8SKC+xNkQbcHvSwKChYREfEidbvrUt2bPu1IKL5MhmHmed5n
+5n2fJPPXW/NiJpNh/77hOpvNZkaBhSiKuVFgIYxFikmR6T5CkiRVVbVRKIoi
+yzIy/McaTw481papB3k39D1Nydm2bRgGuJw4roJsPDMojirMJNHupDAdsNg0
+IoNAFxQQcZqyQDFN03WZaeqCyZKAnZ7de+Hw3PFGY3+1CkAYhkgIGNfCjAyu
+604X8olnTgSuIWfbp052Hj/62em8uH/vZqt1tFgseq6jyLwymCHt+/6RnZVq
+7JeIJDF26/y5Xrf78d37X/21pYWFy7Waa1GHmkjOKVRRLE0rieK1MycW79x+
+9fDBvrmZlZVPvdWN9e+re7ZNRcSKPC9PAVR4xXhNypqy/PTJ4NvXP/0fg89f
+osax12/eLr1cZoxRSneVy55u4DmgAGyMBhGE54vPfq9tYKx/6M4WS7WzTYzi
+1gmL0DDvG4QAzClElZWcBMkrFy9tDjb7vf7dqzckSlVJcGTDJPpkkqA+vAv8
+YpBDy1A9dLPZbLbb7Xq9jk1JECeiQiUpRYHv2EzXNO4EzBBC0XBnPGrH9sqh
+gwfQWlXKaoYuizm0zaMUjUtVeNEAhpBlWXhpHMdTSTwZh1scW5cEbg8enJLa
+DKyhBxzqe3bgUYw8o5aucrumDk9tlrIIIUO3EYXoqq7ruDBOuWN5/pSSEnnk
+xiL9Qbgn/wIysWdu
+       "], {{0, 0}, {17, 17}}, {0, 255},
+       ColorFunction->RGBColor],
+      ImageSize->100,
+      PlotRange->{{0, 17}, {0, 17}}]}
+   },
+   AutoDelete->False,
+   GridBoxFrame->{"Columns" -> {{True}}, "Rows" -> {{True}}},
+   GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}],
+  "Grid"]], "Print",
+ CellChangeTimes->{
+  3.577053141539954*^9, 3.5770531913678045`*^9, 3.577053497584319*^9, {
+   3.5770535981620717`*^9, 3.577053624810596*^9}, 3.577053669575156*^9, {
+   3.577053858756977*^9, 3.5770538866995754`*^9}, 3.5770541361118407`*^9}],
+
+Cell[BoxData[
+ TagBox[GridBox[{
+    {"\<\"Pen 1\"\>", "\<\"Pen 2\"\>", "\<\"Differenz\"\>"},
+    {
+     GraphicsBox[RasterBox[CompressedData["
+1:eJxdkr1PwkAYxou1LS3Xj+OuUD4FQYJoTTAMGAeImrgSYDBOhujspvE/0ZFJ
+/wEXV40bLsbE2RkTBwc/ovWRiw3xyV3y5u53zz33tsXBYXcgS5JkY5qYv7Us
+y8pEKGamFIlEpClhBUw0GtUn0jRNVVWs/CNRY92xSNJlXoLrmuI4DiEEvICn
+sZStr5TzjVK+lmJ5y8wQA/7AACOMuBS1PSv5pVyvtb6z1dput5v1OrY8z0MM
+mIABDIyqCsZxp3N3cf45Gt2enR71+xuFwhxncU2VJwKGBIzSk143GI+Dt3eM
+6+Fwt9lkthW3THE1bFEbqrJZXA6enoOP4Pvlda3q5wjNcO5aVogZhoEwmDeX
+V8FX8Hj/kE6n8WS/XOYxIuKJvkFmjDTqqwd7+xhLlVrcpJ6bIIYBAA0R8XDW
+dXGDBR59SyWS1UqFMYbHhj2BLbY459lsNpNKL8yX/MVqIZvhcRbTddFkYQgS
+B+HmOnaCUkWSkpTath26CVKEBIwA0T+JTzyNCVI0PPxtwj/nB+oJQZQ=
+       "], {{0, 0}, {13, 15}}, {0, 255},
+       ColorFunction->RGBColor],
+      ImageSize->100,
+      PlotRange->{{0, 13}, {0, 15}}], 
+     GraphicsBox[RasterBox[CompressedData["
+1:eJxlUU0vxFAU7ce0nVf9eB2v7Uw7WoYRhhiDQSISWysfEYIgIdaWFuJr5U9I
+bPwAsxHL+RFmZeUnWIggjNO8aGLcvJfcnnfuubfn9u0fre7LgiCYuDZukiMk
+SVJVlRBiWZZhGNlsFp+yLIuiKPwNIMA1TbNtu8dnvQU/8FzHNFALEDrib6TK
+wBlj47E7XQ4Hus3YItS0FDlp3dEFiaIolNJJ35qLvbXJsY16bXZ0lCqZ/mJU
+cBj4vAXnK7IoCcKEZx4uLjzf37WfHh9urpdmpipOrmxYGAni4KfKmLnG6PHW
+evvjNTlvL7dXl8OlEjOTACElo5HrupokHuzutL+/kvP5vreyND80Ug16cjbV
+FJWTuXW6rqO8Uqk0Go1Wq9VsNoH4zI3CIshE1bgnmAdkOIzZoig6PTm5ODvf
+3twK8vm86+HgCTr8B6HMrUaJ4zhYTRiGh+vL9cHeain0dJm7kVqHHLXYHQwM
+giCO47JPpgYLfYVuZqh4+r9HgJiEWnqOGnz7RUpcInWQ02GAoylG6tIyZlax
+ScZQEx3O+QE7mkK7
+       "], {{0, 0}, {15, 13}}, {0, 255},
+       ColorFunction->RGBColor],
+      ImageSize->100,
+      PlotRange->{{0, 15}, {0, 13}}], 
+     GraphicsBox[RasterBox[CompressedData["
+1:eJx9VEtrE1EUnmbek3lmXpnJo03SNG2aprZJtVAkgiK4atpq1YoPql27cFGK
+4GPlP9CN0I2gS7tQxFWFbutGA4IrXVdQUPqiHb/JpUNI0Y97hzNzz3fOuecx
+ucW7s4s0RVEmto0dyhF62iByLBbjOE4URVVVZVkWBAGvNE1HCl3Ad1DIKZ7Q
+5Hle07SMa/V5ru/YhiLDGj4StcgXESJu5B2almWd6LVPFlP9ptKrirqisnQY
+cGckdBtddMgsy+q6XnPVqV7nYq16eWJsslLRWaaQznqGBQuEAi7bRmQk1gYT
+o2IUNe4oSxfOfHv7Ovj6+d3q8+lT9bKRKMoqLkL0AXCRHLENxAzLDMPgFHkb
+s/Tlhflg70+4tn+9ePJ4KJ+3lBBgEXfQ11XZtc2kY4l8GHM8Hsd3CCzVc/vG
+9eDwIFz7uzdnpk8PDo/6mYSm8ywX0T1NrPZn64Vs2TOzquJJAokKz1KptLa2
+1mq11tfXJUlyLTubSoMucjy5aVgjhhopZOYaU1fONc43GhPVKmyi4khjMpm8
+v7Ly6MHDa1cXfLzYDhaOYDwqscGxWMvN5sdXL/c3NzeePb03MzPleZ6q9Ei4
+Stz3/aX55sRA32g+5Ug0yTwpXNgMaEXDWJmbDba2gp3dw+2dD6url2q1OA81
+2jTNTCZTdMX6gJfzTEvm4JqUGHSYSqiKxLFnc5Xg+49gLzj8+XuyVPFF1dE0
+RCnytK5KpIfTumiLsS46cgIZe+PN++Ag+PKphWihXM7lNI7HEfTjPKMIrCYy
+MhdeOepPUndAicv1sfGlW3ewhgfKhqw7piUJAmlRNANpsM4WjbKHKtu2DY+w
+g8R6jlsqFg3D6BqTzsHsHE9QMCPpdDrl+cV8YWRosC+dMo0EvHdNxPFpJRkg
+ybF1zTEMpMY1DMwsae9/cTvnHfeCEUQrHIGMwH9+FBE9mjUywuwRjo9zJ/4C
+XZR+kw==
+       "], {{0, 0}, {21, 19}}, {0, 255},
+       ColorFunction->RGBColor],
+      ImageSize->100,
+      PlotRange->{{0, 21}, {0, 19}}]}
+   },
+   AutoDelete->False,
+   GridBoxFrame->{"Columns" -> {{True}}, "Rows" -> {{True}}},
+   GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}],
+  "Grid"]], "Print",
+ CellChangeTimes->{
+  3.577053141539954*^9, 3.5770531913678045`*^9, 3.577053497584319*^9, {
+   3.5770535981620717`*^9, 3.577053624810596*^9}, 3.577053669575156*^9, {
+   3.577053858756977*^9, 3.5770538866995754`*^9}, 3.577054136167844*^9}],
+
+Cell[BoxData[
+ TagBox[GridBox[{
+    {"\<\"Pen 1\"\>", "\<\"Pen 2\"\>", "\<\"Differenz\"\>"},
+    {
+     GraphicsBox[RasterBox[CompressedData["
+1:eJxlUU0vxFAU7ce0nVf9eB2v7Uw7WoYRhhiDQSISWysfEYIgIdaWFuJr5U9I
+bPwAsxHL+RFmZeUnWIggjNO8aGLcvJfcnnfuubfn9u0fre7LgiCYuDZukiMk
+SVJVlRBiWZZhGNlsFp+yLIuiKPwNIMA1TbNtu8dnvQU/8FzHNFALEDrib6TK
+wBlj47E7XQ4Hus3YItS0FDlp3dEFiaIolNJJ35qLvbXJsY16bXZ0lCqZ/mJU
+cBj4vAXnK7IoCcKEZx4uLjzf37WfHh9urpdmpipOrmxYGAni4KfKmLnG6PHW
+evvjNTlvL7dXl8OlEjOTACElo5HrupokHuzutL+/kvP5vreyND80Ug16cjbV
+FJWTuXW6rqO8Uqk0Go1Wq9VsNoH4zI3CIshE1bgnmAdkOIzZoig6PTm5ODvf
+3twK8vm86+HgCTr8B6HMrUaJ4zhYTRiGh+vL9cHeain0dJm7kVqHHLXYHQwM
+giCO47JPpgYLfYVuZqh4+r9HgJiEWnqOGnz7RUpcInWQ02GAoylG6tIyZlax
+ScZQEx3O+QE7mkK7
+       "], {{0, 0}, {15, 13}}, {0, 255},
+       ColorFunction->RGBColor],
+      ImageSize->100,
+      PlotRange->{{0, 15}, {0, 13}}], 
+     GraphicsBox[RasterBox[CompressedData["
+1:eJxlUjtLw1AUThOb5+1N0jyapk+tTS34oLViCSjBQekk6OJqHUQ6CJ3d/BXu
+SsFBXPwV4g9w0tHF0anQ+KUXg+jHuZeTc75855577uLw8mgocBynY+WwEj+T
+yQiCkJ1D+AHP84hzv8BooijKsqwoCnb4/5n4hA6ylFJrDgTBBxnxlMkqIg5C
+vVKFLVdqDjUUUYKpqgpCWhE0QkjVLnZaa4c7++FKB/qu6wZBIEkSdFAUTE0S
+XdMs8AtX5xevd48vN7eD7tbBxmar4FuJjAhBMDVJdk1rlRjP9w/x1zSxj8/r
+45MazZc0CkFWFw5+UTnuaTKJp1PY7P2tY+WbftGWE7BOJYaseHY6jGcxbBDt
+BpXS3nZvqWCjkZSG3fd927ZHo9F4PA7DEFnPyRVdCjV2NnAQNAyjXC6bpokG
+oyhyHMeFlCYjm14yBHVdx+31e831dqnfrbcbpufmiZoMJR1ZcslS1qCk4StB
+ldQ9EebZpkGUVI2VToeLAxBVzmkqJRocBP88A34O9k4gAgLr7huYrkE7
+       "], {{0, 0}, {13, 15}}, {0, 255},
+       ColorFunction->RGBColor],
+      ImageSize->100,
+      PlotRange->{{0, 13}, {0, 15}}], 
+     GraphicsBox[RasterBox[CompressedData["
+1:eJx1U0trE1EUzrxzZ+7c3Hk3k8ekJCQS87ZBUYSiUuyiSCPFhSI10KUIiguj
+K3+BKxGXBhERDPkTrjQrpRgsrqpYqVVrIK2CnuRqCKKHmeHM3O87j++cmW1e
+aTSFUChk/L5HPsdxoT8GviAIkiSJosjzvDA2cKYx/6TIsqwoSnhs4P+PxY8N
+fIgPSEKIaZqWZcEXhBAQIfU0i9XAAsIrpAB8EE+kEslMInAIRbICl6qqAGBE
+oAAegmuaBg58hGfMcCvZwpnjC0cPVOHIdd1sNgvRWDrggg/FxBwz4dqRSEQS
+JaJI11eb6+2nz++1T1fnFkq1nOdbo1pklgUoUHk5ac+lo1EsIUGNc/yzR09+
+Dr7v7Qx+bG7dbpwLiBnTCCBZ+5AOgtdc/UjcWirklssHS4XCwwftN2833m29
+H/Zflw2aic5YYyWZAtKoLa5ia6unjvU7j4cvX3Tv37XzpVfb2/2vX+YP19P+
+zHy9lnJMRmFZoJeySa6uLA93P+0PPm9urN+5dvnE4uLFtbVisQgA19I8G7Ne
+mESO48hc6NKF8/t7w8G33Z2PH07WDxU8H2FUqlYIjdiOqWphGNxEZJAdQuXz
++U6n0+v1ut0uDHE2RSnhsmmaSqieY2BVZqNhc8QYAyaZTN5qtW7eaDUaK6qK
+NUknSIVyYhbnWZRiBGEn0wf1gGgYhq7r0Wi0eXapnPJzvoVDiizyGgoTrGE1
+POkFWEAHNSilvu8HQZBxw7WMF3iGgQR2ytaVZZlee6iNEtWkoyJBwzhFDuLZ
+vzCxv5ZzEk1TRD0sRZCIZY6t68R+AWLybbs=
+       "], {{0, 0}, {17, 17}}, {0, 255},
+       ColorFunction->RGBColor],
+      ImageSize->100,
+      PlotRange->{{0, 17}, {0, 17}}]}
+   },
+   AutoDelete->False,
+   GridBoxFrame->{"Columns" -> {{True}}, "Rows" -> {{True}}},
+   GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}],
+  "Grid"]], "Print",
+ CellChangeTimes->{
+  3.577053141539954*^9, 3.5770531913678045`*^9, 3.577053497584319*^9, {
+   3.5770535981620717`*^9, 3.577053624810596*^9}, 3.577053669575156*^9, {
+   3.577053858756977*^9, 3.5770538866995754`*^9}, 3.5770541362218475`*^9}],
+
+Cell[BoxData[
+ TagBox[GridBox[{
+    {"\<\"Pen 1\"\>", "\<\"Pen 2\"\>", "\<\"Differenz\"\>"},
+    {
+     GraphicsBox[RasterBox[CompressedData["
+1:eJxlUjtLw1AUThOb5+1N0jyapk+tTS34oLViCSjBQekk6OJqHUQ6CJ3d/BXu
+SsFBXPwV4g9w0tHF0anQ+KUXg+jHuZeTc75855577uLw8mgocBynY+WwEj+T
+yQiCkJ1D+AHP84hzv8BooijKsqwoCnb4/5n4hA6ylFJrDgTBBxnxlMkqIg5C
+vVKFLVdqDjUUUYKpqgpCWhE0QkjVLnZaa4c7++FKB/qu6wZBIEkSdFAUTE0S
+XdMs8AtX5xevd48vN7eD7tbBxmar4FuJjAhBMDVJdk1rlRjP9w/x1zSxj8/r
+45MazZc0CkFWFw5+UTnuaTKJp1PY7P2tY+WbftGWE7BOJYaseHY6jGcxbBDt
+BpXS3nZvqWCjkZSG3fd927ZHo9F4PA7DEFnPyRVdCjV2NnAQNAyjXC6bpokG
+oyhyHMeFlCYjm14yBHVdx+31e831dqnfrbcbpufmiZoMJR1ZcslS1qCk4StB
+ldQ9EebZpkGUVI2VToeLAxBVzmkqJRocBP88A34O9k4gAgLr7huYrkE7
+       "], {{0, 0}, {13, 15}}, {0, 255},
+       ColorFunction->RGBColor],
+      ImageSize->100,
+      PlotRange->{{0, 13}, {0, 15}}], 
+     GraphicsBox[RasterBox[CompressedData["
+1:eJxdUjtIxEAQXU8um2yyn1ySy+WS+3p6pyha2AliZ6cgKIoIIgh2FvZiZ2dn
+IYi1YKW1nY1gIWithYWNjRYeiEV83moQH7sww7y8ebOTxsb2wkY/IUTictzv
+OJfL5fN5swcESPt60AH5BVJKqeLCc10pJWMMKfj9PWRMxNDxpKiUSvUkDpQU
+PTiO81df04qK16OwHYXjzVotLtvUQBXiIBvGd5zRpGVMFOXW3OzS9NSIK0xC
+hqtxjhDbsnR3mGkJNuBYC+3Bh4vztPvxfH2zt7I2E1VsagqLobWmtRkNCVke
+HEpf39L3T5zLg6O5xijUMB0ImhYJji7T4dDH3VPaTbuPL7vLO5O840lVEBKu
+QINJn3NuGIIYJ/uH91e3Z8enNZpEfWEzqIbM02pwiOdKksQV7tjI2Obq+sr8
+YjVMitILggDDam8/L6yUX3BxJlvReNXvNGoDlbLnStuietLs9aTicRx1mnHZ
+562SrPusoAQzjYymmdCER5cz5View3xuC4czaqKkV6ZbwwPGob+Avt4vStk/
+oJka+Pzf9r8AjBpAIQ==
+       "], {{0, 0}, {13, 15}}, {0, 255},
+       ColorFunction->RGBColor],
+      ImageSize->100,
+      PlotRange->{{0, 13}, {0, 15}}], 
+     GraphicsBox[RasterBox[CompressedData["
+1:eJxlUkFoE0EU3d1kdzI7uzuz2eykyXbThhitqS2UKBKhVAUpPRSkUPAgWOul
+BMST4M2zNwVB9NocRAShKJ4ELwVPCqKg9pBDKFbUhIjBHn3ZkVDqZ3b4s8yb
+9/7/r7x+Y2U9pWma/+8b5gfDMAzTNDNJIMFRT0Ilo2ujnwpiWZbHnKwQnHPb
+tgkhwKaSGKGQ4GgmgSN24bBIyomoGAruJeE4ziFeQPA4fmIHStgklrlqPpwt
+lwBkxMJNkAKIC0YSSj9eE0IwxqRwLS1VE/Ta0vnV+TM138to2vFSBOmMUiUS
+EEppEAQT43FB5jUeegZZKpc+PH0y+NHrbL+5fenywtg4IxmP2qo00AEC3jgY
+q00enaovVKbmLsalb192Pr/7uN/9/fLO/eXJabAI10NDIAwoCJa+L/XUzbX1
+1w82tx+2WMS3Np99au92dnZvrVyfs6tZj2OhBNVhkEo/mGZ8u/X4+173V2/Q
+3/sanZx//uLV3XuPxrRQGrlyLpY0CxbVMSRDebq+1WoN+v1Ou/3z/dt0Pjp7
+bvHC4rLkuZzrh2EI8arV2BXESptXr6zt/9nvdXunZmeyzPaCyCVaKR9OFvOB
+zxkleH8EwV4oFNC3jY2NZrM5XZvxfY56dUMfFyT2ic9dO2MpGygU7IF5RVGE
+6VQqlUajMZy4bVu67hEzy6jLHJtkABkZEkSAgOV0/ciJY4X6TFSJGbSYKT2d
+TpMkVCEjpw0HSkzhOZUircasJNNYMstdOnTRIWcqiBqQMhtEolLHpp4DNRmw
+KDdq/4UCKqwyEl5Qeg5C/gIZDWaE
+       "], {{0, 0}, {17, 17}}, {0, 255},
+       ColorFunction->RGBColor],
+      ImageSize->100,
+      PlotRange->{{0, 17}, {0, 17}}]}
+   },
+   AutoDelete->False,
+   GridBoxFrame->{"Columns" -> {{True}}, "Rows" -> {{True}}},
+   GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}],
+  "Grid"]], "Print",
+ CellChangeTimes->{
+  3.577053141539954*^9, 3.5770531913678045`*^9, 3.577053497584319*^9, {
+   3.5770535981620717`*^9, 3.577053624810596*^9}, 3.577053669575156*^9, {
+   3.577053858756977*^9, 3.5770538866995754`*^9}, 3.57705413627285*^9}],
+
+Cell[BoxData[
+ TagBox[GridBox[{
+    {"\<\"Pen 1\"\>", "\<\"Pen 2\"\>", "\<\"Differenz\"\>"},
+    {
+     GraphicsBox[RasterBox[CompressedData["
+1:eJxdUjtIxEAQXU8um2yyn1ySy+WS+3p6pyha2AliZ6cgKIoIIgh2FvZiZ2dn
+IYi1YKW1nY1gIWithYWNjRYeiEV83moQH7sww7y8ebOTxsb2wkY/IUTictzv
+OJfL5fN5swcESPt60AH5BVJKqeLCc10pJWMMKfj9PWRMxNDxpKiUSvUkDpQU
+PTiO81df04qK16OwHYXjzVotLtvUQBXiIBvGd5zRpGVMFOXW3OzS9NSIK0xC
+hqtxjhDbsnR3mGkJNuBYC+3Bh4vztPvxfH2zt7I2E1VsagqLobWmtRkNCVke
+HEpf39L3T5zLg6O5xijUMB0ImhYJji7T4dDH3VPaTbuPL7vLO5O840lVEBKu
+QINJn3NuGIIYJ/uH91e3Z8enNZpEfWEzqIbM02pwiOdKksQV7tjI2Obq+sr8
+YjVMitILggDDam8/L6yUX3BxJlvReNXvNGoDlbLnStuietLs9aTicRx1mnHZ
+562SrPusoAQzjYymmdCER5cz5View3xuC4czaqKkV6ZbwwPGob+Avt4vStk/
+oJka+Pzf9r8AjBpAIQ==
+       "], {{0, 0}, {13, 15}}, {0, 255},
+       ColorFunction->RGBColor],
+      ImageSize->100,
+      PlotRange->{{0, 13}, {0, 15}}], 
+     GraphicsBox[RasterBox[CompressedData["
+1:eJxdUUtr1FAYvUnm5n1vcvOYR9I07Ty6aDvKMAiFAWmlGwc3ulMXleKy4NKV
+2Md66GMvrvoH2oIguHPZ0nUFf4C7/gBrPJ1rY+jhS/jyce65J+eb33z3YlMj
+hHj/ntseUBRF0zTDMOwpTNPUdR0TVVWVKUgFGFJKQQuF16xHcRgIj1mWhWF5
+pCoLKdd10yjo5dnDds4VohLiWBZuwY04hSP3yPPc76fZ+uKDYTKbidAhCjOt
+gHvyFmlJ2gC5M5s3w/j9y1efPm5PdnZi2/INmgaCcw59aJbiQDvQxqPlH1/3
+i+vvxa8vJ4cb40Hcj0jse7ZOq2Q46UbkyaBV/Lm8rZuL87O93bePRxlp+YLV
+aBkOyLBh6CrVyMGH18Xvq+Lm5/bWsyVGUHXPc+l/MhpElyQJY2x1OTn9PPl2
+fPQos7PIn2tGMefuXSDSCX55JkkXOt1he+H52vqbp+NRt7eyuBSbJnNsg9ZK
+MhpEKoRoNBp4Y6IrpJvnqLoQiKK6Grlu2EZKUSDSVrOT1dszcasR+tzGv5ey
+kowJ+NC3HZMxJ/RtFMzis7rEMj1M9ClkY1Rwjywzkdsp86R3kJ7/AmebQQs=
+
+       "], {{0, 0}, {15, 15}}, {0, 255},
+       ColorFunction->RGBColor],
+      ImageSize->100,
+      PlotRange->{{0, 15}, {0, 15}}], 
+     GraphicsBox[RasterBox[CompressedData["
+1:eJxdk8trFEEQh+fVM93Tj+mZne2dZGc2MbvZGHUxSPCQIBIvBsIaEBFyzIon
+D4IXRYJ7EgTJQVH/g3iJJ1EQIoqCiIioB0VRwRBfJwm+4iViua2TxYIeuqvr
++1VPV/Wm1tH9LdswjPDv+DPPzTRN27Y9zyOE+L6PMXZdFzyWZZkd644EJ2zB
+3HEcCI6kKBULcRRKwQBHCOWgRmAOThCHLzgB6S2EtUra6M+4YVqGQQmBjDoA
+gjUCy4BxKQRowrLXI5tVMjG0daRUTmVEDZNjEolAZ9TnB5FI8LJS5ZIijl2U
+oY+8I819F4+fODM3V8Be4DrlKBRCgLjdMUCU5H2Jqql4W19qk9Lu0fqLG/Or
+y9e/vlm8cnZmcnuhERtFGfgu6kYERo0Ca01O7NgynvTTtV+Pn7+9tr7+6M7i
+yfbs+Hhm9MiQO0jfA6SrcjJA8XRt4OnlhZ+ra8v3HsqadXvl5rcfz44d2lPH
+aJhaKggY2kDqxFWmebBa+/7h4/tXy18+fZ5rtQ+fml1aOD8oHcVJVgxjzruR
+HsGxYexSg6sPXq68fvdk6f7UzmY2mjbHxoaVGhmoSttmPvGQoxGoMihw12WW
+c6k9f/fqrQunzwmf9pilNK7wIsuSJA4CCMs7AW4AKpimqaCiXq3PTB+Ymtjr
+I4p8JLCpJImhKpxoJG8YOJuUMgyEYLSRRUOKVVRJycAwEfZsSolPNxogTwRX
+LQKWJKqaqVh4lYiUA8R8bJsm9J7XsW5EU5CaMRZQDKeQxCswn1PmdWoBVB7f
+3c/gBEqr6V7V/a939Y/8916sfwZhIJs/Cu3M9X8Dek1jaw==
+       "], {{0, 0}, {17, 17}}, {0, 255},
+       ColorFunction->RGBColor],
+      ImageSize->100,
+      PlotRange->{{0, 17}, {0, 17}}]}
+   },
+   AutoDelete->False,
+   GridBoxFrame->{"Columns" -> {{True}}, "Rows" -> {{True}}},
+   GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}],
+  "Grid"]], "Print",
+ CellChangeTimes->{
+  3.577053141539954*^9, 3.5770531913678045`*^9, 3.577053497584319*^9, {
+   3.5770535981620717`*^9, 3.577053624810596*^9}, 3.577053669575156*^9, {
+   3.577053858756977*^9, 3.5770538866995754`*^9}, 3.577054136327853*^9}],
+
+Cell[BoxData[
+ TagBox[GridBox[{
+    {"\<\"Pen 1\"\>", "\<\"Pen 2\"\>", "\<\"Differenz\"\>"},
+    {
+     GraphicsBox[RasterBox[CompressedData["
+1:eJxdUUtr1FAYvUnm5n1vcvOYR9I07Ty6aDvKMAiFAWmlGwc3ulMXleKy4NKV
+2Md66GMvrvoH2oIguHPZ0nUFf4C7/gBrPJ1rY+jhS/jyce65J+eb33z3YlMj
+hHj/ntseUBRF0zTDMOwpTNPUdR0TVVWVKUgFGFJKQQuF16xHcRgIj1mWhWF5
+pCoLKdd10yjo5dnDds4VohLiWBZuwY04hSP3yPPc76fZ+uKDYTKbidAhCjOt
+gHvyFmlJ2gC5M5s3w/j9y1efPm5PdnZi2/INmgaCcw59aJbiQDvQxqPlH1/3
+i+vvxa8vJ4cb40Hcj0jse7ZOq2Q46UbkyaBV/Lm8rZuL87O93bePRxlp+YLV
+aBkOyLBh6CrVyMGH18Xvq+Lm5/bWsyVGUHXPc+l/MhpElyQJY2x1OTn9PPl2
+fPQos7PIn2tGMefuXSDSCX55JkkXOt1he+H52vqbp+NRt7eyuBSbJnNsg9ZK
+MhpEKoRoNBp4Y6IrpJvnqLoQiKK6Grlu2EZKUSDSVrOT1dszcasR+tzGv5ey
+kowJ+NC3HZMxJ/RtFMzis7rEMj1M9ClkY1Rwjywzkdsp86R3kJ7/AmebQQs=
+
+       "], {{0, 0}, {15, 15}}, {0, 255},
+       ColorFunction->RGBColor],
+      ImageSize->100,
+      PlotRange->{{0, 15}, {0, 15}}], 
+     GraphicsBox[RasterBox[CompressedData["
+1:eJxlkr9Lw0AUx9PEXpI2d5fm0iSNtam/2voLtWpBdNBBcHERHEQQFcFFcOkg
+Ts5uQlU6OAji3+B/4B/gP+DupDiIg/GbHGjBLy/h3bvPvXv37gYPTjYPNEVR
+OD6KL/EzmYyqqoSQXCo4mqYhkknV6yCu6zrnXBS4zSwMTdMEn02FoSThGIYh
+hKiWSh7nvu9HUZRsSCniIJEq2Ttdjmy1orM0Xl+dbbZqdQSBMYvmTROkxKxc
+LgwCL6sc72w9djvds/Zaa75qc8EZDCUBA4yFyQEU9f76Nn59j98+X5+e95bX
+R7yBImGYQW3AbMpghkJuLq7irzixl4+NyZWF0Wk3y/+wPK2U+pG53W6D+f6I
+T4/PuerNDbciNiixpFrDrA+NCOYd7h51Lrt3tw/NsUWWLc5Ec8BwwN/2ojzf
+9fuDcj2q7W/vNadmB4JyFJYdxnEE2V7sa1lW4Arbyjs6qQinWQ7mK2FF2K5J
+ZOu0VEiItjjcHnJpoyQmgkKjyEKHFYw+TKmpeq/DsXSXmSElsALN5fU+2V4A
+SipJIkhSYQmqkteq/FPvk5CvBf8f+tJCrg==
+       "], {{0, 0}, {13, 15}}, {0, 255},
+       ColorFunction->RGBColor],
+      ImageSize->100,
+      PlotRange->{{0, 13}, {0, 15}}], 
+     GraphicsBox[RasterBox[CompressedData["
+1:eJxNUj1oFEEUvv3/ndnZn9nbvexubvc8cwG9XFQuSOASEG28KkSbWGjEn0bE
+WFhYmARsJBZREARbFbHQRtJZBgw22mhhoUYkJ+rhCRY28d2NLPcxO7x98775
+3pv30sXLc4tCoVCw/399OwfHcbDzPC/Lsj4AGIIggIcbIDdYPPwKA4AtSRLG
+2CGYYBM8mqYBVxoAfhkFdrAVRYFT2MGDEIp930PI9/0kSZhHVVVgweVMAmzI
+xLUt6tqmrvEFPja1ZjVr1ScO7alCAFCwiQxNg0gmAdKmaY54ThaVKgE1i4En
+Fc7MtZ+vr925eml2ciLByLUwLEhjmJJiUvODqTgdJ55r2/fvPehtd35sdz6/
+3FqYOlKhEZUxJMOeAuSAksWJi8mFdvv20tLNleury2vd33+/7Pz89fbrserh
+A9k+T7KAkpcPSG3+aHNs69nqp3dPdjsbrZi+ePXtzcfds6euSKLdKB9MUHmY
+ArlVXG6m7vf+bL7/8PR7d+PiycjZv3B++VEY1jiO1ONJoMCrsu4ABRKTJU7g
++FvXTvS6r3c6m+fmG6Kzt9k+HSWZ7RbjoORgi5XPygHFIAhgnx6jj++uPFy/
+UbU5A+m8xMdYr4U0srHb74yUTwsoloKwUk4bo5Xj0635mdlxSqGTrm0kSEmJ
+HhCTKP3884GB5lqWRSklhPRT5YWoWHTcgBdUV+YCQySmpstCrsIGBsqBLnuO
+PRIGWURHQ8dzsK6KEACXQwAbs5zCnKClGypChkt0WGBousJGi5WcU9ijwZE8
+ADOUIYiimD9UTskvYROeX8LAVFjwPwpcY1U=
+       "], {{0, 0}, {17, 17}}, {0, 255},
+       ColorFunction->RGBColor],
+      ImageSize->100,
+      PlotRange->{{0, 17}, {0, 17}}]}
+   },
+   AutoDelete->False,
+   GridBoxFrame->{"Columns" -> {{True}}, "Rows" -> {{True}}},
+   GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}],
+  "Grid"]], "Print",
+ CellChangeTimes->{
+  3.577053141539954*^9, 3.5770531913678045`*^9, 3.577053497584319*^9, {
+   3.5770535981620717`*^9, 3.577053624810596*^9}, 3.577053669575156*^9, {
+   3.577053858756977*^9, 3.5770538866995754`*^9}, 3.577054136386856*^9}]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Stift im zeitlichen Ablauf", "Subsection",
+ CellChangeTimes->{{3.577054089539177*^9, 3.577054093209387*^9}, {
+  3.577054146312424*^9, 3.5770541512907085`*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"penImgs", "=", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"Show", "[", 
+      RowBox[{"#", ",", 
+       RowBox[{"ImageSize", "\[Rule]", "200"}]}], "]"}], "&"}], "/@", 
+    "pens"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{"ListAnimate", "[", 
+  RowBox[{"penImgs", ",", "2", ",", 
+   RowBox[{"AnimationRunning", "\[Rule]", "False"}]}], "]"}]}], "Input",
+ CellChangeTimes->{{3.577054003309245*^9, 3.57705401616298*^9}, {
+  3.577054095721531*^9, 3.577054114978632*^9}, {3.5770542741647367`*^9, 
+  3.5770543291698833`*^9}, {3.577054460667554*^9, 3.577054559115185*^9}, {
+  3.5770546011235876`*^9, 3.577054612062213*^9}, {3.5770546738707485`*^9, 
+  3.577054739240487*^9}, {3.577054807882414*^9, 3.5770548119696474`*^9}, {
+  3.5770548536420307`*^9, 3.577054954580804*^9}, {3.5770550536314697`*^9, 
+  3.5770550631900163`*^9}}],
+
+Cell[BoxData[
+ TagBox[
+  StyleBox[
+   DynamicModuleBox[{$CellContext`i7$$ = 1, Typeset`show$$ = True, 
+    Typeset`bookmarkList$$ = {
+    "\"min\"" :> {$CellContext`i7$$ = 1}, 
+     "\"max\"" :> {$CellContext`i7$$ = 28}}, Typeset`bookmarkMode$$ = "Menu", 
+    Typeset`animator$$, Typeset`animvar$$ = 1, Typeset`name$$ = 
+    "\"untitled\"", Typeset`specs$$ = {{{
+       Hold[$CellContext`i7$$], 1, ""}, 1, 28, 1}}, Typeset`size$$ = 
+    Automatic, Typeset`update$$ = 0, Typeset`initDone$$, 
+    Typeset`skipInitDone$$ = True, $CellContext`i7$28342$$ = 0}, 
+    PaneBox[
+     PanelBox[
+      DynamicWrapperBox[GridBox[{
+         {
+          ItemBox[
+           ItemBox[
+            TagBox[
+             StyleBox[GridBox[{
+                {"\<\"\"\>", 
+                 AnimatorBox[Dynamic[$CellContext`i7$$], {1, 28, 1},
+                  AnimationDirection->Forward,
+                  AnimationRate->2,
+                  
+                  AppearanceElements->{
+                   "ProgressSlider", "PlayPauseButton", "FasterSlowerButtons",
+                     "DirectionButton"},
+                  AutoAction->False,
+                  DisplayAllSteps->True,
+                  PausedTime->0.]}
+               },
+               AutoDelete->False,
+               
+               GridBoxAlignment->{
+                "Columns" -> {Right, {Left}}, "ColumnsIndexed" -> {}, 
+                 "Rows" -> {{Baseline}}, "RowsIndexed" -> {}},
+               
+               GridBoxItemSize->{
+                "Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}], 
+              "ListAnimateLabel",
+              StripOnInput->False],
+             {"ControlArea", Top}],
+            Alignment->{Automatic, Inherited},
+            StripOnInput->False],
+           Background->None,
+           StripOnInput->False]},
+         {
+          ItemBox[
+           TagBox[
+            StyleBox[
+             PaneBox[
+              TagBox[
+               PaneSelectorBox[{1->
+                GraphicsBox[RasterBox[CompressedData["
+1:eJw9kT9LxDAYxpPrNWnSpml6d23vpPeHO0VPVDi8QRBRQQdFEB3E0RsEb1Fx
+cBHc3PwaOvox3B2cXLzJc9FBBBWpby/ShzZNk1+eJM/b6B3v9AyEkPh/0376
+MQzLsqSUgVIF6SpXCtuhlJqmCVMYY43Br+S8XCq2Q78hWIEYysAwCGuhzeVy
+wABMCFGC18ai5fZE1cqDbavV8jyPMQakNgQY/IvC9m22NtnZX1y/Ojzrb+yF
+xK2KkidcTlNSY77nkrxRRuj+5i55/02ehgebu1GOuRiXbRs8AYNNfekxQuuG
+SN6+Xh8ek8/v29OLrbA57/tTlNqMgWGKea7DLROh4WCQfPwkzy/9haU2QjPE
+nMSYmkRjQCkpAmFvrq5cn59cHvW2u51uJbIpgccYCTDOeRAEcRxHURSWCrV4
+rFWPq5XQcdIAMwz6ekQp1azGc9Pt2fGJWhBAOBqDK0ALMQKc1SIqFuCcJelk
+bjo6LZ08HwmyBQDW6pLpeuGRMmetbC/QHyWUONI=
+                  "], {{0, 0}, {13, 13}}, {0, 255},
+                  ColorFunction->RGBColor],
+                 ImageSize->200,
+                 PlotRange->{{0, 13}, {0, 13}}], 2->
+                GraphicsBox[RasterBox[CompressedData["
+1:eJxlkb9Lw0AUx1+aNLk2uUty+dHaxpa2pELtImK7dXAQdKjQRdRB6D9QRBwc
+7Cy4uTm5O4mDkzhJJ5fif+Di5FwUIb70MET7JQd37z75vi/3asPRYCgDAMVl
+4or3KEmSZFnWNC0/l2EYjDFKKSEkm83iVSaTkeYSMB6xjqRpmkXXsalRKQdU
+x/8MVVUXYSyiWy6Xa9ZrS57LdV1XFKygA5oLMomBTQsOR6zL7ZPd/nj/4LDT
+FR1FGOlXuI89LeYBjHqt2eQ+ent5v7vmTPe56bou3ia8gI08URV5ensafT5H
+X6/Rx+RiwHdcaNv5ahbQPx0jsBkB6Lchmj1G39Ppw+XZtrQKEDK1LAMy6adD
+liiwwuHqfO/p5nh8tFZ3oECgyIil/nEWPKriqc1ltrle2+qEvY0wDKhtUgwo
+YMEnyeM8QVBynFaj0cZ3LPuWZaGJiJF+wHg0GrGZWfCcUtFv+LzKKQ5UjCYN
+41HwaC7mjkPED9thMZnLIv9PwvYHvTM3sQ==
+                  "], {{0, 0}, {15, 13}}, {0, 255},
+                  ColorFunction->RGBColor],
+                 ImageSize->200,
+                 PlotRange->{{0, 15}, {0, 13}}], 3->
+                GraphicsBox[RasterBox[CompressedData["
+1:eJxtkqtPw1AUxlua27VdX7fPbaXdGvYSJJBAAoZkQWPA4pYgCAIMAkMCHjFC
+gsQgcBgcCX8BHoHEEgSGlyjfetgYG19um/bc3z3nu/fctLu70ZUEQbB+nv63
+KIpTuSRJYozJuVguBIW/IhhThUJBVVVd1zVNU3Nh1b88YDAu557jutzCgBBB
+OcxOwshZc81m2YtllhRkT5a5JCH/GI9vRAA3PLvpO+122/d90zQxZRT7tsi/
+OBBgFK0aRlzUet2di72Dm+Pe1sJqVbUTxVIUBQD5/4UDLzT17P4he/nInr/O
+NrcDgbV0XxskB0ynQdsJgiB7y/rjNbs7v5w3vLqgFFWVDZwTjL2EYYjf26vr
+7D37fHxaLqcVpmGM2hjCjShRBHFtbuVk7/B0/2h9sdMqxZHBCabM5BlN4aZl
+6kbqRBh1O+rMLrWiNHFKYzAlRxDOHctuztSrlelaFOMdcJdOm0gSXQ+0GNtB
+Ceom55xaiVRjfRwuGVahewKHk30fXUVV6AbSUSD4DYDRPB4=
+                  "], {{0, 0}, {15, 15}}, {0, 255},
+                  ColorFunction->RGBColor],
+                 ImageSize->200,
+                 PlotRange->{{0, 15}, {0, 15}}], 4->
+                GraphicsBox[RasterBox[CompressedData["
+1:eJxdkjtLxEAUhWeTTSbJTmazm5e7azYkGhVLQYtVfGChiDY22thYKQhiYaGI
+lY2I/8BOBCsbrfwHgp2VvSBYi4WF8WRHh9XLZDhMvntyc+cmm7urmyohpPrz
+FLpUKimKommaruuUUuzab6hqAfSGgMFYluXY3K4wCMaKHbng8RZMLw+Yc950
+a/2B2/aL1fC9ms0MwxCfQIqEqabXq86IY3XSaMhhWGmaIj0KAk4peOkPYerU
+d71BZnbSeGN6cntpYX99bTZNxtrtsPtHMJewpWvcNDKd7KxMvN2e5Y+Xr3fn
+Bwtx4lr1MkGR0hlZTFMrZaVFyOnWXP75XKyP+5vD6biqhrSApTME1coOZ9BZ
+luXvD/nXU/5ytbtsD3GS2US0RZaBqtAraIiTvcX76+OLo9n5QRKWSEP5A2Mv
+zCm1KElirz+0k1Z9arQxPlAf7vMi2xQNFN2T94JDpHBWSeJofm6m2Re0Gy3f
+qZmm+Q+GOU5w7lZ5M/Cj0MMdoZ/oPyqUrRawCMEXN24ZFZPi1jEAwlnWLFOE
+vxgntRtyqHonRNYjQ76V4hueajpV
+                  "], {{0, 0}, {15, 15}}, {0, 255},
+                  ColorFunction->RGBColor],
+                 ImageSize->200,
+                 PlotRange->{{0, 15}, {0, 15}}], 5->
+                GraphicsBox[RasterBox[CompressedData["
+1:eJxtkj9Lw0AYxi8JaXJJ7l+Spk1rUi1tbS04KB0cRD+BFr+AWCcHERwcHQTB
+j+An6Ojs5BewILg5OTgVHBwVwfgmp0cQHxK4XH7vc+89d0uTk72JgRBiP28+
+1jTNMAzLshzHwRjbtg3jSqViFNJ1HZUkYVyxOKE1wWKfVznzKfE8DwpN05Ql
+gCkYrCilnZAPGtFgIe7VoziqBULAcrAQlEhewvAJVi3ujHqLYEgIqfkhsTFx
+PeoR4IGRMFRJ2EFotNzd3x2fTiY7m9uJx5pMRE7ej4RVJ+AWUXN92P6Y3WTz
+++z14fp4nAgntFEZznMpJEzUid3s8yV/3p+mF4cbg0ZCEKT0B4a91EKHefrz
+4132Nc/eZmcHmx0fdQMEvwBQAebpYVyvujDVrutX50e308vVBJkGcrEpnctR
+w5YhPZjnnKdputZPt0bDldRvBVa5DZUetkwXW/2ENhhqMkQ11Itxy9dlGwrW
+C8nTgQi5oMInXHiBIIK54AxWaoPar2TmkJW8J7iQPEQFl6+K5JXUjfoXVl2p
+5dTfbwY1OG4=
+                  "], {{0, 0}, {15, 15}}, {0, 255},
+                  ColorFunction->RGBColor],
+                 ImageSize->200,
+                 PlotRange->{{0, 15}, {0, 15}}], 6->
+                GraphicsBox[RasterBox[CompressedData["
+1:eJxlUbtKA0EUvcm6O/ua3Z3NZDe7GpOVEAsN2qQTfESRQBCJhdgKgmBhYS22
+1tb+goJoIfZCWgux9AfstE48ycAS9HBnmMe55547kx2f9481IuIYPsZ4DRSL
+RcaY67r+BEEQeJ5nmqamaYUJaArY6roOQloS1VjW4ygVgWEY+gRIgdp/cj1J
+sjR1iCLHjuMYh7i1LAsLpY8ZidjicKWatuaSbqdz0OudHh02ZJiJsMo5TCpx
+kFEIRXESGrS7tvrz9jL6HHy93l/02ilR02G2bef+FRniZpHOTvZHw49xfD/d
+XXd7S7LFyXO5MaNDXNkAmXOuF2hnc3U0fB/H18PeMm3XC21BwucW05V47lm5
+urnsDh6vnm9Pt5oUM2pIxh13WhlZ8BwIL8tqJZ1qIfU3GuvLwXzkp6GLq9yz
+IsMJGomiqBLJhXptMQmasd+oiFmfqdeYfj3Fh5mS71akKJfLUsqqMBOuqd/8
+8zV5syhhO6ZlM9c2EQCamibnUP2qj8ZsTKDIv0taOeE=
+                  "], {{0, 0}, {15, 13}}, {0, 255},
+                  ColorFunction->RGBColor],
+                 ImageSize->200,
+                 PlotRange->{{0, 15}, {0, 13}}], 7->
+                GraphicsBox[RasterBox[CompressedData["
+1:eJxdUrtOwzAUdZMSx4nzcJqmNIRAWwi0C0ywgPiAduGhDkwVMCEkPoSBlQFR
+PqACwYzUEYlP4DuQeAmVk1gNEUfX1kl0fO+5124cne8dqYQQB8vCSrmiKDMZ
+VFUFL00hOZlCynRdNzIwxsAppZqm4WCuBIGMG3pFOHG1MucJEOFYOAJxsQqI
+w7T5mr8RVdcDZ4mzlkFdjXoszY+0kKUWVdVmehzW1+q1mGpmuRxVU6C6EAJ7
+LrNMw3PtGimd7h+Mr64fLy4H3W4ihM0Mk+rSZObNMBlD9w83t5O3T8Tr6G63
+tew5LtNSh9IbNGkQ8jS6n3x8I95fnnsLUeL7kcHQi5wJSGqDkLPByeTrBzEe
+Dld12rZ5YjJ0kc8ETbmuC3LY6x33+5vtZtO3tBIRloGfcnqoC1kQBOiLc97p
+dHa2t9oryWw94PxPJutCCU0YhnEctxqLcRT6njAZRZL8LqDEJ8S2bcMn7sK1
+eXG8RUhl8Vr/vYE8rZpByZA/lV+jPDrA
+                  "], {{0, 0}, {13, 15}}, {0, 255},
+                  ColorFunction->RGBColor],
+                 ImageSize->200,
+                 PlotRange->{{0, 13}, {0, 15}}], 8->
+                GraphicsBox[RasterBox[CompressedData["
+1:eJxVUj1Lw0AYvjTm63JpLslVg22xwSpVSam2gksnwbqJH4OrXRxdHJx08R/4
+B4qjrurmIjg4FwQdK1L8Ay4V6pMejfXh7uUled737nnei9one22VEOJiO9hJ
+riiKqqq6rhuGgYg8MwZ+kTEkzTRNx3G4k2WUIjdG0DQN5JQJGqNmLvDnpv2i
+4IHnei6KHEqp7K+MgBLLssIwXI8KFcFlIac0YCxlgoMImud5Qtc3lldarVaz
+2YzjGATOOe6A08FBZIy5rmsTcnV5/n5/+3Z3c3Z8lLem0BkNU5pvW3nhQ32v
++zgc9LG+Xq4PGg41dZ5laCuV2oZuZBTQnh86w5+P4aDXudjdiclqJPI2AU16
+ggTScOj+VuO73/18fTo9rJVNktPILP2jJZ4wJkVtxkvba9X6fGlxJqAj4FaT
+DkMFIjRCab1aq5QXhBApTXqCHM4nrupaVCyUQgGrfZ61rWQcqcPpcPEdQ3Fs
+iiVNmxzZ5DPQxkhfAvkPeQHZXEaZ/AImLTki
+                  "], {{0, 0}, {13, 15}}, {0, 255},
+                  ColorFunction->RGBColor],
+                 ImageSize->200,
+                 PlotRange->{{0, 13}, {0, 15}}], 9->
+                GraphicsBox[RasterBox[CompressedData["
+1:eJxdUrtKA0EUnc26r8lMZl9J3EVDnmqCqJ2ijWlMZ6H+gOms7PwUwTKVIKks
+LGzEykatLCJYphVBiUgs1pNcWIKHnWEe59w5996tdE8PujpjTGIojMmaYBiG
+ZVn2DLDFYWYKTdPYDHRdB8HNicBTxcAveB62juOYpgkJbv+RcRW5qlUth4x5
+jOWDMDN9kXMOCeKDpk1Bh5HvF5TaX9vYmo9XhduuNHwuA5GDJUQjJlTQ5gAh
+l2r1u4ve5+PL7+vwpHOYdRzLMPEokRGcyFJK0OM4/hkMku9RMvp67l9tNsqt
+KCAJkTGTZ4WkdH34dJ+M35Pxx03vfGdR7zRzYRgiX7KdBoc3CG3Gbq8v3x76
+Z8d7oZzDhxJx20xrQmSVtaVtcMbW68HRbqkiWXu7VXSZciWqnhYE1QAZToQQ
+cF4DqqXmSn25UVuII6UUbtMEiUxOwJ/0QtcEt4v5IB/4IINAHihBgJqLBcjU
+dNRBcE59SZv+7wdI5QA9ihmHf3aCOC8=
+                  "], {{0, 0}, {15, 13}}, {0, 255},
+                  ColorFunction->RGBColor],
+                 ImageSize->200,
+                 PlotRange->{{0, 15}, {0, 13}}], 10->
+                GraphicsBox[RasterBox[CompressedData["
+1:eJxNUrlOw0AQHYzPtddrJ8axiGMcckFwwVWBRINEKqSIjoIiNHRAh0QDPQWi
+QKKjoaWmID/AJ6SBBr4AKprw4iVRnmZXszNvjp3d6vHZwfEsEQksjjXSFUXR
+NG02x8wYEyMUygEjjsYYeg7TNC3LggIaCBMa7K7remP4vo+dMYacSg7QoCO2
+WCxWy0Ecijmfu0yvVVPbMsBEBtkPaMw2G81amStbWYrYMAxr5VIaBVmWCSFk
+dewIj6PAJjo57Pbvb95fnh+vLzcCsezxGjNkQtB8U+XajEd0d3U+/B6M5Gdw
+19uL4xh9Oo4j724buqWpBaKL3v7w92Mkn6+nnWS3qa24xDn/H4imO4zh4kmS
+9J9uh79fP28PnQr5RJFGLHchoRwdeoBldV7tbjeOOhs7S0G24FQ8gkuOTpYu
+2JatKo1K2ExKm+36emuxnUaROxq45EgaM3XPdYSlttJ4rZ625ufSUlhyHWRT
+piBLC9vEhCFF4fiCc5vJbNOQTDwK+pTvK/8ATUE2AOPke8hYuP4AV447tw==
+
+                  "], {{0, 0}, {13, 15}}, {0, 255},
+                  ColorFunction->RGBColor],
+                 ImageSize->200,
+                 PlotRange->{{0, 13}, {0, 15}}], 11->
+                GraphicsBox[RasterBox[CompressedData["
+1:eJxdUrtOwzAUdeLmZZw0pi1Rmz6oKCStqFBbsaBCEQyVWBBlY2AoExMDIyyM
+DHxFJfgBkGBgZACJhRkJBhYGfqAM5TSWQtUrO7qxzz0+99jl/kmvTwkhNmYS
+c5yrqkop1aMwDMM0TcaYZVnINU1TFIVMBMBYtJjhONwTtp9xcynhiaTjOMCD
+R41CglEL8IxlZFKz9XymWc66hMwlaCJCcM7lERIPMBKsCCFWcn47CBqNRhiG
+W53NpYWKSNqcmVCII6QkSW7bdsD5dhh+3j++3z08DQbH3S4zTI1SNCL1xGAw
+19Pk/Kg7Gn6Px8/LzcVhrzW/5psQM6lEGpLVyH6nNPr9GI/h6+leZSNPmoI4
+3NYT/86gCnbJ/Ops9+vt+vn2cr1KUL4oFGyBbdJA2SMcc1RSK5KDnUp7WXc1
+1XdtbMXuSSWQAW1oE99CobDabNXCalAsZV2BBqfAaAEMuD7XdT3PYzp1mF5K
+CzBPyYjvXeIlvzwIv1My4tuJ34kWhUywLq34A+uTOaU=
+                  "], {{0, 0}, {15, 13}}, {0, 255},
+                  ColorFunction->RGBColor],
+                 ImageSize->200,
+                 PlotRange->{{0, 15}, {0, 13}}], 12->
+                GraphicsBox[RasterBox[CompressedData["
+1:eJxtUj1Lw1AUTWLafDTJS5s0aVL7SYtapX4MWqVFEUFxECyIIOjQsaBuzoLg
+4A/wXziIi0NxcnZwFEEQf4La8Xma14ZaPSSPm5dz7z33vFdonTZbYxzHkf7b
+iwFBEKIBxgaIBECAX9xvYEeSJE3TdF3HqqqqoiiyLLN0nuf/kgkhvmONp+yU
+YyethGmaSMQ+q88HABkrmqJs0XcKXhKPJnIoixaO46AF08YkgcziSrlUry0t
+L9Wq0zONRgPFs65PZJXpGSajeCWTXl2Yu7m6fOvcv97dnu/v5XI5KMEI+MvE
+YAXZMIy85y3OztKPD9rt0q/ua+fheGun7mbiBlGiUlgZAfPKdd2XxyfapfST
+Xp9dZCJ61cnauh4TxdBGNqNt24hPjtrvz2/0mx5u7BbjnsGJcDMqRkL3GBlK
+MLsiRDbX1tvNg+2FlfnStKOazMDQcEbGIJZl4RMtiKpmfa8yOZVK9t0LyWxG
+8LEPgWbcKGfNiXyimE74id6BDgsWAoST9lI0OU5iSSJbehQyRsj8AKwLDkIK
+8O8NYVnhBWCqRi7GD1SOPrQ=
+                  "], {{0, 0}, {15, 15}}, {0, 255},
+                  ColorFunction->RGBColor],
+                 ImageSize->200,
+                 PlotRange->{{0, 15}, {0, 15}}], 13->
+                GraphicsBox[RasterBox[CompressedData["
+1:eJxNUrtOAkEUHXbZmd1hZmfZBUEXsjwkEEkwRgngD9ATOzt+gMRCKys7NVZ+
+gJgYP4PeWBgLC0stKCgtKNcDIxtPZpK7d8+cOffeqY4no7FJCJHYCnsVa5im
+SSm1bdtxHMaYtYFhGKk1EiZi5EHLKpnzs4CUknOOs1Aw1kj4iJEEIcrLRhg0
+o1BaKYMQzmwhBH6Za+gjCBxmea7YD+Vgt1AQTlHygDvbnip4gcsc3PufzKw0
+yDVKTvrtm4uzx7vrp+nDYacDfZq24Efz/5Qpc4VE4b29Zvw2i+cf8c/8dXo/
+bNfaiuZdV1IK/kaZrsgZ3usexfPPeLnAWrzMRnWBVfaVb6dhXheou6ELvxqP
+4q/3ePn9fDXhhOy46ZzMiJULU7dON8TzvCAIIkIuT4e35+PhQRlJiKCN2rAm
+azPKtuulUivntYtBvxkNWpVqVA6yCg3UhpO5aDMQwWcYho1q5bjbjUrlYn5L
+KYWxgpAwAd185CGFaQpu+56LAEAysZHMNLmCbsDW0O/kF/xnPK4=
+                  "], {{0, 0}, {15, 13}}, {0, 255},
+                  ColorFunction->RGBColor],
+                 ImageSize->200,
+                 PlotRange->{{0, 15}, {0, 13}}], 14->
+                GraphicsBox[RasterBox[CompressedData["
+1:eJxtUbtOwzAUdevEcVInqRPTpO9UBQGqqvKWEGIGhko8FjakLrABI0gINibE
+yMDMyMTEB/AJTGVhgJ0ZUDjUKkKCI9u6ts899/i60dvf7FFCiI/pYn7Hpmky
+xrBms9nMH5AhKKWWZdm2zTm3BkAKHQK5moYAV3lPhNIfCZUKQtCQxQZArDWx
+YqtyIoni+SRpx3GjVAmFh0N7AGiCAzWUi10hmbk+N7dQLjdzskAMbSafz+NW
+G0BK03cnVLA9PXN1cHhzdHp3fnG2s9dxC4qLgDnaLWijvlF3yOHaTPr0kL49
+p6+PL/e3u0sd22BSeJoG2cgjOUqWK+Sjf52+9zEernqrJdIpjtS4gerwBrfC
+YQ430MuTg2762cfoTmWajLQlH7OJpn13wKLMzCCIomhvq3V5vNEo0Ngl43EQ
+2xQ6eCzqgoDSNiFJ5Cy2qiuLrdm6P10RdSUDbujuQfCHCf2kVuq0J0drxWY1
+Vkr9bp3+UG1ACCGlDEMpA9/zPN038gvaAJzwISCO7b80cwj99RpfUlY8pw==
+
+                  "], {{0, 0}, {13, 15}}, {0, 255},
+                  ColorFunction->RGBColor],
+                 ImageSize->200,
+                 PlotRange->{{0, 13}, {0, 15}}], 15->
+                GraphicsBox[RasterBox[CompressedData["
+1:eJxlkrFPFEEUxt/tws7OMDs7szt7C3cnd1yMx0HIETQkNARDbCwsTLSykc7E
+aGUjCQWFnZ2d1hYmxtKggZjYQAMhVpQ2/gOSkECxfDjchOBLdvfbN7/37ct7
+O7X28uFaSETp5XWhLx5hODqMcBj+NQiCWq1Gw4BGnjHGORdCxHEM7e7IO9jz
+EHAAmRtT5NZmeZZqY0yapkhGUXTV3zlLKbu56TfGxzhXMlFKIaO1ttbiE+Ad
+DIFynE6EtcFE2W42BrMz9/rzi40pS+ymKVEFNw+jFiYlowfLg48bT/7sfDg5
++PLz/frq7Z4mwhEAdOJgHjGj0qU23e2x4/131emP6uyw+v1148XjtqLxoi6F
+gDlglEBgDgWnuqBfW6+q6ltVHWx/ev3m2dxCnbqlLQRDq34a0PgcXrOAjvbe
+Vn93v3/ebHGattTJdBFHztmbSym4QHesKIrnT1ce3e/3W7KpKNOKs1HXszcX
+8UhukslWQyt5p1dON8cWb5U3EsK0/eiumiOPGWIj3U67M9lCoc3M/zC0492u
+kyTBBrFTnSi3R9+Gh/0vhFM2jGsbv8YH/8L/gR47B+NzPvw=
+                  "], {{0, 0}, {15, 15}}, {0, 255},
+                  ColorFunction->RGBColor],
+                 ImageSize->200,
+                 PlotRange->{{0, 15}, {0, 15}}], 16->
+                GraphicsBox[RasterBox[CompressedData["
+1:eJxdUstKw0AUTaKTSdLJs00TE2uttZV24Wvh27oS3LgRXdilK4uoCApuXAjd
+iqDgr/gl+gHiRrcqigrxtFdD8TIZJnfOOXPn3CntHG7s9EmSZP9+nbWiKIwx
+zrmmaZjVbiDT1w3syrIs/QV+kQTMNE3b6QzLsoQQ4KYsYAgMItbIu647GAdx
+lC8VC2E+hy3DMMDSdR0U0icw5ywI/fHhYHmiWi5EOTPj2U7WdYG3bRvnkjjA
+OCjD1fJQYdwT65P10+3Ni4PWSbO5Wq/7Sn/EdZQEjNwNsHBWGIZjqny53/q8
+v0teX5Kn56tWa21quqjpljA5U0kcs8V5VghPkg62NpKP9854e7m9uV7yghU/
+ytqOwTjECYwLojDcvFQsPj08Jt9J8vF1trvnyv0jnu+awlAZgQmPwqIo6qwl
+pX3ePj48WpyZQwHCMDK6jjLgSQqGOBwGxXEcOFCpVBqNRq1Ww3WQJMNTMH4p
+CcPjOJ6bmV2aX6iWR0M/DwMhlbaGwNRrSAE/kA/gc5zL+ZaFDFnX20d6D4Sn
+3hmaigGdVDaNlNL7nFg3/r2otJ7eYH9B4B/abED7
+                  "], {{0, 0}, {15, 15}}, {0, 255},
+                  ColorFunction->RGBColor],
+                 ImageSize->200,
+                 PlotRange->{{0, 15}, {0, 15}}], 17->
+                GraphicsBox[RasterBox[CompressedData["
+1:eJxdkr1LHEEYxmdvb2dnZudrd+8j3pm7i5icx50RiV9o1EKCHwhKEATtREgV
+0qTybwip7Cz9DwRBWysJWFhokzSxtZOUCetzN3gEX2ZmH3Z+88w778yrvS8f
+93xCiEI36F3d/fh+xHmsTRrHVmkhBGMsDENKKaY8z3OYE7lcjodBGpuRshlO
+I818K6i1VmuNVUEQ+E8BHiOnYSFJxxuVD+/ettttzjmleWeolMIubglsIQSj
+5WLaLIi5kdra/MzG0sLW9Dhao5SUJQffTwmwFAx8Q5PPuyu/To+y35d/fpwc
+bE5XPIKWGCtCBtjlDK2lShnZ31nOHi6yf1fZ3+ub8+9fN4enEjIY25gGDnbm
+SAy6Vh98uDvLspssu/52sN5JSMt2YRvkHezMkZXTnRq5vTy8/3n8abtuZK6U
+8tioMMj/X0OYo1ao2FCFTHai+TE6N5ofe63qRSKlfFbw3jGp1QJbVKvVjdnR
+1Ynm+1a9PWAcTJ7CFRDVxlWWItp8WU4ImaoVFluNNzEDjFnnjBFw/5rgjNmi
+kSWrXpioIFnvjiiYfhrQXi/cYVkv3AtBwBn/HwG6FD7k
+                  "], {{0, 0}, {15, 13}}, {0, 255},
+                  ColorFunction->RGBColor],
+                 ImageSize->200,
+                 PlotRange->{{0, 15}, {0, 13}}], 18->
+                GraphicsBox[RasterBox[CompressedData["
+1:eJxlUstOwkAUHah9QV9DaQVKaVoQjNGABsW40YUSNsbE+NjzAbowceF/sNSl
+/oCJcalsXRA/wqW4MCQmYj0yplY9uW2md84991W/e7zb5Qgh+vfzdQYSiQTH
+cfwEOCQniDy4Jb+BK1EUZVlOxYBPQRAQ+IeMcJAzhpazs8VpG5azbJNShIAP
+qbg+PqHjUb0eeIs5a45qaloxVA1QVVWSJMYHkAjhcAZWZsFzlz13rRzsdDqt
+RqNRqVpyWtd1Vg/rDjVAZNY2q1bm7GD/4ery6b5/d36x126bPA8d5GXiCEHX
+iqLUqGoQctPrhcNhOBrD+te3G0utcrkMKYiz7sBHYbau84Rsrqy+P7+E4/Dt
+deSX/Pp83XEciDMy40McTU0hC0meHp2EH+HjYNBsNimlruuymcT3Ios8DBnR
+0fbW+uFOp1jIVysBG0g08GiJbBdBEEAN75JXrNYqIEA5GjUrG3w42R7ztlZy
+zBnfKhU0g2qiyMdXGf8lkJRqgmlIWZ2DaUo6Jf3UzMSjHYGPFBi+EAOc5B+i
+kpIxcBN8Ai9zQNk=
+                  "], {{0, 0}, {15, 15}}, {0, 255},
+                  ColorFunction->RGBColor],
+                 ImageSize->200,
+                 PlotRange->{{0, 15}, {0, 15}}], 19->
+                GraphicsBox[RasterBox[CompressedData["
+1:eJxlUj1P21AUdez449l+fn6On5NQtyJxIoiCxJfUUomkVdUOXduhU4cwVSwZ
+8wOQ2qF7Jwa2Sl2y8AuyIMTML0BIbAgEIgt1D9zWipor+em+53POve/c19gZ
+ftgxNE0Tf7+HHFEqlUzTdB7DmgkcGoah6zoA2r/AFr9835eCR2FQEUEUcGzB
+tW2bKITHihznYRg2YtFJq916kpRLqOrZThAEruuCQnjqwWN2HMnVBfGyVV+u
+q81scX2lm0i5kFRVKIEHhsBguY4FcINpm2k0fP927/OnL9u9j0vL/Wb7iaYL
+ISCObqln5FJK7rlvXvdPD3/l1xf5zeVk/8fuu95WxXsaicgpQ7xwA+3hJv3t
+3vnxJL+7yqe3ZydHG572quq3VFBjBkwo7sgYQwmY8PPgIJ9O89/33799zULW
+rcnFiq+YTuBCHL3RdjQajcfjwWCAPEmSmHu+aVAbBRi3RjOcc6xKqSzL2u12
+HMcoB1lUn50L3KZZpGm69fzF+upap9lMlYKwbVrkBoGhTFMGGMo1JdJa9Czh
+dcngklU2iqGT4aCgFlhw0vXwABzuO75r0QS1uZilUMy/pXkKsf6D/QGHfEBh
+
+                  "], {{0, 0}, {15, 15}}, {0, 255},
+                  ColorFunction->RGBColor],
+                 ImageSize->200,
+                 PlotRange->{{0, 15}, {0, 15}}], 20->
+                GraphicsBox[RasterBox[CompressedData["
+1:eJxdUstKw0AUTZumzSSZSSZNUxttINGqjYIvunAngog7deFKXCiCIugXdKcr
+cS2CK/0C8QME3QviJ+jKjRRBqiLxNKMheEjCycy59565d4LNg9VNWZIk8/ft
+cSCXyymKUiqVisUiiCzLyh/AsStlkM/nISOEUN3Ao2kauKqqxQQIgUCE4AuO
+FcMwXIv2O/ZApVKzbc5MESiiREhqA+JhS5upV2cDP+LMUBS9UOAGs5mJLZiE
+JSEGQZIm16e9ykIUtTwviqJ6vY5cjXCQcw5jSJiK8evkpWbVPllfe7w4797e
+3J0c7yzOjxHF1TVHVSEWnoV4qEznJprXh+248xK/v+G5Omov1Ljf5+I4cCK6
+ATG4pam2TvZXluPOa9z9+Hx6XmpNhkxr9dsjtICTpg3BkU2z130mSU/3D/HX
+9+XpGZJgq8lJLSdBkJ2LaBTQaDT2NrZ317emovGBStW2GCn9ti4dDZxQSh3H
+SThhzBpNIDqQnaNYQS1kdl3X9/0gCMIw9DwPFUXfUqWAmGZv9JRallUul9Fk
+cBTN2sj6EfeKJBCnQMV/TrJ+oE8vkpwA6z/k1UET
+                  "], {{0, 0}, {15, 15}}, {0, 255},
+                  ColorFunction->RGBColor],
+                 ImageSize->200,
+                 PlotRange->{{0, 15}, {0, 15}}], 21->
+                GraphicsBox[RasterBox[CompressedData["
+1:eJxTTMoPSmJmYGDgB2JeIAaxGRkZmZiYmJmZgSScCwEMqACohgMMuLi4gCQ7
+OzsbGxtQEKgFWRkrKysvL6+oqKiEqJiosIiAgACQy8nJCVQMNJMRBoDKhPi4
+5aTEjeRklPl5+cAAqJ6XmweoGCgLcQNQlzgvu5qMmLuhrqWyvIWUtLmkFAcD
+AxCxs7Jxw1QCHSMkwMPNyaopzDChKuLM0u5N3UV9aUEeCjxaAtxyzAxAB0OV
+8XPKSAgp8TPcPDb///dDQPTj5Ox5+Y6sDAxSwoICvHxAZUAzBTkZ+NkZdHgZ
+Hhwo///nMgi9WJtiwxiiw2MvziDExwv0AtDv3KwMnCwMfAwMefG2///eBKI5
+9QFSDAymwiDEw8UBD16gR4CBIyMj05QROq06M9HXXp6bQY6XVZqLCSIFUQl0
+IcRkf0vTQGtzJy11ExlJeWkpoOeAroKEMMSFPFxcQvwCWrKSBspydtoqFqpy
+CmJCYtwcENPgBgK5wPgSEuDj5eYS4WET5+cQFeAHmga3FAIgKtnBAM4AAoil
+8ChGTi0QwAwDANiIP+s=
+                  "], {{0, 0}, {13, 15}}, {0, 255},
+                  ColorFunction->RGBColor],
+                 ImageSize->200,
+                 PlotRange->{{0, 13}, {0, 15}}], 22->
+                GraphicsBox[RasterBox[CompressedData["
+1:eJxlUstKw1AQvU1omqRp3rE1fYSmqUX7wJa6KCiCa0F87RSkrlz5Bb72/Qvd
+uPCBC1cuiiD4B/6CK10UESwSTx0NRYeby72Tc2bOzNxid3+tyzPGtJ9vdIbF
+YjGO4+LxuCAIPM/Hvo387J/BCaQkSYqiYE8kEriCHrH+gBETSNs0HMu0LCuV
+Sv2hRCwCq6patpV6zqkW3AkpTulEUSQWyRtJ53l4NE1rlwqtYrZVmeo06q7r
+AinLMg7QBjzFpwiQ0bC0pYp/sr11dnx4enSwu7hQy+Xzv5LGwbBCgi23a8/9
+u3DwivV0cd4pV6rpyXQ6jb/QDxnUCsMwZI41p0vh4CX8eAuH7w+3N6vt+ZVW
+x3dypqBALWkGEQVSvY/3/fBziLXX3dEZCxTTtRxNlBEz6jPwCE7XXq93fXm1
+ub6hKkn001C1pCShY+MTRO26rqMttm17ntdsNn3fz2azqB01kgwgcQAYHuAR
+PwiCUj4z15iZLRc8JwUndYMiExg7ciGjqemWwIKMUc0ZnjEaLgmOZNBkSQ9S
+oAQQOZ7JSZGGMv48oiykatyicX8BeZNC/A==
+                  "], {{0, 0}, {15, 15}}, {0, 255},
+                  ColorFunction->RGBColor],
+                 ImageSize->200,
+                 PlotRange->{{0, 15}, {0, 15}}], 23->
+                GraphicsBox[RasterBox[CompressedData["
+1:eJx1krtKA0EUhie32c1k9j7JJjEX3QRNMBpstBRJbVhiEcROW0E7Qwpb7awt
+7GwEEX0BwdLWFxARS7EVFOOfjBmC4s/JcHL2O5c9szPbe53tGCHE+vkN/Ugk
+EovFEmPBR4T8IzyKRqOU0mQyyRjDqWkaUqIj/U1EBLBpmum0J4TrOA7nHClo
+JPnJFETwSAgxX87WpkSzmC1ymqQa03Q0UimSRFNd133fbzVrK9ViwOL+KO55
+XrVaVbyCTU2zGatQsr+xfnty/HB+1tvqLgnb49ygQ0lYbgOVMckcZ/dXl4O3
+16E9Pl0c9JYXFvOOi+IKRhekwzghdzfXg/cP2Nfzy27YaboFGN4XBRXMdKol
+4johO93NwecAdnp45BJix1nJzQIGo8bAVIjgL5x2u93v98MwDIIAb43xMKTa
+CU74iGDDOBv1WmttFV0zrlUq5G2To4K8JgnDRwUUt0Yql8uN2aBeKU3nfI8z
+uY3IWPLzAG8YhvAsP+3kMjYsKxzXTAFWl6iKS55JpXQYeslL+QWrFKnEhOSS
+oW+JdEDW
+                  "], {{0, 0}, {15, 15}}, {0, 255},
+                  ColorFunction->RGBColor],
+                 ImageSize->200,
+                 PlotRange->{{0, 15}, {0, 15}}], 24->
+                GraphicsBox[RasterBox[CompressedData["
+1:eJxdkr1PwkAYxou1LS3Xj+OuUD4FQYJoTTAMGAeImrgSYDBOhujspvE/0ZFJ
+/wEXV40bLsbE2RkTBwc/ovWRiw3xyV3y5u53zz33tsXBYXcgS5JkY5qYv7Us
+y8pEKGamFIlEpClhBUw0GtUn0jRNVVWs/CNRY92xSNJlXoLrmuI4DiEEvICn
+sZStr5TzjVK+lmJ5y8wQA/7AACOMuBS1PSv5pVyvtb6z1dput5v1OrY8z0MM
+mIABDIyqCsZxp3N3cf45Gt2enR71+xuFwhxncU2VJwKGBIzSk143GI+Dt3eM
+6+Fwt9lkthW3THE1bFEbqrJZXA6enoOP4Pvlda3q5wjNcO5aVogZhoEwmDeX
+V8FX8Hj/kE6n8WS/XOYxIuKJvkFmjDTqqwd7+xhLlVrcpJ6bIIYBAA0R8XDW
+dXGDBR59SyWS1UqFMYbHhj2BLbY459lsNpNKL8yX/MVqIZvhcRbTddFkYQgS
+B+HmOnaCUkWSkpTath26CVKEBIwA0T+JTzyNCVI0PPxtwj/nB+oJQZQ=
+                  "], {{0, 0}, {13, 15}}, {0, 255},
+                  ColorFunction->RGBColor],
+                 ImageSize->200,
+                 PlotRange->{{0, 13}, {0, 15}}], 25->
+                GraphicsBox[RasterBox[CompressedData["
+1:eJxlUU0vxFAU7ce0nVf9eB2v7Uw7WoYRhhiDQSISWysfEYIgIdaWFuJr5U9I
+bPwAsxHL+RFmZeUnWIggjNO8aGLcvJfcnnfuubfn9u0fre7LgiCYuDZukiMk
+SVJVlRBiWZZhGNlsFp+yLIuiKPwNIMA1TbNtu8dnvQU/8FzHNFALEDrib6TK
+wBlj47E7XQ4Hus3YItS0FDlp3dEFiaIolNJJ35qLvbXJsY16bXZ0lCqZ/mJU
+cBj4vAXnK7IoCcKEZx4uLjzf37WfHh9urpdmpipOrmxYGAni4KfKmLnG6PHW
+evvjNTlvL7dXl8OlEjOTACElo5HrupokHuzutL+/kvP5vreyND80Ug16cjbV
+FJWTuXW6rqO8Uqk0Go1Wq9VsNoH4zI3CIshE1bgnmAdkOIzZoig6PTm5ODvf
+3twK8vm86+HgCTr8B6HMrUaJ4zhYTRiGh+vL9cHeain0dJm7kVqHHLXYHQwM
+giCO47JPpgYLfYVuZqh4+r9HgJiEWnqOGnz7RUpcInWQ02GAoylG6tIyZlax
+ScZQEx3O+QE7mkK7
+                  "], {{0, 0}, {15, 13}}, {0, 255},
+                  ColorFunction->RGBColor],
+                 ImageSize->200,
+                 PlotRange->{{0, 15}, {0, 13}}], 26->
+                GraphicsBox[RasterBox[CompressedData["
+1:eJxlUjtLw1AUThOb5+1N0jyapk+tTS34oLViCSjBQekk6OJqHUQ6CJ3d/BXu
+SsFBXPwV4g9w0tHF0anQ+KUXg+jHuZeTc75855577uLw8mgocBynY+WwEj+T
+yQiCkJ1D+AHP84hzv8BooijKsqwoCnb4/5n4hA6ylFJrDgTBBxnxlMkqIg5C
+vVKFLVdqDjUUUYKpqgpCWhE0QkjVLnZaa4c7++FKB/qu6wZBIEkSdFAUTE0S
+XdMs8AtX5xevd48vN7eD7tbBxmar4FuJjAhBMDVJdk1rlRjP9w/x1zSxj8/r
+45MazZc0CkFWFw5+UTnuaTKJp1PY7P2tY+WbftGWE7BOJYaseHY6jGcxbBDt
+BpXS3nZvqWCjkZSG3fd927ZHo9F4PA7DEFnPyRVdCjV2NnAQNAyjXC6bpokG
+oyhyHMeFlCYjm14yBHVdx+31e831dqnfrbcbpufmiZoMJR1ZcslS1qCk4StB
+ldQ9EebZpkGUVI2VToeLAxBVzmkqJRocBP88A34O9k4gAgLr7huYrkE7
+                  "], {{0, 0}, {13, 15}}, {0, 255},
+                  ColorFunction->RGBColor],
+                 ImageSize->200,
+                 PlotRange->{{0, 13}, {0, 15}}], 27->
+                GraphicsBox[RasterBox[CompressedData["
+1:eJxdUjtIxEAQXU8um2yyn1ySy+WS+3p6pyha2AliZ6cgKIoIIgh2FvZiZ2dn
+IYi1YKW1nY1gIWithYWNjRYeiEV83moQH7sww7y8ebOTxsb2wkY/IUTictzv
+OJfL5fN5swcESPt60AH5BVJKqeLCc10pJWMMKfj9PWRMxNDxpKiUSvUkDpQU
+PTiO81df04qK16OwHYXjzVotLtvUQBXiIBvGd5zRpGVMFOXW3OzS9NSIK0xC
+hqtxjhDbsnR3mGkJNuBYC+3Bh4vztPvxfH2zt7I2E1VsagqLobWmtRkNCVke
+HEpf39L3T5zLg6O5xijUMB0ImhYJji7T4dDH3VPaTbuPL7vLO5O840lVEBKu
+QINJn3NuGIIYJ/uH91e3Z8enNZpEfWEzqIbM02pwiOdKksQV7tjI2Obq+sr8
+YjVMitILggDDam8/L6yUX3BxJlvReNXvNGoDlbLnStuietLs9aTicRx1mnHZ
+562SrPusoAQzjYymmdCER5cz5View3xuC4czaqKkV6ZbwwPGob+Avt4vStk/
+oJka+Pzf9r8AjBpAIQ==
+                  "], {{0, 0}, {13, 15}}, {0, 255},
+                  ColorFunction->RGBColor],
+                 ImageSize->200,
+                 PlotRange->{{0, 13}, {0, 15}}], 28->
+                GraphicsBox[RasterBox[CompressedData["
+1:eJxdUUtr1FAYvUnm5n1vcvOYR9I07Ty6aDvKMAiFAWmlGwc3ulMXleKy4NKV
+2Md66GMvrvoH2oIguHPZ0nUFf4C7/gBrPJ1rY+jhS/jyce65J+eb33z3YlMj
+hHj/ntseUBRF0zTDMOwpTNPUdR0TVVWVKUgFGFJKQQuF16xHcRgIj1mWhWF5
+pCoLKdd10yjo5dnDds4VohLiWBZuwY04hSP3yPPc76fZ+uKDYTKbidAhCjOt
+gHvyFmlJ2gC5M5s3w/j9y1efPm5PdnZi2/INmgaCcw59aJbiQDvQxqPlH1/3
+i+vvxa8vJ4cb40Hcj0jse7ZOq2Q46UbkyaBV/Lm8rZuL87O93bePRxlp+YLV
+aBkOyLBh6CrVyMGH18Xvq+Lm5/bWsyVGUHXPc+l/MhpElyQJY2x1OTn9PPl2
+fPQos7PIn2tGMefuXSDSCX55JkkXOt1he+H52vqbp+NRt7eyuBSbJnNsg9ZK
+MhpEKoRoNBp4Y6IrpJvnqLoQiKK6Grlu2EZKUSDSVrOT1dszcasR+tzGv5ey
+kowJ+NC3HZMxJ/RtFMzis7rEMj1M9ClkY1Rwjywzkdsp86R3kJ7/AmebQQs=
+
+                  "], {{0, 0}, {15, 15}}, {0, 255},
+                  ColorFunction->RGBColor],
+                 ImageSize->200,
+                 PlotRange->{{0, 15}, {0, 15}}]}, Dynamic[$CellContext`i7$$],
+                Alignment->Automatic,
+                ImageSize->All],
+               Identity,
+               Editable->True,
+               Selectable->True],
+              ImageMargins->10],
+             Deployed->False,
+             StripOnInput->False,
+             ScriptLevel->0,
+             GraphicsBoxOptions->{PreserveImageOptions->True},
+             Graphics3DBoxOptions->{PreserveImageOptions->True}],
+            Identity,
+            Editable->False,
+            Selectable->False],
+           Alignment->{Left, Center},
+           Background->GrayLevel[1],
+           Frame->1,
+           FrameStyle->GrayLevel[0, 0.2],
+           ItemSize->Automatic,
+           StripOnInput->False]}
+        },
+        AutoDelete->False,
+        GridBoxAlignment->{
+         "Columns" -> {{Left}}, "ColumnsIndexed" -> {}, "Rows" -> {{Top}}, 
+          "RowsIndexed" -> {}},
+        GridBoxDividers->{
+         "Columns" -> {{False}}, "ColumnsIndexed" -> {}, "Rows" -> {{False}}, 
+          "RowsIndexed" -> {}},
+        GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}},
+        GridBoxSpacings->{"Columns" -> {
+            Offset[0.7], {
+             Offset[0.5599999999999999]}, 
+            Offset[0.7]}, "ColumnsIndexed" -> {}, "Rows" -> {
+            Offset[0.4], {
+             Offset[0.8]}, 
+            Offset[0.4]}, "RowsIndexed" -> {}}], If[
+        CurrentValue["SelectionOver"], 
+        Manipulate`Dump`ReadControllerState[
+         Map[Manipulate`Dump`updateOneVar[#, 
+           CurrentValue["PreviousFormatTime"], 
+           CurrentValue["CurrentFormatTime"]]& , {
+           
+           Manipulate`Dump`controllerLink[{$CellContext`i7$$, \
+$CellContext`i7$28342$$}, "X1", 
+            If["DefaultAbsolute", True, "JB1"], False, {1, 28, 1}, 28, 1.]}], 
+         CurrentValue[{
+          "ControllerData", {
+           "Gamepad", "Joystick", "Multi-Axis Controller"}}], {}]],
+       ImageSizeCache->{311., {142.25, 147.25}}],
+      DefaultBaseStyle->{},
+      FrameMargins->{{5, 5}, {5, 5}}],
+     BaselinePosition->Automatic,
+     ImageMargins->0],
+    Deinitialization:>None,
+    DynamicModuleValues:>{},
+    SynchronousInitialization->True,
+    UnsavedVariables:>{Typeset`initDone$$},
+    UntrackedVariables:>{Typeset`size$$}], "ListAnimate",
+   Deployed->True,
+   StripOnInput->False],
+  Manipulate`InterpretManipulate[1]]], "Output",
+ CellChangeTimes->{
+  3.5770541169647455`*^9, 3.577054172200905*^9, {3.577054290991699*^9, 
+   3.577054314741058*^9}, 3.57705446461978*^9, 3.5770545083882837`*^9, 
+   3.5770545597352204`*^9, {3.577054723254573*^9, 3.5770547404435563`*^9}, {
+   3.5770548807925835`*^9, 3.5770549554958563`*^9}, 3.577055082470119*^9}]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]]
+},
+WindowSize->{784, 763},
+WindowMargins->{{1, Automatic}, {Automatic, -1}},
+FrontEndVersion->"9.0 for Microsoft Windows (64-bit) (November 20, 2012)",
+StyleDefinitions->"Default.nb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[579, 22, 501, 12, 72, "Input"],
+Cell[1083, 36, 213, 3, 31, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[1333, 44, 282, 5, 79, "Section"],
+Cell[1618, 51, 3289, 74, 252, "Input"],
+Cell[CellGroupData[{
+Cell[4932, 129, 2693, 64, 312, "Input"],
+Cell[CellGroupData[{
+Cell[7650, 197, 2863, 58, 133, "Print"],
+Cell[10516, 257, 2875, 58, 133, "Print"],
+Cell[13394, 317, 2953, 59, 133, "Print"],
+Cell[16350, 378, 3130, 63, 133, "Print"],
+Cell[19483, 443, 2904, 59, 133, "Print"],
+Cell[22390, 504, 2907, 58, 148, "Print"],
+Cell[25300, 564, 2865, 58, 148, "Print"],
+Cell[28168, 624, 2930, 59, 148, "Print"],
+Cell[31101, 685, 2827, 58, 148, "Print"],
+Cell[33931, 745, 2770, 57, 148, "Print"],
+Cell[36704, 804, 2755, 56, 133, "Print"],
+Cell[39462, 862, 2838, 57, 133, "Print"],
+Cell[42303, 921, 2844, 58, 148, "Print"],
+Cell[45150, 981, 2902, 59, 148, "Print"],
+Cell[48055, 1042, 2633, 54, 133, "Print"],
+Cell[50691, 1098, 2639, 54, 133, "Print"],
+Cell[53333, 1154, 2837, 58, 133, "Print"],
+Cell[56173, 1214, 3093, 62, 133, "Print"],
+Cell[59269, 1278, 3038, 61, 133, "Print"],
+Cell[62310, 1341, 2999, 60, 148, "Print"],
+Cell[65312, 1403, 3030, 61, 148, "Print"],
+Cell[68345, 1466, 3038, 61, 133, "Print"],
+Cell[71386, 1529, 2981, 60, 148, "Print"],
+Cell[74370, 1591, 3162, 63, 148, "Print"],
+Cell[77535, 1656, 3009, 60, 148, "Print"],
+Cell[80547, 1718, 3002, 60, 148, "Print"],
+Cell[83552, 1780, 3089, 62, 148, "Print"],
+Cell[86644, 1844, 3093, 62, 148, "Print"]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[89786, 1912, 165, 2, 43, "Subsection"],
+Cell[CellGroupData[{
+Cell[89976, 1918, 853, 18, 52, "Input"],
+Cell[90832, 1938, 27063, 530, 326, "Output"]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]]
+}
+]
+*)
+
+(* End of internal cache information *)
