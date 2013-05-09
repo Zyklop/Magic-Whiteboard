@@ -1,0 +1,133 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 9.0' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       157,          7]
+NotebookDataLength[      3677,        124]
+NotebookOptionsPosition[      3005,         95]
+NotebookOutlinePosition[      3350,        110]
+CellTagsIndexPosition[      3307,        107]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"SetDirectory", "[", 
+   RowBox[{"NotebookDirectory", "[", "]"}], "]"}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"imgs", " ", "=", " ", 
+   RowBox[{"Import", "[", "\"\<pics/*.png\>\"", "]"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{"Length", "[", "imgs", "]"}]}], "Input",
+ CellChangeTimes->{{3.577055530394739*^9, 3.57705553059275*^9}}],
+
+Cell[BoxData["4"], "Output",
+ CellChangeTimes->{3.5770555313067913`*^9, 3.57705646211703*^9, 
+  3.57705651124084*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Automatischer Weissabgleich", "Section",
+ CellChangeTimes->{{3.577055538260189*^9, 3.5770555481037517`*^9}}],
+
+Cell["\<\
+Behauptung: Das Bild wird von dem Kameratreiber immer auf einer \
+Durschnittshelligkeit gehalten.\
+\>", "Text",
+ CellChangeTimes->{{3.577055553364053*^9, 3.57705559038017*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"For", "[", 
+  RowBox[{
+   RowBox[{"i", "=", "1"}], ",", 
+   RowBox[{"i", "\[LessEqual]", 
+    RowBox[{"Length", "[", "imgs", "]"}]}], ",", 
+   RowBox[{"i", "++"}], ",", "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"data", "=", 
+     RowBox[{"ImageData", "[", 
+      RowBox[{"imgs", "[", 
+       RowBox[{"[", "i", "]"}], "]"}], "]"}]}], ";", "\[IndentingNewLine]", 
+    RowBox[{"Print", "[", 
+     RowBox[{"Total", "[", 
+      RowBox[{"Flatten", "[", "data", "]"}], "]"}], "]"}], ";"}]}], 
+  "\[IndentingNewLine]", "]"}]], "Input",
+ CellChangeTimes->{{3.5770556104913197`*^9, 3.5770557029306073`*^9}, {
+  3.577055776808833*^9, 3.5770558215413914`*^9}, {3.5770558537232323`*^9, 
+  3.5770558561283693`*^9}, {3.5770562622355976`*^9, 3.5770562703840637`*^9}, {
+  3.577056305164053*^9, 3.5770563314705577`*^9}, {3.577056420624657*^9, 
+  3.5770564747607536`*^9}, {3.577056523702553*^9, 3.577056527866791*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData["519064.0549036361`"], "Print",
+ CellChangeTimes->{
+  3.577056480036055*^9, {3.577056513022942*^9, 3.5770565299369097`*^9}}],
+
+Cell[BoxData["462388.1647055295`"], "Print",
+ CellChangeTimes->{
+  3.577056480036055*^9, {3.577056513022942*^9, 3.5770565299479103`*^9}}],
+
+Cell[BoxData["492225.37646975525`"], "Print",
+ CellChangeTimes->{
+  3.577056480036055*^9, {3.577056513022942*^9, 3.577056529960911*^9}}],
+
+Cell[BoxData["490083.7098038158`"], "Print",
+ CellChangeTimes->{
+  3.577056480036055*^9, {3.577056513022942*^9, 3.5770565299719114`*^9}}]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]]
+},
+WindowSize->{707, 637},
+WindowMargins->{{20, Automatic}, {Automatic, 10}},
+FrontEndVersion->"9.0 for Microsoft Windows (64-bit) (November 20, 2012)",
+StyleDefinitions->"Default.nb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[579, 22, 391, 10, 72, "Input"],
+Cell[973, 34, 117, 2, 31, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[1127, 41, 114, 1, 79, "Section"],
+Cell[1244, 44, 186, 4, 49, "Text"],
+Cell[CellGroupData[{
+Cell[1455, 52, 929, 20, 92, "Input"],
+Cell[CellGroupData[{
+Cell[2409, 76, 137, 2, 23, "Print"],
+Cell[2549, 80, 137, 2, 23, "Print"],
+Cell[2689, 84, 136, 2, 23, "Print"],
+Cell[2828, 88, 137, 2, 23, "Print"]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]]
+}
+]
+*)
+
+(* End of internal cache information *)
