@@ -103,33 +103,41 @@ In einem normalen Sitzungszimmer soll ein Vortrag gehalten werden können.
 \end_layout
 
 \begin_layout Standard
-\begin_inset Graphics
-	filename Bilder/Aufbau/wireframe-top.png
-	lyxscale 20
-	width 10cm
+\begin_inset Float figure
+wide false
+sideways false
+status open
 
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-Beispiel eines Aufbaus von oben
-\end_layout
-
-\begin_layout Standard
+\begin_layout Plain Layout
 \begin_inset Graphics
 	filename Bilder/Aufbau/rendered-perspective.png
 	lyxscale 20
-	width 10cm
+	width 100col%
 
 \end_inset
 
 
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
 Beispiel eines Aufbaus in der Perspektive
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsection
@@ -202,7 +210,7 @@ Beispiel:
 \end_layout
 
 \begin_layout Standard
-Das folgende Bild zeigt eine Beamerprojektion einer weissen Fläche.
+Abbildung 2 zeigt eine Beamerprojektion einer weissen Fläche.
  Der Raum ist wenig abgedunkelt, damit die Kamera welche die Aufnahme gemacht
  hat, einen weniger starken automatischen Weissabgleich vornimmt.
  Nichtsdestotrotz beträgt die Anzahl völlig weisser Pixel in diesem Bild
@@ -213,9 +221,37 @@ Das folgende Bild zeigt eine Beamerprojektion einer weissen Fläche.
 \end_layout
 
 \begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
 \begin_inset Graphics
 	filename Bilder/Camera/whitebalance.png
 	lyxscale 20
+	width 100col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Überbeleuchtetes Kamerabild
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
 
 \end_inset
 
@@ -272,20 +308,147 @@ Positionierung
 \end_layout
 
 \begin_layout Standard
-Der Winkel zwischen Beamer und Laptopkamera hat Auswirkungen auf die Genauigkeit
- des Präsentationssystems.
+Der Laptop wird so aufgestellt, dass das Sichtfeld der integrierten Kamera
+ den Projektionsbereich auf der Leinwand voll umfasst.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Bilder/Aufbau/wireframe-top.png
+	lyxscale 20
+	width 100col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Beispiel eines Aufbaus von oben
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Der Winkel zwischen Projektionsfläche und Laptopkamera hat Auswirkungen
+ auf die Genauigkeit des Präsentationssystems.
+ Je grösser der Winkel zwischen Kamera und Projektionsfläche ist, desto
+ stärker verzerrt nimmt die Kamera das projizierte Bild wahr.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Bilder/Aufbau/aufbau-verzerrung.png
+	lyxscale 20
+	width 100col%
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Leinwand mit drei verschiedenen Verzerrungen
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+So sieht die Kamera die Leinwand aus drei verschiedenen Winkeln.
+ Die Kalibrierung kann die perspektivische Verzerrung nur begrenzt ausgleichen.
+ Deshalb kann die Position eines Stiftes nicht immer gut oder in allen Bereichen
+ der Leinwand gleich gut erfolgen.
+\end_layout
+
+\begin_layout Itemize
+Links sieht man den üblichen Fall: Beamerbild und Laptopkamera liegen auf
+ zwei parallelen Ebenen.
+ 
+\end_layout
+
+\begin_layout Itemize
+In der Mitte ist der Optimalfall dargestellt: Die Kamera sieht direkt von
+ vorne auf das Beamerbild, d.h.
+ die perspektivische Verzerrung ist minimal
+\end_layout
+
+\begin_layout Itemize
+Rechts ist das Bild in alle Richtungen verzerrt und stellt somit die grössten
+ Anforderungen an die Kalibrierung.
 \end_layout
 
 \begin_layout Subsubsection
-Präsentationsweis
+Präsentationsweise
 \end_layout
 
 \begin_layout Standard
 Da der Stift immer von der Laptopkamera gesehen werden muss, ist es am Präsentat
-or, die richtige Haltung beim schreiben anzunehmen.
+or, die richtige Haltung beim Schreiben anzunehmen.
  Da dies jedoch den Vorteil hat, dass auch die Zuschauer sehen, wo der Präsentat
 or auf die Leinwand schreibt, wird diese Einschränkung ohne weiteren Diskurs
  in Kauf genommen.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+TODO: Bild einer vorbildlich präsentierenden Person
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Section
