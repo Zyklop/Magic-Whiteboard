@@ -24,7 +24,7 @@
 \output_sync 0
 \bibtex_command default
 \index_command default
-\float_placement h
+\float_placement H
 \paperfontsize default
 \spacing single
 \use_hyperref false
@@ -236,7 +236,7 @@ status open
 \begin_layout Plain Layout
 \begin_inset Graphics
 	filename Bilder/Camera/whitebalance.png
-	lyxscale 20
+	lyxscale 50
 	width 100col%
 
 \end_inset
@@ -328,7 +328,7 @@ status open
 \begin_layout Plain Layout
 \begin_inset Graphics
 	filename Bilder/Aufbau/wireframe-top.png
-	lyxscale 20
+	lyxscale 50
 	width 100col%
 
 \end_inset
@@ -373,7 +373,7 @@ status open
 \begin_layout Plain Layout
 \begin_inset Graphics
 	filename Bilder/Aufbau/aufbau-verzerrung.png
-	lyxscale 20
+	lyxscale 50
 	width 100col%
 
 \end_inset
@@ -512,8 +512,8 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
-	filename Bilder/RedDot ohne Weissabgleich/laser-standalone.png
-	lyxscale 20
+	filename Bilder/PenTracking/RedDot ohne Weissabgleich/laser-standalone.png
+	lyxscale 50
 	width 100col%
 
 \end_inset
@@ -550,8 +550,8 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
-	filename Bilder/RedDot ohne Weissabgleich/laser-rauschen.png
-	lyxscale 20
+	filename Bilder/PenTracking/RedDot ohne Weissabgleich/laser-rauschen.png
+	lyxscale 50
 	width 100col%
 
 \end_inset
@@ -598,8 +598,8 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
-	filename Bilder/RedDot ohne Weissabgleich/laser-diff.png
-	lyxscale 20
+	filename Bilder/PenTracking/RedDot ohne Weissabgleich/laser-diff.png
+	lyxscale 50
 	width 100col%
 
 \end_inset
@@ -636,8 +636,8 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
-	filename Bilder/RedDot ohne Weissabgleich/laser-diffgray.png
-	lyxscale 20
+	filename Bilder/PenTracking/RedDot ohne Weissabgleich/laser-diffgray.png
+	lyxscale 50
 	width 100col%
 
 \end_inset
@@ -671,8 +671,8 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
-	filename Bilder/RedDot ohne Weissabgleich/laser-diffthreshold.png
-	lyxscale 20
+	filename Bilder/PenTracking/RedDot ohne Weissabgleich/laser-diffthreshold.png
+	lyxscale 50
 	width 100col%
 
 \end_inset
@@ -734,6 +734,7 @@ Es wurde ein Blob gefunden:
 
 Entweder hat sich der Stift nicht, oder zu wenig bewegt um zwei Blobs zu
  erzeugen oder es handelt sich um eine Fehlerkennung.
+ 
 \begin_inset Newline newline
 \end_inset
 
@@ -744,6 +745,23 @@ sideways false
 status open
 
 \begin_layout Plain Layout
+\begin_inset Graphics
+	filename Bilder/PenTracking/LightPoints/one-or-two-blobs/frame1.png
+
+\end_inset
+
+ 
+\begin_inset Graphics
+	filename Bilder/PenTracking/LightPoints/one-or-two-blobs/frame2.png
+
+\end_inset
+
+ 
+\begin_inset Graphics
+	filename Bilder/PenTracking/LightPoints/one-or-two-blobs/diff.png
+
+\end_inset
+
 
 \end_layout
 
@@ -751,7 +769,102 @@ status open
 \begin_inset Caption
 
 \begin_layout Plain Layout
-TODO: Beispielbilder der Punkte
+Frame x, Frame x+1, Differenz
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Bilder/PenTracking/LightPoints/one-blob/frame1.png
+
+\end_inset
+
+ 
+\begin_inset Graphics
+	filename Bilder/PenTracking/LightPoints/one-blob/frame2.png
+
+\end_inset
+
+ 
+\begin_inset Graphics
+	filename Bilder/PenTracking/LightPoints/one-blob/diff.png
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Frame x, Frame x+1, Differenz
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Es wurden zwei Blobs gefunden:
+\begin_inset Newline newline
+\end_inset
+
+Das ist der gewünschte Fall.
+ Beide Punkte bilden gültige Positionen des letzten und des momentanen Frames.
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Bilder/PenTracking/LightPoints/two-blobs/frame1.png
+
+\end_inset
+
+ 
+\begin_inset Graphics
+	filename Bilder/PenTracking/LightPoints/two-blobs/frame2.png
+
+\end_inset
+
+ 
+\begin_inset Graphics
+	filename Bilder/PenTracking/LightPoints/two-blobs/diff.png
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Frame x, Frame x+1, Differenz - Die Punkte gehen 
 \end_layout
 
 \end_inset
@@ -769,16 +882,7 @@ TODO: Beispielbilder der Punkte
 \end_layout
 
 \begin_layout Itemize
-Es wurden zwei Blobs gefunden
-\begin_inset Newline newline
-\end_inset
-
-Das ist der gewünschte Fall.
- Beide Punkte bilden gültige Positionen des letzten und des momentanen Frames.
-\end_layout
-
-\begin_layout Itemize
-Es wurden mehr als zwei Blobs gefunden
+Es wurden mehr als zwei Blobs gefunden:
 \begin_inset Newline newline
 \end_inset
 
@@ -803,28 +907,278 @@ Resultierende Punktposition
 Der Einfachheit halber wird nun das euklidische Zentrum der zwei gefundenen
  Blobs berechnet und als Resultatposition genommen.
  Falls nur ein Punkt gefunden wurde, wird dieser als Resultat gewählt.
+ Dieses Verfahren beschränkt den Kontext und damit die Komplexität des Algorithm
+us auf das Vorhandensein von genau zwei Bildaufnahmen.
+ Es werden weder Geschwindigkeit, noch Vorgängerpunkte vorausgesetzt.
+ Ein Nachteil, der dabei in Kauf genommen wird, ist, dass die gefundene
+ Punktposition von korrekter Zeit und korrektem Ort abweichen kann.
+ Diese Abweichung wird stärker, je schneller sich der Punkt auf der Leinwand
+ bewegt.
+ Mit Überlegungen aus dem WKS-Abtasttheorem wird aber klar, dass sich dieser
+ Effekt nicht sehr stark in der mittleren Erkennungsqualität niederschlägt.
+ Die Abtastrate vor und nach der Interpolation ist die gleiche.
+ Die Abbildung der zwei gemessenen Punkte auf den Mittelwert resultiert
+ in einer Position, die höchstwahrscheinlich gemessen worden wäre, wenn
+ mit der doppelten Rate abgetastet worden wäre.
+ Diese Behauptung gilt für unbeschleunigte gerade Bewegungen genau und für
+ das Schreiben an eine Leinwand bei hoher Abtastrate näherungsweise.
 \end_layout
 
 \begin_layout Standard
-- Über Differenzbilder wird die Bewegung der gefundenen Stiftpositionen
- interpoliert.
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Bilder/PenTracking/Interpolation/interpolation-random.png
+	width 100col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Zufällig verteilte Punkte (blau) mit grossen Abständen.
+ Die Interpolation (violett) taugt nichts.
  
-\begin_inset Newline newline
+\end_layout
+
 \end_inset
 
-- Differenz-Bilder Thresholded Blobs zählen Punkte mittels Interpolation
- finden 
-\begin_inset Newline newline
+
+\end_layout
+
 \end_inset
 
-- ca.
- alle 40ms ein Punkt finden ca.
- 20ms Rückstand, da zwischen aktuellem und letztem Bild interpoliert wird.
- Multithreading gut möglich 
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Bilder/PenTracking/Interpolation/interpolation-smoothed.png
+	width 100col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Die Interpolation dient als Glättung
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Bilder/PenTracking/Interpolation/interpolation-curves.png
+	width 100col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Bei genug Punkten bleibt die Ursprungsfigur gut erhalten.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Paragraph
+Zeitlich korrekte Punktposition
+\end_layout
+
+\begin_layout Standard
+Es wäre möglich, die genaue Punktposition zu finden, indem auf dem aktuellen
+ Differenzbild der Vorgänger bestimmt wird.
+ Im folgenden werden zwei Ansätze diskutiert, wie dies bewerkstelligt werden
+ könnte.
+ Abbildung 15 zeigt die Situation: Es wurden drei Aufnahmen gemacht, davon
+ wiederum zwei Differenzbilder.
+ Die zeitliche Abfolge der gefundenen Punkte ist mit den Zahlen 1 bis 3
+ gekennzeichnet.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Bilder/PenTracking/LightPoints/timed-position/frames1.png
+
+\end_inset
+
+ 
+\begin_inset Graphics
+	filename Bilder/PenTracking/LightPoints/timed-position/frames2.png
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Zeitliche Abfolge 
+\begin_inset Formula $Differenz(Bild_{x},Bild_{x+1})$
+\end_inset
+
+ und 
+\begin_inset Formula $Differenz(Bild_{x+1},Bild_{x+2})$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Der erste Ansatz bezieht sich auf die im Differenzbild per Threshold gefundenen
+ Blobs.
+ Die gefundenen Positionen könnten mit dem im vorigen Differenzbild gefundenen
+ Punkt verglichen werden.
+ Der noch unbekannte Punkt ist der neue resultierende Punkt.
+ Im Gegensatz zum oben genannten Interpolationsverfahren wird hier immer
+ die aktuelle und richtige Position gefunden.
+ Dieses Vorgehen erhöht jedoch die Komplexität des Algorithmus, da zusätzliche
+ Fallunterscheidungen gemacht werden müssen.
+ So muss separat unterschieden werden, was das Finden eines einzelnen Blobs
+ nun bedeutet.
+ Ansätze wären den Mittelpunkt oder Schwerpunkt zu berechnen oder genauere
+ Analysen im Bild vorzunehmen.
+ Man muss sich jedoch bewusst sein, dass Mischen von Interpolation mit Messung
+ den Nachteil hat, dass Grössen wie Position und Geschwindigkeit verschwommen
+ werden.
+ Bei einem einzelnen grossen Blob wäre die Interpolation ungenau und korrelliert
+ nicht mit den Messinformationen, die aus vorherigen zwei Blobs gewonnen
+ wurde.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Bilder/PenTracking/LightPoints/two-blobs-overlay/diff1.png
+
+\end_inset
+
+ 
+\begin_inset Graphics
+	filename Bilder/PenTracking/LightPoints/two-blobs-overlay/diff2.png
+
+\end_inset
+
+ 
+\begin_inset Graphics
+	filename Bilder/PenTracking/LightPoints/two-blobs-overlay/diff3.png
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Problematische Einzelfunde
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+Der Vorteil, wenn man Tests haben gezeigt, dass das aktuelle Interpolationsverfa
+hren genügend genau ist.
+\end_layout
+
+\begin_layout Paragraph
+Genauere Punktposition
+\end_layout
+
+\begin_layout Paragraph
+Position per Faltung
+\end_layout
+
+\begin_layout Subsection
+Umsetzung
 \end_layout
 
 \begin_layout Subsubsection
-Optimierung
+Laufzeit
 \end_layout
 
 \begin_layout Standard

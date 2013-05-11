@@ -29,7 +29,7 @@ namespace HSR.PresWriter.Tester
         {
             Console.WriteLine("Starting...");
 
-            TimedFilesystemCamera camera = new TimedFilesystemCamera(new DirectoryInfo(@"c:\temp\live\cap-127"), 40);
+            TimedFilesystemCamera camera = new TimedFilesystemCamera(new DirectoryInfo(@"c:\temp\live\cap-127"), 1);
             AForgePenTracker tracker = new AForgePenTracker(new WhiteLedStrategy(), camera);
 
             camera.FrameReady += delegate(object o, FrameReadyEventArgs e) {
