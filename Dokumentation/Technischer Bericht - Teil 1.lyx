@@ -24,6 +24,7 @@
 \output_sync 0
 \bibtex_command default
 \index_command default
+\float_placement H
 \paperfontsize default
 \spacing single
 \use_hyperref false
@@ -61,7 +62,7 @@
 \begin_body
 
 \begin_layout Title
-Magic-Whiteboard
+Presentation Writer
 \end_layout
 
 \begin_layout Section*
@@ -76,14 +77,1129 @@ Das Ziel der Bachelorarbeit ist die Entwicklung eines elektronischen Stiftes
  geschrieben werden.
  Weiter wird untersucht ob es denn wirklich einen Stift braucht um an eine
  Leinwand zu schreiben.
+\begin_inset Newpage pagebreak
+\end_inset
+
+
 \end_layout
 
 \begin_layout Section
-Erkennen eines Stiftes
+Anforderungen
+\end_layout
+
+\begin_layout Standard
+Die in dieser Arbeit entworfene Software soll einer Person ermöglichen,
+ interaktive Präsentationen in einem kleinen oder mittelgrossen Sitzungszimmer
+ zu halten.
+ Die Person kann ihren eigenen Laptop dafür verwenden.
+ Der Laptop wird am dort vorhandenen Beamer angeschlossen.
+ Nach einer kurzen Kalibrierung kann die Person die Präsentation starten.
+ Dabei schreibt sie falls gewünscht mit einem virtuellen Stift an die Leinwand.
+ Das geschriebene wird aufgezeichnet und wieder auf das Beamerbild projiziert.
 \end_layout
 
 \begin_layout Subsection
-Umgebung
+Aufbau
+\end_layout
+
+\begin_layout Standard
+In einem normalen Sitzungszimmer soll ein Vortrag gehalten werden können.
+ Dazu sollen Standardausstattung wie Laptop, integrierte Kamera und Beamer
+ benutzt werden können.
+ Als Addendum wird ein Stift mitgeliefert.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Bilder/Aufbau/rendered-perspective.png
+	lyxscale 20
+	width 100col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Beispiel eines Aufbaus in der Perspektive
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Kalibrierung
+\end_layout
+
+\begin_layout Standard
+Bevor ein Stift auf der Leinwand gefunden werden kann, muss die Erkennungssoftwa
+re kalibriert werden:
+\end_layout
+
+\begin_layout Itemize
+Laptopkamera so ausrichten, dass der ganze Bereich der Leinwand gefilmt
+ werden kann
+\end_layout
+
+\begin_layout Itemize
+Lichtverhältnisse anpassen falls nötig
+\end_layout
+
+\begin_layout Itemize
+Projiziertes Bild erkennen und ein Mapping von Kamerakoordinaten zu Bildschirmko
+ordinaten berechnen
+\end_layout
+
+\begin_layout Subsection
+Präsentation
+\end_layout
+
+\begin_layout Standard
+Die Person soll mit einem Stift auf die das Beamerbild schreiben können.
+ Sie benutzt dazu ein helles Licht.
+ Die Person muss darauf achten, dass der Stift für die Kamera sichtbar ist.
+ Das erfordert Disziplin.
+ Deshalb ist abzuklären, ob und wie das Präsentationssystem akzeptiert wird.
+ 
+\end_layout
+
+\begin_layout Subsection
+Einschränkungen
+\end_layout
+
+\begin_layout Standard
+Sowohl bei der verwendeten Hardware als auch bei der Art und Weise wie die
+ Software benutzt werden kann, gibt es Einschränkungen.
+ Obwohl das erarbeitete Präsentationssystem zum Ziel hat, einschneidende
+ Beschränkungen zu vermeiden, gibt es doch verschiedene Grenzen, die von
+ Anfang an definiert sind und als nicht überwindbar gelten.
+ Grundsätzlich sind sie physischer und physikalischer Art.
+\end_layout
+
+\begin_layout Subsubsection
+Aufnahmegerät
+\end_layout
+
+\begin_layout Standard
+Das in dieser Arbeit verwendete Aufnahmegerät ist eine integrierte Laptopkamera
+ mit einer Auflösung von 640x480 Pixel à 30 Bilder pro Sekunde.
+ Sie übertreibt es völlig mit dem automatischen Weissabgleich, hat aber
+ einen in den Treiber integrierten Konfigurationsdialog, mit welchem sich
+ das Problem manuell minimieren lässt.
+ Allgemein formuliert ist an der verwendeten Kamera die Bildauflösung weniger
+ wichtig als eine korrekte Belichtung.
+ Das helle Licht eines Stiftes auf der Leinwand zu finden bereitet Probleme,
+ wenn es nicht das hellste Licht in der Aufnahme ist.
+\end_layout
+
+\begin_layout Paragraph
+Beispiel:
+\end_layout
+
+\begin_layout Standard
+Abbildung 2 zeigt eine Beamerprojektion einer weissen Fläche.
+ Der Raum ist wenig abgedunkelt, damit die Kamera welche die Aufnahme gemacht
+ hat, einen weniger starken automatischen Weissabgleich vornimmt.
+ Nichtsdestotrotz beträgt die Anzahl völlig weisser Pixel in diesem Bild
+ mehr als 11'000.
+ Das macht es unmöglich, optisch einen hellen Punkt (Stift) zu finden.
+ Eine stärker abgedunkelte Umgebung erhöht den Kontrast und somit auch das
+ Problem.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Bilder/Camera/whitebalance.png
+	lyxscale 50
+	width 100col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Überbeleuchtetes Kamerabild
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Paragraph
+Fazit:
+\end_layout
+
+\begin_layout Standard
+Der automatische Weissabgleich kann über den Softwaretreiber abgestellt
+ werden, erforderte aber einiges an Arbeit (bei Windows schwierig, bei Linux
+ einfacher).
+ Die verwendeten Geräte müssten genau bekannt sein, um ihre Treiber konfiguriere
+n zu können.
+ Wahrscheinlich stellt dieser Aufwand ein Hindernis dar, welches man eher
+ durch Mitliefern einer eigenen Infrarot-Kamera lösen würde.
+ Das hätte den Vorteil, dass sowohl Präsentator als auch Zuschauer nicht
+ von sichtbarem Licht abgelenkt würden.
+ In dieser Arbeit wird der Einfachheit halber lediglich auf das Finden einer
+ von Menschen sichtbaren Lichtquelle eingegangen.
+ Es wird angenommen, dass sich alle Konzepte auf nicht sichtbares Licht
+ übertragen lassen.
+\end_layout
+
+\begin_layout Subsubsection
+Präsentationsgerät
+\end_layout
+
+\begin_layout Standard
+Ein weniger wichtige Rolle als die Kamera spielt der Beamer.
+ Weder die Auflösung, noch die Bildwiederholrate spielen eine nennenswerte
+ Rolle auf die Qualität des Präsentationssystem.
+ Die Helligkeitseinstellung ist jedoch wichtig.
+ Der in dieser Arbeit verwendete Beamer beleuchtet die Leinwand sehr stark
+ und verstärkt dadurch das Problem des automatischen Weissabgleiches der
+ Kamera.
+ Zur Minimierung des Problems wurde die Helligkeit auf ein schwächeres Niveau
+ reduziert.
+ Es wurde darauf geachtet, dass die Einstellung als 
+\begin_inset Quotes gld
+\end_inset
+
+üblich für eine Präsentation
+\begin_inset Quotes grd
+\end_inset
+
+ wahrgenommen wird.
+\end_layout
+
+\begin_layout Subsubsection
+Positionierung
+\end_layout
+
+\begin_layout Standard
+Der Laptop wird so aufgestellt, dass das Sichtfeld der integrierten Kamera
+ den Projektionsbereich auf der Leinwand voll umfasst.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Bilder/Aufbau/wireframe-top.png
+	lyxscale 50
+	width 100col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Beispiel eines Aufbaus von oben
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Der Winkel zwischen Projektionsfläche und Laptopkamera hat Auswirkungen
+ auf die Genauigkeit des Präsentationssystems.
+ Je grösser der Winkel zwischen Kamera und Projektionsfläche ist, desto
+ stärker verzerrt nimmt die Kamera das projizierte Bild wahr.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Bilder/Aufbau/aufbau-verzerrung.png
+	lyxscale 50
+	width 100col%
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Leinwand mit drei verschiedenen Verzerrungen
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+So sieht die Kamera die Leinwand aus drei verschiedenen Winkeln.
+ Die Kalibrierung kann die perspektivische Verzerrung nur begrenzt ausgleichen.
+ Deshalb kann die Position eines Stiftes nicht immer gut oder in allen Bereichen
+ der Leinwand gleich gut erfolgen.
+\end_layout
+
+\begin_layout Itemize
+Links sieht man den üblichen Fall: Beamerbild und Laptopkamera liegen auf
+ zwei parallelen Ebenen.
+ 
+\end_layout
+
+\begin_layout Itemize
+In der Mitte ist der Optimalfall dargestellt: Die Kamera sieht direkt von
+ vorne auf das Beamerbild, d.h.
+ die perspektivische Verzerrung ist minimal
+\end_layout
+
+\begin_layout Itemize
+Rechts ist das Bild in alle Richtungen verzerrt und stellt somit die grössten
+ Anforderungen an die Kalibrierung.
+\end_layout
+
+\begin_layout Subsubsection
+Präsentationsweise
+\end_layout
+
+\begin_layout Standard
+Da der Stift immer von der Laptopkamera gesehen werden muss, ist es am Präsentat
+or, die richtige Haltung beim Schreiben anzunehmen.
+ Da dies jedoch den Vorteil hat, dass auch die Zuschauer sehen, wo der Präsentat
+or auf die Leinwand schreibt, wird diese Einschränkung ohne weiteren Diskurs
+ in Kauf genommen.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+TODO: Bild einer vorbildlich präsentierenden Person
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage pagebreak
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Technik: Erkennen eines Stiftes
+\end_layout
+
+\begin_layout Subsection
+Verfahren
+\end_layout
+
+\begin_layout Standard
+Das Erkennen des Stiftes beruht auf der optischen Eigenschaft, dass der
+ Stift das hellste sichtbare Licht auf dem Kamerabild darstellt.
+ Der hellste Punkt sollte also die aktuelle Stiftposition sein.
+ Es gibt zwei naheliegende Ansätze um diesen Punkt zu finden.
+\end_layout
+
+\begin_layout Itemize
+Finde den hellsten Punkt auf dem Bild.
+ Das hat Schwächen.
+ Insbesondere wenn das Bild viel Rauschen beinhaltet.
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Finde den hellsten Punkt der sich bewegt
+\end_layout
+
+\begin_layout Subsubsection
+Beispiel
+\end_layout
+
+\begin_layout Standard
+Im folgenden Beispiel wurde der automatische weissabgleich der Kamera auf
+ Rot konzentriert und die Überbeleuchtung drastisch reduziert.
+ Resultierend sieht man die hellsten Punkte auf dem Beamerbild.
+ Der alleinstehende Punkt im ersten Bild ist ein Laserpointer-Punkt.
+ Im zweiten Bild befindet er sich im verrauschten Bereich.
+ Den Punkt dort in einem einzelnen Bild per Software zu finden, kann Schwierigke
+iten bereiten, da der Laserpunkt nicht der hellste sein muss.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Bilder/PenTracking/RedDot ohne Weissabgleich/laser-standalone.png
+	lyxscale 50
+	width 100col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Der Laserpointer ist gut sichtbar
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Bilder/PenTracking/RedDot ohne Weissabgleich/laser-rauschen.png
+	lyxscale 50
+	width 100col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Der Laserpointer ist im Rauschen kaum sichtbar
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Differenzbilder
+\end_layout
+
+\begin_layout Standard
+Ein stabilerer Ansatz ist, den Lichtpunkt über Differenzbilder zu finden.
+ Das Differenzbild filtert helles Rauschen und stehende helle Lichtquellen
+ zuverlässiger raus als eine einfache Hell/Dunkel-Schranke.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Bilder/PenTracking/RedDot ohne Weissabgleich/laser-diff.png
+	lyxscale 50
+	width 100col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Differenzbild zweier Frames mit Laserpunkten
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Bilder/PenTracking/RedDot ohne Weissabgleich/laser-diffgray.png
+	lyxscale 50
+	width 100col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Nachdem die Rotanteile zu Graustufen übersetzt wurden, sieht man die gesuchten
+ Laserpunkte besser.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Bilder/PenTracking/RedDot ohne Weissabgleich/laser-diffthreshold.png
+	lyxscale 50
+	width 100col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Nun ergibt ein Hell/Dunkel-Filter (Threshold oder Binarize) gute Anhaltspunkte
+ wo sich gesuchte Punkte befinden.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Kardinalität der gefundenen Punkte
+\end_layout
+
+\begin_layout Standard
+Alle zusammenhängenden hellen Bereiche werden Blobs genannt.
+ Diese Blobs repräsentieren Positionen wo sich der Stift im aktuellen und
+ im vorherigen Frame befunden hat.
+ Es gibt verschiedene Fälle die nach dem Finden der Blobs unterschieden
+ werden müssen.
+\end_layout
+
+\begin_layout Itemize
+Es wurde kein Blob gefunden:
+\begin_inset Newline newline
+\end_inset
+
+Für die Software ist kein Stift sichtbar.
+ Es wird kein Punkt gefunden.
+ Dies kann der Fall sein, wenn die präsentierende Person nicht schreibt,
+ vor dem Stift steht und der Kamera die Sicht verdeckt oder wenn die Lichtverhäl
+tnisse nicht ideal sind und der Stift von der Kamera nicht hell genug wahrgenomm
+en wird.
+\end_layout
+
+\begin_layout Itemize
+Es wurde ein Blob gefunden:
+\begin_inset Newline newline
+\end_inset
+
+Entweder hat sich der Stift nicht, oder zu wenig bewegt um zwei Blobs zu
+ erzeugen oder es handelt sich um eine Fehlerkennung.
+ 
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Bilder/PenTracking/LightPoints/one-or-two-blobs/frame1.png
+
+\end_inset
+
+ 
+\begin_inset Graphics
+	filename Bilder/PenTracking/LightPoints/one-or-two-blobs/frame2.png
+
+\end_inset
+
+ 
+\begin_inset Graphics
+	filename Bilder/PenTracking/LightPoints/one-or-two-blobs/diff.png
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Frame x, Frame x+1, Differenz
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Bilder/PenTracking/LightPoints/one-blob/frame1.png
+
+\end_inset
+
+ 
+\begin_inset Graphics
+	filename Bilder/PenTracking/LightPoints/one-blob/frame2.png
+
+\end_inset
+
+ 
+\begin_inset Graphics
+	filename Bilder/PenTracking/LightPoints/one-blob/diff.png
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Frame x, Frame x+1, Differenz
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Es wurden zwei Blobs gefunden:
+\begin_inset Newline newline
+\end_inset
+
+Das ist der gewünschte Fall.
+ Beide Punkte bilden gültige Positionen des letzten und des momentanen Frames.
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Bilder/PenTracking/LightPoints/two-blobs/frame1.png
+
+\end_inset
+
+ 
+\begin_inset Graphics
+	filename Bilder/PenTracking/LightPoints/two-blobs/frame2.png
+
+\end_inset
+
+ 
+\begin_inset Graphics
+	filename Bilder/PenTracking/LightPoints/two-blobs/diff.png
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Frame x, Frame x+1, Differenz - Die Punkte gehen 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Es wurden mehr als zwei Blobs gefunden:
+\begin_inset Newline newline
+\end_inset
+
+Ungültig.
+ Wird gemüllt.
+\end_layout
+
+\begin_layout Standard
+Generell wird angenommen, dass alle Blobs, falls deren Anzahl zwei oder
+ kleiner ist, gültige Stiftpositionen bilden und dass Fehlerkennungen vorher
+ gefiltert werden konnten.
+ Gute Filter setzen die Eigenschaften eines gültigen Lichtpunktes gut um
+ (s.u.).
+ 
+\end_layout
+
+\begin_layout Subsubsection
+Resultierende Punktposition
+\end_layout
+
+\begin_layout Standard
+Der Einfachheit halber wird nun das euklidische Zentrum der zwei gefundenen
+ Blobs berechnet und als Resultatposition genommen.
+ Falls nur ein Punkt gefunden wurde, wird dieser als Resultat gewählt.
+ Dieses Verfahren beschränkt den Kontext und damit die Komplexität des Algorithm
+us auf das Vorhandensein von genau zwei Bildaufnahmen.
+ Es werden weder Geschwindigkeit, noch Vorgängerpunkte vorausgesetzt.
+ Ein Nachteil, der dabei in Kauf genommen wird, ist, dass die gefundene
+ Punktposition von korrekter Zeit und korrektem Ort abweichen kann.
+ Diese Abweichung wird stärker, je schneller sich der Punkt auf der Leinwand
+ bewegt.
+ Mit Überlegungen aus dem WKS-Abtasttheorem wird aber klar, dass sich dieser
+ Effekt nicht sehr stark in der mittleren Erkennungsqualität niederschlägt.
+ Die Abtastrate vor und nach der Interpolation ist die gleiche.
+ Die Abbildung der zwei gemessenen Punkte auf den Mittelwert resultiert
+ in einer Position, die höchstwahrscheinlich gemessen worden wäre, wenn
+ mit der doppelten Rate abgetastet worden wäre.
+ Diese Behauptung gilt für unbeschleunigte gerade Bewegungen genau und für
+ das Schreiben an eine Leinwand bei hoher Abtastrate näherungsweise.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Bilder/PenTracking/Interpolation/interpolation-random.png
+	width 100col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Zufällig verteilte Punkte (blau) mit grossen Abständen.
+ Die Interpolation (violett) taugt nichts.
+ 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Bilder/PenTracking/Interpolation/interpolation-smoothed.png
+	width 100col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Die Interpolation dient als Glättung
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Bilder/PenTracking/Interpolation/interpolation-curves.png
+	width 100col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Bei genug Punkten bleibt die Ursprungsfigur gut erhalten.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Paragraph
+Zeitlich korrekte Punktposition
+\end_layout
+
+\begin_layout Standard
+Es wäre möglich, die genaue Punktposition zu finden, indem auf dem aktuellen
+ Differenzbild der Vorgänger bestimmt wird.
+ Im folgenden werden zwei Ansätze diskutiert, wie dies bewerkstelligt werden
+ könnte.
+ Abbildung 15 zeigt die Situation: Es wurden drei Aufnahmen gemacht, davon
+ wiederum zwei Differenzbilder.
+ Die zeitliche Abfolge der gefundenen Punkte ist mit den Zahlen 1 bis 3
+ gekennzeichnet.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Bilder/PenTracking/LightPoints/timed-position/frames1.png
+
+\end_inset
+
+ 
+\begin_inset Graphics
+	filename Bilder/PenTracking/LightPoints/timed-position/frames2.png
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Zeitliche Abfolge 
+\begin_inset Formula $Differenz(Bild_{x},Bild_{x+1})$
+\end_inset
+
+ und 
+\begin_inset Formula $Differenz(Bild_{x+1},Bild_{x+2})$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Der erste Ansatz bezieht sich auf die im Differenzbild per Threshold gefundenen
+ Blobs.
+ Die gefundenen Positionen könnten mit dem im vorigen Differenzbild gefundenen
+ Punkt verglichen werden.
+ Der noch unbekannte Punkt ist der neue resultierende Punkt.
+ Im Gegensatz zum oben genannten Interpolationsverfahren wird hier immer
+ die aktuelle und richtige Position gefunden.
+ Dieses Vorgehen erhöht jedoch die Komplexität des Algorithmus, da zusätzliche
+ Fallunterscheidungen gemacht werden müssen.
+ So muss separat unterschieden werden, was das Finden eines einzelnen Blobs
+ nun bedeutet.
+ Ansätze wären den Mittelpunkt oder Schwerpunkt zu berechnen oder genauere
+ Analysen im Bild vorzunehmen.
+ Man muss sich jedoch bewusst sein, dass Mischen von Interpolation mit Messung
+ den Nachteil hat, dass Grössen wie Position und Geschwindigkeit verschwommen
+ werden.
+ Bei einem einzelnen grossen Blob wäre die Interpolation ungenau und korrelliert
+ nicht mit den Messinformationen, die aus vorherigen zwei Blobs gewonnen
+ wurde.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Bilder/PenTracking/LightPoints/two-blobs-overlay/diff1.png
+
+\end_inset
+
+ 
+\begin_inset Graphics
+	filename Bilder/PenTracking/LightPoints/two-blobs-overlay/diff2.png
+
+\end_inset
+
+ 
+\begin_inset Graphics
+	filename Bilder/PenTracking/LightPoints/two-blobs-overlay/diff3.png
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Problematische Einzelfunde
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+Der Vorteil, wenn man Tests haben gezeigt, dass das aktuelle Interpolationsverfa
+hren genügend genau ist.
+\end_layout
+
+\begin_layout Paragraph
+Genauere Punktposition
+\end_layout
+
+\begin_layout Paragraph
+Position per Faltung
+\end_layout
+
+\begin_layout Subsection
+Umsetzung
+\end_layout
+
+\begin_layout Subsubsection
+Laufzeit
+\end_layout
+
+\begin_layout Standard
+Falls schon Punkte gefunden wurden, wird zuerst nur ein Bildausschnitt um
+ den zuletzt gefundenen Punkt analysiert.
+ Im Erfolgsfall spart das Rechenzeit.
+ Falls man im Bildausschnitt kein Punkt findet, wird die Suche auf das ganze
+ Bild ausgeweitet.
+\end_layout
+
+\begin_layout Subsubsection
+Eigenschaften eines Lichtpunktes
+\end_layout
+
+\begin_layout Standard
+Ein von einem Stift erzeugter Lichtpunkt hat diverse Eigenschaften.
+ Im Folgenden werden diese genauer ausgeführt.
+\end_layout
+
+\begin_layout Subsection
+Einschränkungen
 \end_layout
 
 \begin_layout Standard
@@ -141,83 +1257,34 @@ Werkzeug: AForge.
  Mathematica.
 \end_layout
 
-\begin_layout Subsection
-Verfahren
-\end_layout
-
 \begin_layout Standard
-- Über Differenzbilder wird die Bewegung der gefundenen Stiftpositionen
- interpoliert.
- 
-\begin_inset Newline newline
-\end_inset
-
-- Differenz-Bilder Thresholded Blobs zählen Punkte mittels Interpolation
- finden 
-\begin_inset Newline newline
-\end_inset
-
-- ca.
- alle 40ms ein Punkt finden ca.
- 20ms Rückstand, da zwischen aktuellem und letztem Bild interpoliert wird.
- Multithreading gut möglich 
-\end_layout
-
-\begin_layout Standard
-\begin_inset Graphics
-	filename RedDot ohne Weissabgleich/1_source16.bmp
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset Graphics
-	filename RedDot ohne Weissabgleich/2_overlay16.bmp
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset Graphics
-	filename RedDot ohne Weissabgleich/3_diff16.bmp
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset Graphics
-	filename RedDot ohne Weissabgleich/4_grey16.bmp
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset Graphics
-	filename RedDot ohne Weissabgleich/5_treshold16.bmp
-
+\begin_inset Newpage newpage
 \end_inset
 
 
 \end_layout
 
 \begin_layout Section
-Erkennen einer Hand
+Technik: Kalibrierung
 \end_layout
 
 \begin_layout Standard
-Zuerst Peron über Beine finden.
+blablub
 \end_layout
 
 \begin_layout Standard
-Daten über schlechtigkeit zeigen
+\begin_inset Newpage pagebreak
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Studie: Erkennen von Touch
+\end_layout
+
+\begin_layout Standard
+blablub
 \end_layout
 
 \end_body

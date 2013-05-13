@@ -21,11 +21,12 @@ namespace HSR.PresWriter.PenTracking
         /// <summary>
         /// Max count of frames to be included in pen discovering process.</summary>
         private const int MAX_FRAMEBUFFER_LENGTH = 3;
-        private const int MAX_POINTBUFFER_LENGTH = 3;
+        // How much points we keep
+        //private const int MAX_POINTBUFFER_LENGTH = 10;
         private IPictureProvider _source;
         private FixedSizedQueue<VideoFrame> _frameBuffer;
-        private FixedSizedQueue<PointFrame> _penPoints;
-        private SemaphoreSlim _semaphore = new SemaphoreSlim(Environment.ProcessorCount + 1);
+        private LinkedList<PointFrame> _penPoints;
+        private SemaphoreSlim _semaphore = new SemaphoreSlim(Environment.ProcessorCount);
 
         public FilterStrategy Strategy { get; set; }
 
@@ -34,7 +35,7 @@ namespace HSR.PresWriter.PenTracking
             _source = source;
             this.Strategy = strategy;
             this._frameBuffer = new FixedSizedQueue<VideoFrame>(MAX_FRAMEBUFFER_LENGTH);
-            this._penPoints = new FixedSizedQueue<PointFrame>(MAX_POINTBUFFER_LENGTH);
+            this._penPoints = new LinkedList<PointFrame>();
         }
 
         public void Start()
@@ -49,7 +50,7 @@ namespace HSR.PresWriter.PenTracking
 
         private void onTrackPen(object sender, FrameReadyEventArgs e)
         {
-            /* We allow #CPUs + 1 Pictures to be processed at the same time.
+            /* We allow #CPUs pictures to be processed at the same time.
              * If there is no free logigal CPU, we discard the current frame
              */
             if (_semaphore.Wait(0))
@@ -96,79 +97,117 @@ namespace HSR.PresWriter.PenTracking
             }
 
             // Status: We now have references to a previous and a current frame in the correct order.
+            //         Additionally we have an uncertain location of a previous point
 
-            try
-            {
-                // Finding a new pen point and storing it must be atomic, because 
-                // - findPenCandidates(..) chooses its search area dependently on the last found point
-                // - findPen(..) accesses the previously found pointframe for interpolation
-                lock (this._penPoints) // TODO Eventually a barrier would be better
+            //try
+            //{
+
+                // Time Keeper for Debugging
+                Stopwatch sw = new Stopwatch();
+                sw.Start();
+
+                // reference to the last found point is necessary to search more efficiently
+                // it is not necessarily the real precedessor (stale values are also ok)
+                PointFrame maybePreviousPoint = null;
+                lock(this._penPoints)
                 {
-                    // Find pen candidates and evaluate them → finding candidates is expensive!
-                    var candidates = findPenCandidates((Bitmap)previousFrame.Bitmap.Clone(), (Bitmap)currentFrame.Bitmap.Clone()); //TODO Fast fix against locking
-
-                    // Evaluate the candidates (PenCandidate)
-                    Point foundPoint = this.findPen(candidates);
-                    if (foundPoint.IsEmpty)
+                    if (this._penPoints.Last != null)
                     {
-                        return;
-                    }
-
-                    // Put the qualified result in a new point frame and fire event
-                    PointFrame resultFrame = new PointFrame(currentFrame.Number + 1, foundPoint, currentFrame.Timestamp);
-                    this._penPoints.Enqueue(resultFrame);
-                    if (this.PenFound != null)
-                    {
-                        this.PenFound(this, new PenPositionEventArgs(resultFrame));
+                        maybePreviousPoint = this._penPoints.Last.Value;
                     }
                 }
-            }
-            catch (Exception e)
-            {
-                Debug.WriteLine("Error in Frame Processin: "+e.Message);
-                // TODO Error Handling: Maybe we should catch everything for stability.
-            }
+
+                // At first we search for the pen near the old one (if there was one)
+                IEnumerable<PenCandidate> candidates = null;
+                if (maybePreviousPoint != null)
+                {
+                    candidates = this.findPenCandidatesInArea(
+                         previousFrame.Bitmap,
+                         currentFrame.Bitmap,
+                         this.getEstimatedSearchArea(maybePreviousPoint)
+                     );
+                }
+
+                // If there is no previous point or we couldn't use the information of a previously tracked point (candidates == 0), 
+                // we search the whole image.
+                // WEAKNESS: if we detect one in our search area, but two are present on the whole picture, 
+                //           we give false feedback. Therefore, the searcharea must be choosen carefully
+                if (maybePreviousPoint == null || candidates.Count() == 0)
+                {
+                    candidates = this.findPenCandidatesInArea(previousFrame.Bitmap, currentFrame.Bitmap, Rectangle.Empty);
+                }
+
+                // Debug Out of elapsed Time
+                long stage1 = sw.ElapsedMilliseconds;
+                sw.Stop();
+                //if (stage1 >= 40)
+                //{
+                    Console.WriteLine("Pen Tracking Overtime: {0}", stage1);
+                //}
+
+                // Evaluate all the candidates (PenCandidates)
+                Point foundPoint = this.findPen(candidates);
+
+                // TODO empty may be a valid point (0,0)
+                if (foundPoint.IsEmpty)
+                {
+                    if (this.NoPenFound != null)
+                    {
+                        this.NoPenFound(this, null);
+                    }
+                    return;
+                }
+
+                // Put the qualified result in a new point frame and queue it in the correct order
+                PointFrame resultFrame = new PointFrame(currentFrame.Number, foundPoint, currentFrame.Timestamp);
+                bool resultFrameWasOvertaken = false; ;
+
+                lock (this._penPoints)
+                {
+                    LinkedListNode<PointFrame> insertAfterThisNode = this._penPoints.Last;
+
+                    // go back in the list until there is the right result ordering
+                    while(insertAfterThisNode != null && insertAfterThisNode.Value.Number > resultFrame.Number)
+                    {
+                        insertAfterThisNode = insertAfterThisNode.Previous;
+                        resultFrameWasOvertaken = true;
+                    }
+
+                    // add frame to an absolute ordered place
+                    if (insertAfterThisNode != null)
+                    {
+                        this._penPoints.AddAfter(insertAfterThisNode, resultFrame);
+                    }
+                    else
+                    {
+                        this._penPoints.AddLast(resultFrame);
+                    }
+                }
+
+                // Trigger registered event handlers
+                if (this.PenFound != null)
+                {
+                    this.PenFound(this, new PenPositionEventArgs(resultFrame, resultFrameWasOvertaken));
+                }
+            //}
+            //catch (Exception e)
+            //{
+            //    Debug.WriteLine("Error in Frame Processing: "+e.Message);
+            //    // TODO Error Handling: Maybe we should catch everything for stability.
+            //}
         }
 
         /// <summary>
-        /// This is the time consuming part. We try to find pen candidates in two pictures 
-        /// by their filtered difference. We choose the search area in a intelligent way.
+        /// At first we try to search near the last found point (in a rectangle of 100x100px)
+        /// This means, that a point could have moved 50px in every direction. TODO: analyze moving direction and velocity
         /// </summary>
-        /// <param name="previous"></param>
-        /// <param name="current"></param>
+        /// <param name="referenceFrame"></param>
         /// <returns></returns>
-        private IEnumerable<PenCandidate> findPenCandidates(Bitmap previous, Bitmap current)
+        private Rectangle getEstimatedSearchArea(PointFrame referenceFrame)
         {
-            Stopwatch sw = new Stopwatch();
-            sw.Start();
-
-            IEnumerable<PenCandidate> candidates = null;
-            if (!_penPoints.IsEmpty) // TODO analyze timing. Discard too old images
-            {
-                // First, search near the last found point (in a rectangle of 100x100px)
-                // This means, that a point could have moved 50px in every direction. TODO: analyze moving direction and velocity
-                int areaX = _penPoints.Last().Point.X - 50;
-                int areaY = _penPoints.Last().Point.Y - 50;
-                Rectangle searchArea = new Rectangle(areaX, areaY, 100, 100);
-                candidates = findPenCandidatesInArea(previous, current, searchArea);
-            }
-
-            // if we could not use the information of a previously tracked point, we search the whole image
-            // WEAKNESS: if we detect one in our search area, but two are present on the whole picture, 
-            // we give false feedback. Therefore, the searcharea must be choosen carefully
-            if (candidates == null || candidates.Count() == 0)
-            {
-                candidates = findPenCandidatesInArea(previous, current, Rectangle.Empty);
-            }
-
-            long stage1 = sw.ElapsedMilliseconds;
-            sw.Stop();
-            if (stage1 >= 40)
-            {
-                Console.WriteLine("Pen Tracking Overtime: {0}", stage1);
-            }
-
-            return candidates;
+            int areaX = referenceFrame.Point.X - 50;
+            int areaY = referenceFrame.Point.Y - 50;
+            return new Rectangle(areaX, areaY, 100, 100);
         }
 
         /// <summary>
@@ -232,6 +271,7 @@ namespace HSR.PresWriter.PenTracking
             {
                 case 0:
                     // No pen found or pen is not moving
+                    // TODO (0,0) is actually a valid position!
                     return Point.Empty;
                 case 1:
                     // Take center of the only found rectangle
@@ -278,9 +318,12 @@ namespace HSR.PresWriter.PenTracking
         /// <returns></returns>
         public PointFrame GetLastFrame()
         {
-            if (_penPoints.Count > 0)
+            lock (this._penPoints)
             {
-                return _penPoints.Last();
+                if (this._penPoints.Count > 0)
+                {
+                    return this._penPoints.Last();
+                }
             }
             return null;
         }
@@ -293,8 +336,13 @@ namespace HSR.PresWriter.PenTracking
         public Point GetPenPoint(long timestamp)
         {
             PointFrame previousFrame = null;
+            LinkedList<PointFrame>.Enumerator enumerator;
 
-            var enumerator = this._penPoints.GetEnumerator();
+            lock (this._penPoints)
+            {
+                enumerator = this._penPoints.GetEnumerator();
+            }
+
             while (enumerator.MoveNext() && timestamp < enumerator.Current.Timestamp)
             {
                 if (timestamp == enumerator.Current.Timestamp)
@@ -314,6 +362,7 @@ namespace HSR.PresWriter.PenTracking
         }
 
         public event EventHandler<PenPositionEventArgs> PenFound;
+        public event EventHandler<EventArgs> NoPenFound;
 
 
 #if DEBUG

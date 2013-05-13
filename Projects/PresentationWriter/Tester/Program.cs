@@ -20,8 +20,37 @@ namespace HSR.PresWriter.Tester
     {
         public static void Main(string[] args)
         {
-            CameraConfig();
+            TrackPenOnLibrary();
+            //CameraConfig();
             //TakeVideo();
+        }
+
+        public static void TrackPenOnLibrary()
+        {
+            Console.WriteLine("Starting...");
+
+            TimedFilesystemCamera camera = new TimedFilesystemCamera(new DirectoryInfo(@"c:\temp\live\cap-127"), 1);
+            AForgePenTracker tracker = new AForgePenTracker(new WhiteLedStrategy(), camera);
+
+            camera.FrameReady += delegate(object o, FrameReadyEventArgs e) {
+                Console.WriteLine("Cam Frame: {0}", e.Frame.Number);
+            };
+
+            tracker.PenFound += delegate(object o, PenPositionEventArgs e) {
+                PointFrame p = e.Frame;
+                String outOfOrder = "";
+                if (e.IsOutOfOrder)
+                {
+                    outOfOrder = "(out of order)";
+                }
+                Console.WriteLine("Found {0} at {1},{2} {3}", p.Number, p.Point.X, p.Point.Y, outOfOrder);
+            };
+
+            tracker.Start();
+            camera.Start();
+
+            Console.WriteLine("Tracker and Camera Started.");
+            Console.ReadLine();
         }
 
         public static void CameraConfig()

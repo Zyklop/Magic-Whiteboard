@@ -19,7 +19,7 @@ namespace HSR.PresWriter.PenTracking
         }
 
         /// <summary>
-        /// Enque an item, evetualy deleting an old one
+        /// Enqueue an item, eventually deleting an old one
         /// </summary>
         /// <param name="obj"></param>
         public new void Enqueue(T obj)
