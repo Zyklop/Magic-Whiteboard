@@ -16,6 +16,9 @@ using Point = System.Drawing.Point;
 
 namespace HSR.PresWriter.PenTracking
 {
+    /// <summary>
+    /// this calibrator just identifies the corners of the grid
+    /// </summary>
     public class SimpleAForgeCalibrator : ICalibrator
     {
         private IPictureProvider _cc;
@@ -108,6 +111,7 @@ namespace HSR.PresWriter.PenTracking
             else
                 switch (_calibrationStep)
                 {
+                        // get the corners from the difference image
                     case 2:
                         var bm = UnmanagedImage.FromManagedImage(e.Frame.Bitmap);
                         //diffFilter.OverlayImage.Save(@"C:\temp\daforge\diff\src" + _errors + ".jpg", ImageFormat.Jpeg);
@@ -169,7 +173,7 @@ namespace HSR.PresWriter.PenTracking
                             _vs.Draw();
                         }
                         break;
-                    case 1:
+                    case 1: // draw second image, store the first
                         diffFilter.OverlayImage = e.Frame.Bitmap;
                         //diffFilter.OverlayImage.Save(@"C:\temp\daforge\diff\srcf" + _errors + ".jpg", ImageFormat.Jpeg);
                         //_vs.AddRect(0, 0, (int) _vs.Width, (int) _vs.Height, Color.FromArgb(255, 255, 255, 255));
@@ -189,6 +193,7 @@ namespace HSR.PresWriter.PenTracking
                         _vs.Draw();
                         _calibrationStep++;
                         break;
+                        //draw the first image
                     case 0:
                         Grid = new Grid(e.Frame.Bitmap.Width, e.Frame.Bitmap.Height);
                         Grid.ScreenSize = new Rectangle(0, 0, _vs.Width, _vs.Height);

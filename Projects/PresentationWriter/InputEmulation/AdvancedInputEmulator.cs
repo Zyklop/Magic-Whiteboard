@@ -21,14 +21,15 @@ namespace InputEmulation
         private static bool _leftCicked = false;
         private static bool _rightCicked = false;
 
-
+        // no contact detected
         public static void NoData()
         {
-            if (CurrentMillis.Millis - _lastContact > ReleaseTimeout)
+            if (CurrentMillis.Millis - _lastContact > ReleaseTimeout) // timed out, not waiting for a new contact
             {
                 //cleanup
                 if (_waiting)
                 {
+                    // left click
                     _waiting = false;
                     Mouse.ClickEvent(true, false);
                     Thread.Sleep(15);
@@ -36,11 +37,13 @@ namespace InputEmulation
                 }
                 if (_leftCicked)
                 {
+                    //release left mouse button
                     _leftCicked = false;
                     Mouse.ClickEvent(true, true);
                 }
                 if (_rightCicked)
                 {
+                    // release right mouse button
                     _rightCicked = false;
                     Mouse.ClickEvent(false, true);
                 }
@@ -48,6 +51,10 @@ namespace InputEmulation
             // wait
         }
 
+        /// <summary>
+        /// A new contact has been detected
+        /// </summary>
+        /// <param name="p"></param>
         public static void NewPoint(System.Drawing.Point p)
         {
             if (_lastPosition.X == -1)
@@ -58,6 +65,7 @@ namespace InputEmulation
             Mouse.MoveMouseRelative(_lastPosition.X - p.X, _lastPosition.Y - p.Y);
             if (!_waiting && !_leftCicked && !_rightCicked)
             {
+                // no recent contact
                 _start = p;
                 _startTime = CurrentMillis.Millis;
                 _waiting = true;
@@ -67,12 +75,14 @@ namespace InputEmulation
             {
                 if (CurrentMillis.Millis - _startTime > RightClickTimeOut)
                 {
+                    // waited enough
                     _rightCicked = true;
                     Mouse.ClickEvent(false, false);
                     _waiting = false;
                 }
                 else if(Math.Abs(_start.X - p.X) > Radius || Math.Abs(_start.Y - p.Y) > Radius)
                 {
+                    // moved outside the defined radius
                     _waiting = false;
                     Mouse.ClickEvent(true,false);
                     _leftCicked = true;

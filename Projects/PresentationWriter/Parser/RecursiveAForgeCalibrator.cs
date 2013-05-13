@@ -18,7 +18,9 @@ using Point = System.Drawing.Point;
 
 namespace HSR.PresWriter.PenTracking
 {
-
+    /// <summary>
+    /// this class uses a comlex recoursive algorithm to identify the blobs position
+    /// </summary>
     class RecursiveAForgeCalibrator : ICalibrator
     {
         private IPictureProvider _cc;
@@ -687,26 +689,6 @@ namespace HSR.PresWriter.PenTracking
 
         internal class GridBlobs
         {
-            internal class BlobComparer : IEqualityComparer<Blob>
-            {
-                public bool Equals(Blob x, Blob y)
-                {
-                    return x.ID == y.ID && x.Rectangle == y.Rectangle && x.CenterOfGravity == y.CenterOfGravity &&
-                           x.Area == y.Area && x.Fullness == y.Fullness && x.ColorMean == y.ColorMean &&
-                           x.ColorStdDev == y.ColorStdDev;
-                }
-
-                public int GetHashCode(Blob obj)
-                {
-                    long i = obj.ID*obj.Area*obj.ColorMean.R*obj.ColorMean.G*obj.ColorMean.B*obj.ColorStdDev.R*
-                             obj.ColorStdDev.G*obj.ColorStdDev.B*obj.Rectangle.Left*obj.Rectangle.Top*
-                             obj.Rectangle.Right* obj.Rectangle.Bottom;
-                    i = i%UInt32.MaxValue;
-                    i += Int32.MinValue;
-                    return (int) i;
-                }
-            }
-
             private Dictionary<Blob, BlobPositions> _blobPositions;
             private BlobCounter _bc;
             private RecursiveAForgeCalibrator _adc;
@@ -1219,6 +1201,26 @@ namespace HSR.PresWriter.PenTracking
                     }
                 }
             }
+        }
+    }
+
+    public class BlobComparer : IEqualityComparer<Blob>
+    {
+        public bool Equals(Blob x, Blob y)
+        {
+            return x.ID == y.ID && x.Rectangle == y.Rectangle && x.CenterOfGravity == y.CenterOfGravity &&
+                   x.Area == y.Area && x.Fullness == y.Fullness && x.ColorMean == y.ColorMean &&
+                   x.ColorStdDev == y.ColorStdDev;
+        }
+
+        public int GetHashCode(Blob obj)
+        {
+            long i = obj.ID * obj.Area * obj.ColorMean.R * obj.ColorMean.G * obj.ColorMean.B * obj.ColorStdDev.R *
+                     obj.ColorStdDev.G * obj.ColorStdDev.B * obj.Rectangle.Left * obj.Rectangle.Top *
+                     obj.Rectangle.Right * obj.Rectangle.Bottom;
+            i = i % UInt32.MaxValue;
+            i += Int32.MinValue;
+            return (int)i;
         }
     }
 }

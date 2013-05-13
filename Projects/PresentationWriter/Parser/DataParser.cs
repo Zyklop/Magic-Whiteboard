@@ -26,7 +26,8 @@ namespace HSR.PresWriter.PenTracking
         /// Set up a parser gor th images
         /// Parsing all the data
         /// </summary>
-        /// <param name="provider"></param>
+        /// <param name="provider">Provider of the Camera images</param>
+        /// <param name="visualizer">The Output to write on</param>
         public DataParser(IPictureProvider provider, IVisualizerControl visualizer)
         {
             // Initialize Calibration Tools
@@ -38,7 +39,11 @@ namespace HSR.PresWriter.PenTracking
             _penTracker.PenFound += PenFound;
         }
 
-
+        /// <summary>
+        /// Initialize the Parser with a non-standart calibrator or tracker
+        /// </summary>
+        /// <param name="calibrator">Custom calibrator</param>
+        /// <param name="tracker">Custom PenTracker</param>
         public DataParser(ICalibrator calibrator, IPenTracker tracker)
         {
             // Initialize Calibration Tools
@@ -50,6 +55,11 @@ namespace HSR.PresWriter.PenTracking
             _penTracker.PenFound += PenFound;
         }
 
+        /// <summary>
+        /// Calibration is finished, starting PenTracker
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void StartTracking(object sender, EventArgs e)
         {
             //_pictureProvider.ShowConfigurationDialog();
@@ -57,22 +67,23 @@ namespace HSR.PresWriter.PenTracking
             //_calibrator.Grid.Calculate();
 
 #if DEBUG
-            //var bm = new Bitmap(640, 480);
-            ////for (int i = CalibratorGrid.TopLeft.X; i < CalibratorGrid.BottomRight.X; i++)
-            //for (int i = 0; i < 640; i++)
-            //{
-            //    //Debug.WriteLine(i);
-            //    for (int j = 0; j < 480; j++)
-            //    //for (int j = CalibratorGrid.TopLeft.Y; j < CalibratorGrid.BottomRight.Y; j++)
-            //    {
-            //        //Debug.WriteLine(j);
-            //        //var position = CalibratorGrid.GetPosition(i, j);
-            //        var position = CalibratorGrid.PredictPosition(i, j);
-            //        if (position.X >= 0 && position.Y >= 0)
-            //            bm.SetPixel(i, j, Color.FromArgb(255, (position.X + 8192) % 256, (position.Y + 4096) % 256, 255));
-            //    }
-            //}
-            //bm.Save(@"C:\temp\daforge\grid.bmp", ImageFormat.MemoryBmp);
+            var bm = new Bitmap(640, 480);
+            //for (int i = CalibratorGrid.TopLeft.X; i < CalibratorGrid.BottomRight.X; i++)
+            for (int i = 0; i < 640; i++)
+            {
+                //Debug.WriteLine(i);
+                for (int j = 0; j < 480; j++)
+                //for (int j = CalibratorGrid.TopLeft.Y; j < CalibratorGrid.BottomRight.Y; j++)
+                {
+                    //Debug.WriteLine(j);
+                    //var position = CalibratorGrid.GetPosition(i, j);
+                    //var position = CalibratorGrid.PredictPosition(i, j);
+                    var position = CalibratorGrid.InterpolatePosition(i, j);
+                    if (position.X >= 0 && position.Y >= 0)
+                        bm.SetPixel(i, j, Color.FromArgb(255, (position.X + 8192) % 256, (position.Y + 4096) % 256, 255));
+                }
+            }
+            bm.Save(@"C:\temp\daforge\grid.bmp", ImageFormat.MemoryBmp);
 #endif
 
             _penTracker.Start();
@@ -92,6 +103,9 @@ namespace HSR.PresWriter.PenTracking
             _calibrator.Calibrate();
         }
 
+        /// <summary>
+        /// Restart the Parser again, without recalibrating
+        /// </summary>
         public void Restart()
         {
             if(CalibratorGrid.TopLeft.IsEmpty)
@@ -99,6 +113,10 @@ namespace HSR.PresWriter.PenTracking
             _penTracker.Start();
         }
 
+        /// <summary>
+        /// Stopping the PenTracker
+        /// <remarks>Cannot be used to stop the calibration, this have to be completed first</remarks>
+        /// </summary>
         public void Stop()
         {
             //_pictureProvider.FrameReady -= _camera_FrameReady; // TODO siehe _camera_FrameReady
@@ -106,26 +124,24 @@ namespace HSR.PresWriter.PenTracking
             this.IsRunning = false;
         }
 
+        /// <summary>
+        /// Start the Calibration again
+        /// </summary>
         public void ReCalibrate()
         {
+            // TODO not working, why?
             _penTracker.Stop();
             _calibrator.Calibrate();
             Console.WriteLine("Recalibrating");
         }
 
-        //private async void _camera_FrameReady(object sender, FrameReadyEventArgs e)
-        //{
-        //    // TODO dem PenTracker auch einen PictureProvider übergeben und diese Methode streichen!
-        //    PointFrame p = await _penTracker.ProcessAsync(e.Frame);
-        //    if (p != null)
-        //    {
-        //        Debug.WriteLine("Point: {0}, {1}", p.Point.X, p.Point.Y);
-        //    }
-        //}
-
+        /// <summary>
+        /// Mapping the point
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void PenFound(object sender, PenPositionEventArgs e)
         {
-            // TODO Loswerden!!! Why???
             Debug.WriteLine("Pen Nr\t{0} at {1},{2}", e.Frame.Number, e.Frame.Point.X, e.Frame.Point.Y);
 
             Point point = _calibrator.Grid.PredictPosition(e.Frame.Point.X, e.Frame.Point.Y);

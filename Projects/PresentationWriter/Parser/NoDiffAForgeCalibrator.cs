@@ -26,7 +26,7 @@ namespace HSR.PresWriter.PenTracking
         GreenAndBlue
     }
 
-    class AForgeCalibrator: ICalibrator
+    class NoDiffAForgeCalibrator: ICalibrator
     {
         private IPictureProvider _cc;
         private int _calibrationStep;
@@ -44,7 +44,7 @@ namespace HSR.PresWriter.PenTracking
         private const int ColorDiff = 8;
 
 
-        public AForgeCalibrator(IPictureProvider provider, IVisualizerControl vc)
+        public NoDiffAForgeCalibrator(IPictureProvider provider, IVisualizerControl vc)
         {
             _cc = provider;
             _vs = vc;
@@ -144,6 +144,7 @@ namespace HSR.PresWriter.PenTracking
                     //var bf = new ColorFiltering(new IntRange(0, 255),//(int)stats.Red.Mean), 
                     //    new IntRange(0, 255),//(int) stats.Green.Mean), 
                     //    new IntRange((int) stats.Blue.Mean + ColorDiff, 255));
+                    // create color Channel images
                     var gbm = PartiallyApplyAvgFilter(e.Frame.Bitmap, Channels.Green, 8, 8, 8);
                     gbm.Save(@"C:\temp\aforge\gimg\img" + _calibrationStep + ".jpg");
                     var bbm = PartiallyApplyAvgFilter(e.Frame.Bitmap, Channels.Blue, 8, 8, 8);
@@ -161,7 +162,7 @@ namespace HSR.PresWriter.PenTracking
                 else
                     switch (_calibrationStep)
                     {
-                        case 2:
+                        case 2: // identify screen bounds
                             //var thresholdFilter = new Threshold(50);
                             //thresholdFilter.ApplyInPlace(diffBitmap);
                             //var cf = new ColorFiltering(new IntRange(0, 255), //red is bad
@@ -264,7 +265,16 @@ namespace HSR.PresWriter.PenTracking
             await Task.Delay(100);
             _sem.Release();
         }
-
+        
+        /// <summary>
+        /// Apply colorfilter partially
+        /// </summary>
+        /// <param name="src"></param>
+        /// <param name="channel"></param>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="diff"></param>
+        /// <returns></returns>
         private Bitmap PartiallyApplyAvgFilter(Bitmap src, Channels channel, int x, int y, int diff)
         {
             var parts = new UnmanagedImage[x,y];
@@ -324,6 +334,11 @@ namespace HSR.PresWriter.PenTracking
             return res;
         }
 
+        /// <summary>
+        /// process blobs recursive
+        /// </summary>
+        /// <param name="blobCounter"></param>
+        /// <param name="offset"></param>
         private void ProcessBlobs(BlobCounter blobCounter, int offset)
         {
             blobCounter.FilterBlobs = true;
@@ -348,6 +363,16 @@ namespace HSR.PresWriter.PenTracking
             }
         }
 
+        /// <summary>
+        /// recoursive detect track blobs
+        /// </summary>
+        /// <param name="blob"></param>
+        /// <param name="rest"></param>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="offset"></param>
+        /// <param name="blobCounter"></param>
+        /// <returns></returns>
         private int ProcessBlobs(Blob blob, List<Blob> rest, int x, int y, int offset, BlobCounter blobCounter)
         {
             if (x < 0 || y < 0 || y > Columncount || x > Rowcount)

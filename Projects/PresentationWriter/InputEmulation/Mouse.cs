@@ -70,6 +70,11 @@ namespace InputEmulation
             internal static extern bool GetCursorPos(out POINT lpPoint);
         }
 
+        /// <summary>
+        /// Move the mouse to an absolute position
+        /// </summary>
+        /// <param name="positionX"></param>
+        /// <param name="positionY"></param>
         public static void MoveMouseAbsolute(int positionX, int positionY)
         {
             Input[] i = new Input[1];
@@ -87,6 +92,11 @@ namespace InputEmulation
                 throw new Win32Exception(Marshal.GetLastWin32Error());
         }
 
+        /// <summary>
+        /// Move the mouse to a relatove position
+        /// </summary>
+        /// <param name="positionX"></param>
+        /// <param name="positionY"></param>
         public static void MoveMouseRelative(int positionX, int positionY)
         {
             Input[] i = new Input[1];
@@ -104,6 +114,11 @@ namespace InputEmulation
                 throw new Win32Exception(Marshal.GetLastWin32Error());
         }
 
+        /// <summary>
+        /// Click the mouse
+        /// </summary>
+        /// <param name="left">left mouse button?</param>
+        /// <param name="up">release or press? </param>
         public static void ClickEvent(bool left, bool up)
         {
             Input[] i = new Input[1];
@@ -139,6 +154,10 @@ namespace InputEmulation
                 throw new Win32Exception(Marshal.GetLastWin32Error());
         }
 
+        /// <summary>
+        /// Move the mousewheel
+        /// </summary>
+        /// <param name="up"></param>
         public static void WheelEvent(bool up)
         {
             Input[] i = new Input[1];

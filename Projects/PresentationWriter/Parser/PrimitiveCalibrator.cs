@@ -50,6 +50,9 @@ namespace HSR.PresWriter.PenTracking
         event EventHandler CalibrationCompleted;
     }
 
+    /// <summary>
+    /// this class draws three random rectangles and identifies them via their color
+    /// </summary>
     internal class PrimitiveCalibrator : ICalibrator
     {
         private const byte GreyDiff = 40;

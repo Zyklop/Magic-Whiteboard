@@ -11,14 +11,14 @@ namespace HSR.PresWriter.PenTracking
 {
     public class Grid
     {
-        private SortedDictionary<int, SortedDictionary<int, List<Point>>> _calibratorData;
-        private Point[,] _mapData;
+        private SortedDictionary<int, SortedDictionary<int, List<Point>>> _calibratorData; //2d Dictionary of imag-coordinates
+        private Point[,] _mapData; //calculated Points
         private bool _needed = true;
         private Point _topLeft;
         private Point _topRight;
         private Point _bottomLeft;
         private Point _bottomRight;
-        private SortedDictionary<int, SortedDictionary<int, Point>> _refPoints; 
+        private SortedDictionary<int, SortedDictionary<int, Point>> _refPoints; //2d dictionary of screen Coordinates
 
         /// <summary>
         /// Creating a mapping grid
@@ -63,7 +63,11 @@ namespace HSR.PresWriter.PenTracking
             }
         }
 
-        public System.Drawing.Rectangle ScreenSize { get; set; }
+        /// <summary>
+        /// Borders of the PCs screenresolution
+        /// <remarks>Just to increase the performance of some calculations</remarks>
+        /// </summary>
+        public Rectangle ScreenSize { get; set; }
 
         /// <summary>
         /// More data needed for Calibration
@@ -126,6 +130,11 @@ namespace HSR.PresWriter.PenTracking
             }
         }
 
+        /// <summary>
+        /// Checking if a camerapixel is inside of the grid
+        /// </summary>
+        /// <param name="p">Point to br checked</param>
+        /// <returns>true, if inside</returns>
         public bool Contains(Point p)
         {
             var b1 = new BarycentricCoordinate(p, TopLeft, TopRight, BottomLeft);
@@ -141,13 +150,6 @@ namespace HSR.PresWriter.PenTracking
         public void Reset()
         {
             _calibratorData = new SortedDictionary<int, SortedDictionary<int, List<Point>>>();
-            //foreach (var l in _calibratorData)
-            //{
-            //    foreach (var pl in l.Value)
-            //    {
-            //        pl.Value.Clear();
-            //    }
-            //}
         }
 
         /// <summary>
@@ -172,6 +174,12 @@ namespace HSR.PresWriter.PenTracking
 #endif
         }
 
+        /// <summary>
+        /// Adding a point to the dictionary
+        /// </summary>
+        /// <param name="imgX"></param>
+        /// <param name="imgY"></param>
+        /// <param name="screen"></param>
         private void AddCalibratorPoint(int imgX, int imgY, Point screen)
         {
             if (!_calibratorData.ContainsKey(imgX))
@@ -201,6 +209,12 @@ namespace HSR.PresWriter.PenTracking
             AddRefPoints(screen.X, screen.Y, new Point(img.X, img.Y));
         }
 
+        /// <summary>
+        /// Adding the point to the reference dictionary
+        /// </summary>
+        /// <param name="screenX"></param>
+        /// <param name="screenY"></param>
+        /// <param name="p"></param>
         private void AddRefPoints(int screenX, int screenY, Point p)
         {
             if (_refPoints.ContainsKey(screenX))
@@ -218,7 +232,7 @@ namespace HSR.PresWriter.PenTracking
         }
 
         /// <summary>
-        /// Calibrate from collected data
+        /// Calculate from collected data
         /// </summary>
         public void Calculate()
         {
@@ -228,8 +242,7 @@ namespace HSR.PresWriter.PenTracking
             {
                 for (int j = 0; j < ymax; j++)
                 {
-                    var n = FindNearest(i, j, 3);
-                    var p = Interpolate(i, j, n);
+                    var p = Interpolate(i, j);
                     AddCalibratorPoint(p.X, p.Y, new Point(i,j));
                     //if (_calibratorData.ContainsKey(p.X) && _calibratorData[p.X].ContainsKey(p.Y))
                     //    _calibratorData[p.X,p.Y].Add();
@@ -242,33 +255,68 @@ namespace HSR.PresWriter.PenTracking
             //_refPoints.Clear();
         }
 
-        private Point Interpolate(int x, int y, List<PointMapping> n)
+        /// <summary>
+        /// Interpolating Barycentric from the next Points
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
+        private Point Interpolate(int x, int y)
         {
-            if(n.Count < 3) throw new ArgumentException("at least 3 neighbours needed");
+            var n = FindNearest(x, y, 6);
+            var poss = GetCandidates(x, y, n);
+            if (poss.Count < 3)
+            {
+                n = FindNearest(x, y, 20);
+                poss = GetCandidates(x, y, n);
+            }
+            if (poss.Count < 3)
+            {
+                n = FindNearest(x, y, 100);
+                poss = GetCandidates(x, y, n);
+            }
+            if (poss.Count < 3)
+            {
+                return new Point(-1, -1);
+            }
+            return Average(poss);
+        }
+
+        /// <summary>
+        /// Predict from each possible triange, returning each candidate
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="n"></param>
+        /// <returns>Only returns plausible candidates, if all are bad, the result is empty</returns>
+        private List<Point> GetCandidates(int x, int y, List<PointMapping> n)
+        {
+            if (n.Count < 3) throw new ArgumentException("at least 3 neighbours needed");
             var targ = new Point(x, y);
             var poss = new List<Point>();
-            for (int i = 0; i < n.Count - 2; i++ )
+            for (int i = 0; i < n.Count - 2; i++)
             {
-                for (int j = i + 1; j < n.Count; j++ )
+                for (int j = i + 1; j < n.Count; j++)
                 {
                     for (int k = j + 1; k < n.Count; k++)
                     {
-                        var b = new BarycentricCoordinate(targ, n[i].Screen, n[j].Screen, n[k].Screen);
-                        poss.Add(b.GetCartesianCoordinates(n[i].Image, n[j].Image, n[k].Image));
+                        var b = new BarycentricCoordinate(targ, n[i].Image, n[j].Image, n[k].Image);
+                        if (b.IsNearby)
+                            poss.Add(b.GetCartesianCoordinates(n[i].Screen, n[j].Screen, n[k].Screen));
                     }
                 }
             }
-            //TODO weight points
-            int xSum = 0;
-            int ySum = 0;
-            foreach (var p in poss)
-            {
-                xSum += p.X;
-                ySum += p.Y;
-            }
-            return new Point(xSum / poss.Count, ySum / poss.Count);
+            return poss;
         }
 
+        /// <summary>
+        /// Picks the nearest Values from the SortedDictionary
+        /// </summary>
+        /// <typeparam name="T">Type of the value</typeparam>
+        /// <param name="src"></param>
+        /// <param name="target">target key</param>
+        /// <param name="count">number of desired values</param>
+        /// <returns>selected range</returns>
         private SortedDictionary<int, T> PickNearest<T>(SortedDictionary<int, T> src, int target, int count)
         {
             var lower = new Queue<int>(src.Keys.Where(x => x <= target));
@@ -293,7 +341,13 @@ namespace HSR.PresWriter.PenTracking
             }
             return res;
         }
-
+        /// <summary>
+        /// Picking the n nearest points
+        /// </summary>
+        /// <param name="x">target x coordinate</param>
+        /// <param name="y">target y coordinate</param>
+        /// <param name="desired">number of neighbours</param>
+        /// <returns>ordered by distance</returns>
         private List<PointMapping> FindNearest(int x, int y, int desired)
         {
             var cols = PickNearest(_calibratorData, x, desired);
@@ -312,6 +366,11 @@ namespace HSR.PresWriter.PenTracking
             return p.GetRange(0,desired);
         }
 
+        /// <summary>
+        /// Average position
+        /// </summary>
+        /// <param name="points"></param>
+        /// <returns></returns>
         private Point Average(List<Point> points)
         {
             if(points.Count == 0)
@@ -324,24 +383,38 @@ namespace HSR.PresWriter.PenTracking
             return res;
         }
 
-        private Point Average(Dictionary<double, Point> points)
+        /// <summary>
+        /// Weighted Average
+        /// </summary>
+        /// <param name="points"></param>
+        /// <returns></returns>
+        private Point Average(Dictionary<Point, double> points)
         {
             if (points.Count == 0)
                 throw new ArgumentException("List is empty");
             if (points.Count == 1)
-                return points.First().Value;
-            var rx = points.Sum(x => x.Value.X*x.Key);
-            var ry = points.Sum(x => x.Value.X * x.Key);
-            var sWeights = points.Sum(x => x.Key);
+                return points.First().Key;
+            var rx = points.Sum(x => x.Value * x.Key.X);
+            var ry = points.Sum(x => x.Value * x.Key.Y);
+            var sWeights = points.Sum(x => x.Value);
             return new Point((int)Math.Round(rx / sWeights), (int)Math.Round(ry / sWeights));
         }
 
+        /// <summary>
+        /// Distance between points
+        /// </summary>
+        /// <param name="p1"></param>
+        /// <param name="p2"></param>
+        /// <returns></returns>
         private double DistanceTo(Point p1, Point p2)
         {
             var diff = new Point(p1.X - p2.X, p1.Y - p2.Y);
             return Math.Sqrt(diff.X * diff.X + diff.Y * diff.Y);
         }
 
+        /// <summary>
+        /// Calculating the average of all calibrator-data
+        /// </summary>
         private void SetMapData()
         {
             for (int i = 0; i < _mapData.GetLength(0); i++)
@@ -352,10 +425,10 @@ namespace HSR.PresWriter.PenTracking
                     {
                         try
                         {
-                            var k = new Point();
-                            k.X = _calibratorData[i][j].Sum(x => x.X)/_calibratorData[i][j].Count;
-                            k.Y = _calibratorData[i][j].Sum(x => x.Y)/_calibratorData[i][j].Count;
-                            _mapData[i, j] = k;
+                            //var k = new Point();
+                            //k.X = _calibratorData[i][j].Sum(x => x.X)/_calibratorData[i][j].Count;
+                            //k.Y = _calibratorData[i][j].Sum(x => x.Y)/_calibratorData[i][j].Count;
+                            _mapData[i, j] = Average(_calibratorData[i][j]);
                         }
                         catch (Exception e)
                         {
@@ -376,37 +449,31 @@ namespace HSR.PresWriter.PenTracking
             int ymax = ScreenSize.Height;
             var stor = _calibratorData;
             _calibratorData = new SortedDictionary<int, SortedDictionary<int, List<Point>>>(_calibratorData);
-            //foreach(var i in _calibratorData)
-            //{
-            //    foreach (var j in i.Value)
-            //    {
-                    
-            //    }
-            //}
-            for (int i = 0; i < xmax; i++)
+            //copy calibrator data after backup
+            for (int i = 0; i < xmax; i+=2)
             {
                 //Debug.WriteLine(i);
-                for (int j = 0; j < ymax; j++)
+                for (int j = 0; j < ymax; j+=2)
                 {
                 //Debug.WriteLineIf(i > 1278, j);
                     //find intersection
-                    int y1 = (int)Math.Round(TopLeft.Y - (double)(TopLeft.Y - TopRight.Y) * ((double)i / (double)xmax));
-                    int y2 = (int)Math.Round(BottomLeft.Y - (double)(BottomLeft.Y - BottomRight.Y) * ((double)i / (double)xmax));
-                    int x1 = (int)Math.Round(TopLeft.X - (double)(TopLeft.X - TopRight.X) * ((double)i / (double)xmax));
-                    int x2 = (int)Math.Round(BottomLeft.X - (double)(BottomLeft.X - BottomRight.X) * ((double)i / (double)xmax));
-                    int y3 = (int)Math.Round(TopLeft.Y - (double)(TopLeft.Y - BottomLeft.Y) * ((double)j / (double)ymax));
-                    int y4 = (int)Math.Round(TopRight.Y - (double)(TopRight.Y - BottomRight.Y) * ((double)j / (double)ymax));
-                    int x3 = (int)Math.Round(TopLeft.X - (double)(TopLeft.X - BottomLeft.X) * ((double)j / (double)ymax));
-                    int x4 = (int)Math.Round(TopRight.X - (double)(TopRight.X - BottomRight.X) * ((double)j / (double)ymax));
-                    int A1 = y2 - y1;
-                    int B1 = x1 - x2;
-                    int C1 = A1*x1 + B1*y1;
-                    int A2 = y4 - y3;
-                    int B2 = x3 - x4;
-                    int C2 = A2 * x3 + B2 * y3;
-                    double det = A1*B2 - A2*B1;
-                        int x = (int) Math.Round((B2*C1 - B1*C2)/det);
-                        int y = (int) Math.Round((A1*C2 - A2*C1)/det);
+                    var y1 = (int)Math.Round(TopLeft.Y - (TopLeft.Y - TopRight.Y) * (i / (double)xmax));
+                    var y2 = (int)Math.Round(BottomLeft.Y - (BottomLeft.Y - BottomRight.Y) * (i / (double)xmax));
+                    var x1 = (int)Math.Round(TopLeft.X - (TopLeft.X - TopRight.X) * (i / (double)xmax));
+                    var x2 = (int)Math.Round(BottomLeft.X - (BottomLeft.X - BottomRight.X) * (i / (double)xmax));
+                    var y3 = (int)Math.Round(TopLeft.Y - (TopLeft.Y - BottomLeft.Y) * (j / (double)ymax));
+                    var y4 = (int)Math.Round(TopRight.Y - (TopRight.Y - BottomRight.Y) * (j / (double)ymax));
+                    var x3 = (int)Math.Round(TopLeft.X - (TopLeft.X - BottomLeft.X) * (j / (double)ymax));
+                    var x4 = (int)Math.Round(TopRight.X - (TopRight.X - BottomRight.X) * (j / (double)ymax));
+                    var a1 = y2 - y1;
+                    var b1 = x1 - x2;
+                    var c1 = a1*x1 + b1*y1;
+                    var a2 = y4 - y3;
+                    var b2 = x3 - x4;
+                    var c2 = a2 * x3 + b2 * y3;
+                    double det = a1*b2 - a2*b1;
+                        var x = (int) Math.Round((b2*c1 - b1*c2)/det);
+                        var y = (int) Math.Round((a1*c2 - a2*c1)/det);
                     try
                     {
                         AddCalibratorPoint(x, y, new Point(i,j));
@@ -418,6 +485,7 @@ namespace HSR.PresWriter.PenTracking
                 }
             }
             SetMapData();
+            //restoring backup
             _calibratorData = stor;
         }
 
@@ -432,6 +500,12 @@ namespace HSR.PresWriter.PenTracking
             return _mapData[x, y];
         }
 
+        /// <summary>
+        /// Get Barycentric interpolation based on the corners
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
         public Point PredictPosition(int x, int y)
         {
             var b1 = new BarycentricCoordinate(new Point(x, y), TopLeft, TopRight, BottomLeft);
@@ -462,17 +536,55 @@ namespace HSR.PresWriter.PenTracking
             //return new Point((int) Math.Round((p1.X + p2.X)/2.0), (int) Math.Round((p1.Y + p2.Y)/2.0));
         }
 
+        /// <summary>
+        /// Interpolate Barycentric, based on next neighbours
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
+        public Point InterpolatePosition(int x, int y)
+        {
+            return Interpolate(x, y);
+        }
+        /// <summary>
+        /// Checks if the point is in the Grid
+        /// </summary>
+        /// <param name="centerOfGravity"></param>
+        /// <returns></returns>
         public bool Contains(AForge.Point centerOfGravity)
         {
             return Contains(new Point((int) centerOfGravity.X, (int) centerOfGravity.Y));
         }
 
+        /// <summary>
+        /// Perdict the position based on the corners
+        /// </summary>
+        /// <param name="p"></param>
+        /// <returns></returns>
         public Point PredictPosition(AForge.Point p)
         {
             return PredictPosition((int) p.X, (int) p.Y);
         }
+
+        /// <summary>
+        /// Interpolate based on nearest neighbours
+        /// </summary>
+        /// <param name="point"></param>
+        /// <returns></returns>
+        public Point InterpolatePosition(AForge.Point point)
+        {
+            return InterpolatePosition((int) Math.Round(point.X), (int) Math.Round(point.Y));
+        }
+
+        public Point GetPosition(AForge.Point point)
+        {
+            return GetPosition((int) point.X, (int) point.Y);
+        }
     }
 
+    /// <summary>
+    /// Calculates Brycentric coordinates and remapping
+    /// </summary>
     public class BarycentricCoordinate
     {
         public double Lambda1 { get; set; }
@@ -481,23 +593,15 @@ namespace HSR.PresWriter.PenTracking
 
         public double Lambda3 { get; set; }
 
-        public BarycentricCoordinate(Point target, Point corner1, Point corner2, Point corner3) //:
-            //this(new Point(target.X - corner1.X, target.Y - corner1.Y), 
-            //new Vector(corner1.X - corner2.X, corner1.Y - corner2.Y),
-            //     new Vector(corner1.X - corner3.X, corner1.Y - corner3.Y),
-            //     new Vector(corner2.X - corner3.X, corner2.Y - corner3.Y))
+        /// <summary>
+        /// Calculate from corners
+        /// </summary>
+        /// <param name="target">target point</param>
+        /// <param name="corner1"></param>
+        /// <param name="corner2"></param>
+        /// <param name="corner3"></param>
+        public BarycentricCoordinate(Point target, Point corner1, Point corner2, Point corner3)
         {
-            //var v0 = new Vector(corner2.X - corner1.X, corner2.Y - corner1.Y);
-            //var v1 = new Vector(corner3.X - corner1.X, corner3.Y - corner1.Y);
-            //var v2 = new Vector(target.X - corner1.X, target.Y - corner1.Y);
-            //var d00 = Dot(v0, v0);
-            //var d01 = Dot(v0, v1);
-            //var d11 = Dot(v1, v1);
-            //var d20 = Dot(v2, v0);
-            //var d21 = Dot(v2, v1);
-            //var denom = d00 * d11 - d01 * d01;
-            //Lambda1 = (d11 * d20 - d01 * d21) / denom;
-            //Lambda2 = (d00 * d21 - d01 * d20) / denom;
             var den = 1.0 / ((corner2.Y - corner3.Y) * (corner1.X - corner3.X) + (corner3.X - corner2.X) * (corner1.Y - corner3.Y));
             Lambda1 = ((corner2.Y - corner3.Y) * (target.X - corner3.X) + (corner3.X - corner2.X) * (target.Y - corner3.Y)) * den;
             Lambda2 = ((corner3.Y - corner1.Y) * (target.X - corner3.X) + (corner1.X - corner3.X) * (target.Y - corner3.Y)) * den;
@@ -505,23 +609,25 @@ namespace HSR.PresWriter.PenTracking
             //Debug.WriteLine("L1: " + Lambda1 + " L2: " + Lambda2 + " L3: " + Lambda3);
         }
 
-        private double Dot(Vector v1, Vector v2)
-        {
-            return v1.X*v2.X + v1.Y + v2.Y;
-        }
-
-        //public BarycentricCoordinate(Point target, Vector v1, Vector v2, Vector v3)
-        //{
-        //    Lambda1 = (v2.Y - v3.Y) * (target.X - v3.X) + (v3.X - v2.X) * (target.Y - v3.Y) /
-        //              ((v2.Y - v3.Y) * (v1.X - v3.X) + (v3.X - v2.X) * (v1.Y - v3.Y));
-        //    Lambda2 = (v3.Y - v1.Y) * (target.X - v3.X) + (v1.X - v3.X) * (target.Y - v3.Y) /
-        //        ((v2.Y - v3.Y) * (v1.X - v3.X) + (v3.X - v2.X) * (v1.Y - v3.Y));
-        //    Lambda3 = 1 - Lambda1 - Lambda2;
-        //}
-
+        /// <summary>
+        /// True if the point is inside the triangle
+        /// </summary>
         public bool IsInside
-        { get { return Lambda1 >= 0 && Lambda1 <= 1 && Lambda2 >= 0 && Lambda2 <= 1 && Lambda3 >= 0 && Lambda3 <= 1; }}
+        { get { return Lambda1 >= 0 && Lambda1 <= 1 && Lambda2 >= 0 && Lambda2 <= 1 && Lambda3 >= 0 && Lambda3 <= 1; } }
 
+        /// <summary>
+        /// True if all lambdas smaller 1.5
+        /// </summary>
+        public bool IsNearby
+        { get { return Lambda1 <= 1.5 && Lambda2 <= 1.5 && Lambda3 <= 1.5; } }
+
+        /// <summary>
+        /// Rebasing the point
+        /// </summary>
+        /// <param name="corner1"></param>
+        /// <param name="corner2"></param>
+        /// <param name="corner3"></param>
+        /// <returns></returns>
         public Point GetCartesianCoordinates(Point corner1, Point corner2, Point corner3)
         {
             return new Point((int) Math.Round(corner1.X*Lambda1 + Lambda2*corner2.X + corner3.X*Lambda3),

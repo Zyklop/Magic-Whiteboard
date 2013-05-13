@@ -120,12 +120,20 @@ namespace InputEmulation
             internal static extern bool InjectTouchInput(uint count, [MarshalAs(UnmanagedType.LPArray), In]POINTER_TOUCH_INFO[] contacts);
         }
 
+        /// <summary>
+        /// Check, if the OS is >= Win8 to support this
+        /// </summary>
         public bool IsSupported { get
         {
             return (Environment.OSVersion.Version.Major >= 6 && Environment.OSVersion.Version.Minor >= 2) ||
                    Environment.OSVersion.Version.Major > 6;
         } }
 
+        /// <summary>
+        /// Create a Touch emulator instance
+        /// </summary>
+        /// <param name="touchPoints">Number of concurrent touch points</param>
+        /// <param name="mode">Feedback mode</param>
         public Touch(uint touchPoints, FeedbackMode mode)
         {
             if(!IsSupported)
@@ -142,6 +150,11 @@ namespace InputEmulation
                 throw new ExternalException("Initialisation failed. Code: " + Marshal.GetLastWin32Error());
         }
 
+        /// <summary>
+        /// Has touch contact
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
         public void Touchdown(int x, int y)
         {
             _contact.pointerInfo.ptPixelLocation.X = x; // Y co-ordinate of touch on screen
@@ -161,6 +174,9 @@ namespace InputEmulation
                 throw new ExternalException("Injection failed. Code: " + Marshal.GetLastWin32Error());
         }
 
+        /// <summary>
+        /// No contact anymore
+        /// </summary>
         public void Release()
         {
             //_contact.pointerInfo.ptPixelLocation.X = x; // Y co-ordinate of touch on screen
@@ -179,6 +195,11 @@ namespace InputEmulation
                 throw new ExternalException("Initialisation failed. Code: " + Marshal.GetLastWin32Error());
         }
 
+        /// <summary>
+        /// Move to while touching
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
         public void DragTo(int x, int y)
         {
             _contact.pointerInfo.ptPixelLocation.X = x; // Y co-ordinate of touch on screen
@@ -197,6 +218,9 @@ namespace InputEmulation
                 throw new ExternalException("Initialisation failed. Code: " + Marshal.GetLastWin32Error());
         }
 
+        /// <summary>
+        /// Keep pressed
+        /// </summary>
         public void Hold()
         {
             //_contact.pointerInfo.ptPixelLocation.X = x; // Y co-ordinate of touch on screen

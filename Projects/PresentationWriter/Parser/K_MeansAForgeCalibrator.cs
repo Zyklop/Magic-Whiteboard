@@ -7,6 +7,7 @@ using System.IO;
 using System.Threading;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
 using AForge;
 using AForge.Imaging;
 using AForge.Imaging.Filters;
@@ -19,16 +20,16 @@ using Point = System.Drawing.Point;
 namespace HSR.PresWriter.PenTracking
 {
 
-    class PredictiveAForgeCalibrator : ICalibrator
+    class KMeansAForgeCalibrator : ICalibrator
     {
         private IPictureProvider _cc;
         private int _calibrationStep;
         private int _errors;
         private IVisualizerControl _vs;
-        private const int CalibrationFrames = 28; //must be n^2+3
+        private const int CalibrationFrames = 12; //must be n^2+3
         private Difference diffFilter = new Difference();
-        private const int Rowcount = 12;
-        private const int Columncount = 9;
+        private const int Rowcount = 20;
+        private const int Columncount = 15;
         private SemaphoreSlim _sem;
         private Task _t;
         private double _sqrheight;
@@ -37,7 +38,7 @@ namespace HSR.PresWriter.PenTracking
         private Bitmap actImg;
 
 
-        public PredictiveAForgeCalibrator(IPictureProvider provider, IVisualizerControl visualizer)
+        public KMeansAForgeCalibrator(IPictureProvider provider, IVisualizerControl visualizer)
         {
             _cc = provider;
             _vs = visualizer;
@@ -311,47 +312,100 @@ namespace HSR.PresWriter.PenTracking
         /// <param name="offset"></param>
         private void ProcessBlobs(BlobCounter b, int offset)
         {
-                    double xOff = ((_calibrationStep - 3) % (int)Math.Sqrt(CalibrationFrames - 3)) * _sqrwidth /
-                                    (int)Math.Sqrt(CalibrationFrames - 3);
-                    double yOff = Math.Floor((_calibrationStep - 3) / Math.Sqrt(CalibrationFrames - 3)) * _sqrwidth /
-                                    (int)Math.Sqrt(CalibrationFrames - 3);
+            var blobs = new Dictionary<Blob, Point>(new BlobComparer());
+            double xOff = ((_calibrationStep - 3) % (int)Math.Sqrt(CalibrationFrames - 3)) * _sqrwidth /
+                            (int)Math.Sqrt(CalibrationFrames - 3);
+            double yOff = Math.Floor((_calibrationStep - 3) / Math.Sqrt(CalibrationFrames - 3)) * _sqrwidth /
+                            (int)Math.Sqrt(CalibrationFrames - 3);
             foreach (var blob in b.GetObjectsInformation())
             {
-                var pos = Grid.GetPosition(blob.CenterOfGravity);
-                if (pos.X >= 0 && pos.X <= _vs.Width && pos.Y >= 0 && pos.Y <= _vs.Height)
+                blobs.Add(blob, new Point(-1, -1));
+            }
+            var actVect = new Vector(Grid.BottomLeft.X - Grid.TopLeft.X, Grid.BottomLeft.Y - Grid.TopLeft.Y);
+            var actStart = new AForge.Point(Grid.TopLeft.X, Grid.TopLeft.Y);
+            for (int i = offset; i < VisibleRows; i+=2)
+            {
+                var nearby = blobs.Where(x => x.Value.X == -1 && x.Value.Y == -1)
+                                  .Select(x => x.Key)
+                                  .OrderBy(x => DistPToVect(x, actVect, actStart))
+                                  .ToList()
+                                  .GetRange(0, Columncount)
+                                  .ToDictionary(x => x, x => DistPToVect(x, actVect, actStart));
+                var stddev = StdDev(nearby.Values.ToList());
+                foreach (var blob in nearby)
                 {
-                    var xPos = (int)Math.Floor((pos.X - xOff)/_sqrwidth);
-                    var yPos = (int)Math.Floor((pos.Y - yOff)/_sqrheight);
-#if DEBUG
-                    using (var g = Graphics.FromImage(actImg))
+                    if (blob.Value > stddev)
+                        nearby.Remove(blob.Key);
+                    else
                     {
-                        g.DrawString(yPos + "," + xPos, new Font(FontFamily.GenericSansSerif, 8.0f), new SolidBrush(Color.White),
-                            blob.CenterOfGravity.X, blob.CenterOfGravity.Y);
-                        g.Flush();
-                        //Debug.WriteLine("wrote to image");
-                    }
-#endif
-                    if (xPos % 2 == offset && yPos % 2 == offset) // check if the position is plausible
-                    {
-                        var corners =  PointsCloud.FindQuadrilateralCorners(b.GetBlobsEdgePoints(blob));
-                        if (corners.Count == 4)
-                        {
-                            RecursiveAForgeCalibrator.GridBlobs.InPlaceSort(corners);
-                            Grid.AddPoint((int) (xPos*_sqrwidth + xOff), (int) (yPos*_sqrheight + yOff), corners[0].X,
-                                          corners[0].Y);
-                            Grid.AddPoint((int) ((xPos + 1)*_sqrwidth + xOff), (int) (yPos*_sqrheight + yOff),
-                                          corners[1].X,
-                                          corners[1].Y);
-                            Grid.AddPoint((int) (xPos*_sqrwidth + xOff), (int) ((yPos + 1)*_sqrheight + yOff),
-                                          corners[2].X,
-                                          corners[2].Y);
-                            Grid.AddPoint((int) ((xPos + 1)*_sqrwidth + xOff), (int) ((yPos + 1)*_sqrheight + yOff),
-                                          corners[3].X,
-                                          corners[3].Y);
-                        }
+                        var t = blobs[blob.Key];
+                        t.X = i;
+                        blobs[blob.Key] = t;
                     }
                 }
+                var top = GetCrossingPoint(actStart, actVect, Grid.BottomLeft,
+                                           new Vector(Grid.BottomRight.X - Grid.BottomLeft.X,
+                                                      Grid.BottomRight.Y - Grid.BottomLeft.Y));
+                var height = top.Y - GetCrossingPoint(actStart, actVect, Grid.TopLeft,
+                                              new Vector(Grid.TopRight.X - Grid.TopLeft.X,
+                                                         Grid.TopRight.Y - Grid.TopLeft.Y)).Y;
+                var pred = height/Math.Round(VisibleColumns/2.0);
+                foreach (var blob in nearby)
+                {
+                    var t = blobs[blob.Key];
+                    t.Y = (int)Math.Floor((blob.Key.CenterOfGravity.Y - top.Y)/pred) + offset;
+                    blobs[blob.Key] = t;
+                }
+                actStart = nearby.First(x => x.Key.CenterOfGravity.Y == nearby.Keys.Min(y => y.CenterOfGravity.Y)).Key.CenterOfGravity;
+                var bott = nearby.First(x => x.Key.CenterOfGravity.Y == nearby.Keys.Max(y => y.CenterOfGravity.Y)).Key.CenterOfGravity;
+                actVect = new Vector(bott.X - actStart.X, bott.Y - actStart.Y);
             }
+            foreach (var blob in blobs)
+            {
+#if DEBUG
+                using (var g = Graphics.FromImage(actImg))
+                {
+                    g.DrawString(blob.Value.X + "," + blob.Value.Y, new Font(FontFamily.GenericSansSerif, 8.0f),
+                                 new SolidBrush(Color.White),
+                                 blob.Key.CenterOfGravity.X, blob.Key.CenterOfGravity.Y);
+                    g.Flush();
+                    //Debug.WriteLine("wrote to image");
+                }
+#endif
+                var corners = PointsCloud.FindQuadrilateralCorners(b.GetBlobsEdgePoints(blob.Key));
+                var xPos = blob.Value.X;
+                var yPos = blob.Value.Y;
+                if (corners.Count == 4)
+                {
+                    RecursiveAForgeCalibrator.GridBlobs.InPlaceSort(corners);
+                    Grid.AddPoint((int) (xPos*_sqrwidth + xOff), (int) (yPos*_sqrheight + yOff), corners[0].X,
+                                  corners[0].Y);
+                    Grid.AddPoint((int) ((xPos + 1)*_sqrwidth + xOff), (int) (yPos*_sqrheight + yOff),
+                                  corners[1].X,
+                                  corners[1].Y);
+                    Grid.AddPoint((int) (xPos*_sqrwidth + xOff), (int) ((yPos + 1)*_sqrheight + yOff),
+                                  corners[2].X,
+                                  corners[2].Y);
+                    Grid.AddPoint((int) ((xPos + 1)*_sqrwidth + xOff), (int) ((yPos + 1)*_sqrheight + yOff),
+                                  corners[3].X,
+                                  corners[3].Y);
+                }
+            }
+        }
+
+        private Point GetCrossingPoint(AForge.Point s1, Vector v1, Point s2, Vector v2)
+        {
+            throw new NotImplementedException();
+        }
+
+        private double StdDev(List<double> selection)
+        {
+            throw new NotImplementedException();
+        }
+
+        private double DistPToVect(Blob x, Vector vect, AForge.Point start)
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>
