@@ -53,6 +53,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="K_MeansAForgeCalibrator.cs" />
+    <Compile Include="LeastSqareAForgeCalibrator.cs" />
     <Compile Include="NoDiffAForgeCalibrator.cs" />
     <Compile Include="PredictiveAForgeCalibrator.cs" />
     <Compile Include="SimpleAForgeCalibrator.cs" />

@@ -395,17 +395,30 @@ namespace HSR.PresWriter.PenTracking
 
         private Point GetCrossingPoint(AForge.Point s1, Vector v1, Point s2, Vector v2)
         {
-            throw new NotImplementedException();
+            if ((v2.Y == 0 && v1.Y == 0) || ((v2.Y != 0 && v1.Y != 0 && (v2.X/v2.Y == v1.X/v1.Y))))
+                throw new ArgumentException("Doesn't cross");
+            var r = (s1.X*v1.Y - s1.Y*v1.X + s2.Y*v1.X - s2.X*v1.Y) / (v2.Y*v1.X - v1.Y*v2.X);
+            return new Point((int) r, (int) ((s1.X - s2.X + r*v2.X) / v1.X));
         }
 
         private double StdDev(List<double> selection)
         {
-            throw new NotImplementedException();
+            var mean = selection.Average(x => x);
+            var sum = 0.0;
+            foreach (var d in selection)
+            {
+                var diff = d - mean;
+                sum += diff*diff;
+            }
+            return Math.Sqrt(sum/selection.Count);
         }
 
         private double DistPToVect(Blob x, Vector vect, AForge.Point start)
         {
-            throw new NotImplementedException();
+            vect.Normalize();
+            var diff = start - x.CenterOfGravity;
+            var t = new AForge.Point((float) (diff.X*vect.X*vect.X), (float) (diff.Y*vect.Y*vect.Y));
+            return (diff - t).EuclideanNorm();
         }
 
         /// <summary>
