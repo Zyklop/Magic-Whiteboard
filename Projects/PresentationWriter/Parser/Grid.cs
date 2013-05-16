@@ -231,6 +231,13 @@ namespace HSR.PresWriter.PenTracking
             }
         }
 
+        public Point GetRefPoint(int screenX, int screenY)
+        {
+            if (!_refPoints.ContainsKey(screenX) || !_refPoints[screenX].ContainsKey(screenY))
+                throw new ArgumentException("Key is not valid");
+            return _refPoints[screenX][screenY];
+        }
+
         /// <summary>
         /// Calculate from collected data
         /// </summary>

@@ -19,7 +19,7 @@ using Point = System.Drawing.Point;
 
 namespace HSR.PresWriter.PenTracking
 {
-    internal class LeastSqareAForgeCalibrator : ICalibrator
+    internal class IncrementalClusteringAForgeCalibrator : ICalibrator
     {
         private IPictureProvider _cc;
         private int _calibrationStep;
@@ -35,10 +35,11 @@ namespace HSR.PresWriter.PenTracking
         private int _sqrwidth;
         private int _bgwidth;
 
-        public LeastSqareAForgeCalibrator(IPictureProvider provider, IVisualizerControl visualizer)
+        public IncrementalClusteringAForgeCalibrator(IPictureProvider provider, IVisualizerControl visualizer, Colorfilter colorFilter)
         {
             _cc = provider;
             _vs = visualizer;
+            ColorFilter = colorFilter;
             //var thread = new Thread(() => _vs = new CalibratorWindow());
             //thread.SetApartmentState(ApartmentState.STA);
             //thread.Start();
@@ -113,7 +114,7 @@ namespace HSR.PresWriter.PenTracking
 #if DEBUG
                     actImg = (Bitmap) img.Clone();
 #endif
-                    var mf = new Median {Size = 5};
+                    var mf = new Median {Size = 3};
                     mf.ApplyInPlace(img);
                     var blobCounter = new BlobCounter
                         {
@@ -122,6 +123,7 @@ namespace HSR.PresWriter.PenTracking
                             MinHeight = 10,
                             MaxWidth = 25,
                             MinWidth = 10,
+                            BackgroundThreshold = Color.FromArgb(255, 15, 20, 20),
                             FilterBlobs = true,
                             CoupledSizeFiltering = false
                         };
@@ -138,7 +140,7 @@ namespace HSR.PresWriter.PenTracking
                             var bm = UnmanagedImage.FromManagedImage(e.Frame.Bitmap);
                             //diffFilter.OverlayImage.Save(@"C:\temp\daforge\diff\src" + _errors + ".jpg", ImageFormat.Jpeg);
                             bm = diffFilter.Apply(bm);
-                            var gf = new GaussianBlur(9.0, 3);
+                            var gf = new Median(3);
                             gf.ApplyInPlace(bm);
                             var cf = new ColorFiltering(new IntRange(10, 255), new IntRange(20, 255),
                                                         new IntRange(20, 255));
@@ -146,6 +148,8 @@ namespace HSR.PresWriter.PenTracking
                             var blobCounter = new BlobCounter
                                 {
                                     ObjectsOrder = ObjectsOrder.Size,
+                                    MinHeight = 200,
+                                    MinWidth = 300,
                                     BackgroundThreshold = Color.FromArgb(255, 15, 20, 20),
                                     FilterBlobs = true
                                 };
@@ -171,7 +175,7 @@ namespace HSR.PresWriter.PenTracking
                                 if (Grid.TopLeft.X > 10 && Grid.TopRight.X < _vs.Width - 5 && Grid.BottomLeft.X > 5 &&
                                     Grid.BottomRight.X < _vs.Width - 5 && Grid.TopLeft.Y > 10 && Grid.TopRight.Y > 5 &&
                                     Grid.BottomLeft.Y < _vs.Height - 5 && Grid.BottomRight.Y < _vs.Height - 5 &&
-                                    Grid.TopLeft.X < Grid.BottomRight.X && blobs[i - 1].Area > 60000 &&
+                                    Grid.TopLeft.X < Grid.BottomRight.X &&
                                     Grid.BottomLeft.X < Grid.TopRight.X && Grid.BottomLeft.X < Grid.BottomRight.X &&
                                     Grid.TopLeft.Y < Grid.BottomLeft.Y && Grid.TopLeft.Y < Grid.BottomRight.Y &&
                                     Grid.TopRight.Y < Grid.BottomLeft.Y && Grid.TopRight.Y < Grid.BottomRight.Y)
@@ -183,7 +187,6 @@ namespace HSR.PresWriter.PenTracking
                                     Grid.AddPoint(new Point(_vs.Width, 0), new Point(corners[2].X, corners[2].Y));
                                     Grid.AddPoint(new Point(_vs.Width, _vs.Height),
                                                   new Point(corners[3].X, corners[3].Y));
-                                    Grid.PredictFromCorners();
                                 }
                                 else
                                 {
@@ -212,7 +215,6 @@ namespace HSR.PresWriter.PenTracking
                             var thread = new Thread(() =>
                                 {
                                     _vs.Show();
-                                    _vs.AddRect(0, 0, _vs.Width, _vs.Height, Color.FromArgb(255, 0, 0, 0));
                                 });
                             thread.SetApartmentState(ApartmentState.STA);
                             thread.Start();
@@ -270,10 +272,56 @@ namespace HSR.PresWriter.PenTracking
         /// </summary>
         /// <param name="b"></param>
         /// <param name="offset"></param>
-        private void ProcessBlobs(BlobCounter b)
+        private bool ProcessBlobs(BlobCounter bc)
         {
-            var blobs = new List<Blob>(b.GetObjectsInformation());
-            
+            var blobs = new List<Blob>(bc.GetObjectsInformation());
+            blobs.RemoveAll(x => !Grid.Contains(x.CenterOfGravity));
+            if (blobs.Count < 4)
+            {
+                Debug.WriteLine("too few blobs");
+                return false;
+            }
+            if (blobs.Count > 5)
+            {
+                Debug.WriteLine("too many blobs");
+                return false;
+            }
+            var refs = new List<Point>();
+            var parts = Math.Pow(2, _calibrationStep - 2);
+            var w = _vs.Width/parts;
+            var h = _vs.Height/parts;
+            for (int i = 0; i < parts; i++)
+            {
+                for (int j = 0; j < parts; j++)
+                {
+                    if (i%2 == 1)
+                    {
+                        if (j%2 == 1)
+                        {
+                            //center of a rectangle
+                            var tl = Grid.GetRefPoint((int)((i - 1) * w), (int)((j - 1) * h));
+                            var tr = Grid.GetRefPoint((int)((i + 1) * w), (int)((j - 1) * h));
+                            var bl = Grid.GetRefPoint((int)((i - 1) * w), (int)((j + 1) * h));
+                            var br = Grid.GetRefPoint((int)((i + 1) * w), (int)((j + 1) * h));
+                            refs.Add(new Point((tl.X + tr.X + bl.X + br.X)/4,(tl.Y+tr.Y+bl.Y+br.Y)/4));
+                        }
+                        else
+                        {
+                            // middle of a horizontal outline
+                            var l = Grid.GetRefPoint((int)((i - 1) * w), (int)((j) * h));
+                            var r = Grid.GetRefPoint((int)((i + 1) * w), (int)((j) * h));
+                            refs.Add(new Point((l.X + r.X) / 2, (l.Y + r.Y) / 2));
+                        }
+                    }
+                    else if (j%2 == 1)
+                    {
+                        // middle of a horizontal outline
+                        var t = Grid.GetRefPoint((int)((i) * w), (int)((j - 1) * h));
+                        var b = Grid.GetRefPoint((int)((i) * w), (int)((j + 1) * h));
+                        refs.Add(new Point((t.X + b.X) / 2, (t.Y + b.Y) / 2));
+                    }
+                }
+            }
             foreach (var blob in blobs)
             {
 #if DEBUG
@@ -286,7 +334,7 @@ namespace HSR.PresWriter.PenTracking
                     //Debug.WriteLine("wrote to image");
                 }
 #endif
-                var corners = PointsCloud.FindQuadrilateralCorners(b.GetBlobsEdgePoints(blob));
+                var corners = PointsCloud.FindQuadrilateralCorners(bc.GetBlobsEdgePoints(blob));
                 //var xPos = blob.Value.X;
                 //var yPos = blob.Value.Y;
                 if (corners.Count == 4)
@@ -305,11 +353,120 @@ namespace HSR.PresWriter.PenTracking
                     //              corners[3].Y);
                 }
             }
+            return true;
         }
 
         public Grid Grid { get; set; }
         public Colorfilter ColorFilter { get; private set; }
 
         public event EventHandler CalibrationCompleted;
+    }
+
+    internal static class KMeansCluster
+    {
+        /// <summary>
+        /// Finds KMeans Clusters
+        /// </summary>
+        /// <param name="points">Collection of the Points</param>
+        /// <param name="clusterCenters">Centers of the Clusters (Prediced)
+        /// <remarks>The values are set to the correct Centers during the calculation</remarks></param>
+        /// <param name="maxIterations">Number of iterations to calculate</param>
+        /// <returns>The index of the cluster to the corresponding point</returns>
+        public static List<int> KMeansClustering(List<AForge.Point> points, List<Point> clusterCenters, int maxIterations = 1)
+        {
+            if (clusterCenters.Count == 0)
+                throw new ArgumentException("No clusters defined");
+            var changed = true;
+            var clustering = new List<int>(Enumerable.Repeat(0,points.Count));
+            var means = new List<AForge.Point>(Enumerable.Repeat(new AForge.Point(), clusterCenters.Count));
+            var centroids = new List<AForge.Point>(clusterCenters.Select(x => new AForge.Point(x.X, x.Y)));
+            Assign(points, clustering, centroids);
+            UpdateMeans(points, clustering, means);
+            UpdateCentroids(points, clustering, centroids, means);
+            for (int ct = 1; changed && ct < maxIterations; ct++)
+            {
+                changed = Assign(points, clustering, centroids);
+                UpdateMeans(points, clustering, means);
+                UpdateCentroids(points, clustering, centroids, means);
+            }
+            for (int i = 0; i < centroids.Count; i++)
+                clusterCenters[i] = new Point((int) Math.Round(centroids[i].X), (int) Math.Round(centroids[i].Y));
+            return clustering;
+        }
+
+        /// <summary>
+        /// Assign Points to their nearest center
+        /// </summary>
+        /// <param name="points"></param>
+        /// <param name="clustering"></param>
+        /// <param name="centroids"></param>
+        /// <returns>True if somethich changed</returns>
+        private static bool Assign(List<AForge.Point> points, List<int> clustering, List<AForge.Point> centroids)
+        {
+            bool changed = false;
+            var distances = new List<double>(Enumerable.Repeat(0.0, centroids.Count));
+            for (int i = 0; i < points.Count; i++)
+            {
+                foreach (var c in centroids)
+                    distances[i] = (points[i].DistanceTo(c));
+                int newCluster = distances.IndexOf(distances.Min());
+                if (newCluster != clustering[i])
+                {
+                    changed = true;
+                    clustering[i] = newCluster;
+                }
+            }
+            return changed;
+        }
+
+        /// <summary>
+        /// Seting new Points as Centroids
+        /// </summary>
+        /// <param name="points"></param>
+        /// <param name="clustering"></param>
+        /// <param name="centroids"></param>
+        /// <param name="means"></param>
+        private static void UpdateCentroids(List<AForge.Point> points, List<int> clustering, List<AForge.Point> centroids, List<AForge.Point> means)
+        {
+            for (int cluster = 0; cluster < centroids.Count; cluster++)
+            {
+                var centroid = new AForge.Point();
+                double minDist = double.MaxValue;
+                for (int i = 0; i < points.Count; i++)
+                {
+                    int c = clustering[i];
+                    if (c != cluster) 
+                        continue;
+                    double currDist = points[i].DistanceTo(means[cluster]);
+                    if (currDist < minDist)
+                    {
+                        minDist = currDist;
+                        centroid = points[i];
+                    }
+                }
+                centroids[cluster] = centroid;
+            }
+        }
+
+        /// <summary>
+        /// Updating the mean center of the centroid
+        /// </summary>
+        /// <param name="points"></param>
+        /// <param name="clustering"></param>
+        /// <param name="means"></param>
+        private static void UpdateMeans(List<AForge.Point> points, List<int> clustering, List<AForge.Point> means)
+        {
+            means = new List<AForge.Point>(Enumerable.Repeat(new AForge.Point(), means.Count));
+            var clusterCounts = new List<int>(Enumerable.Repeat(0, means.Count));
+            for (int i = 0; i < points.Count; i++)
+            {
+                var cluster = clustering[i];
+                ++clusterCounts[cluster];
+                means[cluster] += points[i];
+            }
+            for (int k = 0; k < means.Count; ++k)
+                if (clusterCounts[k] != 0)
+                    means[k] /= clusterCounts[k];
+        }
     }
 }
