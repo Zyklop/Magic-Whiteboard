@@ -62,7 +62,7 @@ namespace HSR.PresWriter.PenTracking
         {
             _calibrationStep = 0;
             _errors = 0;
-            _sqrwidth = (int) Math.Round(_vs.Height * SideWidthFactor);
+            _sqrwidth = (int) Math.Round(_vs.Height * SideWidthFactor); // this may go wrong with exotic resolutions
             _bgwidth = (int) Math.Round(_vs.Height*BgWidthFactor);
             _sem = new SemaphoreSlim(1, 1);
             _cc.FrameReady += BaseCalibration;
@@ -127,11 +127,12 @@ namespace HSR.PresWriter.PenTracking
                             FilterBlobs = true,
                             CoupledSizeFiltering = false
                         };
-                    ProcessBlobs(blobCounter);
+                    if(ProcessBlobs(blobCounter))
+                        _calibrationStep++;
 #if DEBUG
                     actImg.Save(@"C:\temp\daforge\squares\img" + _calibrationStep + ".jpg", ImageFormat.Jpeg);
 #endif
-                    _calibrationStep++;
+                    DrawMarkers();
                 }
                 else
                     switch (_calibrationStep)
@@ -187,6 +188,7 @@ namespace HSR.PresWriter.PenTracking
                                     Grid.AddPoint(new Point(_vs.Width, 0), new Point(corners[2].X, corners[2].Y));
                                     Grid.AddPoint(new Point(_vs.Width, _vs.Height),
                                                   new Point(corners[3].X, corners[3].Y));
+                                    DrawMarkers();
                                 }
                                 else
                                 {
@@ -228,6 +230,49 @@ namespace HSR.PresWriter.PenTracking
             Debug.WriteLine("Releasing");
             await Task.Delay(500);
             _sem.Release();
+        }
+
+        private void DrawMarkers()
+        {
+            var parts = Math.Pow(2, _calibrationStep - 2);
+            var w = _vs.Width / parts;
+            var h = _vs.Height / parts;
+            for (int i = 0; i <= parts; i++)
+            {
+                for (int j = 0; j <= parts; j++)
+                {
+                    if (i % 2 == 1)
+                    {
+                        if (j % 2 == 1)
+                            //center of a rectangle
+                            DrawInverted((int) (i*w - _sqrwidth/2),(int) (j*h - _sqrwidth/2),_sqrwidth,_sqrwidth);
+                        else
+                        {
+                            // middle of a horizontal outline
+                            // check for top edge
+                            if (j == 0)
+                                DrawInverted((int)(i * w - _sqrwidth / 2), 0, _sqrwidth, _sqrwidth);
+                            // check for bottom
+                            else if (j == (int)parts)
+                                DrawInverted((int)(i * w - _sqrwidth / 2), _vs.Height, _sqrwidth, _sqrwidth);
+                            else
+                                DrawInverted((int)(i * w - _sqrwidth / 2), (int)(j * h - _sqrwidth / 2), _sqrwidth, _sqrwidth);
+                        }
+                    }
+                    else if (j % 2 == 1)
+                    {
+                        // middle of a horizontal outline
+                        // check for left edge
+                        if (i == 0)
+                            DrawInverted(0, (int)(j * w - _sqrwidth / 2), _sqrwidth, _sqrwidth);
+                        // check for right edge
+                        else if (i == (int) parts)
+                            DrawInverted(_vs.Width, (int) (j*w - _sqrwidth/2), _sqrwidth, _sqrwidth);
+                        else
+                            DrawInverted((int)(i * w - _sqrwidth / 2), (int)(j * h - _sqrwidth / 2), _sqrwidth, _sqrwidth);
+                    }
+                }
+            }
         }
 
         private void DrawInverted(int left, int top, int width, int height)
@@ -276,23 +321,24 @@ namespace HSR.PresWriter.PenTracking
         {
             var blobs = new List<Blob>(bc.GetObjectsInformation());
             blobs.RemoveAll(x => !Grid.Contains(x.CenterOfGravity));
-            if (blobs.Count < 4)
-            {
-                Debug.WriteLine("too few blobs");
-                return false;
-            }
-            if (blobs.Count > 5)
-            {
-                Debug.WriteLine("too many blobs");
-                return false;
-            }
-            var refs = new List<Point>();
-            var parts = Math.Pow(2, _calibrationStep - 2);
+            //if (blobs.Count < 4)
+            //{
+            //    Debug.WriteLine("too few blobs");
+            //    return false;
+            //}
+            //if (blobs.Count > 5)
+            //{
+            //    Debug.WriteLine("too many blobs");
+            //    return false;
+            //}
+            var refs = new Dictionary<AForge.Point, Point>();
+            var parts = (int)Math.Pow(2, _calibrationStep - 2);
             var w = _vs.Width/parts;
             var h = _vs.Height/parts;
-            for (int i = 0; i < parts; i++)
+            Point? missing = null;
+            for (int i = 0; i <= parts; i++)
             {
-                for (int j = 0; j < parts; j++)
+                for (int j = 0; j <= parts; j++)
                 {
                     if (i%2 == 1)
                     {
@@ -303,14 +349,14 @@ namespace HSR.PresWriter.PenTracking
                             var tr = Grid.GetRefPoint((int)((i + 1) * w), (int)((j - 1) * h));
                             var bl = Grid.GetRefPoint((int)((i - 1) * w), (int)((j + 1) * h));
                             var br = Grid.GetRefPoint((int)((i + 1) * w), (int)((j + 1) * h));
-                            refs.Add(new Point((tl.X + tr.X + bl.X + br.X)/4,(tl.Y+tr.Y+bl.Y+br.Y)/4));
+                            refs.Add(new AForge.Point((tl.X + tr.X + bl.X + br.X)/4.0f,(tl.Y+tr.Y+bl.Y+br.Y)/4.0f), new Point(i,j));
                         }
                         else
                         {
                             // middle of a horizontal outline
                             var l = Grid.GetRefPoint((int)((i - 1) * w), (int)((j) * h));
                             var r = Grid.GetRefPoint((int)((i + 1) * w), (int)((j) * h));
-                            refs.Add(new Point((l.X + r.X) / 2, (l.Y + r.Y) / 2));
+                            refs.Add(new AForge.Point((l.X + r.X) / 2.0f, (l.Y + r.Y) / 2.0f), new Point(i,j));
                         }
                     }
                     else if (j%2 == 1)
@@ -318,41 +364,99 @@ namespace HSR.PresWriter.PenTracking
                         // middle of a horizontal outline
                         var t = Grid.GetRefPoint((int)((i) * w), (int)((j - 1) * h));
                         var b = Grid.GetRefPoint((int)((i) * w), (int)((j + 1) * h));
-                        refs.Add(new Point((t.X + b.X) / 2, (t.Y + b.Y) / 2));
+                        refs.Add(new AForge.Point((t.X + b.X) / 2.0f, (t.Y + b.Y) / 2.0f), new Point(i,j));
                     }
                 }
             }
-            foreach (var blob in blobs)
+            var clusters = KMeansCluster.KMeansClustering(blobs.Select(x => x.CenterOfGravity).ToList(),
+                                                          refs.Keys.ToList(), 5);
+            foreach (var cluster in clusters)
             {
-#if DEBUG
-                using (var g = Graphics.FromImage(actImg))
+                if (cluster.Points.Count(refs.ContainsKey) > 1)
                 {
-                    //g.DrawString(blob.Value.X + "," + blob.Value.Y, new Font(FontFamily.GenericSansSerif, 8.0f),
-                    //             new SolidBrush(Color.White),
-                    //             blob.Key.CenterOfGravity.X, blob.Key.CenterOfGravity.Y);
-                    g.Flush();
-                    //Debug.WriteLine("wrote to image");
+                    Debug.WriteLine("Multiple Centers in a Cluster");
+                    return false;
+                }
+                if (!cluster.Points.Any(refs.ContainsKey))
+                {
+                    Debug.WriteLine("No Center in a Cluster");
+                    return false;
+                }
+                var center = cluster.Points.First(refs.ContainsKey);
+                var pos = refs[center];
+                if (cluster.Points.Count == 1)
+                {
+                    Debug.WriteLine("Point missing in cluster");
+                    if (missing.HasValue)
+                        return false;
+                    missing = pos;
+                    continue;
+                }
+                if (cluster.Points.Count > 2)
+                    Debug.WriteLine("Multiple Points in a cluster");
+                cluster.Points.Remove(center);
+#if DEBUG
+                foreach (var point in cluster.Points)
+                {
+                    using (var g = Graphics.FromImage(actImg))
+                    {
+                        g.DrawString(pos.X + "," + pos.Y, new Font(FontFamily.GenericSansSerif, 8.0f),
+                                     new SolidBrush(Color.White),
+                                     point.X, point.Y);
+                        g.Flush();
+                        //Debug.WriteLine("wrote to image");
+                    }
                 }
 #endif
-                var corners = PointsCloud.FindQuadrilateralCorners(bc.GetBlobsEdgePoints(blob));
-                //var xPos = blob.Value.X;
-                //var yPos = blob.Value.Y;
-                if (corners.Count == 4)
+                var p = cluster.Points.First();
+                var xOff = 0.0f;
+                var yOff = 0.0f;
+                if (pos.X == 0)
                 {
-                    RecursiveAForgeCalibrator.GridBlobs.InPlaceSort(corners);
-                    //Grid.AddPoint((int) (xPos*_sqrwidth + xOff), (int) (yPos*_sqrheight + yOff), corners[0].X,
-                    //              corners[0].Y);
-                    //Grid.AddPoint((int) ((xPos + 1)*_sqrwidth + xOff), (int) (yPos*_sqrheight + yOff),
-                    //              corners[1].X,
-                    //              corners[1].Y);
-                    //Grid.AddPoint((int) (xPos*_sqrwidth + xOff), (int) ((yPos + 1)*_sqrheight + yOff),
-                    //              corners[2].X,
-                    //              corners[2].Y);
-                    //Grid.AddPoint((int) ((xPos + 1)*_sqrwidth + xOff), (int) ((yPos + 1)*_sqrheight + yOff),
-                    //              corners[3].X,
-                    //              corners[3].Y);
+                    //top
+                    xOff += _sqrwidth/2.0f;
                 }
+                else if (pos.X == (int)parts)
+                {
+                    //bottom
+                    xOff -= _sqrwidth / 2.0f;
+                }
+                if (pos.Y == 0)
+                {
+                    //left
+                    yOff += _sqrwidth / 2.0f;
+                }
+                else if (pos.Y == (int)parts)
+                {
+                    //right
+                    yOff -= _sqrwidth / 2.0f;
+                }
+                p.X += xOff;
+                p.Y += yOff;
+                var ip = p.Round();
+                Grid.AddPoint(pos.X * w, pos.Y * h, ip.X, ip.Y);
             }
+            //foreach (var blob in blobs)
+            //{
+            //    var corners = PointsCloud.FindQuadrilateralCorners(bc.GetBlobsEdgePoints(blob));
+            //    //var xPos = blob.Value.X;
+            //    //var yPos = blob.Value.Y;
+            //    if (corners.Count == 4)
+            //    {
+            //        RecursiveAForgeCalibrator.GridBlobs.InPlaceSort(corners);
+            //        //Grid.AddPoint((int) (xPos*_sqrwidth + xOff), (int) (yPos*_sqrheight + yOff), corners[0].X,
+            //        //              corners[0].Y);
+            //        //Grid.AddPoint((int) ((xPos + 1)*_sqrwidth + xOff), (int) (yPos*_sqrheight + yOff),
+            //        //              corners[1].X,
+            //        //              corners[1].Y);
+            //        //Grid.AddPoint((int) (xPos*_sqrwidth + xOff), (int) ((yPos + 1)*_sqrheight + yOff),
+            //        //              corners[2].X,
+            //        //              corners[2].Y);
+            //        //Grid.AddPoint((int) ((xPos + 1)*_sqrwidth + xOff), (int) ((yPos + 1)*_sqrheight + yOff),
+            //        //              corners[3].X,
+            //        //              corners[3].Y);
+            //    }
+            //}
             return true;
         }
 
@@ -362,111 +466,5 @@ namespace HSR.PresWriter.PenTracking
         public event EventHandler CalibrationCompleted;
     }
 
-    internal static class KMeansCluster
-    {
-        /// <summary>
-        /// Finds KMeans Clusters
-        /// </summary>
-        /// <param name="points">Collection of the Points</param>
-        /// <param name="clusterCenters">Centers of the Clusters (Prediced)
-        /// <remarks>The values are set to the correct Centers during the calculation</remarks></param>
-        /// <param name="maxIterations">Number of iterations to calculate</param>
-        /// <returns>The index of the cluster to the corresponding point</returns>
-        public static List<int> KMeansClustering(List<AForge.Point> points, List<Point> clusterCenters, int maxIterations = 1)
-        {
-            if (clusterCenters.Count == 0)
-                throw new ArgumentException("No clusters defined");
-            var changed = true;
-            var clustering = new List<int>(Enumerable.Repeat(0,points.Count));
-            var means = new List<AForge.Point>(Enumerable.Repeat(new AForge.Point(), clusterCenters.Count));
-            var centroids = new List<AForge.Point>(clusterCenters.Select(x => new AForge.Point(x.X, x.Y)));
-            Assign(points, clustering, centroids);
-            UpdateMeans(points, clustering, means);
-            UpdateCentroids(points, clustering, centroids, means);
-            for (int ct = 1; changed && ct < maxIterations; ct++)
-            {
-                changed = Assign(points, clustering, centroids);
-                UpdateMeans(points, clustering, means);
-                UpdateCentroids(points, clustering, centroids, means);
-            }
-            for (int i = 0; i < centroids.Count; i++)
-                clusterCenters[i] = new Point((int) Math.Round(centroids[i].X), (int) Math.Round(centroids[i].Y));
-            return clustering;
-        }
-
-        /// <summary>
-        /// Assign Points to their nearest center
-        /// </summary>
-        /// <param name="points"></param>
-        /// <param name="clustering"></param>
-        /// <param name="centroids"></param>
-        /// <returns>True if somethich changed</returns>
-        private static bool Assign(List<AForge.Point> points, List<int> clustering, List<AForge.Point> centroids)
-        {
-            bool changed = false;
-            var distances = new List<double>(Enumerable.Repeat(0.0, centroids.Count));
-            for (int i = 0; i < points.Count; i++)
-            {
-                foreach (var c in centroids)
-                    distances[i] = (points[i].DistanceTo(c));
-                int newCluster = distances.IndexOf(distances.Min());
-                if (newCluster != clustering[i])
-                {
-                    changed = true;
-                    clustering[i] = newCluster;
-                }
-            }
-            return changed;
-        }
-
-        /// <summary>
-        /// Seting new Points as Centroids
-        /// </summary>
-        /// <param name="points"></param>
-        /// <param name="clustering"></param>
-        /// <param name="centroids"></param>
-        /// <param name="means"></param>
-        private static void UpdateCentroids(List<AForge.Point> points, List<int> clustering, List<AForge.Point> centroids, List<AForge.Point> means)
-        {
-            for (int cluster = 0; cluster < centroids.Count; cluster++)
-            {
-                var centroid = new AForge.Point();
-                double minDist = double.MaxValue;
-                for (int i = 0; i < points.Count; i++)
-                {
-                    int c = clustering[i];
-                    if (c != cluster) 
-                        continue;
-                    double currDist = points[i].DistanceTo(means[cluster]);
-                    if (currDist < minDist)
-                    {
-                        minDist = currDist;
-                        centroid = points[i];
-                    }
-                }
-                centroids[cluster] = centroid;
-            }
-        }
-
-        /// <summary>
-        /// Updating the mean center of the centroid
-        /// </summary>
-        /// <param name="points"></param>
-        /// <param name="clustering"></param>
-        /// <param name="means"></param>
-        private static void UpdateMeans(List<AForge.Point> points, List<int> clustering, List<AForge.Point> means)
-        {
-            means = new List<AForge.Point>(Enumerable.Repeat(new AForge.Point(), means.Count));
-            var clusterCounts = new List<int>(Enumerable.Repeat(0, means.Count));
-            for (int i = 0; i < points.Count; i++)
-            {
-                var cluster = clustering[i];
-                ++clusterCounts[cluster];
-                means[cluster] += points[i];
-            }
-            for (int k = 0; k < means.Count; ++k)
-                if (clusterCounts[k] != 0)
-                    means[k] /= clusterCounts[k];
-        }
-    }
+   
 }

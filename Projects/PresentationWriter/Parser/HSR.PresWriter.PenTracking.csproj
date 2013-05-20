@@ -52,6 +52,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="KMeansClustering.cs" />
     <Compile Include="K_MeansAForgeCalibrator.cs" />
     <Compile Include="IncrementalClusteringAForgeCalibrator.cs" />
     <Compile Include="NoDiffAForgeCalibrator.cs" />
