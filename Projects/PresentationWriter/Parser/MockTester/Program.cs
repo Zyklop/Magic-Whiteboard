@@ -21,7 +21,7 @@ namespace MockTester
 
         static void Main(string[] args)
         {
-            Main2(args);
+            Main4(args);
         }
 
         static void Main1(string[] args)
@@ -201,5 +201,6 @@ namespace MockTester
             parser.Start();
             Console.Read();
         }
+
     }
 }

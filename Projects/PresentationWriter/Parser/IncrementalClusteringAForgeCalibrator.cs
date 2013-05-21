@@ -27,7 +27,7 @@ namespace HSR.PresWriter.PenTracking
         private IVisualizerControl _vs;
         private const int CalibrationFrames = 6;
         private Difference diffFilter = new Difference();
-        private const double SideWidthFactor = 0.05;
+        private const double SideWidthFactor = 0.04;
         private const double BgWidthFactor = 0.1;
         private SemaphoreSlim _sem;
         private Task _t;
@@ -35,11 +35,10 @@ namespace HSR.PresWriter.PenTracking
         private int _sqrwidth;
         private int _bgwidth;
 
-        public IncrementalClusteringAForgeCalibrator(IPictureProvider provider, IVisualizerControl visualizer, Colorfilter colorFilter)
+        public IncrementalClusteringAForgeCalibrator(IPictureProvider provider, IVisualizerControl visualizer)
         {
             _cc = provider;
             _vs = visualizer;
-            ColorFilter = colorFilter;
             //var thread = new Thread(() => _vs = new CalibratorWindow());
             //thread.SetApartmentState(ApartmentState.STA);
             //thread.Start();
@@ -110,23 +109,24 @@ namespace HSR.PresWriter.PenTracking
                     // analyse diffimage
                     _vs.Clear();
                     var img = diffFilter.Apply(e.Frame.Bitmap);
+                    var mf = new Median(3);
+                    mf.ApplyInPlace(img);
                     img.Save(@"C:\temp\daforge\diff\img" + _calibrationStep + ".jpg", ImageFormat.Jpeg);
 #if DEBUG
                     actImg = (Bitmap) img.Clone();
 #endif
-                    var mf = new Median {Size = 3};
-                    mf.ApplyInPlace(img);
                     var blobCounter = new BlobCounter
                         {
                             ObjectsOrder = ObjectsOrder.YX,
-                            MaxHeight = 25,
-                            MinHeight = 10,
-                            MaxWidth = 25,
-                            MinWidth = 10,
+                            MaxHeight = 20,
+                            MinHeight = 5,
+                            MaxWidth = 20,
+                            MinWidth = 5,
                             BackgroundThreshold = Color.FromArgb(255, 15, 20, 20),
                             FilterBlobs = true,
                             CoupledSizeFiltering = false
                         };
+                    blobCounter.ProcessImage(img);
                     if(ProcessBlobs(blobCounter))
                         _calibrationStep++;
 #if DEBUG
@@ -234,6 +234,7 @@ namespace HSR.PresWriter.PenTracking
 
         private void DrawMarkers()
         {
+            DrawBackground();
             var parts = Math.Pow(2, _calibrationStep - 2);
             var w = _vs.Width / parts;
             var h = _vs.Height / parts;
@@ -254,7 +255,7 @@ namespace HSR.PresWriter.PenTracking
                                 DrawInverted((int)(i * w - _sqrwidth / 2), 0, _sqrwidth, _sqrwidth);
                             // check for bottom
                             else if (j == (int)parts)
-                                DrawInverted((int)(i * w - _sqrwidth / 2), _vs.Height, _sqrwidth, _sqrwidth);
+                                DrawInverted((int)(i * w - _sqrwidth / 2), _vs.Height - _sqrwidth, _sqrwidth, _sqrwidth);
                             else
                                 DrawInverted((int)(i * w - _sqrwidth / 2), (int)(j * h - _sqrwidth / 2), _sqrwidth, _sqrwidth);
                         }
@@ -264,15 +265,16 @@ namespace HSR.PresWriter.PenTracking
                         // middle of a horizontal outline
                         // check for left edge
                         if (i == 0)
-                            DrawInverted(0, (int)(j * w - _sqrwidth / 2), _sqrwidth, _sqrwidth);
+                            DrawInverted(0, (int)(j * h - _sqrwidth / 2), _sqrwidth, _sqrwidth);
                         // check for right edge
                         else if (i == (int) parts)
-                            DrawInverted(_vs.Width, (int) (j*w - _sqrwidth/2), _sqrwidth, _sqrwidth);
+                            DrawInverted(_vs.Width - _sqrwidth, (int) (j*h - _sqrwidth/2), _sqrwidth, _sqrwidth);
                         else
                             DrawInverted((int)(i * w - _sqrwidth / 2), (int)(j * h - _sqrwidth / 2), _sqrwidth, _sqrwidth);
                     }
                 }
             }
+            _vs.Draw();
         }
 
         private void DrawInverted(int left, int top, int width, int height)
@@ -287,7 +289,7 @@ namespace HSR.PresWriter.PenTracking
                     var w = _bgwidth - x%_bgwidth;
                     if (x + w - left > width)
                         w -= x + w - left - width;
-                    if (!(y%2 == 0 && x%2 == 0 || y%2 == 1 && x%2 == 1))
+                    if (((y/_bgwidth)%2 == 0 && (x/_bgwidth)%2 == 1 || (y/_bgwidth)%2 == 1 && (x/_bgwidth)%2 == 0))
                         _vs.AddRect(x, y, w, h, Color.White);
                     else
                         _vs.AddRect(x, y, w, h, Color.Black);
@@ -345,25 +347,25 @@ namespace HSR.PresWriter.PenTracking
                         if (j%2 == 1)
                         {
                             //center of a rectangle
-                            var tl = Grid.GetRefPoint((int)((i - 1) * w), (int)((j - 1) * h));
-                            var tr = Grid.GetRefPoint((int)((i + 1) * w), (int)((j - 1) * h));
-                            var bl = Grid.GetRefPoint((int)((i - 1) * w), (int)((j + 1) * h));
-                            var br = Grid.GetRefPoint((int)((i + 1) * w), (int)((j + 1) * h));
+                            var tl = Grid.GetRefPoint((i - 1) * w, (j - 1) * h,1);
+                            var tr = Grid.GetRefPoint((i + 1) * w, (j - 1) * h,1);
+                            var bl = Grid.GetRefPoint((i - 1) * w, (j + 1) * h,1);
+                            var br = Grid.GetRefPoint((i + 1) * w, (j + 1) * h,1);
                             refs.Add(new AForge.Point((tl.X + tr.X + bl.X + br.X)/4.0f,(tl.Y+tr.Y+bl.Y+br.Y)/4.0f), new Point(i,j));
                         }
                         else
                         {
                             // middle of a horizontal outline
-                            var l = Grid.GetRefPoint((int)((i - 1) * w), (int)((j) * h));
-                            var r = Grid.GetRefPoint((int)((i + 1) * w), (int)((j) * h));
+                            var l = Grid.GetRefPoint((i - 1) * w, (j) * h,1);
+                            var r = Grid.GetRefPoint((i + 1) * w, (j) * h,1);
                             refs.Add(new AForge.Point((l.X + r.X) / 2.0f, (l.Y + r.Y) / 2.0f), new Point(i,j));
                         }
                     }
                     else if (j%2 == 1)
                     {
                         // middle of a horizontal outline
-                        var t = Grid.GetRefPoint((int)((i) * w), (int)((j - 1) * h));
-                        var b = Grid.GetRefPoint((int)((i) * w), (int)((j + 1) * h));
+                        var t = Grid.GetRefPoint((i) * w, (j - 1) * h,1);
+                        var b = Grid.GetRefPoint((i) * w, (j + 1) * h,1);
                         refs.Add(new AForge.Point((t.X + b.X) / 2.0f, (t.Y + b.Y) / 2.0f), new Point(i,j));
                     }
                 }
@@ -401,7 +403,7 @@ namespace HSR.PresWriter.PenTracking
                     using (var g = Graphics.FromImage(actImg))
                     {
                         g.DrawString(pos.X + "," + pos.Y, new Font(FontFamily.GenericSansSerif, 8.0f),
-                                     new SolidBrush(Color.White),
+                                     new SolidBrush(Color.Red),
                                      point.X, point.Y);
                         g.Flush();
                         //Debug.WriteLine("wrote to image");
@@ -413,26 +415,26 @@ namespace HSR.PresWriter.PenTracking
                 var yOff = 0.0f;
                 if (pos.X == 0)
                 {
-                    //top
+                    //left
                     xOff += _sqrwidth/2.0f;
                 }
-                else if (pos.X == (int)parts)
+                else if (pos.X == parts)
                 {
-                    //bottom
+                    //right
                     xOff -= _sqrwidth / 2.0f;
                 }
                 if (pos.Y == 0)
                 {
-                    //left
+                    //top
                     yOff += _sqrwidth / 2.0f;
                 }
-                else if (pos.Y == (int)parts)
+                else if (pos.Y == parts)
                 {
-                    //right
+                    //bottom
                     yOff -= _sqrwidth / 2.0f;
                 }
-                p.X += xOff;
-                p.Y += yOff;
+                p.Y -= xOff;
+                p.X -= yOff;
                 var ip = p.Round();
                 Grid.AddPoint(pos.X * w, pos.Y * h, ip.X, ip.Y);
             }

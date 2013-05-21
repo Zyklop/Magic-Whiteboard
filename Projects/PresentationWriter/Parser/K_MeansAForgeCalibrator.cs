@@ -324,23 +324,32 @@ namespace HSR.PresWriter.PenTracking
             var actStart = new AForge.Point(Grid.TopLeft.X, Grid.TopLeft.Y);
             for (int i = offset; i < VisibleRows; i+=2)
             {
-                var nearby = blobs.Where(x => x.Value.X == -1 && x.Value.Y == -1)
+                var nb = blobs.Where(x => x.Value.X == -1 && x.Value.Y == -1)
                                   .Select(x => x.Key)
                                   .OrderBy(x => DistPToVect(x, actVect, actStart))
-                                  .ToList()
-                                  .GetRange(0, Columncount)
-                                  .ToDictionary(x => x, x => DistPToVect(x, actVect, actStart));
+                                  .ToList();
+                if (nb.Count > Columncount)
+                    nb = nb.GetRange(0, Columncount);
+                var nearby = nb.ToDictionary(x => x, x => DistPToVect(x, actVect, actStart));
+                if (nearby.Count == 0)
+                    continue;
                 var stddev = StdDev(nearby.Values.ToList());
+                var mean = nearby.Values.Average();
+                var toRemove = new List<Blob>();
                 foreach (var blob in nearby)
                 {
-                    if (blob.Value > stddev)
-                        nearby.Remove(blob.Key);
+                    if (blob.Value > mean + stddev)
+                        toRemove.Add(blob.Key);
                     else
                     {
                         var t = blobs[blob.Key];
                         t.X = i;
                         blobs[blob.Key] = t;
                     }
+                }
+                foreach (var blob in toRemove)
+                {
+                    nearby.Remove(blob);
                 }
                 var top = GetCrossingPoint(actStart, actVect, Grid.BottomLeft,
                                            new Vector(Grid.BottomRight.X - Grid.BottomLeft.X,

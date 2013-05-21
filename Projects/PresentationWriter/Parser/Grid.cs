@@ -231,10 +231,44 @@ namespace HSR.PresWriter.PenTracking
             }
         }
 
-        public Point GetRefPoint(int screenX, int screenY)
+        /// <summary>
+        /// returns an added reference pount
+        /// </summary>
+        /// <remarks>Not intended for big radii. It will be incorrect then</remarks>
+        /// <param name="screenX"></param>
+        /// <param name="screenY"></param>
+        /// <param name="radius">radius to look</param>
+        /// <returns>Image coordinates</returns>
+        public Point GetRefPoint(int screenX, int screenY, int radius)
         {
-            if (!_refPoints.ContainsKey(screenX) || !_refPoints[screenX].ContainsKey(screenY))
+            if (!_refPoints.ContainsKey(screenX))
+            {
+                for (int i = screenX - radius; i < screenX + radius; i++)
+                {
+                    if (_refPoints.ContainsKey(i))
+                    {
+                        if (!_refPoints[i].ContainsKey(screenY))
+                        {
+                            for (int j = screenY - radius; j < screenY + radius; j++)
+                            {
+                                if (_refPoints[i].ContainsKey(j))
+                                    return _refPoints[i][j];
+                            }
+                        }
+                        return _refPoints[i][screenY];
+                    }
+                }
                 throw new ArgumentException("Key is not valid");
+            }
+            if (!_refPoints[screenX].ContainsKey(screenY))
+            {
+                for (int j = screenY - radius; j < screenY + radius; j++)
+                {
+                    if (_refPoints[screenX].ContainsKey(j))
+                        return _refPoints[screenX][j];
+                }
+                throw new ArgumentException("Key is not valid");
+            }
             return _refPoints[screenX][screenY];
         }
 

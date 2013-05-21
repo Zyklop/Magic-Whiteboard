@@ -31,7 +31,7 @@ namespace HSR.PresWriter.PenTracking
         public DataParser(IPictureProvider provider, IVisualizerControl visualizer)
         {
             // Initialize Calibration Tools
-            _calibrator = new PredictiveAForgeCalibrator(provider, visualizer);
+            _calibrator = new IncrementalClusteringAForgeCalibrator(provider, visualizer);
             _calibrator.CalibrationCompleted += StartTracking; // begin pen tracking after calibration immediately
 
             // Initialize Pen Tracking Tools
