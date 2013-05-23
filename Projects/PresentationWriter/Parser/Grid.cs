@@ -11,7 +11,9 @@ namespace HSR.PresWriter.PenTracking
 {
     public class Grid
     {
-        private SortedDictionary<int, SortedDictionary<int, List<Point>>> _calibratorData; //2d Dictionary of imag-coordinates
+        private SortedDictionary<int, SortedDictionary<int, List<Point>>> _calibratorData;
+        //2d Dictionary of imag-coordinates
+
         private Point[,] _mapData; //calculated Points
         private bool _needed = true;
         private Point _topLeft;
@@ -19,6 +21,13 @@ namespace HSR.PresWriter.PenTracking
         private Point _bottomLeft;
         private Point _bottomRight;
         private SortedDictionary<int, SortedDictionary<int, Point>> _refPoints; //2d dictionary of screen Coordinates
+        private int[] iterationNeighbours = { 10, 15, 19, 24, 30 };
+        //private int[] iterationNeighbours = {4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30 };
+
+    private const int NeighboursNeeded = 7;
+#if DEBUG
+        public int[] NeighbourUsedCount { get; set; }
+#endif
 
         /// <summary>
         /// Creating a mapping grid
@@ -30,6 +39,14 @@ namespace HSR.PresWriter.PenTracking
             _mapData = new Point[width,height];
             _calibratorData = new SortedDictionary<int, SortedDictionary<int, List<Point>>>();
             _refPoints = new SortedDictionary<int, SortedDictionary<int, Point>>();
+#if DEBUG
+            using (var fs = new StreamWriter(new FileStream(@"C:\Temp\aforge\points.csv", FileMode.Create, FileAccess.Write)))
+            {
+                fs.WriteLine("ScreenX,ScreenY,ImageX,ImageY");
+                fs.Flush();
+            }
+            NeighbourUsedCount = new int[iterationNeighbours.Length];
+#endif
         }
 
         /// <summary>
@@ -163,7 +180,6 @@ namespace HSR.PresWriter.PenTracking
         {
             AddCalibratorPoint(imgX, imgY, new Point(screenX, screenY));
             AddRefPoints(screenX, screenY, new Point(imgX, imgY));
-
 #if DEBUG
             using (var fs = new StreamWriter(new FileStream(@"C:\Temp\aforge\points.csv", FileMode.Append, FileAccess.Write)))
             {
@@ -304,21 +320,18 @@ namespace HSR.PresWriter.PenTracking
         /// <returns></returns>
         private Point Interpolate(int x, int y)
         {
-            var n = FindNearest(x, y, 6);
-            var poss = GetCandidates(x, y, n);
-            if (poss.Count < 3)
+            var poss = new List<Point>();
+            List<PointMapping> n;
+            for (int i = 0; i < iterationNeighbours.Length && poss.Count < NeighboursNeeded; i++)
             {
-                n = FindNearest(x, y, 20);
+                n = FindNearest(x, y, iterationNeighbours[i]);
                 poss = GetCandidates(x, y, n);
-            }
-            if (poss.Count < 3)
-            {
-                n = FindNearest(x, y, 100);
-                poss = GetCandidates(x, y, n);
-            }
-            if (poss.Count < 3)
-            {
-                return new Point(-1, -1);
+#if DEBUG
+                if (poss.Count >= NeighboursNeeded)
+                {
+                    NeighbourUsedCount[i]++;
+                }
+#endif
             }
             return Average(poss);
         }

@@ -68,21 +68,52 @@ namespace HSR.PresWriter.PenTracking
 
 #if DEBUG
             var bm = new Bitmap(640, 480);
+            var sw = new Stopwatch();
             //for (int i = CalibratorGrid.TopLeft.X; i < CalibratorGrid.BottomRight.X; i++)
-            for (int i = 0; i < 640; i++)
+            Console.WriteLine("Calbration completed");
+            sw.Start();
+            try
             {
-                //Debug.WriteLine(i);
-                for (int j = 0; j < 480; j++)
-                //for (int j = CalibratorGrid.TopLeft.Y; j < CalibratorGrid.BottomRight.Y; j++)
+                for (int i = 0; i < 640; i++)
                 {
-                    //Debug.WriteLine(j);
-                    //var position = CalibratorGrid.GetPosition(i, j);
-                    //var position = CalibratorGrid.PredictPosition(i, j);
-                    var position = CalibratorGrid.InterpolatePosition(i, j);
-                    if (position.X >= 0 && position.Y >= 0)
-                        bm.SetPixel(i, j, Color.FromArgb(255, (position.X + 8192) % 256, (position.Y + 4096) % 256, 255));
+                    Debug.WriteLine(i);
+                    for (int j = 0; j < 480; j++)
+                        //for (int j = CalibratorGrid.TopLeft.Y; j < CalibratorGrid.BottomRight.Y; j++)
+                    {
+                        //Debug.WriteLineIf(i == 639,j);
+                        //var position = CalibratorGrid.GetPosition(i, j);
+                        //var position = CalibratorGrid.PredictPosition(i, j);
+                        if (CalibratorGrid.Contains(new Point(i, j)))
+                        {
+                            var position = CalibratorGrid.InterpolatePosition(i, j);
+                            if (position.X >= 0 && position.Y >= 0)
+                                bm.SetPixel(i, j,
+                                            Color.FromArgb(255, (position.X + 8192)%256, (position.Y + 4096)%256, 255));
+                        }
+                    }
                 }
+                sw.Stop();
             }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+            //using (var fs = new StreamWriter(new FileStream(@"C:\Temp\aforge\perf.csv", FileMode.Append, FileAccess.Write)))
+            //{
+            //    foreach (var i in CalibratorGrid.NeighbourUsedCount)
+            //    {
+            //        fs.Write(i + ",");
+            //    }
+            //    fs.WriteLine();
+            //    fs.Flush();
+            //}
+            var sum = 0.0;
+            foreach (var i in CalibratorGrid.NeighbourUsedCount)
+            {
+                Console.Write(i + ", ");
+                sum += i;
+            }
+            Console.WriteLine("Average time per interpolation: " + ((double)sw.ElapsedMilliseconds/sum) + "ms");
             bm.Save(@"C:\temp\daforge\grid.bmp", ImageFormat.MemoryBmp);
 #endif
 

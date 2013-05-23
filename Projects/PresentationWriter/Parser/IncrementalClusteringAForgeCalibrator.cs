@@ -95,9 +95,14 @@ namespace HSR.PresWriter.PenTracking
                 //calibration not possible
                 return;
             }
+            if (_calibrationStep > CalibrationFrames)
+            {
+                // A concurrency problem, do nothing
+            }
             if (_calibrationStep == CalibrationFrames)
             {
                 _cc.FrameReady -= BaseCalibration;
+                _calibrationStep++;
                 //Grid.Calculate();
                 _vs.Close();
                 CalibrationCompleted(this, new EventArgs());
@@ -110,25 +115,31 @@ namespace HSR.PresWriter.PenTracking
                     _vs.Clear();
                     var img = diffFilter.Apply(e.Frame.Bitmap);
                     var mf = new Median(3);
-                    mf.ApplyInPlace(img);
-                    img.Save(@"C:\temp\daforge\diff\img" + _calibrationStep + ".jpg", ImageFormat.Jpeg);
+                    var gf = Grayscale.CommonAlgorithms.BT709;
 #if DEBUG
                     actImg = (Bitmap) img.Clone();
 #endif
+                    mf.ApplyInPlace(img);
+                    img = gf.Apply(img);
+                    var stats = new ImageStatistics(img);
+                    var tf = new Threshold((int) (stats.GrayWithoutBlack.Mean + stats.GrayWithoutBlack.StdDev * 2.0));
+                    tf.ApplyInPlace(img);
+                    img.Save(@"C:\temp\daforge\diff\img" + _calibrationStep + "-" + _errors + ".jpg", ImageFormat.Jpeg);
                     var blobCounter = new BlobCounter
                         {
                             ObjectsOrder = ObjectsOrder.YX,
                             MaxHeight = 20,
-                            MinHeight = 5,
+                            MinHeight = 10,
                             MaxWidth = 20,
-                            MinWidth = 5,
-                            BackgroundThreshold = Color.FromArgb(255, 15, 20, 20),
+                            MinWidth = 10,
                             FilterBlobs = true,
                             CoupledSizeFiltering = false
                         };
                     blobCounter.ProcessImage(img);
-                    if(ProcessBlobs(blobCounter))
+                    if (ProcessBlobs(blobCounter))
                         _calibrationStep++;
+                    else
+                        _errors++;
 #if DEBUG
                     actImg.Save(@"C:\temp\daforge\squares\img" + _calibrationStep + ".jpg", ImageFormat.Jpeg);
 #endif
@@ -151,7 +162,8 @@ namespace HSR.PresWriter.PenTracking
                                     ObjectsOrder = ObjectsOrder.Size,
                                     MinHeight = 200,
                                     MinWidth = 300,
-                                    BackgroundThreshold = Color.FromArgb(255, 15, 20, 20),
+                                    BackgroundThreshold = Color.FromArgb(255, 50, 50, 50),
+                                    //CoupledSizeFiltering = false,
                                     FilterBlobs = true
                                 };
                             blobCounter.ProcessImage(bm);
@@ -411,54 +423,55 @@ namespace HSR.PresWriter.PenTracking
                 }
 #endif
                 var p = cluster.Points.First();
-                var xOff = 0.0f;
-                var yOff = 0.0f;
                 if (pos.X == 0)
                 {
                     //left
-                    xOff += _sqrwidth/2.0f;
+                    var b = blobs.First(x => x.CenterOfGravity == p);
+                    List<IntPoint> rightEdge;
+                    List<IntPoint> leftEdge;
+                    bc.GetBlobsLeftAndRightEdges(b, out leftEdge, out rightEdge);
+                    //var ep = leftEdge.First(x => x.Y == (int)Math.Round(p.Y));
+                    //p = ep;
+                    //p.Y = (float) Math.Round(leftEdge.Average(x => x.Y));
+                    p = leftEdge.First(x => x.Y == (int)Math.Round(leftEdge.Average(y => y.Y)));
                 }
                 else if (pos.X == parts)
                 {
                     //right
-                    xOff -= _sqrwidth / 2.0f;
+                    var b = blobs.First(x => x.CenterOfGravity == p);
+                    List<IntPoint> rightEdge;
+                    List<IntPoint> leftEdge;
+                    bc.GetBlobsLeftAndRightEdges(b, out leftEdge, out rightEdge);
+                    //var ep = rightEdge.First(x => x.Y == (int)Math.Round(p.Y));
+                    //p.X = ep.X;
+                    p = rightEdge.First(x => x.Y == (int)Math.Round(rightEdge.Average(y => y.Y)));
                 }
                 if (pos.Y == 0)
                 {
                     //top
-                    yOff += _sqrwidth / 2.0f;
+                    var b = blobs.First(x => x.CenterOfGravity == p);
+                    List<IntPoint> bottomEdge;
+                    List<IntPoint> topEdge;
+                    bc.GetBlobsTopAndBottomEdges(b, out topEdge, out bottomEdge);
+                    //var ep = topEdge.First(x => x.X == (int)Math.Round(p.X));
+                    //p = ep;
+                    //p.X = (float) topEdge.Average(x => x.X);
+                    p = topEdge.First(x => x.X == (int)Math.Round(topEdge.Average(y => y.X)));
                 }
                 else if (pos.Y == parts)
                 {
                     //bottom
-                    yOff -= _sqrwidth / 2.0f;
+                    var b = blobs.First(x => x.CenterOfGravity == p);
+                    List<IntPoint> bottomEdge;
+                    List<IntPoint> topEdge;
+                    bc.GetBlobsTopAndBottomEdges(b, out topEdge, out bottomEdge);
+                    //var ep = bottomEdge.First(x => x.X == (int)Math.Round(p.X));
+                    //p.Y = ep.Y;
+                    p = bottomEdge.First(x => x.X == (int) Math.Round(bottomEdge.Average(y => y.X)));
                 }
-                p.Y -= xOff;
-                p.X -= yOff;
                 var ip = p.Round();
                 Grid.AddPoint(pos.X * w, pos.Y * h, ip.X, ip.Y);
             }
-            //foreach (var blob in blobs)
-            //{
-            //    var corners = PointsCloud.FindQuadrilateralCorners(bc.GetBlobsEdgePoints(blob));
-            //    //var xPos = blob.Value.X;
-            //    //var yPos = blob.Value.Y;
-            //    if (corners.Count == 4)
-            //    {
-            //        RecursiveAForgeCalibrator.GridBlobs.InPlaceSort(corners);
-            //        //Grid.AddPoint((int) (xPos*_sqrwidth + xOff), (int) (yPos*_sqrheight + yOff), corners[0].X,
-            //        //              corners[0].Y);
-            //        //Grid.AddPoint((int) ((xPos + 1)*_sqrwidth + xOff), (int) (yPos*_sqrheight + yOff),
-            //        //              corners[1].X,
-            //        //              corners[1].Y);
-            //        //Grid.AddPoint((int) (xPos*_sqrwidth + xOff), (int) ((yPos + 1)*_sqrheight + yOff),
-            //        //              corners[2].X,
-            //        //              corners[2].Y);
-            //        //Grid.AddPoint((int) ((xPos + 1)*_sqrwidth + xOff), (int) ((yPos + 1)*_sqrheight + yOff),
-            //        //              corners[3].X,
-            //        //              corners[3].Y);
-            //    }
-            //}
             return true;
         }
 
