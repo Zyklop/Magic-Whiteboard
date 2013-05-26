@@ -1,4 +1,5 @@
-﻿using AForge.Imaging;
+﻿using AForge;
+using AForge.Imaging;
 using AForge.Imaging.Filters;
 using HSR.PresWriter.Containers;
 using HSR.PresWriter.IO.Cameras;
@@ -20,9 +21,23 @@ namespace HSR.PresWriter.Tester
     {
         public static void Main(string[] args)
         {
-            TrackPenOnLibrary();
-            //CameraConfig();
-            //TakeVideo();
+            TestQuadRecognition();
+        }
+
+        public static void TestQuadRecognition()
+        {
+            Bitmap image = new Bitmap(@"c:\temp\grid.png");
+            // define quadrilateral's corners
+            List<IntPoint> corners = new List<IntPoint>();
+            corners.Add(new IntPoint(266, 480-410));
+            corners.Add(new IntPoint(522, 480-353));
+            corners.Add(new IntPoint(533, 480-147));
+            corners.Add(new IntPoint(266, 480-167));
+            // create filter
+            QuadrilateralTransformation filter = new QuadrilateralTransformation(corners, 1024, 768);
+            // apply the filter
+            Bitmap newImage = filter.Apply(image);
+            newImage.Save(@"c:\temp\grid-transformed.png");
         }
 
         public static void TrackPenOnLibrary()
