@@ -32,6 +32,7 @@
             this.filtersButton = new System.Windows.Forms.Button();
             this.libraryTrackingButton = new System.Windows.Forms.Button();
             this.liveTestButton = new System.Windows.Forms.Button();
+            this.showGridButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // liveButton
@@ -74,11 +75,22 @@
             this.liveTestButton.UseVisualStyleBackColor = true;
             this.liveTestButton.Click += new System.EventHandler(this.liveTestButton_Click);
             // 
+            // showGridButton
+            // 
+            this.showGridButton.Location = new System.Drawing.Point(13, 124);
+            this.showGridButton.Name = "showGridButton";
+            this.showGridButton.Size = new System.Drawing.Size(118, 22);
+            this.showGridButton.TabIndex = 4;
+            this.showGridButton.Text = "Show Grid";
+            this.showGridButton.UseVisualStyleBackColor = true;
+            this.showGridButton.Click += new System.EventHandler(this.showGridButton_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(143, 125);
+            this.ClientSize = new System.Drawing.Size(143, 155);
+            this.Controls.Add(this.showGridButton);
             this.Controls.Add(this.liveTestButton);
             this.Controls.Add(this.libraryTrackingButton);
             this.Controls.Add(this.filtersButton);
@@ -95,5 +107,6 @@
         private System.Windows.Forms.Button filtersButton;
         private System.Windows.Forms.Button libraryTrackingButton;
         private System.Windows.Forms.Button liveTestButton;
+        private System.Windows.Forms.Button showGridButton;
     }
 }

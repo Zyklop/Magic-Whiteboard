@@ -50,10 +50,10 @@ namespace WinFormsGuiTester
             */
 
             // Initialize Calibration and Pen Parsing Mechanism
-            _parser = new DataParser(
-                new SimpleAForgeCalibrator(_camera, VisualizerControl.GetVisualizer()), 
-                new AForgePenTracker(new RedLaserStrategy(), _camera));
-            //_parser = new DataParser(_camera, VisualizerControl.GetVisualizer());
+            //_parser = new DataParser(
+            //    new SimpleAForgeCalibrator(_camera, VisualizerControl.GetVisualizer()), 
+            //    new AForgePenTracker(new RedLaserStrategy(), _camera));
+            _parser = new DataParser(_camera, VisualizerControl.GetVisualizer());
             _parser.PenPositionChanged += parser_PenPositionChanged;
 
             // Form for visual feedback of tracking process
