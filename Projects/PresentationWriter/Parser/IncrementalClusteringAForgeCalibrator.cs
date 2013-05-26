@@ -27,7 +27,7 @@ namespace HSR.PresWriter.PenTracking
         private IVisualizerControl _vs;
         private const int CalibrationFrames = 6;
         private Difference diffFilter = new Difference();
-        private const double SideWidthFactor = 0.04;
+        private const double SideWidthFactor = 0.07;
         private const double BgWidthFactor = 0.1;
         private SemaphoreSlim _sem;
         private Task _t;
@@ -127,11 +127,11 @@ namespace HSR.PresWriter.PenTracking
                     img.Save(@"C:\temp\daforge\diff\img" + _calibrationStep + "-" + _errors + ".jpg", ImageFormat.Jpeg);
                     var blobCounter = new BlobCounter
                         {
-                            ObjectsOrder = ObjectsOrder.YX,
-                            MaxHeight = 20,
-                            MinHeight = 10,
-                            MaxWidth = 20,
-                            MinWidth = 10,
+                            ObjectsOrder = ObjectsOrder.Size,
+                            MaxHeight = 30,
+                            MinHeight = 15,
+                            MaxWidth = 30,
+                            MinWidth = 15,
                             FilterBlobs = true,
                             CoupledSizeFiltering = false
                         };

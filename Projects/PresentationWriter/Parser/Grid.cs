@@ -72,6 +72,7 @@ namespace HSR.PresWriter.PenTracking
             {
                 return (int)(new List<double>
                 {
+                    // TODO dafuq?
                     BottomRight.Y - TopLeft.Y, 
                     BottomRight.Y - TopLeft.Y, 
                     BottomLeft.Y - TopRight.Y, 
