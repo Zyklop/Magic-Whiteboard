@@ -638,7 +638,7 @@ namespace HSR.PresWriter.PenTracking
     }
 
     /// <summary>
-    /// Calculates Brycentric coordinates and remapping
+    /// Calculates Barycentric coordinates and remapping
     /// </summary>
     public class BarycentricCoordinate
     {
@@ -688,12 +688,5 @@ namespace HSR.PresWriter.PenTracking
             return new Point((int) Math.Round(corner1.X*Lambda1 + Lambda2*corner2.X + corner3.X*Lambda3),
                              (int) Math.Round(corner1.Y*Lambda1 + Lambda2*corner2.Y + corner3.Y*Lambda3));
         }
-    }
-
-    public struct PointMapping
-    {
-        public Point Screen { get; set; }
-
-        public Point Image { get; set; }
     }
 }
