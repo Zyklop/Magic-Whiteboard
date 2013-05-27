@@ -15,7 +15,7 @@ namespace HSR.PresWriter.PenTracking
         public Point RightLower { get; set; }
     }
 
-    public class IntegralPointMapping
+    public class IntegralPointMapper : AbstractPointMapper
     {
         private static double _beamerXToCameraX(double xb, double a, double b)
         {
@@ -56,10 +56,15 @@ namespace HSR.PresWriter.PenTracking
         /// </summary>
         /// <param name="a">left side mapping proportion</param>
         /// <param name="b">right side mapping proportion</param>
-        public IntegralPointMapping(double a, double b)
+        public IntegralPointMapper(double a, double b): base(null)
         {
             _a = a;
             _b = b;
+        }
+
+        public override Point FromPresentation(Point p)
+        {
+            return new Point();
         }
 
         public Point ToCameraPoint(Point beamerPoint)

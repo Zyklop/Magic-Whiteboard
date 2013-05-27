@@ -8,14 +8,14 @@ using System.Threading.Tasks;
 
 namespace HSR.PresWriter.PenTracking
 {
-    public abstract class AbstractMapper
+    public abstract class AbstractPointMapper
     {
         /// <summary>
         /// Grid holds the information for the mapping process
         /// </summary>
         public Grid Grid { get; protected set; }
 
-        public AbstractMapper(Grid grid)
+        public AbstractPointMapper(Grid grid)
         {
             Grid = grid;
         }
