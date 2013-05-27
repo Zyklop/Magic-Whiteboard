@@ -114,24 +114,26 @@ namespace HSR.PresWriter.PenTracking
                     // analyse diffimage
                     _vs.Clear();
                     var img = diffFilter.Apply(e.Frame.Bitmap);
-                    var mf = new Median(3);
+                    var mf = new GaussianBlur(0.6, 5);
                     var gf = Grayscale.CommonAlgorithms.BT709;
 #if DEBUG
                     actImg = (Bitmap) img.Clone();
 #endif
-                    mf.ApplyInPlace(img);
                     img = gf.Apply(img);
                     var stats = new ImageStatistics(img);
+                    mf.ApplyInPlace(img);
+                    mf = new GaussianBlur(0.7,7);
+                    mf.ApplyInPlace(img);
                     var tf = new Threshold((int) (stats.GrayWithoutBlack.Mean + stats.GrayWithoutBlack.StdDev * 2.0));
                     tf.ApplyInPlace(img);
-                    img.Save(@"C:\temp\daforge\diff\img" + _calibrationStep + "-" + _errors + ".jpg", ImageFormat.Jpeg);
+                    img.Save(@"C:\temp\daforge\diff\img" + _calibrationStep + "-" + _errors + ".jpg", ImageFormat.MemoryBmp);
                     var blobCounter = new BlobCounter
                         {
-                            ObjectsOrder = ObjectsOrder.Size,
+                            ObjectsOrder = ObjectsOrder.YX,
                             MaxHeight = 30,
-                            MinHeight = 15,
+                            MinHeight = 10,
                             MaxWidth = 30,
-                            MinWidth = 15,
+                            MinWidth = 10,
                             FilterBlobs = true,
                             CoupledSizeFiltering = false
                         };
@@ -152,7 +154,7 @@ namespace HSR.PresWriter.PenTracking
                             var bm = UnmanagedImage.FromManagedImage(e.Frame.Bitmap);
                             //diffFilter.OverlayImage.Save(@"C:\temp\daforge\diff\src" + _errors + ".jpg", ImageFormat.Jpeg);
                             bm = diffFilter.Apply(bm);
-                            var gf = new Median(3);
+                            var gf = new GaussianBlur(0.8,5);
                             gf.ApplyInPlace(bm);
                             var cf = new ColorFiltering(new IntRange(10, 255), new IntRange(20, 255),
                                                         new IntRange(20, 255));
@@ -162,7 +164,7 @@ namespace HSR.PresWriter.PenTracking
                                     ObjectsOrder = ObjectsOrder.Size,
                                     MinHeight = 200,
                                     MinWidth = 300,
-                                    BackgroundThreshold = Color.FromArgb(255, 50, 50, 50),
+                                    //BackgroundThreshold = Color.FromArgb(255, 20, 20, 50),
                                     //CoupledSizeFiltering = false,
                                     FilterBlobs = true
                                 };
@@ -335,6 +337,7 @@ namespace HSR.PresWriter.PenTracking
         {
             var blobs = new List<Blob>(bc.GetObjectsInformation());
             blobs.RemoveAll(x => !Grid.Contains(x.CenterOfGravity));
+            blobs.RemoveAll(x => x.Fullness < 0.5);
             //if (blobs.Count < 4)
             //{
             //    Debug.WriteLine("too few blobs");

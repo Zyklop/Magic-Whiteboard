@@ -50,6 +50,10 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AForge, Version=2.2.4.0, Culture=neutral, PublicKeyToken=c1db6ff4eaa06aeb, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Tester\bin\Debug\AForge.dll</HintPath>
+    </Reference>
     <Reference Include="AForge.Imaging">
       <HintPath>..\lib\AForge\AForge.Imaging.dll</HintPath>
     </Reference>
@@ -75,6 +79,7 @@
     <Compile Include="Cameras\AvicapCamera.cs" />
     <Compile Include="Cameras\FilesystemCamera.cs" />
     <Compile Include="Cameras\DirectShowCamera.cs" />
+    <Compile Include="Cameras\QuadrilateralTransformationCamera.cs" />
     <Compile Include="Cameras\TimedFilesystemCamera.cs" />
     <Compile Include="Cameras\VirtualCamera.cs" />
     <Compile Include="ICamera.cs" />

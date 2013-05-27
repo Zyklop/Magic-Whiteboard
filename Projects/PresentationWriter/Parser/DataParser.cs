@@ -88,7 +88,8 @@ namespace HSR.PresWriter.PenTracking
                             var position = CalibratorGrid.InterpolatePosition(i, j);
                             if (position.X >= 0 && position.Y >= 0)
                                 bm.SetPixel(i, j,
-                                            Color.FromArgb(255, (position.X + 8192)%256, (position.Y + 4096)%256, 255));
+                                            Color.FromArgb(255, (position.Y + 8192)%160, //(position.Y + 8192)%160, 255));
+                                    (position.Y + 4096) % 256, 255));
                         }
                     }
                 }

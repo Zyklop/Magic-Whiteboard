@@ -73,15 +73,15 @@ namespace WFVisuslizer
         {
             Invalidate();
 #if DEBUG
-            lock (_g)
-            {
+            //lock (_g)
+            //{
 
-                var bm = new Bitmap(Screen.PrimaryScreen.Bounds.Width + 100, Screen.PrimaryScreen.Bounds.Height + 100);
-                var g = Graphics.FromImage(bm);
-                g.Clear(Color.DarkGray);
-                g.DrawImageUnscaled(_bm, 40, 60);
-                //bm.Save(@"C:\temp\daforge\outp\img" + _counter++ + ".jpg");
-            }
+            //    var bm = new Bitmap(Screen.PrimaryScreen.Bounds.Width + 100, Screen.PrimaryScreen.Bounds.Height + 100);
+            //    var g = Graphics.FromImage(bm);
+            //    g.Clear(Color.DarkGray);
+            //    g.DrawImageUnscaled(_bm, 40, 60);
+            //    //bm.Save(@"C:\temp\daforge\outp\img" + _counter++ + ".jpg");
+            //}
 #endif
         }
 
