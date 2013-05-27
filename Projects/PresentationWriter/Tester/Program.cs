@@ -21,7 +21,7 @@ namespace HSR.PresWriter.Tester
     {
         public static void Main(string[] args)
         {
-            TestQuadRecognition();
+            CreateBackMappingPicture();
         }
 
         public static void TestQuadRecognition()
@@ -38,6 +38,37 @@ namespace HSR.PresWriter.Tester
             // apply the filter
             Bitmap newImage = filter.Apply(image);
             newImage.Save(@"c:\temp\grid-transformed.png");
+        }
+
+        public static void CreateBackMappingPicture()
+        {
+            Bitmap target = new Bitmap(640, 480);
+            Bitmap source = new Bitmap(256, 256);
+
+            for (int x = 0; x < 256; x++)
+            {
+                for (int y = 0; y < 256; y++ )
+                {
+                    int rgb = (y*x) + y;
+                    Color c = Color.FromArgb(x,0,y);
+                    source.SetPixel(x, y, c);
+                }
+            }
+            
+            source.Save(@"c:\temp\mapping.bmp");
+
+            List<IntPoint> corners = new List<IntPoint>();
+            corners.Add(new IntPoint(266, 480 - 410));
+            corners.Add(new IntPoint(522, 480 - 353));
+            corners.Add(new IntPoint(533, 480 - 147));
+            corners.Add(new IntPoint(266, 480 - 167));
+
+
+            BackwardQuadrilateralTransformation filter = new BackwardQuadrilateralTransformation(source, corners);
+            // apply the filter
+            Bitmap newImage = filter.Apply(target);
+            newImage.Save(@"c:\temp\mappingback.bmp");
+
         }
 
         public static void TrackPenOnLibrary()
