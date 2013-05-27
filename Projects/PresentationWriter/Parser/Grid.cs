@@ -14,6 +14,8 @@ namespace HSR.PresWriter.PenTracking
         private SortedDictionary<int, SortedDictionary<int, List<Point>>> _calibratorData;
         //2d Dictionary of imag-coordinates
 
+        public Quad CameraQuad;
+
         private Point[,] _mapData; //calculated Points
         private bool _needed = true;
         private Point _topLeft;
@@ -36,6 +38,14 @@ namespace HSR.PresWriter.PenTracking
         /// <param name="height">height of the source image</param>
         public Grid(int width, int height)
         {
+            CameraQuad = new Quad()
+            {
+                TopLeft = new AForge.Point(0, 0),
+                TopRight = new AForge.Point(width, 0),
+                BottomLeft = new AForge.Point(0, height),
+                BottomRight = new AForge.Point(width, height),
+            };
+
             _mapData = new Point[width,height];
             _calibratorData = new SortedDictionary<int, SortedDictionary<int, List<Point>>>();
             _refPoints = new SortedDictionary<int, SortedDictionary<int, Point>>();
@@ -634,6 +644,34 @@ namespace HSR.PresWriter.PenTracking
         public Point GetPosition(AForge.Point point)
         {
             return GetPosition((int) point.X, (int) point.Y);
+        }
+
+        public Quad PresentationQuad
+        {
+            get
+            {
+                return new Quad()
+                {
+                    TopLeft = new AForge.Point(TopLeft.X, TopLeft.Y),
+                    TopRight = new AForge.Point(TopRight.X, TopRight.Y),
+                    BottomLeft = new AForge.Point(BottomLeft.X, BottomLeft.Y),
+                    BottomRight = new AForge.Point(BottomRight.X, BottomRight.Y)
+                };
+            }
+        }
+
+        public Quad BeamerQuad
+        {
+            get
+            {
+                return new Quad()
+                {
+                    TopLeft = new AForge.Point(ScreenSize.X, ScreenSize.Y),
+                    TopRight = new AForge.Point(ScreenSize.X + ScreenSize.Width, ScreenSize.Y),
+                    BottomLeft = new AForge.Point(ScreenSize.X, ScreenSize.Y + ScreenSize.Height),
+                    BottomRight = new AForge.Point(ScreenSize.X + ScreenSize.Width, ScreenSize.Y + ScreenSize.Height),
+                };
+            }
         }
     }
 
