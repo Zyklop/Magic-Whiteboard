@@ -29,5 +29,10 @@ namespace WinFormsGuiTester
         {
             (new LiveTestForm()).ShowDialog();
         }
+
+        private void showGridButton_Click(object sender, EventArgs e)
+        {
+            (new MeasureGrid()).ShowDialog();
+        }
     }
 }

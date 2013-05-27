@@ -54,6 +54,12 @@
     <Compile Include="FilterCalibrationForm.Designer.cs">
       <DependentUpon>FilterCalibrationForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="MeasureGrid.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MeasureGrid.Designer.cs">
+      <DependentUpon>MeasureGrid.cs</DependentUpon>
+    </Compile>
     <Compile Include="ScreenForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -100,6 +106,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MeasureGrid.resx">
+      <DependentUpon>MeasureGrid.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

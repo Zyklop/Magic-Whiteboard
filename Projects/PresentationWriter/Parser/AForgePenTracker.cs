@@ -25,7 +25,7 @@ namespace HSR.PresWriter.PenTracking
         //private const int MAX_POINTBUFFER_LENGTH = 10;
         private IPictureProvider _source;
         private FixedSizedQueue<VideoFrame> _frameBuffer;
-        private LinkedList<PointFrame> _penPoints;
+        private LinkedList<PointFrame> _penPoints; // Eventually a sorted list would be the better and more comfortable choice
         private SemaphoreSlim _semaphore = new SemaphoreSlim(Environment.ProcessorCount);
 
         public FilterStrategy Strategy { get; set; }
@@ -106,8 +106,9 @@ namespace HSR.PresWriter.PenTracking
                 Stopwatch sw = new Stopwatch();
                 sw.Start();
 
-                // reference to the last found point is necessary to search more efficiently
-                // it is not necessarily the real precedessor (stale values are also ok)
+                // reference to the last found point is necessary to search more efficiently.
+                // Efficiently means: Arround the last found point
+                // This point is not necessarily the real precedessor (stale values are ok here).
                 PointFrame maybePreviousPoint = null;
                 lock(this._penPoints)
                 {
@@ -201,12 +202,12 @@ namespace HSR.PresWriter.PenTracking
         /// At first we try to search near the last found point (in a rectangle of 100x100px)
         /// This means, that a point could have moved 50px in every direction. TODO: analyze moving direction and velocity
         /// </summary>
-        /// <param name="referenceFrame"></param>
+        /// <param name="lastFoundPoint"></param>
         /// <returns></returns>
-        private Rectangle getEstimatedSearchArea(PointFrame referenceFrame)
+        private Rectangle getEstimatedSearchArea(PointFrame lastFoundPoint)
         {
-            int areaX = referenceFrame.Point.X - 50;
-            int areaY = referenceFrame.Point.Y - 50;
+            int areaX = lastFoundPoint.Point.X - 50;
+            int areaY = lastFoundPoint.Point.Y - 50;
             return new Rectangle(areaX, areaY, 100, 100);
         }
 
