@@ -9,14 +9,14 @@ namespace HSR.PresWriter.Containers
     {
         /// <summary>
         /// Frame Index</summary>
-        public readonly int Number;
+        public int Number { get; protected set; }
 
         /// <summary>
         /// Time when the frame was captured or when the frame was ready.
         /// This depends on how you initialized the frame. If you didn't
         /// Initialize the frame with a timestamp, the value is set to
         /// the constructors ending time.</summary>
-        public readonly long Timestamp;
+        public long Timestamp { get; protected set; }
 
         /// <summary>
         /// Initializing a frame.
