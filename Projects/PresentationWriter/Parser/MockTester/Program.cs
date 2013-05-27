@@ -50,7 +50,7 @@ namespace MockTester
             //var cam = new AForgeCamera();
             //cam.IsMirrored = true;
             //var visualizerControl = WFVisuslizer.VisualizerControl.GetVisualizer();
-            var cam = new TimedFilesystemCamera(new DirectoryInfo(@"C:\temp\daforge\inpCluster"));
+            var cam = new TimedFilesystemCamera(new DirectoryInfo(@"C:\temp\daforge\inptp"));
             var visualizerControl = new VisualizerDummy();
             var parser = new DataParser(cam,visualizerControl);
             parser.Start();
