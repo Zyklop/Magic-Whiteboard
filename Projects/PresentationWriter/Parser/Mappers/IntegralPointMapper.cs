@@ -1,18 +1,19 @@
 ﻿using AForge;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HSR.PresWriter.PenTracking
+namespace HSR.PresWriter.PenTracking.Mappers
 {
     public class IntegralPointMapper : AbstractPointMapper
     {
         private double _a, _b, _yk0, _xkOffset, _xCorrectionShortening;
 
         /// <summary>
-        /// 
+        /// TODO
         /// </summary>
         /// <param name="a">left side mapping proportion</param>
         /// <param name="b">right side mapping proportion</param>
@@ -30,22 +31,16 @@ namespace HSR.PresWriter.PenTracking
         }
 
         /// <summary>
-        /// Get Beamer coordinates from presented picture taken by a camera.
+        /// Calculate Beamer coordinates from presented picture taken by a camera.
         /// </summary>
         /// <param name="presentation">Measured mapped point</param>
         /// <returns>corresponding estimated beamer point</returns>
         public override Point FromPresentation(Point presentation)
         {
-            // calculate beamer x
+            // calculate beamer x and beamer y
             double xb = _cameraXToBeamerX(presentation.X - _xkOffset, _a, _b) / _xCorrectionShortening;
-            // calculate beamer y
             double yb = _cameraYToBeamerY(presentation.Y - Grid.PresentationQuad.TopRight.Y, xb, _a, _b, _yk0);
-            
-            // correct coordinates to a quadliteral TODO
-            //Point corrected = _barycentricCorrectedPoint(new Point((float)xb, (float)yb), Grid.PresentationQuad);
-
-            Point corrected = new Point((float)xb, (float)yb);
-            return corrected;
+            return new Point((float)xb, (float)yb);
         }
 
         #region Mapping Math
@@ -68,17 +63,6 @@ namespace HSR.PresWriter.PenTracking
         private static double _cameraYToBeamerY(double yk, double xb, double a, double b, double yk0)
         {
             return (yk - yk0 + yk0 * xb) / (a - a * xb + b * xb);
-        }
-
-        private static Point _barycentricCorrectedPoint(Point point, Quad reference)
-        {
-            float x = point.X;
-            float y = point.Y;
-            Point result = reference.TopLeft * (1 - x) * (1 - y)
-                + reference.TopRight * (1 - x) * y
-                + reference.BottomLeft * x * (1 - y)
-                + reference.BottomRight * x * y;
-            return result;
         }
 
         #endregion
