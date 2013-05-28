@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.Drawing.Imaging;
 using HSR.PresWriter.PenTracking.Events;
+using HSR.PresWriter.PenTracking.Mappers;
 using HSR.PresWriter.PenTracking.Strategies;
 using HSR.PresWriter.IO.Cameras;
 using System.IO;
@@ -18,6 +19,8 @@ namespace HSR.PresWriter.PenTracking
     {
         private ICalibrator _calibrator; // TODO Interface anpassen an StartCalibration etc
         private IPenTracker _penTracker;
+        private Type _mapperType;
+        private AbstractPointMapper _mapper;
         private int _gridcheck=1000;
 
         public bool IsRunning { get; protected set; }
@@ -37,6 +40,8 @@ namespace HSR.PresWriter.PenTracking
             // Initialize Pen Tracking Tools
             _penTracker = new AForgePenTracker(new RedLaserStrategy(), provider);
             _penTracker.PenFound += PenFound;
+
+            _mapperType = typeof (FineBarycentricMapper);
         }
 
         /// <summary>
@@ -44,8 +49,10 @@ namespace HSR.PresWriter.PenTracking
         /// </summary>
         /// <param name="calibrator">Custom calibrator</param>
         /// <param name="tracker">Custom PenTracker</param>
-        public DataParser(ICalibrator calibrator, IPenTracker tracker)
+        public DataParser(ICalibrator calibrator, IPenTracker tracker, Type mapperType)
         {
+            if(!(typeof(AbstractPointMapper).IsAssignableFrom(mapperType)))
+                throw new ArgumentException(mapperType.FullName + " doesn't inherit form AbstractPointMapper");
             // Initialize Calibration Tools
             _calibrator = calibrator;
             _calibrator.CalibrationCompleted += StartTracking; // begin pen tracking after calibration immediately
@@ -53,6 +60,8 @@ namespace HSR.PresWriter.PenTracking
             // Initialize Pen Tracking Tools
             _penTracker = tracker;
             _penTracker.PenFound += PenFound;
+
+            _mapperType = mapperType;
         }
 
         /// <summary>
@@ -65,7 +74,12 @@ namespace HSR.PresWriter.PenTracking
             //_pictureProvider.ShowConfigurationDialog();
             //_pictureProvider.FrameReady += _camera_FrameReady; // TODO siehe _camera_FrameReady
             //_calibrator.Grid.Calculate();
-
+            var mCtor = _mapperType.GetConstructor(new Type[] {typeof (Grid)});
+            _mapper = (AbstractPointMapper) mCtor.Invoke(new Grid[]{CalibratorGrid});
+            if (_mapperType.Equals(typeof(LinearMapper)))
+            {
+                ((LinearMapper)_mapper).Calculate();
+            }
 #if DEBUG
             var bm = new Bitmap(640, 480);
             var sw = new Stopwatch();
@@ -81,14 +95,12 @@ namespace HSR.PresWriter.PenTracking
                         //for (int j = CalibratorGrid.TopLeft.Y; j < CalibratorGrid.BottomRight.Y; j++)
                     {
                         //Debug.WriteLineIf(i == 639,j);
-                        //var position = CalibratorGrid.GetPosition(i, j);
-                        //var position = CalibratorGrid.PredictPosition(i, j);
                         if (CalibratorGrid.Contains(new Point(i, j)))
                         {
-                            var position = CalibratorGrid.InterpolatePosition(i, j);
+                            var position = _mapper.FromPresentation(i, j);
                             if (position.X >= 0 && position.Y >= 0)
                                 bm.SetPixel(i, j,
-                                            Color.FromArgb(255, (position.Y + 8192)%160, //(position.Y + 8192)%160, 255));
+                                            Color.FromArgb(255, (position.Y + 8192) % 160, //(position.Y + 8192)%160, 255));
                                     (position.Y + 4096) % 256, 255));
                         }
                     }
@@ -99,22 +111,25 @@ namespace HSR.PresWriter.PenTracking
             {
                 Debug.WriteLine(ex.Message);
             }
-            //using (var fs = new StreamWriter(new FileStream(@"C:\Temp\aforge\perf.csv", FileMode.Append, FileAccess.Write)))
-            //{
-            //    foreach (var i in CalibratorGrid.NeighbourUsedCount)
-            //    {
-            //        fs.Write(i + ",");
-            //    }
-            //    fs.WriteLine();
-            //    fs.Flush();
-            //}
-            var sum = 0.0;
-            foreach (var i in CalibratorGrid.NeighbourUsedCount)
+            if (_mapperType.Equals(typeof(FineBarycentricMapper)))
             {
-                Console.Write(i + ", ");
-                sum += i;
+                var fbc = (FineBarycentricMapper) _mapper;
+                var sum = 0.0;
+                using (
+                    var fs =
+                        new StreamWriter(new FileStream(@"C:\Temp\aforge\perf.csv", FileMode.Append, FileAccess.Write)))
+                {
+                    foreach (var i in fbc.NeighbourUsedCount)
+                    {
+                        fs.Write(i + ",");
+                        Console.Write(i + ", ");
+                        sum += i;
+                    }
+                    fs.WriteLine();
+                    fs.Flush();
+                }
+                Console.WriteLine("Average time per interpolation: " + ((double) sw.ElapsedMilliseconds/sum) + "ms");
             }
-            Console.WriteLine("Average time per interpolation: " + ((double)sw.ElapsedMilliseconds/sum) + "ms");
             bm.Save(@"C:\temp\daforge\grid.bmp", ImageFormat.MemoryBmp);
 #endif
 
@@ -175,8 +190,7 @@ namespace HSR.PresWriter.PenTracking
         private void PenFound(object sender, PenPositionEventArgs e)
         {
             Debug.WriteLine("Pen Nr\t{0} at {1},{2}", e.Frame.Number, e.Frame.Point.X, e.Frame.Point.Y);
-
-            Point point = _calibrator.Grid.PredictPosition(e.Frame.Point.X, e.Frame.Point.Y);
+            Point point = _mapper.FromPresentation(e.Frame.Point.X, e.Frame.Point.Y);
             PointFrame frame = e.Frame.ApplyRebase(point);
             if (PenPositionChanged != null)
             {

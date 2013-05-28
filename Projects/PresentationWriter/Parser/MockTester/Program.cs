@@ -4,6 +4,7 @@ using System.Threading;
 using HSR.PresWriter.DataSources.Cameras;
 using HSR.PresWriter.PenTracking;
 using HSR.PresWriter.PenTracking.Images;
+using HSR.PresWriter.PenTracking.Mappers;
 using HSR.PresWriter.PenTracking.Strategies;
 using InputEmulation;
 using Visualizer;
@@ -21,7 +22,7 @@ namespace MockTester
 
         static void Main(string[] args)
         {
-            Main2(args);
+            Main6(args);
         }
 
         static void Main1(string[] args)
@@ -165,7 +166,7 @@ namespace MockTester
             _virtualCam.Start();
             var calib = new SimpleAForgeCalibrator(_virtualCam, _virtualCam);
             var pt = new AForgePenTracker(new RedLaserStrategy(), _virtualCam);
-            var parser = new DataParser(calib, pt);
+            var parser = new DataParser(calib, pt, typeof(CornerBarycentricMapper));
             parser.Start();
             parser.PenPositionChanged += NewPoint;
             while (true)
@@ -192,7 +193,7 @@ namespace MockTester
             cam.Start();
             var calib = new SimpleAForgeCalibrator(cam, visualizerControl);
             var pt = new AForgePenTracker(new RedLaserStrategy(), cam);
-            var parser = new DataParser(calib, pt);
+            var parser = new DataParser(calib, pt, typeof(CornerBarycentricMapper));
             parser.Start();
             parser.PenPositionChanged += NewPoint;
             Console.Read();

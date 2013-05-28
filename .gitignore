@@ -11,4 +11,5 @@ thumbs.db
 *.vsp
 *.vspx
 *.lyx~
+*.lyx#
 /Projects/CameraEvaluation

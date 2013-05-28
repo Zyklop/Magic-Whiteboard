@@ -53,6 +53,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AbstractPointMapper.cs" />
+    <Compile Include="BarycentricCoordinate.cs" />
     <Compile Include="KMeansClustering.cs" />
     <Compile Include="Calibrators\K_MeansAForgeCalibrator.cs" />
     <Compile Include="Calibrators\IncrementalClusteringAForgeCalibrator.cs" />
@@ -66,6 +67,9 @@
     <Compile Include="FixedSizeQueue.cs" />
     <Compile Include="Images\BinaryBitmap.cs" />
     <Compile Include="Images\OneChannelBitmap.cs" />
+    <Compile Include="Mappers\CornerBarycentricMapper.cs" />
+    <Compile Include="Mappers\FineBarycentricMapper.cs" />
+    <Compile Include="Mappers\LinearMapper.cs" />
     <Compile Include="PointMapping.cs" />
     <Compile Include="PrimitiveCalibrator.cs" />
     <Compile Include="Events\NewImageEventArgs.cs" />
