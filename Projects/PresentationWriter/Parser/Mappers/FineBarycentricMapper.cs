@@ -38,7 +38,7 @@ namespace HSR.PresWriter.PenTracking.Mappers
             for (int i = 0; i < _iterationNeighbours.Length && poss.Count < NeighboursNeeded; i++)
             {
                 n = Grid.FindNearest(x, y, _iterationNeighbours[i]);
-                poss = Grid.GetCandidates(x, y, n);
+                poss = GetCandidates(x, y, n);
 #if DEBUG
                 if (poss.Count >= NeighboursNeeded)
                 {
@@ -83,6 +83,35 @@ namespace HSR.PresWriter.PenTracking.Mappers
             var ry = points.Sum(x => x.Value * x.Key.Y);
             var sWeights = points.Sum(x => x.Value);
             return new System.Drawing.Point((int)Math.Round(rx / sWeights), (int)Math.Round(ry / sWeights));
+        }
+
+
+
+        /// <summary>
+        /// Predict from each possible triange, returning each candidate
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="n"></param>
+        /// <returns>Only returns plausible candidates, if all are bad, the result is empty</returns>
+        internal List<System.Drawing.Point> GetCandidates(int x, int y, List<PointMapping> n)
+        {
+            if (n.Count < 3) throw new ArgumentException("at least 3 neighbours needed");
+            var targ = new System.Drawing.Point(x, y);
+            var poss = new List<System.Drawing.Point>();
+            for (int i = 0; i < n.Count - 2; i++)
+            {
+                for (int j = i + 1; j < n.Count; j++)
+                {
+                    for (int k = j + 1; k < n.Count; k++)
+                    {
+                        var b = new BarycentricCoordinate(targ, n[i].Image, n[j].Image, n[k].Image);
+                        if (b.IsNearby)
+                            poss.Add(b.GetCartesianCoordinates(n[i].Screen, n[j].Screen, n[k].Screen));
+                    }
+                }
+            }
+            return poss;
         }
     }
 }
