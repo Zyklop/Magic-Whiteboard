@@ -238,7 +238,7 @@ namespace HSR.PresWriter.PenTracking
                                     Grid.AddPoint(new Point(_vs.Width, 0), new Point(corners[2].X, corners[2].Y));
                                     Grid.AddPoint(new Point(_vs.Width, _vs.Height),
                                                   new Point(corners[3].X, corners[3].Y));
-                                    Grid.PredictFromCorners();
+                                    //_mapper.PredictFromCorners();
                                 }
                                 else
                                 {

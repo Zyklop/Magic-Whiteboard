@@ -6,6 +6,7 @@ using System.Linq;
 using System.Drawing;
 using System.Windows;
 using Point = System.Drawing.Point;
+using HSR.PresWriter.Extensions;
 
 namespace HSR.PresWriter.PenTracking
 {
@@ -151,6 +152,16 @@ namespace HSR.PresWriter.PenTracking
         }
 
         /// <summary>
+        /// Checks if the point is in the Grid
+        /// </summary>
+        /// <param name="centerOfGravity"></param>
+        /// <returns></returns>
+        public bool Contains(AForge.Point centerOfGravity)
+        {
+            return Contains(new Point((int)centerOfGravity.X, (int)centerOfGravity.Y));
+        }
+
+        /// <summary>
         /// Reset temporary calibration data
         /// </summary>
         public void Reset()
@@ -278,89 +289,6 @@ namespace HSR.PresWriter.PenTracking
         }
 
         /// <summary>
-        /// Calculate from collected data
-        /// </summary>
-        //public void Calculate()
-        //{
-        //    int xmax = ScreenSize.Width;
-        //    int ymax = ScreenSize.Height;
-        //    for (int i = 0; i < xmax; i++)
-        //    {
-        //        for (int j = 0; j < ymax; j++)
-        //        {
-        //            var p = Interpolate(i, j);
-        //            AddCalibratorPoint(p.X, p.Y, new Point(i,j));
-        //            //if (_calibratorData.ContainsKey(p.X) && _calibratorData[p.X].ContainsKey(p.Y))
-        //            //    _calibratorData[p.X,p.Y].Add();
-        //            //else 
-        //            //    _calibratorData[p.X,p.Y] = new List<Point>{new Point(i,j)};
-        //        }
-        //    }
-        //    SetMapData();
-        //    Debug.WriteLine("Calculation complete");
-        //    //_refPoints.Clear();
-        //}
-
-        /// <summary>
-        /// Predict from each possible triange, returning each candidate
-        /// </summary>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
-        /// <param name="n"></param>
-        /// <returns>Only returns plausible candidates, if all are bad, the result is empty</returns>
-        internal List<Point> GetCandidates(int x, int y, List<PointMapping> n)
-        {
-            if (n.Count < 3) throw new ArgumentException("at least 3 neighbours needed");
-            var targ = new Point(x, y);
-            var poss = new List<Point>();
-            for (int i = 0; i < n.Count - 2; i++)
-            {
-                for (int j = i + 1; j < n.Count; j++)
-                {
-                    for (int k = j + 1; k < n.Count; k++)
-                    {
-                        var b = new BarycentricCoordinate(targ, n[i].Image, n[j].Image, n[k].Image);
-                        if (b.IsNearby)
-                            poss.Add(b.GetCartesianCoordinates(n[i].Screen, n[j].Screen, n[k].Screen));
-                    }
-                }
-            }
-            return poss;
-        }
-
-        /// <summary>
-        /// Picks the nearest Values from the SortedDictionary
-        /// </summary>
-        /// <typeparam name="T">Type of the value</typeparam>
-        /// <param name="src"></param>
-        /// <param name="target">target key</param>
-        /// <param name="count">number of desired values</param>
-        /// <returns>selected range</returns>
-        internal SortedDictionary<int, T> PickNearest<T>(SortedDictionary<int, T> src, int target, int count)
-        {
-            var lower = new Queue<int>(src.Keys.Where(x => x <= target));
-            var upper = new Queue<int>(src.Keys.Where(x => x > target).Reverse());
-            var res = new SortedDictionary<int, T>();
-            while (res.Count < count && (lower.Count > 0 || upper.Count > 0))
-            {
-                if (lower.Count > 0)
-                {
-                    if (upper.Count > 0)
-                    {
-                        if (Math.Abs(lower.Peek() - target) < Math.Abs(upper.Peek() - target))
-                            res.Add(lower.Peek(), src[lower.Dequeue()]);
-                        else
-                            res.Add(upper.Peek(), src[upper.Dequeue()]);
-                    }
-                    else
-                        res.Add(lower.Peek(), src[lower.Dequeue()]);
-                }
-                else
-                    res.Add(upper.Peek(), src[upper.Dequeue()]);
-            }
-            return res;
-        }
-        /// <summary>
         /// Picking the n nearest points
         /// </summary>
         /// <param name="x">target x coordinate</param>
@@ -369,11 +297,12 @@ namespace HSR.PresWriter.PenTracking
         /// <returns>ordered by distance</returns>
         internal List<PointMapping> FindNearest(int x, int y, int desired)
         {
-            var cols = PickNearest(_calibratorData, x, desired);
+            //var cols = PickNearest(_calibratorData, x, desired);
+            var cols = _calibratorData.PickNearest(x, desired);
             var p = new List<PointMapping>();
             foreach (var col in cols)
             {
-                var tmp = PickNearest(col.Value, y, desired);
+                var tmp = col.Value.PickNearest(y, desired);
                 foreach (var range in tmp)
                 {
                     p.Add(new PointMapping{Image = new Point(col.Key, range.Key), Screen = Average(range.Value)});
@@ -413,26 +342,6 @@ namespace HSR.PresWriter.PenTracking
             res.Y = (int)Math.Round(res.Y * 1.0 / points.Count);
             return res;
         }
-        
-
-        /// <summary>
-        /// Calculate from corners
-        /// </summary>
-        public void PredictFromCorners()
-        {
-            // TODO index out of bound exception möglich
-            
-        }
-
-        /// <summary>
-        /// Checks if the point is in the Grid
-        /// </summary>
-        /// <param name="centerOfGravity"></param>
-        /// <returns></returns>
-        public bool Contains(AForge.Point centerOfGravity)
-        {
-            return Contains(new Point((int) centerOfGravity.X, (int) centerOfGravity.Y));
-        }
 
         public Quad PresentationQuad
         {
@@ -462,4 +371,45 @@ namespace HSR.PresWriter.PenTracking
             }
         }
     }
+}
+
+namespace HSR.PresWriter.Extensions
+{
+    public static class SortedDictionaryNeighboursExtension
+    {
+
+        /// <summary>
+        /// Picks the nearest Values from the SortedDictionary
+        /// </summary>
+        /// <typeparam name="T">Type of the value</typeparam>
+        /// <param name="src"></param>
+        /// <param name="target">target key</param>
+        /// <param name="count">number of desired values</param>
+        /// <returns>selected range</returns>
+        public static SortedDictionary<int, T> PickNearest<T>(this SortedDictionary<int, T> src, int target, int count)
+        {
+            var lower = new Queue<int>(src.Keys.Where(x => x <= target));
+            var upper = new Queue<int>(src.Keys.Where(x => x > target).Reverse());
+            var res = new SortedDictionary<int, T>();
+            while (res.Count < count && (lower.Count > 0 || upper.Count > 0))
+            {
+                if (lower.Count > 0)
+                {
+                    if (upper.Count > 0)
+                    {
+                        if (Math.Abs(lower.Peek() - target) < Math.Abs(upper.Peek() - target))
+                            res.Add(lower.Peek(), src[lower.Dequeue()]);
+                        else
+                            res.Add(upper.Peek(), src[upper.Dequeue()]);
+                    }
+                    else
+                        res.Add(lower.Peek(), src[lower.Dequeue()]);
+                }
+                else
+                    res.Add(upper.Peek(), src[upper.Dequeue()]);
+            }
+            return res;
+        }
+    }
+
 }

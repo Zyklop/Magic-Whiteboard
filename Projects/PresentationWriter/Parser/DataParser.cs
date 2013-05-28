@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Reflection;
 using HSR.PresWriter.PenTracking.Events;
 using HSR.PresWriter.PenTracking.Mappers;
 using HSR.PresWriter.PenTracking.Strategies;
@@ -74,8 +75,10 @@ namespace HSR.PresWriter.PenTracking
             //_pictureProvider.ShowConfigurationDialog();
             //_pictureProvider.FrameReady += _camera_FrameReady; // TODO siehe _camera_FrameReady
             //_calibrator.Grid.Calculate();
-            var mCtor = _mapperType.GetConstructor(new Type[] {typeof (Grid)});
-            _mapper = (AbstractPointMapper) mCtor.Invoke(new Grid[]{CalibratorGrid});
+            var mCtor = _mapperType.GetConstructor(new Type[] { typeof(Grid) });
+            _mapper = (AbstractPointMapper)mCtor.Invoke(new Grid[] { CalibratorGrid });
+            //_mapper = (AbstractPointMapper)Activator.CreateInstance(_mapperType, 
+            //    BindingFlags.CreateInstance, null, new Grid[] { CalibratorGrid });
             if (_mapperType.Equals(typeof(LinearMapper))) // check for runtimeType
             {
                 ((LinearMapper)_mapper).Calculate();
@@ -84,7 +87,6 @@ namespace HSR.PresWriter.PenTracking
             var bm = new Bitmap(640, 480);
             var sw = new Stopwatch();
             //for (int i = CalibratorGrid.TopLeft.X; i < CalibratorGrid.BottomRight.X; i++)
-            Console.WriteLine("Calbration completed");
             sw.Start();
             try
             {
@@ -132,7 +134,7 @@ namespace HSR.PresWriter.PenTracking
             }
             bm.Save(@"C:\temp\daforge\grid.bmp", ImageFormat.MemoryBmp);
 #endif
-
+            Console.WriteLine("Calbration completed");
             _penTracker.Start();
             //_calibrator.Grid.PredictFromCorners();
         }
