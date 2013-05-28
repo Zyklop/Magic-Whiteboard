@@ -9,31 +9,42 @@ namespace HSR.PresWriter.PenTracking
 {
     public class IntegralPointMapper : AbstractPointMapper
     {
-        private double _a, _b, _yk0;
+        private double _a, _b, _yk0, _xkOffset, _xCorrectionShortening;
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="a">left side mapping proportion</param>
         /// <param name="b">right side mapping proportion</param>
-        public IntegralPointMapper(Grid griddata, double a, double b)
+        public IntegralPointMapper(Grid griddata)
             : base(griddata)
         {
-            _a = a;
-            _b = b;
-            _yk0 = 0;
+            _a = _calculateParameterA(Grid.PresentationQuad, Grid.BeamerQuad);
+            _b = _calculateParameterB(Grid.PresentationQuad, Grid.BeamerQuad);
+            _yk0 = _calculateOffsetYk(Grid.PresentationQuad);
+
+            // Correct X Stretching
+            _xkOffset = (Grid.PresentationQuad.TopLeft.X + Grid.PresentationQuad.BottomLeft.X) / 2;
+            double xkMeanMaxOffset = (Grid.PresentationQuad.TopRight.X + Grid.PresentationQuad.BottomRight.X) / 2;
+            _xCorrectionShortening = _cameraXToBeamerX(xkMeanMaxOffset - _xkOffset, _a, _b);
         }
 
         /// <summary>
-        /// Get Beamer coordinates from presented picture taken by a camera
+        /// Get Beamer coordinates from presented picture taken by a camera.
         /// </summary>
-        /// <param name="presentation"></param>
-        /// <returns></returns>
+        /// <param name="presentation">Measured mapped point</param>
+        /// <returns>corresponding estimated beamer point</returns>
         public override Point FromPresentation(Point presentation)
         {
-            double xb = _cameraXToBeamerX(presentation.X, _a, _b);
-            double yb = _cameraYToBeamerY(presentation.Y, xb, _a, _b, _yk0);
-            Point corrected = _barycentricCorrectedPoint(new Point((float)xb, (float)yb), Grid.PresentationQuad);
+            // calculate beamer x
+            double xb = _cameraXToBeamerX(presentation.X - _xkOffset, _a, _b) / _xCorrectionShortening;
+            // calculate beamer y
+            double yb = _cameraYToBeamerY(presentation.Y - Grid.PresentationQuad.TopRight.Y, xb, _a, _b, _yk0);
+            
+            // correct coordinates to a quadliteral TODO
+            //Point corrected = _barycentricCorrectedPoint(new Point((float)xb, (float)yb), Grid.PresentationQuad);
+
+            Point corrected = new Point((float)xb, (float)yb);
             return corrected;
         }
 
@@ -70,9 +81,44 @@ namespace HSR.PresWriter.PenTracking
             return result;
         }
 
-        private static int _calculateOffsetYk(Quad corners)
+        #endregion
+
+        #region Environmental Parameters
+
+        /// <summary>
+        /// Calculate left shortening factor A.
+        /// </summary>
+        /// <param name="from">Source Corners</param>
+        /// <param name="to">Traget Corners</param>
+        /// <returns></returns>
+        private double _calculateParameterA(Quad from, Quad to)
         {
-            return 0;
+            double distFrom = from.TopLeft.DistanceTo(from.BottomLeft);
+            double distTo = to.TopLeft.DistanceTo(to.BottomLeft);
+            return distFrom / distTo;
+        }
+
+        /// <summary>
+        /// Calculate right shortening factor B
+        /// </summary>
+        /// <param name="from">Source Corners</param>
+        /// <param name="to">Target Corners</param>
+        /// <returns></returns>
+        private double _calculateParameterB(Quad from, Quad to)
+        {
+            double distFrom = from.TopRight.DistanceTo(from.BottomRight);
+            double distTo = to.TopRight.DistanceTo(to.BottomRight);
+            return distFrom / distTo;
+        }
+
+        /// <summary>
+        /// Calculates y distance between left and right vertical presentation borders
+        /// </summary>
+        /// <param name="corners">Reference Quadliteral</param>
+        /// <returns></returns>
+        private static float _calculateOffsetYk(Quad corners)
+        {
+            return corners.TopLeft.Y - corners.TopRight.Y;
         }
 
         #endregion
