@@ -76,7 +76,7 @@ namespace HSR.PresWriter.PenTracking
             //_calibrator.Grid.Calculate();
             var mCtor = _mapperType.GetConstructor(new Type[] {typeof (Grid)});
             _mapper = (AbstractPointMapper) mCtor.Invoke(new Grid[]{CalibratorGrid});
-            if (_mapperType.Equals(typeof(LinearMapper)))
+            if (_mapperType.Equals(typeof(LinearMapper))) // check for runtimeType
             {
                 ((LinearMapper)_mapper).Calculate();
             }
@@ -111,7 +111,7 @@ namespace HSR.PresWriter.PenTracking
             {
                 Debug.WriteLine(ex.Message);
             }
-            if (_mapperType.Equals(typeof(FineBarycentricMapper)))
+            if (_mapperType.Equals(typeof(FineBarycentricMapper))) //check for runntimeType
             {
                 var fbc = (FineBarycentricMapper) _mapper;
                 var sum = 0.0;
