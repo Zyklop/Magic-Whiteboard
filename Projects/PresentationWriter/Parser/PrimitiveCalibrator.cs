@@ -152,7 +152,6 @@ namespace HSR.PresWriter.PenTracking
                 if (_calibrationStep == CalibrationFrames || !Grid.DataNeeded)
                 {
                     //_cc.NewImage -= BaseCalibration; // TODO
-                    Grid.Calculate();
                     _vs.Close();
                     CalibrationCompleted(this, new EventArgs());
                 }

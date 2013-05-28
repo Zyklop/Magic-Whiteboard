@@ -13,6 +13,7 @@ using AForge.Imaging.Filters;
 using AForge.Math.Geometry;
 using HSR.PresWriter.IO.Events;
 using HSR.PresWriter.IO;
+using HSR.PresWriter.PenTracking.Mappers;
 using Visualizer;
 using Point = System.Drawing.Point;
 
@@ -34,6 +35,7 @@ namespace HSR.PresWriter.PenTracking
         private double _sqrheight;
         private double _sqrwidth;
         private bool _drawing;
+        private AbstractPointMapper _mapper;
         private Bitmap actImg;
 
 
@@ -274,6 +276,7 @@ namespace HSR.PresWriter.PenTracking
                         case 0:
                             Grid = new Grid(e.Frame.Bitmap.Width, e.Frame.Bitmap.Height);
                             Grid.ScreenSize = new Rectangle(0, 0, _vs.Width, _vs.Height);
+                            _mapper = new CornerBarycentricMapper(Grid);
                             var thread = new Thread(() =>
                             {
                                 _vs.Show();
@@ -317,7 +320,7 @@ namespace HSR.PresWriter.PenTracking
                                     (int)Math.Sqrt(CalibrationFrames - 3);
             foreach (var blob in b.GetObjectsInformation())
             {
-                var pos = Grid.GetPosition(blob.CenterOfGravity);
+                var pos = _mapper.FromPresentation(blob.CenterOfGravity);
                 if (pos.X >= 0 && pos.X <= _vs.Width && pos.Y >= 0 && pos.Y <= _vs.Height)
                 {
                     var xPos = (int)Math.Floor((pos.X - xOff)/_sqrwidth);

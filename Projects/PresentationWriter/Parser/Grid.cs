@@ -11,25 +11,14 @@ namespace HSR.PresWriter.PenTracking
 {
     public class Grid
     {
-        private SortedDictionary<int, SortedDictionary<int, List<Point>>> _calibratorData;
-        //2d Dictionary of imag-coordinates
-
+        private SortedDictionary<int, SortedDictionary<int, List<Point>>> _calibratorData; //2d Dictionary of imag-coordinates
         public Quad CameraQuad;
-
-        private Point[,] _mapData; //calculated Points
         private bool _needed = true;
         private Point _topLeft;
         private Point _topRight;
         private Point _bottomLeft;
         private Point _bottomRight;
         private SortedDictionary<int, SortedDictionary<int, Point>> _refPoints; //2d dictionary of screen Coordinates
-        private int[] iterationNeighbours = { 10, 15, 19, 24, 30 };
-        //private int[] iterationNeighbours = {4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30 };
-
-    private const int NeighboursNeeded = 7;
-#if DEBUG
-        public int[] NeighbourUsedCount { get; set; }
-#endif
 
         /// <summary>
         /// Creating a mapping grid
@@ -45,18 +34,8 @@ namespace HSR.PresWriter.PenTracking
                 BottomLeft = new AForge.Point(0, height),
                 BottomRight = new AForge.Point(width, height),
             };
-
-            _mapData = new Point[width,height];
             _calibratorData = new SortedDictionary<int, SortedDictionary<int, List<Point>>>();
             _refPoints = new SortedDictionary<int, SortedDictionary<int, Point>>();
-#if DEBUG
-            using (var fs = new StreamWriter(new FileStream(@"C:\Temp\aforge\points.csv", FileMode.Create, FileAccess.Write)))
-            {
-                fs.WriteLine("ScreenX,ScreenY,ImageX,ImageY");
-                fs.Flush();
-            }
-            NeighbourUsedCount = new int[iterationNeighbours.Length];
-#endif
         }
 
         /// <summary>
@@ -82,9 +61,8 @@ namespace HSR.PresWriter.PenTracking
             {
                 return (int)(new List<double>
                 {
-                    // TODO dafuq?
                     BottomRight.Y - TopLeft.Y, 
-                    BottomRight.Y - TopLeft.Y, 
+                    BottomRight.Y - TopRight.Y, 
                     BottomLeft.Y - TopRight.Y, 
                     BottomLeft.Y - TopLeft.Y
                 }).Max();
@@ -302,50 +280,26 @@ namespace HSR.PresWriter.PenTracking
         /// <summary>
         /// Calculate from collected data
         /// </summary>
-        public void Calculate()
-        {
-            int xmax = (int) ScreenSize.Width;
-            int ymax = (int) ScreenSize.Height;
-            for (int i = 0; i < xmax; i++)
-            {
-                for (int j = 0; j < ymax; j++)
-                {
-                    var p = Interpolate(i, j);
-                    AddCalibratorPoint(p.X, p.Y, new Point(i,j));
-                    //if (_calibratorData.ContainsKey(p.X) && _calibratorData[p.X].ContainsKey(p.Y))
-                    //    _calibratorData[p.X,p.Y].Add();
-                    //else 
-                    //    _calibratorData[p.X,p.Y] = new List<Point>{new Point(i,j)};
-                }
-            }
-            SetMapData();
-            Debug.WriteLine("Calculation complete");
-            //_refPoints.Clear();
-        }
-
-        /// <summary>
-        /// Interpolating Barycentric from the next Points
-        /// </summary>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
-        /// <returns></returns>
-        private Point Interpolate(int x, int y)
-        {
-            var poss = new List<Point>();
-            List<PointMapping> n;
-            for (int i = 0; i < iterationNeighbours.Length && poss.Count < NeighboursNeeded; i++)
-            {
-                n = FindNearest(x, y, iterationNeighbours[i]);
-                poss = GetCandidates(x, y, n);
-#if DEBUG
-                if (poss.Count >= NeighboursNeeded)
-                {
-                    NeighbourUsedCount[i]++;
-                }
-#endif
-            }
-            return Average(poss);
-        }
+        //public void Calculate()
+        //{
+        //    int xmax = ScreenSize.Width;
+        //    int ymax = ScreenSize.Height;
+        //    for (int i = 0; i < xmax; i++)
+        //    {
+        //        for (int j = 0; j < ymax; j++)
+        //        {
+        //            var p = Interpolate(i, j);
+        //            AddCalibratorPoint(p.X, p.Y, new Point(i,j));
+        //            //if (_calibratorData.ContainsKey(p.X) && _calibratorData[p.X].ContainsKey(p.Y))
+        //            //    _calibratorData[p.X,p.Y].Add();
+        //            //else 
+        //            //    _calibratorData[p.X,p.Y] = new List<Point>{new Point(i,j)};
+        //        }
+        //    }
+        //    SetMapData();
+        //    Debug.WriteLine("Calculation complete");
+        //    //_refPoints.Clear();
+        //}
 
         /// <summary>
         /// Predict from each possible triange, returning each candidate
@@ -354,7 +308,7 @@ namespace HSR.PresWriter.PenTracking
         /// <param name="y"></param>
         /// <param name="n"></param>
         /// <returns>Only returns plausible candidates, if all are bad, the result is empty</returns>
-        private List<Point> GetCandidates(int x, int y, List<PointMapping> n)
+        internal List<Point> GetCandidates(int x, int y, List<PointMapping> n)
         {
             if (n.Count < 3) throw new ArgumentException("at least 3 neighbours needed");
             var targ = new Point(x, y);
@@ -382,7 +336,7 @@ namespace HSR.PresWriter.PenTracking
         /// <param name="target">target key</param>
         /// <param name="count">number of desired values</param>
         /// <returns>selected range</returns>
-        private SortedDictionary<int, T> PickNearest<T>(SortedDictionary<int, T> src, int target, int count)
+        internal SortedDictionary<int, T> PickNearest<T>(SortedDictionary<int, T> src, int target, int count)
         {
             var lower = new Queue<int>(src.Keys.Where(x => x <= target));
             var upper = new Queue<int>(src.Keys.Where(x => x > target).Reverse());
@@ -413,7 +367,7 @@ namespace HSR.PresWriter.PenTracking
         /// <param name="y">target y coordinate</param>
         /// <param name="desired">number of neighbours</param>
         /// <returns>ordered by distance</returns>
-        private List<PointMapping> FindNearest(int x, int y, int desired)
+        internal List<PointMapping> FindNearest(int x, int y, int desired)
         {
             var cols = PickNearest(_calibratorData, x, desired);
             var p = new List<PointMapping>();
@@ -432,40 +386,6 @@ namespace HSR.PresWriter.PenTracking
         }
 
         /// <summary>
-        /// Average position
-        /// </summary>
-        /// <param name="points"></param>
-        /// <returns></returns>
-        private Point Average(List<Point> points)
-        {
-            if(points.Count == 0)
-                throw new ArgumentException("List is empty");
-            if (points.Count == 1)
-                return points.First();
-            var res = new Point(points.Sum(x => x.X), points.Sum(x => x.Y));
-            res.X = (int)Math.Round(res.X * 1.0 / points.Count);
-            res.Y = (int)Math.Round(res.Y * 1.0 / points.Count);
-            return res;
-        }
-
-        /// <summary>
-        /// Weighted Average
-        /// </summary>
-        /// <param name="points"></param>
-        /// <returns></returns>
-        private Point Average(Dictionary<Point, double> points)
-        {
-            if (points.Count == 0)
-                throw new ArgumentException("List is empty");
-            if (points.Count == 1)
-                return points.First().Key;
-            var rx = points.Sum(x => x.Value * x.Key.X);
-            var ry = points.Sum(x => x.Value * x.Key.Y);
-            var sWeights = points.Sum(x => x.Value);
-            return new Point((int)Math.Round(rx / sWeights), (int)Math.Round(ry / sWeights));
-        }
-
-        /// <summary>
         /// Distance between points
         /// </summary>
         /// <param name="p1"></param>
@@ -478,31 +398,22 @@ namespace HSR.PresWriter.PenTracking
         }
 
         /// <summary>
-        /// Calculating the average of all calibrator-data
+        /// Average position
         /// </summary>
-        private void SetMapData()
+        /// <param name="points"></param>
+        /// <returns></returns>
+        private Point Average(List<Point> points)
         {
-            for (int i = 0; i < _mapData.GetLength(0); i++)
-            {
-                for (int j = 0; j < _mapData.GetLength(1); j++)
-                {
-                    if (_calibratorData.ContainsKey(i) && _calibratorData[i].ContainsKey(j) && _calibratorData[i][j].Count > 0)
-                    {
-                        try
-                        {
-                            //var k = new Point();
-                            //k.X = _calibratorData[i][j].Sum(x => x.X)/_calibratorData[i][j].Count;
-                            //k.Y = _calibratorData[i][j].Sum(x => x.Y)/_calibratorData[i][j].Count;
-                            _mapData[i, j] = Average(_calibratorData[i][j]);
-                        }
-                        catch (Exception e)
-                        {
-                            Debug.WriteLine(e.Message + " happend during grid calculation at " + i + ", " + j);
-                        }
-                    }
-                }
-            }
+            if (points.Count == 0)
+                throw new ArgumentException("List is empty");
+            if (points.Count == 1)
+                return points.First();
+            var res = new Point(points.Sum(x => x.X), points.Sum(x => x.Y));
+            res.X = (int)Math.Round(res.X * 1.0 / points.Count);
+            res.Y = (int)Math.Round(res.Y * 1.0 / points.Count);
+            return res;
         }
+        
 
         /// <summary>
         /// Calculate from corners
@@ -510,107 +421,9 @@ namespace HSR.PresWriter.PenTracking
         public void PredictFromCorners()
         {
             // TODO index out of bound exception möglich
-            int xmax = ScreenSize.Width;
-            int ymax = ScreenSize.Height;
-            var stor = _calibratorData;
-            _calibratorData = new SortedDictionary<int, SortedDictionary<int, List<Point>>>(_calibratorData);
-            //copy calibrator data after backup
-            for (int i = 0; i < xmax; i+=2)
-            {
-                //Debug.WriteLine(i);
-                for (int j = 0; j < ymax; j+=2)
-                {
-                //Debug.WriteLineIf(i > 1278, j);
-                    //find intersection
-                    var y1 = (int)Math.Round(TopLeft.Y - (TopLeft.Y - TopRight.Y) * (i / (double)xmax));
-                    var y2 = (int)Math.Round(BottomLeft.Y - (BottomLeft.Y - BottomRight.Y) * (i / (double)xmax));
-                    var x1 = (int)Math.Round(TopLeft.X - (TopLeft.X - TopRight.X) * (i / (double)xmax));
-                    var x2 = (int)Math.Round(BottomLeft.X - (BottomLeft.X - BottomRight.X) * (i / (double)xmax));
-                    var y3 = (int)Math.Round(TopLeft.Y - (TopLeft.Y - BottomLeft.Y) * (j / (double)ymax));
-                    var y4 = (int)Math.Round(TopRight.Y - (TopRight.Y - BottomRight.Y) * (j / (double)ymax));
-                    var x3 = (int)Math.Round(TopLeft.X - (TopLeft.X - BottomLeft.X) * (j / (double)ymax));
-                    var x4 = (int)Math.Round(TopRight.X - (TopRight.X - BottomRight.X) * (j / (double)ymax));
-                    var a1 = y2 - y1;
-                    var b1 = x1 - x2;
-                    var c1 = a1*x1 + b1*y1;
-                    var a2 = y4 - y3;
-                    var b2 = x3 - x4;
-                    var c2 = a2 * x3 + b2 * y3;
-                    double det = a1*b2 - a2*b1;
-                        var x = (int) Math.Round((b2*c1 - b1*c2)/det);
-                        var y = (int) Math.Round((a1*c2 - a2*c1)/det);
-                    try
-                    {
-                        AddCalibratorPoint(x, y, new Point(i,j));
-                    }
-                    catch (Exception e)
-                    {
-                        Debug.WriteLine("Tried to add " + x + ", " + y + " and " + e.Message + " happend");
-                    }
-                }
-            }
-            SetMapData();
-            //restoring backup
-            _calibratorData = stor;
+            
         }
 
-        /// <summary>
-        /// Get the calculated screen coordinates
-        /// </summary>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
-        /// <returns></returns>
-        public Point GetPosition(int x, int y)
-        {
-            return _mapData[x, y];
-        }
-
-        /// <summary>
-        /// Get Barycentric interpolation based on the corners
-        /// </summary>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
-        /// <returns></returns>
-        public Point PredictPosition(int x, int y)
-        {
-            var b1 = new BarycentricCoordinate(new Point(x, y), TopLeft, TopRight, BottomLeft);
-            var p1 = b1.GetCartesianCoordinates(new Point(ScreenSize.Left,ScreenSize.Top),
-                new Point(ScreenSize.Right, ScreenSize.Top), new Point(ScreenSize.Left, ScreenSize.Bottom));
-            //return p1;
-            //if (b1.IsInside)
-            //    return p1;
-            var b2 = new BarycentricCoordinate(new Point(x, y), TopLeft, BottomLeft, BottomRight);
-            var p2 = b2.GetCartesianCoordinates(new Point(ScreenSize.Left,ScreenSize.Top),
-                new Point(ScreenSize.Left, ScreenSize.Bottom), new Point(ScreenSize.Right, ScreenSize.Bottom));
-            var b3 = new BarycentricCoordinate(new Point(x, y), TopRight, BottomLeft, BottomRight);
-            var p3 = b3.GetCartesianCoordinates(new Point(ScreenSize.Right, ScreenSize.Top),
-                new Point(ScreenSize.Left, ScreenSize.Bottom), new Point(ScreenSize.Right, ScreenSize.Bottom));
-            var b4 = new BarycentricCoordinate(new Point(x, y), TopLeft, TopRight, BottomRight);
-            var p4 = b4.GetCartesianCoordinates(new Point(ScreenSize.Left, ScreenSize.Top),
-                new Point(ScreenSize.Right, ScreenSize.Top), new Point(ScreenSize.Right, ScreenSize.Bottom));
-            //return p2;
-            //if (b2.IsInside)
-            //{
-            //    return p2;
-            //}
-            if (!(b1.IsInside || b3.IsInside || b2.IsInside || b4.IsInside))
-                return new Point(-1, -1);
-            return new Point((p1.X + p2.X + p3.X + p4.X)/4, (p1.Y + p2.Y + p3.Y + p4.Y)/4);
-            //if (!b1.IsInside && !b2.IsInside)
-            //    return new Point();
-            //return new Point((int) Math.Round((p1.X + p2.X)/2.0), (int) Math.Round((p1.Y + p2.Y)/2.0));
-        }
-
-        /// <summary>
-        /// Interpolate Barycentric, based on next neighbours
-        /// </summary>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
-        /// <returns></returns>
-        public Point InterpolatePosition(int x, int y)
-        {
-            return Interpolate(x, y);
-        }
         /// <summary>
         /// Checks if the point is in the Grid
         /// </summary>
@@ -619,31 +432,6 @@ namespace HSR.PresWriter.PenTracking
         public bool Contains(AForge.Point centerOfGravity)
         {
             return Contains(new Point((int) centerOfGravity.X, (int) centerOfGravity.Y));
-        }
-
-        /// <summary>
-        /// Perdict the position based on the corners
-        /// </summary>
-        /// <param name="p"></param>
-        /// <returns></returns>
-        public Point PredictPosition(AForge.Point p)
-        {
-            return PredictPosition((int) p.X, (int) p.Y);
-        }
-
-        /// <summary>
-        /// Interpolate based on nearest neighbours
-        /// </summary>
-        /// <param name="point"></param>
-        /// <returns></returns>
-        public Point InterpolatePosition(AForge.Point point)
-        {
-            return InterpolatePosition((int) Math.Round(point.X), (int) Math.Round(point.Y));
-        }
-
-        public Point GetPosition(AForge.Point point)
-        {
-            return GetPosition((int) point.X, (int) point.Y);
         }
 
         public Quad PresentationQuad
@@ -672,59 +460,6 @@ namespace HSR.PresWriter.PenTracking
                     BottomRight = new AForge.Point(ScreenSize.X + ScreenSize.Width, ScreenSize.Y + ScreenSize.Height),
                 };
             }
-        }
-    }
-
-    /// <summary>
-    /// Calculates Barycentric coordinates and remapping
-    /// </summary>
-    public class BarycentricCoordinate
-    {
-        public double Lambda1 { get; set; }
-
-        public double Lambda2 { get; set; }
-
-        public double Lambda3 { get; set; }
-
-        /// <summary>
-        /// Calculate from corners
-        /// </summary>
-        /// <param name="target">target point</param>
-        /// <param name="corner1"></param>
-        /// <param name="corner2"></param>
-        /// <param name="corner3"></param>
-        public BarycentricCoordinate(Point target, Point corner1, Point corner2, Point corner3)
-        {
-            var den = 1.0 / ((corner2.Y - corner3.Y) * (corner1.X - corner3.X) + (corner3.X - corner2.X) * (corner1.Y - corner3.Y));
-            Lambda1 = ((corner2.Y - corner3.Y) * (target.X - corner3.X) + (corner3.X - corner2.X) * (target.Y - corner3.Y)) * den;
-            Lambda2 = ((corner3.Y - corner1.Y) * (target.X - corner3.X) + (corner1.X - corner3.X) * (target.Y - corner3.Y)) * den;
-            Lambda3 = 1.0 - Lambda1 - Lambda2;
-            //Debug.WriteLine("L1: " + Lambda1 + " L2: " + Lambda2 + " L3: " + Lambda3);
-        }
-
-        /// <summary>
-        /// True if the point is inside the triangle
-        /// </summary>
-        public bool IsInside
-        { get { return Lambda1 >= 0 && Lambda1 <= 1 && Lambda2 >= 0 && Lambda2 <= 1 && Lambda3 >= 0 && Lambda3 <= 1; } }
-
-        /// <summary>
-        /// True if all lambdas smaller 1.5
-        /// </summary>
-        public bool IsNearby
-        { get { return Lambda1 <= 1.5 && Lambda2 <= 1.5 && Lambda3 <= 1.5; } }
-
-        /// <summary>
-        /// Rebasing the point
-        /// </summary>
-        /// <param name="corner1"></param>
-        /// <param name="corner2"></param>
-        /// <param name="corner3"></param>
-        /// <returns></returns>
-        public Point GetCartesianCoordinates(Point corner1, Point corner2, Point corner3)
-        {
-            return new Point((int) Math.Round(corner1.X*Lambda1 + Lambda2*corner2.X + corner3.X*Lambda3),
-                             (int) Math.Round(corner1.Y*Lambda1 + Lambda2*corner2.Y + corner3.Y*Lambda3));
         }
     }
 }
