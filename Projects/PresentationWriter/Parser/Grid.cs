@@ -24,8 +24,8 @@ namespace HSR.PresWriter.PenTracking
         /// <summary>
         /// Creating a mapping grid
         /// </summary>
-        /// <param name="width">width of the source image</param>
-        /// <param name="height">height of the source image</param>
+        /// <param name="width">width of the camera resolution</param>
+        /// <param name="height">height of the camea resolution</param>
         public Grid(int width, int height)
         {
             CameraQuad = new Quad()

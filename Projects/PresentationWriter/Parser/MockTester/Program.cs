@@ -22,7 +22,7 @@ namespace MockTester
 
         static void Main(string[] args)
         {
-            Main6(args);
+            Main8(args);
         }
 
         static void Main1(string[] args)
@@ -77,8 +77,8 @@ namespace MockTester
             if (!e.Frame.Point.IsEmpty) ;
             //Mouse.MoveMouseAbsolute(e.Frame.Point.X,e.Frame.Point.Y);
             var r = new Random();
-            _virtualCam.AddRect(e.Frame.Point.X + r.Next(-5,5)*20, e.Frame.Point.Y + r.Next(-5,5)*20,25,25, Color.Red);
-            _virtualCam.Draw();
+            //_virtualCam.AddRect(e.Frame.Point.X + r.Next(-5,5)*20, e.Frame.Point.Y + r.Next(-5,5)*20,25,25, Color.Red);
+            //_virtualCam.Draw();
 
         }
 
@@ -203,5 +203,32 @@ namespace MockTester
             Console.Read();
         }
 
+        private static void Main8(string[] args)
+        {
+            //_virtualCam = new VirtualCamera();
+            //_virtualCam.Start();
+            //var parser = new QuadrilateralDataParser(_virtualCam, _virtualCam);
+            var cam = new TimedFilesystemCamera(new DirectoryInfo(@"C:\temp\daforge\inph"));
+            var visualizerControl = new VisualizerDummy();
+            cam.Start();
+            var parser = new QuadrilateralDataParser(cam, visualizerControl);
+            parser.Start();
+            parser.PenPositionChanged += NewPoint;
+            Console.Read();
+            //while (true)
+            //{
+            //    Thread.Sleep(10000);
+            //    //_virtualCam.Clear();
+            //    _virtualCam.AddRect(500, 500, 15, 15, Color.Red);
+            //    _virtualCam.AddRect(530, 530, 15, 15, Color.Black);
+            //    _virtualCam.Draw();
+            //    Thread.Sleep(30);
+            //    //_virtualCam.Clear();
+            //    _virtualCam.AddRect(500, 500, 15, 15, Color.Black);
+            //    _virtualCam.AddRect(530, 530, 15, 15, Color.Red);
+            //    _virtualCam.Draw();
+            //    Debug.WriteLine("Drew Point");
+            //}
+        }
     }
 }

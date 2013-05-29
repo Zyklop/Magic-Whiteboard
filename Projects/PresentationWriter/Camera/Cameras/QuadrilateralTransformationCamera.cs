@@ -19,6 +19,7 @@ namespace HSR.PresWriter.DataSources.Cameras
 
         public QuadrilateralTransformationCamera(Point tl, Point tr, Point bl, Point br, double screenRatio)
         {
+            _corners = new List<IntPoint>();
             _corners.Add(new IntPoint(tl.X, tl.Y));
             _corners.Add(new IntPoint(tr.X,tr.Y));
             _corners.Add(new IntPoint(br.X,br.Y));
@@ -30,9 +31,9 @@ namespace HSR.PresWriter.DataSources.Cameras
                 new SimpleQuadrilateralTransformation(_corners , Width, Height );
         }
 
-        public int Height { get; protected set; }
+        public int Height { get; set; }
 
-        public int Width { get; protected set; }
+        public int Width { get; set; }
 
         public void Dispose()
         {

@@ -99,8 +99,8 @@ namespace HSR.PresWriter.PenTracking
             // Status: We now have references to a previous and a current frame in the correct order.
             //         Additionally we have an uncertain location of a previous point
 
-            //try
-            //{
+            try
+            {
 
                 // Time Keeper for Debugging
                 Stopwatch sw = new Stopwatch();
@@ -190,12 +190,12 @@ namespace HSR.PresWriter.PenTracking
                 {
                     this.PenFound(this, new PenPositionEventArgs(resultFrame, resultFrameWasOvertaken));
                 }
-            //}
-            //catch (Exception e)
-            //{
-            //    Debug.WriteLine("Error in Frame Processing: "+e.Message);
-            //    // TODO Error Handling: Maybe we should catch everything for stability.
-            //}
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine("Error in Frame Processing: "+e.Message);
+                // TODO Error Handling: Maybe we should catch everything for stability.
+            }
         }
 
         /// <summary>
