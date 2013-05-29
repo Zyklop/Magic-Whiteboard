@@ -68,8 +68,10 @@
     <Compile Include="FixedSizeQueue.cs" />
     <Compile Include="Images\BinaryBitmap.cs" />
     <Compile Include="Images\OneChannelBitmap.cs" />
+    <Compile Include="Mappers\BarycentricIntegralPointMapper.cs" />
     <Compile Include="Mappers\CornerBarycentricMapper.cs" />
     <Compile Include="Mappers\FineBarycentricMapper.cs" />
+    <Compile Include="Mappers\HomogenTransformationPointMapper.cs" />
     <Compile Include="Mappers\LinearMapper.cs" />
     <Compile Include="PointMapping.cs" />
     <Compile Include="PrimitiveCalibrator.cs" />

@@ -43,14 +43,18 @@ namespace HSR.PresWriter.Tester
         public static void CreateBackMappingPicture()
         {
             Bitmap target = new Bitmap(640, 480);
-            Bitmap source = new Bitmap(256, 256);
+            Bitmap source = new Bitmap(640, 480);
 
-            for (int x = 0; x < 256; x++)
+            int i = 0;
+            for (int x = 0; x < source.Width; x++)
             {
-                for (int y = 0; y < 256; y++ )
+                for (int y = 0; y < source.Height; y++ )
                 {
-                    int rgb = (y*x) + y;
-                    Color c = Color.FromArgb(x,0,y);
+                    int r, g, b;
+                    r = x % 256;
+                    b = y % 256;
+                    g = (x - r) / 16;
+                    Color c = Color.FromArgb(r, g, b);
                     source.SetPixel(x, y, c);
                 }
             }

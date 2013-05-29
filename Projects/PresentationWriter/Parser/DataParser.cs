@@ -196,9 +196,7 @@ namespace HSR.PresWriter.PenTracking
             PointFrame frame = e.Frame.ApplyRebase(point);
             if (PenPositionChanged != null)
             {
-                bool isInside = point.X < Int32.MaxValue &&
-                    point.X > 0 && point.Y > 0 && point.Y < Int32.MaxValue;
-                PenPositionChanged(this, new VirtualPenPositionEventArgs(frame, isInside));
+                PenPositionChanged(this, new VirtualPenPositionEventArgs(frame, CalibratorGrid.Contains(point)));
             }
         }
 
@@ -224,6 +222,9 @@ namespace HSR.PresWriter.PenTracking
         /// </summary>
         internal PrimitiveCalibrator Calibrator { get; set; }
 
+        /// <summary>
+        /// TODO
+        /// </summary>
         public Grid CalibratorGrid { get { return _calibrator.Grid; } }
 
         /// <summary>
