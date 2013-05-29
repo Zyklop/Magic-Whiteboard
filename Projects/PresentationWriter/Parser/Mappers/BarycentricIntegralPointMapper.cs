@@ -14,7 +14,7 @@ namespace HSR.PresWriter.PenTracking.Mappers
         private Quad _bariycentricEstimatedCameraCorners;
 
         public BarycentricIntegralPointMapper(Grid griddata)
-            : base(griddata)
+            : base(griddata, true)
         {
             // Calculate estimated beamer coordinates with integral approach
             Point beamerTopLeft     = base.FromPresentation(Grid.PresentationQuad.TopLeft);
@@ -45,6 +45,10 @@ namespace HSR.PresWriter.PenTracking.Mappers
             // Correct them with previously calculated barycentric corrected corners
             Point estimatedCameraPoint = _barycentricCorrectionFromSquare(naiveBeamerPoint, Grid.PresentationQuad);
             Point correctedBeamerPoint = _barycentricCorrectionToSquare(estimatedCameraPoint, _bariycentricEstimatedCameraCorners);
+
+            // scale coordinates up to beamer resolution
+            correctedBeamerPoint.X *= Grid.BeamerQuad.TopRight.X - Grid.BeamerQuad.TopLeft.X;
+            correctedBeamerPoint.Y *= Grid.BeamerQuad.BottomLeft.Y - Grid.BeamerQuad.TopLeft.Y;
             return correctedBeamerPoint;
         }
 

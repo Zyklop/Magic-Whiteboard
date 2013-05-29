@@ -11,7 +11,8 @@ namespace HSR.PresWriter.PenTracking
     {
         PointFrame GetLastFrame();
         Point GetPenPoint(long timestamp);
-        event EventHandler<PenPositionEventArgs> PenFound;
+        event EventHandler<PenFoundEventArgs> PenFound;
+        event EventHandler<EventArgs> NoPenFound;
         void Start();
         void Stop();
     }

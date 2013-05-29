@@ -58,14 +58,15 @@ namespace InputEmulation
                 //set starting Position
                 _lastPosition = p;
             }
-            Mouse.MoveMouseRelative(_lastPosition.X - p.X, _lastPosition.Y - p.Y);
+            Mouse.MoveMouseAbsolute(p.X, p.Y);
+            //Mouse.MoveMouseRelative(_lastPosition.X - p.X, _lastPosition.Y - p.Y);
             if (!_waiting && !_leftCicked && !_rightCicked)
             {
                 // no recent contact
                 _start = p;
                 _startTime = CurrentMillis.Millis;
                 _waiting = true;
-                Mouse.MoveMouseAbsolute(p.X,p.Y);
+                Mouse.MoveMouseAbsolute(p.X, p.Y);
             }
             else if (_waiting)
             {
@@ -76,11 +77,11 @@ namespace InputEmulation
                     Mouse.ClickEvent(false, false);
                     _waiting = false;
                 }
-                else if(Math.Abs(_start.X - p.X) > Radius || Math.Abs(_start.Y - p.Y) > Radius)
+                else if (Math.Abs(_start.X - p.X) > Radius || Math.Abs(_start.Y - p.Y) > Radius)
                 {
                     // moved outside the defined radius
                     _waiting = false;
-                    Mouse.ClickEvent(true,false);
+                    Mouse.ClickEvent(true, false);
                     _leftCicked = true;
                 }
             }

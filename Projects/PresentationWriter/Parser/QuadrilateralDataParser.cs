@@ -17,8 +17,8 @@ namespace HSR.PresWriter.PenTracking
         private ICalibrator _calibrator;
         private IPenTracker _penTracker;
         private IPictureProvider _provider;
-        private const int TransformWidth = 800;
-        private const int TransformHeight = 600;
+        private const int TransformWidth = 640;
+        private const int TransformHeight = 480;
         private QuadrilateralTransformationCamera _qtc;
 
 
@@ -65,7 +65,7 @@ namespace HSR.PresWriter.PenTracking
 
         private void StoreTransformedImage(object sender, FrameReadyEventArgs e)
         {
-            e.Frame.Bitmap.Save(@"C:\temp\daforge\transformation\img" + e.Frame.Number + ".jpg", ImageFormat.Jpeg);
+            //e.Frame.Bitmap.Save(@"C:\temp\daforge\transformation\img" + e.Frame.Number + ".jpg", ImageFormat.Jpeg);
         }
 
         private void ForwardImages(object sender, FrameReadyEventArgs e)
@@ -98,12 +98,18 @@ namespace HSR.PresWriter.PenTracking
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void PenFound(object sender, PenPositionEventArgs e)
+        private void PenFound(object sender, PenFoundEventArgs e)
         {
             Debug.WriteLine("Pen Nr\t{0} at {1},{2}", e.Frame.Number, e.Frame.Point.X, e.Frame.Point.Y);
             Point point = e.Frame.Point;
-            point.X *= (int)Math.Round((double)CalibratorGrid.ScreenSize.Width / TransformWidth);
-            point.Y *= (int)Math.Round((double)CalibratorGrid.ScreenSize.Height / TransformHeight);
+            double distortionX = (double)CalibratorGrid.ScreenSize.Width / (double)TransformWidth;
+            double distortionY = (double)CalibratorGrid.ScreenSize.Height / (double)TransformHeight;
+            //point.X *= (int)Math.Round((double)CalibratorGrid.ScreenSize.Width / TransformWidth);
+            //point.Y *= (int)Math.Round((double)CalibratorGrid.ScreenSize.Height / TransformHeight);
+
+            point.X = (int)Math.Round(distortionX * (double)e.Frame.Point.X);
+            point.Y = (int)Math.Round(distortionY * (double)e.Frame.Point.Y);
+
             PointFrame frame = e.Frame.ApplyRebase(point);
             if (PenPositionChanged != null)
                 PenPositionChanged(this, new VirtualPenPositionEventArgs(frame, true));

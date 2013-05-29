@@ -19,6 +19,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using WFVisuslizer;
+using InputEmulation;
+using Point = System.Drawing.Point;
 
 namespace WinFormsGuiTester
 {
@@ -28,6 +30,8 @@ namespace WinFormsGuiTester
         private DataParser _parser;
         private FixedSizedQueue<PointFrame> penDrawingBuffer;
         private Form screenForm;
+        private AdvancedInputEmulator aie;
+        private bool InputEnabled = false;
 
         public LiveTestForm()
         {
@@ -54,10 +58,12 @@ namespace WinFormsGuiTester
             //    new SimpleAForgeCalibrator(_camera, VisualizerControl.GetVisualizer()), 
             //    new AForgePenTracker(new RedLaserStrategy(), _camera));
             _parser = new DataParser(_camera, VisualizerControl.GetVisualizer());
+            //_parser = new QuadrilateralDataParser(_camera, VisualizerControl.GetVisualizer());
             _parser.PenPositionChanged += parser_PenPositionChanged;
 
             // Form for visual feedback of tracking process
-            screenForm = new ScreenForm();
+            //screenForm = new ScreenForm();
+            aie = new AdvancedInputEmulator();
         }
 
         private void _camera_FrameReady(object sender, FrameReadyEventArgs e)
@@ -83,6 +89,7 @@ namespace WinFormsGuiTester
                         g.DrawLine(Pens.Red, topRight, topLeft);
                     }
                 }
+
 
                 // TODO: Object is currently in use elsewhere..
                 this.cameraPictureBox.Image = redaction;
@@ -121,33 +128,41 @@ namespace WinFormsGuiTester
 
         private void parser_PenPositionChanged(object sender, PenPositionEventArgs e)
         {
+            if(e.Frame == null)
+            {
+                AdvancedInputEmulator.NoData();
+                return;
+            }
             this.foundPointLabel.Text = "Found Point: " + e.Frame.Point.X + ", " + e.Frame.Point.Y;
             Bitmap redaction = (Bitmap)this.cameraPictureBox.Image.Clone();
 
-            if (e.Frame != null)
-            {
-                penDrawingBuffer.Enqueue(e.Frame);
-            }
+            if (InputEnabled)
+                    AdvancedInputEmulator.NewPoint(e.Frame.Point);
 
-            // draw points in buffer to image
-            using (Graphics g = screenForm.CreateGraphics())
-            {
-                g.Clear(Color.Black);
-                using (SolidBrush brush = new SolidBrush(Color.Green))
-                {
-                    Point previousPoint = Point.Empty;
-                    foreach (PointFrame f in penDrawingBuffer)
-                    {
-                        g.DrawEllipse(Pens.Green, f.Point.X - 3, f.Point.Y - 3, 3, 3);
-                        if (!previousPoint.IsEmpty && PointTools.CalculateDistance(previousPoint, f.Point) < 100)
-                        {
-                            g.DrawLine(Pens.Red, previousPoint, f.Point);
-                        }
-                        previousPoint = f.Point;
-                    }
-                }
-                this.cameraPictureBox.Image = redaction;
-            }
+            //if (e.Frame != null)
+            //{
+            //    penDrawingBuffer.Enqueue(e.Frame);
+            //}
+
+            //// draw points in buffer to image
+            //using (Graphics g = screenForm.CreateGraphics())
+            //{
+            //    g.Clear(Color.Black);
+            //    using (SolidBrush brush = new SolidBrush(Color.Green))
+            //    {
+            //        Point previousPoint = Point.Empty;
+            //        foreach (PointFrame f in penDrawingBuffer)
+            //        {
+            //            g.DrawEllipse(Pens.Green, f.Point.X - 3, f.Point.Y - 3, 3, 3);
+            //            if (!previousPoint.IsEmpty && PointTools.CalculateDistance(previousPoint, f.Point) < 100)
+            //            {
+            //                g.DrawLine(Pens.Red, previousPoint, f.Point);
+            //            }
+            //            previousPoint = f.Point;
+            //        }
+            //    }
+            //    this.cameraPictureBox.Image = redaction;
+            //}
 
 
             //var vc = VisualizerControl.GetVisualizer();
@@ -227,7 +242,7 @@ namespace WinFormsGuiTester
 
         private void overlayButton_Click(object sender, EventArgs e)
         {
-            screenForm.Show();
+            InputEnabled = !InputEnabled;
         }
     }
 }
