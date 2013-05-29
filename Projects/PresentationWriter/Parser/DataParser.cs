@@ -35,14 +35,23 @@ namespace HSR.PresWriter.PenTracking
         public DataParser(IPictureProvider provider, IVisualizerControl visualizer)
         {
             // Initialize Calibration Tools
-            _calibrator = new IncrementalClusteringAForgeCalibrator(provider, visualizer);
+            _calibrator = new SimpleAForgeCalibrator(provider, visualizer);
             _calibrator.CalibrationCompleted += StartTracking; // begin pen tracking after calibration immediately
 
             // Initialize Pen Tracking Tools
             _penTracker = new AForgePenTracker(new RedLaserStrategy(), provider);
             _penTracker.PenFound += PenFound;
+            _penTracker.NoPenFound += NoPenFound;
 
-            _mapperType = typeof (FineBarycentricMapper);
+            _mapperType = typeof(HomogenTransformationPointMapper);
+        }
+
+        private void NoPenFound(object sender, EventArgs e)
+        {
+            if (PenPositionChanged != null)
+            {
+                PenPositionChanged(this, new VirtualPenPositionEventArgs(null, false));
+            }
         }
 
         /// <summary>
@@ -61,6 +70,7 @@ namespace HSR.PresWriter.PenTracking
             // Initialize Pen Tracking Tools
             _penTracker = tracker;
             _penTracker.PenFound += PenFound;
+            _penTracker.NoPenFound += NoPenFound;
 
             _mapperType = mapperType;
         }
@@ -189,7 +199,7 @@ namespace HSR.PresWriter.PenTracking
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void PenFound(object sender, PenPositionEventArgs e)
+        private void PenFound(object sender, PenFoundEventArgs e)
         {
             Debug.WriteLine("Pen Nr\t{0} at {1},{2}", e.Frame.Number, e.Frame.Point.X, e.Frame.Point.Y);
             Point point = _mapper.FromPresentation(e.Frame.Point.X, e.Frame.Point.Y);

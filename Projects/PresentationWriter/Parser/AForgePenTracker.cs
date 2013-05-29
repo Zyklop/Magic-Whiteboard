@@ -188,7 +188,7 @@ namespace HSR.PresWriter.PenTracking
                 // Trigger registered event handlers
                 if (this.PenFound != null)
                 {
-                    this.PenFound(this, new PenPositionEventArgs(resultFrame, resultFrameWasOvertaken));
+                    this.PenFound(this, new PenFoundEventArgs(resultFrame, resultFrameWasOvertaken));
                 }
             }
             catch (Exception e)
@@ -362,7 +362,7 @@ namespace HSR.PresWriter.PenTracking
             return Point.Empty;
         }
 
-        public event EventHandler<PenPositionEventArgs> PenFound;
+        public event EventHandler<PenFoundEventArgs> PenFound;
         public event EventHandler<EventArgs> NoPenFound;
 
 

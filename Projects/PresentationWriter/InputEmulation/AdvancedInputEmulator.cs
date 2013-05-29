@@ -13,7 +13,7 @@ namespace InputEmulation
         private static System.Drawing.Point _start;
         private static System.Drawing.Point _lastPosition = new System.Drawing.Point(-1,-1);
         private const int RightClickTimeOut = 3000;
-        private const int ReleaseTimeout = 90;
+        private const int ReleaseTimeout = 120;
         private const int Radius = 10;
         private static long _startTime;
         private static long _lastContact;
@@ -62,14 +62,15 @@ namespace InputEmulation
                 //set starting Position
                 _lastPosition = p;
             }
-            Mouse.MoveMouseRelative(_lastPosition.X - p.X, _lastPosition.Y - p.Y);
+            Mouse.MoveMouseAbsolute(p.X, p.Y);
+            //Mouse.MoveMouseRelative(_lastPosition.X - p.X, _lastPosition.Y - p.Y);
             if (!_waiting && !_leftCicked && !_rightCicked)
             {
                 // no recent contact
                 _start = p;
                 _startTime = CurrentMillis.Millis;
                 _waiting = true;
-                Mouse.MoveMouseAbsolute(p.X,p.Y);
+                Mouse.MoveMouseAbsolute(p.X, p.Y);
             }
             else if (_waiting)
             {
@@ -80,11 +81,11 @@ namespace InputEmulation
                     Mouse.ClickEvent(false, false);
                     _waiting = false;
                 }
-                else if(Math.Abs(_start.X - p.X) > Radius || Math.Abs(_start.Y - p.Y) > Radius)
+                else if (Math.Abs(_start.X - p.X) > Radius || Math.Abs(_start.Y - p.Y) > Radius)
                 {
                     // moved outside the defined radius
                     _waiting = false;
-                    Mouse.ClickEvent(true,false);
+                    Mouse.ClickEvent(true, false);
                     _leftCicked = true;
                 }
             }

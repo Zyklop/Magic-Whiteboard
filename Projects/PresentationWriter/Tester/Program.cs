@@ -21,7 +21,7 @@ namespace HSR.PresWriter.Tester
     {
         public static void Main(string[] args)
         {
-            CreateBackMappingPicture();
+            TestQuadRecognition();
         }
 
         public static void TestQuadRecognition()
@@ -35,6 +35,7 @@ namespace HSR.PresWriter.Tester
             corners.Add(new IntPoint(266, 480-167));
             // create filter
             QuadrilateralTransformation filter = new QuadrilateralTransformation(corners, 1024, 768);
+            filter.UseInterpolation = false;
             // apply the filter
             Bitmap newImage = filter.Apply(image);
             newImage.Save(@"c:\temp\grid-transformed.png");
@@ -45,17 +46,17 @@ namespace HSR.PresWriter.Tester
             Bitmap target = new Bitmap(640, 480);
             Bitmap source = new Bitmap(640, 480);
 
-            int i = 0;
+            const int size = 1000;
+            const double ratio = 1.0 / size;
+            const double saturation = 1.0;
+            Color[,] colors = new Color[size, size];
             for (int x = 0; x < source.Width; x++)
             {
+                double lightness = 1.0 - x * ratio;
                 for (int y = 0; y < source.Height; y++ )
                 {
-                    int r, g, b;
-                    r = x % 256;
-                    b = y % 256;
-                    g = (x - r) / 16;
-                    Color c = Color.FromArgb(r, g, b);
-                    source.SetPixel(x, y, c);
+                    double hue = y * ratio;
+                    //colors[x, y] = FromHSL(hue, saturation, lightness);
                 }
             }
             

@@ -51,7 +51,7 @@ namespace WinFormsGuiTester
         //private int lastRandX = 100;
         //private int lastRandY = 100;
         //Random tempRandom = new Random();
-        private async void Found(object sender, PenPositionEventArgs penPositionEventArgs)
+        private async void Found(object sender, PenFoundEventArgs penPositionEventArgs)
         {
             //Bitmap redaction = (Bitmap)e.Frame.Bitmap.Clone();
             PointFrame pointFrame = penPositionEventArgs.Frame;

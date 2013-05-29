@@ -54,6 +54,7 @@
   <ItemGroup>
     <Compile Include="AbstractPointMapper.cs" />
     <Compile Include="BarycentricCoordinate.cs" />
+    <Compile Include="Events\PenFoundEventArgs.cs" />
     <Compile Include="QuadrilateralDataParser.cs" />
     <Compile Include="KMeansClustering.cs" />
     <Compile Include="Calibrators\K_MeansAForgeCalibrator.cs" />
