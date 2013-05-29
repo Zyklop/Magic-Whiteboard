@@ -12,7 +12,7 @@ namespace HSR.PresWriter.PenTracking
         /// <summary>
         /// Create a Square with sides of length 1.
         /// </summary>
-        public static Quad UnitSquare()
+        public static Quad FromUnitSquare()
         {
             return new Quad()
             {

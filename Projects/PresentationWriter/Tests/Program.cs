@@ -10,6 +10,10 @@ namespace Tests
     {
         static void Main(string[] args)
         {
+            Console.WriteLine("IntegralPointMapper:");
+            IntegralPointMapperTest.Run();
+
+            Console.WriteLine("BarycentricIntegralPointMapper:");
             BarycentricIntegralPointMapperTest.Run();
 
             Console.ReadLine();

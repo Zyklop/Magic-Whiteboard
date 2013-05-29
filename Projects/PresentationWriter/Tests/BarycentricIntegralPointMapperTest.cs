@@ -16,7 +16,7 @@ namespace Tests
             public MockGrid()
                 : base(640, 480)
             {
-                ScreenSize = new System.Drawing.Rectangle(0, 0, 1, 1);
+                ScreenSize = new System.Drawing.Rectangle(0, 0, 1024, 768);
                 TopLeft = new System.Drawing.Point(265, 070);
                 BottomLeft = new System.Drawing.Point(265, 313);
                 TopRight = new System.Drawing.Point(522, 126);
