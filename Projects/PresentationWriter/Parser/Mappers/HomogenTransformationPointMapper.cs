@@ -1,9 +1,59 @@
-﻿using AForge;
+﻿using System.Collections.Generic;
+using AForge;
 
 namespace HSR.PresWriter.PenTracking.Mappers
 {
-    class HomogenTransformationPointMapper : AbstractPointMapper
+    public class HomogenTransformationPointMapper : AbstractPointMapper
     {
+        private const double TOLERANCE = 1e-13;
+        private double[,] _matrix;
+        private int _srcWidth;
+        private int _srcHeight;
+        private int _dstWidth;
+        private int _dstHeight;
+
+        // Caclculates determinant of a 2x2 matrix
+        private static double Det2(double a, double b, double c, double d)
+        {
+            return (a * d - b * c);
+        }
+
+        // Multiply two 3x3 matrices
+        private static double[,] MultiplyMatrix(double[,] a, double[,] b)
+        {
+            double[,] c = new double[3, 3];
+
+            c[0, 0] = a[0, 0] * b[0, 0] + a[0, 1] * b[1, 0] + a[0, 2] * b[2, 0];
+            c[0, 1] = a[0, 0] * b[0, 1] + a[0, 1] * b[1, 1] + a[0, 2] * b[2, 1];
+            c[0, 2] = a[0, 0] * b[0, 2] + a[0, 1] * b[1, 2] + a[0, 2] * b[2, 2];
+            c[1, 0] = a[1, 0] * b[0, 0] + a[1, 1] * b[1, 0] + a[1, 2] * b[2, 0];
+            c[1, 1] = a[1, 0] * b[0, 1] + a[1, 1] * b[1, 1] + a[1, 2] * b[2, 1];
+            c[1, 2] = a[1, 0] * b[0, 2] + a[1, 1] * b[1, 2] + a[1, 2] * b[2, 2];
+            c[2, 0] = a[2, 0] * b[0, 0] + a[2, 1] * b[1, 0] + a[2, 2] * b[2, 0];
+            c[2, 1] = a[2, 0] * b[0, 1] + a[2, 1] * b[1, 1] + a[2, 2] * b[2, 1];
+            c[2, 2] = a[2, 0] * b[0, 2] + a[2, 1] * b[1, 2] + a[2, 2] * b[2, 2];
+
+            return c;
+        }
+
+        // Calculates adjugate 3x3 matrix
+        private static double[,] AdjugateMatrix(double[,] a)
+        {
+            double[,] b = new double[3, 3];
+            b[0, 0] = Det2(a[1, 1], a[1, 2], a[2, 1], a[2, 2]);
+            b[1, 0] = Det2(a[1, 2], a[1, 0], a[2, 2], a[2, 0]);
+            b[2, 0] = Det2(a[1, 0], a[1, 1], a[2, 0], a[2, 1]);
+            b[0, 1] = Det2(a[2, 1], a[2, 2], a[0, 1], a[0, 2]);
+            b[1, 1] = Det2(a[2, 2], a[2, 0], a[0, 2], a[0, 0]);
+            b[2, 1] = Det2(a[2, 0], a[2, 1], a[0, 0], a[0, 1]);
+            b[0, 2] = Det2(a[0, 1], a[0, 2], a[1, 1], a[1, 2]);
+            b[1, 2] = Det2(a[0, 2], a[0, 0], a[1, 2], a[1, 0]);
+            b[2, 2] = Det2(a[0, 0], a[0, 1], a[1, 0], a[1, 1]);
+
+            return b;
+        }
+
+
         private static double[,] MapSquareToQuad(List<IntPoint> quad)
         {
             double[,] sq = new double[3, 3];
@@ -68,42 +118,45 @@ namespace HSR.PresWriter.PenTracking.Mappers
             return MultiplyMatrix(squareToOutput, AdjugateMatrix(squareToInpit));
         }
 
-        private double[,] _matrix;
 
         public HomogenTransformationPointMapper(Grid griddata)
             :base(griddata)
         {
-            // calculate tranformation matrix
-            List<IntPoint> srcRect = new List<IntPoint>();
-            srcRect.Add(new IntPoint(0, 0));
-            srcRect.Add(new IntPoint(srcWidth - 1, 0));
-            srcRect.Add(new IntPoint(srcWidth - 1, srcHeight - 1));
-            srcRect.Add(new IntPoint(0, srcHeight - 1));
+            // get source and destination images size
+            _srcWidth = (int) griddata.CameraQuad.BottomRight.X;
+            _srcHeight = (int)griddata.CameraQuad.BottomRight.Y;
+            _dstWidth = (int)griddata.BeamerQuad.BottomRight.X;
+            _dstHeight = (int)griddata.BeamerQuad.BottomRight.Y;
 
-            _matrix = this.MapQuadToQuad(destinationQuadrilateral, srcRect);
+            // calculate tranformation matrix
+            var srcRect = new List<IntPoint>
+                {
+                    new IntPoint(0, 0),
+                    new IntPoint(_srcWidth - 1, 0),
+                    new IntPoint(_srcWidth - 1, _srcHeight - 1),
+                    new IntPoint(0, _srcHeight - 1)
+                };
+
+            var destinationQuadrilateral = new List<IntPoint>
+                {
+                    new IntPoint(0,0),
+                    new IntPoint(_dstWidth -1, 0),
+                    new IntPoint(_dstWidth -1, _dstHeight -1),
+                    new IntPoint(0, _dstHeight -1)
+                };
+
+            _matrix = MapQuadToQuad(destinationQuadrilateral, srcRect);
         }
 
         public override Point FromPresentation(Point p)
         {
-            double factor = matrix[2, 0] * x + matrix[2, 1] * y + matrix[2, 2];
-            double srcX = (matrix[0, 0] * x + matrix[0, 1] * y + matrix[0, 2]) / factor;
-            double srcY = (matrix[1, 0] * x + matrix[1, 1] * y + matrix[1, 2]) / factor;
+            var x = p.X;
+            var y = p.Y;
+            double factor = _matrix[2, 0] * x + _matrix[2, 1] * y + _matrix[2, 2];
+            double srcX = (_matrix[0, 0] * x + _matrix[0, 1] * y + _matrix[0, 2]) / factor;
+            double srcY = (_matrix[1, 0] * x + _matrix[1, 1] * y + _matrix[1, 2]) / factor;
 
-            if ((srcX >= 0) && (srcY >= 0) && (srcX < srcWidth) && (srcY < srcHeight))
-            {
-                // get pointer to the pixel in the source image
-                p = baseSrc + (int)srcY * srcStride + (int)srcX * pixelSize;
-                // copy pixel's values
-                for (int i = 0; i < pixelSize; i++, ptr++, p++)
-                {
-                    *ptr = *p;
-                }
-            }
-            else
-            {
-                // skip the pixel
-                ptr += pixelSize;
-            }
+            return new Point((float) srcX, (float) srcY);
         }
     }
 }
