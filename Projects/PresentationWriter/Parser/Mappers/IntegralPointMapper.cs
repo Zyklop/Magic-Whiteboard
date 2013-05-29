@@ -47,6 +47,8 @@ namespace HSR.PresWriter.PenTracking.Mappers
         {
             // calculate beamer x and beamer y (from 0 to 1)
             double xb = _cameraXToBeamerX(presentation.X - _xkOffset, _a, _b) / _xCorrectionShortening;
+            // correct extreme distortion by a square function (y also becomes better)
+            xb -= _correctBySquareFunction(xb, 0.025); // TODO evaluate correction automatically 
             double yb = _cameraYToBeamerY(presentation.Y - Grid.PresentationQuad.TopRight.Y, xb, _a, _b, _yk0);
 
             if (!this._useNormSource)
@@ -78,6 +80,18 @@ namespace HSR.PresWriter.PenTracking.Mappers
         private static double _cameraYToBeamerY(double yk, double xb, double a, double b, double yk0)
         {
             return (yk - yk0 + yk0 * xb) / (a - a * xb + b * xb);
+        }
+
+        /// <summary>
+        /// Correct a function by a square function between 0 and 1.
+        /// Maximum of correction function lies at x=0.5 and y=correction
+        /// </summary>
+        /// <param name="xb">value to correct</param>
+        /// <param name="correction">maximum correction at x=0.5</param>
+        /// <returns>corrected xb</returns>
+        private static double _correctBySquareFunction(double xb, double maxCorrection)
+        {
+            return -4 * maxCorrection * xb * xb + 4 * maxCorrection * xb;
         }
 
         #endregion
