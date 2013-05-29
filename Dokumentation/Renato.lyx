@@ -164,7 +164,17 @@ Grobablauf unseres Programms:
 \end_layout
 
 \begin_layout Standard
-//SSD 
+\begin_inset Graphics
+	filename Diagramme/SSD.emf
+	width 15cm
+
+\end_inset
+
+
+\begin_inset Newpage pagebreak
+\end_inset
+
+
 \end_layout
 
 \begin_layout Enumerate
@@ -448,8 +458,12 @@ Es werden 3 Rechtecke mit zufälligen Eckpunkten gezeichnet und die Eckpunkte
  
 \end_layout
 
-\begin_layout Subparagraph
+\begin_layout Paragraph
 Erfolge
+\end_layout
+
+\begin_layout Standard
+
 \end_layout
 
 \begin_layout Standard
