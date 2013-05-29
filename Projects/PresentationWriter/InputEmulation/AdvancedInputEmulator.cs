@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using HSR.PresWriter;
 
 namespace InputEmulation
@@ -14,7 +10,7 @@ namespace InputEmulation
         private static System.Drawing.Point _lastPosition = new System.Drawing.Point(-1,-1);
         private const int RightClickTimeOut = 3000;
         private const int ReleaseTimeout = 90;
-        private const int Radius = 10;
+        private const int Radius = 30;
         private static long _startTime;
         private static long _lastContact;
         private static bool _waiting = false;

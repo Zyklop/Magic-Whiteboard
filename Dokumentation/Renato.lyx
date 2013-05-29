@@ -3,6 +3,17 @@
 \begin_document
 \begin_header
 \textclass article
+\begin_preamble
+\usepackage{changepage}
+\strictpagecheck
+
+\newlength{\totalleftmargin}
+\newcommand{\calctotalleftmargin}{%
+  \setlength{\totalleftmargin}{\dimexpr+\hoffset+1in+\leftskip}%
+  \checkoddpage%
+  \addtolength{\totalleftmargin}{\ifoddpage\oddsidemargin\else\evensidemargin\fi}%
+}
+\end_preamble
 \use_default_options true
 \maintain_unincluded_children false
 \language english
@@ -25,6 +36,7 @@
 \bibtex_command default
 \index_command default
 \paperfontsize default
+\spacing single
 \use_hyperref false
 \papersize default
 \use_geometry false
@@ -160,13 +172,41 @@ Unser Hauptprojekt wird eine ausführbare Datei, die alle unsere Subprojekte
 \end_layout
 
 \begin_layout Standard
+\noindent
 Grobablauf unseres Programms: 
 \end_layout
 
 \begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
 \begin_inset Graphics
 	filename Diagramme/SSD.emf
-	width 15cm
+	width 100col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+SSD
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
 
 \end_inset
 
@@ -458,6 +498,16 @@ Es werden 3 Rechtecke mit zufälligen Eckpunkten gezeichnet und die Eckpunkte
  
 \end_layout
 
+\begin_layout Standard
+\begin_inset Graphics
+	filename Diagramme/Scanlinien.emf
+	width 10cm
+
+\end_inset
+
+
+\end_layout
+
 \begin_layout Paragraph
 Erfolge
 \end_layout
@@ -467,8 +517,8 @@ Erfolge
 \end_layout
 
 \begin_layout Standard
-Ecken des Bildschirms wurden ungefähr erkannt, Von den Dargestellten Rechtecken
- auch meist.
+Ecken des Bildschirms wurden ungefähr erkannt, die meisten der dargestellten
+ Rechtecken auch.
  
 \end_layout
 

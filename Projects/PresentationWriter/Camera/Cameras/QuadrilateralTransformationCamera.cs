@@ -16,6 +16,8 @@ namespace HSR.PresWriter.DataSources.Cameras
         private List<IntPoint> _corners;
         private VideoFrame lastFrame;
         private SimpleQuadrilateralTransformation _filter;
+        private int _height;
+        private int _width;
 
         public QuadrilateralTransformationCamera(Point tl, Point tr, Point bl, Point br, double screenRatio)
         {
@@ -31,9 +33,27 @@ namespace HSR.PresWriter.DataSources.Cameras
                 new SimpleQuadrilateralTransformation(_corners , Width, Height );
         }
 
-        public int Height { get; set; }
+        public int Height
+        {
+            get { return _height; }
+            set 
+            {
+                _height = value;
+                _filter =
+                    new SimpleQuadrilateralTransformation(_corners, Width, Height);
+            }
+        }
 
-        public int Width { get; set; }
+        public int Width
+        {
+            get { return _width; }
+            set
+            {
+                _width = value;
+                _filter =
+                    new SimpleQuadrilateralTransformation(_corners, Width, Height);
+            }
+        }
 
         public void Dispose()
         {
