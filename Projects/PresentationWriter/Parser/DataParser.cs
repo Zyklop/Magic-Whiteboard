@@ -43,7 +43,7 @@ namespace HSR.PresWriter.PenTracking
             _penTracker.PenFound += PenFound;
             _penTracker.NoPenFound += NoPenFound;
 
-            _mapperType = typeof(HomogenTransformationPointMapper);
+            _mapperType = typeof(HorizontalHomogenTransformationPointMapper);
         }
 
         private void NoPenFound(object sender, EventArgs e)

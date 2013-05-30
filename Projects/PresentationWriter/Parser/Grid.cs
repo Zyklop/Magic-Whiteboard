@@ -410,6 +410,39 @@ namespace HSR.PresWriter.Extensions
             }
             return res;
         }
+
+        /// <summary>
+        /// Picks the nearest Values from the SortedDictionary
+        /// </summary>
+        /// <typeparam name="T">Type of the value</typeparam>
+        /// <param name="src"></param>
+        /// <param name="target">target key</param>
+        /// <param name="count">number of desired values</param>
+        /// <returns>selected range</returns>
+        public static SortedDictionary<float, T> PickNearest<T>(this SortedDictionary<float, T> src, float target, int count)
+        {
+            var lower = new Queue<float>(src.Keys.Where(x => x <= target));
+            var upper = new Queue<float>(src.Keys.Where(x => x > target).Reverse());
+            var res = new SortedDictionary<float, T>();
+            while (res.Count < count && (lower.Count > 0 || upper.Count > 0))
+            {
+                if (lower.Count > 0)
+                {
+                    if (upper.Count > 0)
+                    {
+                        if (Math.Abs(lower.Peek() - target) < Math.Abs(upper.Peek() - target))
+                            res.Add(lower.Peek(), src[lower.Dequeue()]);
+                        else
+                            res.Add(upper.Peek(), src[upper.Dequeue()]);
+                    }
+                    else
+                        res.Add(lower.Peek(), src[lower.Dequeue()]);
+                }
+                else
+                    res.Add(upper.Peek(), src[upper.Dequeue()]);
+            }
+            return res;
+        }
     }
 
 }

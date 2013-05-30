@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading;
 using HSR.PresWriter;
 
@@ -53,6 +54,7 @@ namespace InputEmulation
         /// <param name="p"></param>
         public static void NewPoint(System.Drawing.Point p)
         {
+            NoData(); // check timeout and optionally release buttons
             if (_lastPosition.X == -1)
             {
                 //set starting Position
@@ -66,7 +68,7 @@ namespace InputEmulation
                 _start = p;
                 _startTime = CurrentMillis.Millis;
                 _waiting = true;
-                Mouse.MoveMouseAbsolute(p.X, p.Y);
+                //Mouse.MoveMouseAbsolute(p.X, p.Y);
             }
             else if (_waiting)
             {
@@ -85,6 +87,7 @@ namespace InputEmulation
                     _leftCicked = true;
                 }
             }
+            Debug.WriteLine((_waiting?"Waiting, ":"") + (_leftCicked?"left down, ":"") + (_rightCicked?"right down":""));
             _lastContact = CurrentMillis.Millis;
             _lastPosition = p;
         }
