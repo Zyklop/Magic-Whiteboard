@@ -18,24 +18,21 @@ namespace HSR.PresWriter.PenTracking
 {
     public class AForgePenTracker : IPenTracker
     {
-        /// <summary>
-        /// Max count of frames to be included in pen discovering process.</summary>
-        private const int MAX_FRAMEBUFFER_LENGTH = 3;
         // How much points we keep
         //private const int MAX_POINTBUFFER_LENGTH = 10;
         private IPictureProvider _source;
         private FixedSizedQueue<VideoFrame> _frameBuffer;
         private LinkedList<PointFrame> _penPoints; // Eventually a sorted list would be the better and more comfortable choice
-        private SemaphoreSlim _semaphore = new SemaphoreSlim(Environment.ProcessorCount);
+        private SemaphoreSlim _semaphore = new SemaphoreSlim(1);
 
         public FilterStrategy Strategy { get; set; }
 
         public AForgePenTracker(FilterStrategy strategy, IPictureProvider source)
         {
             _source = source;
-            this.Strategy = strategy;
-            this._frameBuffer = new FixedSizedQueue<VideoFrame>(MAX_FRAMEBUFFER_LENGTH);
-            this._penPoints = new LinkedList<PointFrame>();
+            Strategy = strategy;
+            _frameBuffer = new FixedSizedQueue<VideoFrame>(3); // 3 Video frames are used for discovering pen points
+            _penPoints = new LinkedList<PointFrame>();
         }
 
         public void Start()
@@ -50,10 +47,12 @@ namespace HSR.PresWriter.PenTracking
 
         private void onTrackPen(object sender, FrameReadyEventArgs e)
         {
-            /* We allow #CPUs pictures to be processed at the same time.
-             * If there is no free logigal CPU, we discard the current frame
+            /* We allow just 1 Thread to process a picture at a time.
+             * If there is already a thread running, we discard the new 
+             * frame after we waited for half the framerate. So we give 
+             * time to catch up in two frames.
              */
-            if (_semaphore.Wait(0))
+            if (_semaphore.Wait(20))
             {
                 var task = Task.Run(() =>
                 {
@@ -70,7 +69,7 @@ namespace HSR.PresWriter.PenTracking
                 // rethrow Exception if necessary
                 if (task.Exception != null)
                 {
-                    throw task.Exception;
+                    Debug.WriteLine("Pen Tracking Exception: " + task.Exception.ToString());
                 }
             }
         }
@@ -143,7 +142,7 @@ namespace HSR.PresWriter.PenTracking
                 sw.Stop();
                 //if (stage1 >= 40)
                 //{
-                    Console.WriteLine("Pen Tracking Overtime: {0}", stage1);
+                    Console.WriteLine("Pen Tracking Time: {0}", stage1);
                 //}
 
                 // Evaluate all the candidates (PenCandidates)
@@ -193,7 +192,7 @@ namespace HSR.PresWriter.PenTracking
             }
             catch (Exception e)
             {
-                Debug.WriteLine("Error in Frame Processing: "+e.Message);
+                Debug.WriteLine("Error in Frame Processing: \""+e.ToString()+"\"");
                 // TODO Error Handling: Maybe we should catch everything for stability.
             }
         }
@@ -342,21 +341,21 @@ namespace HSR.PresWriter.PenTracking
             lock (this._penPoints)
             {
                 enumerator = this._penPoints.GetEnumerator();
-            }
 
-            while (enumerator.MoveNext() && timestamp < enumerator.Current.Timestamp)
-            {
-                if (timestamp == enumerator.Current.Timestamp)
+                while (enumerator.MoveNext() && timestamp < enumerator.Current.Timestamp)
                 {
-                    return enumerator.Current.Point;
+                    if (timestamp == enumerator.Current.Timestamp)
+                    {
+                        return enumerator.Current.Point;
+                    }
+                    previousFrame = enumerator.Current;
                 }
-                previousFrame = enumerator.Current;
-            }
 
-            if (previousFrame != null && enumerator.Current != null)
-            {
-                long ratio = previousFrame.Timestamp / enumerator.Current.Timestamp;
-                return PointTools.CalculateIntermediatePoint(previousFrame.Point, enumerator.Current.Point, ratio);
+                if (previousFrame != null && enumerator.Current != null)
+                {
+                    long ratio = previousFrame.Timestamp / enumerator.Current.Timestamp;
+                    return PointTools.CalculateIntermediatePoint(previousFrame.Point, enumerator.Current.Point, ratio);
+                }
             }
 
             return Point.Empty;
