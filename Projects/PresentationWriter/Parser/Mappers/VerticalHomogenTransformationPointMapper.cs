@@ -30,106 +30,88 @@ namespace HSR.PresWriter.PenTracking.Mappers
 
             // find equations of four quadrilateral's edges ( f(x) = k*x + b )
             double kTop;
-            double _bTop;
-            double bLeft;
-            double _kLeft;
-            double bRight;
-            double kRight;
-            double _bBottom;
+            double bTop;
+            double kLeft;
+            double bBottom;
             double kBottom;
 
             // top edge
             if (sourceQuadrilateral[1].X == sourceQuadrilateral[0].X)
             {
                 kTop = 0;
-                _bTop = sourceQuadrilateral[1].X;
+                bTop = sourceQuadrilateral[1].X;
             }
             else
             {
                 kTop = (double) (sourceQuadrilateral[1].Y - sourceQuadrilateral[0].Y)/
                         (sourceQuadrilateral[1].X - sourceQuadrilateral[0].X);
-                _bTop = (double) sourceQuadrilateral[0].Y - kTop*sourceQuadrilateral[0].X;
+                bTop = sourceQuadrilateral[0].Y - kTop*sourceQuadrilateral[0].X;
             }
 
             // bottom edge
             if (sourceQuadrilateral[2].X == sourceQuadrilateral[3].X)
             {
                 kBottom = 0;
-                _bBottom = sourceQuadrilateral[2].X;
+                bBottom = sourceQuadrilateral[2].X;
             }
             else
             {
                 kBottom = (double) (sourceQuadrilateral[2].Y - sourceQuadrilateral[3].Y)/
                            (sourceQuadrilateral[2].X - sourceQuadrilateral[3].X);
-                _bBottom = (double) sourceQuadrilateral[3].Y - kBottom*sourceQuadrilateral[3].X;
+                bBottom = sourceQuadrilateral[3].Y - kBottom*sourceQuadrilateral[3].X;
             }
 
             // left edge
             if (sourceQuadrilateral[3].X == sourceQuadrilateral[0].X)
             {
-                _kLeft = 0;
-                bLeft = sourceQuadrilateral[3].X;
+                kLeft = 0;
             }
             else
             {
-                _kLeft = (double) (sourceQuadrilateral[3].Y - sourceQuadrilateral[0].Y)/
+                kLeft = (double) (sourceQuadrilateral[3].Y - sourceQuadrilateral[0].Y)/
                          (sourceQuadrilateral[3].X - sourceQuadrilateral[0].X);
-                bLeft = (double) sourceQuadrilateral[0].Y - _kLeft*sourceQuadrilateral[0].X;
-            }
-
-            // right edge
-            if (sourceQuadrilateral[2].X == sourceQuadrilateral[1].X)
-            {
-                kRight = 0;
-                bRight = sourceQuadrilateral[2].X;
-            }
-            else
-            {
-                kRight = (double) (sourceQuadrilateral[2].Y - sourceQuadrilateral[1].Y)/
-                          (sourceQuadrilateral[2].X - sourceQuadrilateral[1].X);
-                bRight = (double) sourceQuadrilateral[1].Y - kRight*sourceQuadrilateral[1].X;
             }
 
             // some precalculated values
-            double leftFactor = (double)(sourceQuadrilateral[3].Y - sourceQuadrilateral[0].Y) / dstHeight;
-            double rightFactor = (double)(sourceQuadrilateral[2].Y - sourceQuadrilateral[1].Y) / dstHeight;
+            double topFactor = (double)(sourceQuadrilateral[1].X - sourceQuadrilateral[0].X) / dstWidth;
+            double bottomFactor = (double)(sourceQuadrilateral[3].X - sourceQuadrilateral[2].X) / dstWidth;
 
-            var srcY0 = sourceQuadrilateral[0].Y;
-            var srcY1 = sourceQuadrilateral[1].Y;
+            var srcX0 = sourceQuadrilateral[0].X;
+            var srcX1 = sourceQuadrilateral[1].X;
 
             // for each line
-            for (int y = 0; y < dstHeight; y++)
+            for (int x = 0; x < dstWidth; x++)
             {
                 // find corresponding Y on the left edge of the quadrilateral
-                double yHorizLeft = leftFactor*y + srcY0;
+                double yVerticTop = topFactor*x + srcX0;
                 // find corresponding X on the left edge of the quadrilateral
-                double xHorizLeft = (_kLeft == 0) ? bLeft : (yHorizLeft - bLeft)/_kLeft;
+                double xVerticTop = (kTop == 0) ? bTop : (yVerticTop - bTop)/kLeft;
 
                 // find corresponding Y on the right edge of the quadrilateral
-                double yHorizRight = rightFactor*y + srcY1;
+                double yVerticBottom = bottomFactor*x + srcX1;
                 // find corresponding X on the left edge of the quadrilateral
-                double xHorizRight = (kRight == 0) ? bRight : (yHorizRight - bRight)/kRight;
+                double xVerticBottom = (kBottom == 0) ? bBottom : (yVerticBottom - bBottom)/kBottom;
 
                 // find equation of the line joining points on the left and right edges
-                double kHoriz, bHoriz;
+                double kVertic, bVertic;
 
-                if (xHorizLeft == xHorizRight)
+                if (xVerticTop == xVerticBottom)
                 {
-                    kHoriz = 0;
-                    bHoriz = xHorizRight;
+                    kVertic = 0;
+                    bVertic = xVerticBottom;
                 }
                 else
                 {
-                    kHoriz = (yHorizRight - yHorizLeft)/(xHorizRight - xHorizLeft);
-                    bHoriz = yHorizLeft - kHoriz*xHorizLeft;
+                    kVertic = (yVerticBottom - yVerticTop)/(xVerticBottom - xVerticTop);
+                    bVertic = yVerticTop - kVertic*xVerticTop;
                 }
 
-                double horizFactor = (xHorizRight - xHorizLeft)/dstWidth;
+                double verticFactor = (xVerticBottom - xVerticTop)/dstWidth;
 
-                for (int x = 0; x < dstWidth; x++)
+                for (int y = 0; y < dstHeight; y++)
                 {
-                    float xs = (float) (horizFactor*x + xHorizLeft);
-                    float ys = (float) (kHoriz*xs + bHoriz);
+                    var xs = (float) (verticFactor*x + xVerticTop);
+                    var ys = (float) (kVertic*xs + bVertic);
 
                     if (true || (xs >= 0) && (ys >= 0) && (xs < srcWidth) && (ys < srcHeight))
                     {

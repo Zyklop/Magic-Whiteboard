@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Drawing;
 using System.Threading;
 using HSR.PresWriter.DataSources.Cameras;
 using HSR.PresWriter.PenTracking;
@@ -13,6 +14,8 @@ using Color = System.Drawing.Color;
 using HSR.PresWriter.PenTracking.Events;
 using HSR.PresWriter.IO.Cameras;
 using System.IO;
+using Pen = InputEmulation.Pen;
+using Point = System.Drawing.Point;
 
 namespace MockTester
 {
@@ -22,26 +25,21 @@ namespace MockTester
 
         static void Main(string[] args)
         {
-            Main8(args);
+            Main1(args);
         }
 
         static void Main1(string[] args)
         {
-            int i = 0;
-            ThreeChannelBitmap tci = new ThreeChannelBitmap();
-            var parser = new DataParser(new TimedFilesystemCamera(new DirectoryInfo(@"C:\temp\aforge\inp")),WFVisuslizer.VisualizerControl.GetVisualizer());
-            parser.Start();
-            Thread.Sleep(10000);
-            //cameraConnector.NewImage += delegate(object sender, NewImageEventArgs e)
-            //    {
-            //        if (i>0)
-            //        {
-            //            (tci - e.NewImage).GetVisual().Save(@"C:\temp\gach" + i + ".jpg");
-            //        }
-                    
-            //        tci = e.NewImage;
-            //        i++;
-            //    };
+            for (int i = 0; i < 90; i++)
+            {
+                AdvancedInputEmulator.NewPoint(new Point(1350,200));
+                Thread.Sleep(30);
+            }
+            for (int i = 0; i < 30; i++)
+            {
+                AdvancedInputEmulator.NoData();
+                Thread.Sleep(30);
+            }
             Console.Read();
         }
 
