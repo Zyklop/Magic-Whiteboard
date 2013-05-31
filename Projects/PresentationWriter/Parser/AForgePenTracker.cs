@@ -16,13 +16,25 @@ using System.Threading.Tasks;
 
 namespace HSR.PresWriter.PenTracking
 {
+    /// <summary>
+    /// Used to track pen points on camera output. AForge Filters are used to achieve that:
+    /// 1.  Calculate the difference of two camera pictures in order
+    ///     Optimization: Gaining difference pictures by searching first in a small area 
+    ///     possibly containing the searched point.
+    /// 2.  Grayscale and Threshold the difference picture by a defined Strategy
+    /// 3.  Search for remaining blobs of the right size:
+    ///     a) if one is found, it is a solution
+    ///     b) if two are found, the intermediate is a solution
+    ///     c) otherwise there is no solution (no pen found)
+    /// 
+    /// - private methods are synched, by a semaphore at the main frame processing method "onTrackPen".
+    /// - public methods are synched seperately by csharp locking mechanism.
+    /// </summary>
     public class AForgePenTracker : IPenTracker
     {
-        // How much points we keep
-        //private const int MAX_POINTBUFFER_LENGTH = 10;
         private IPictureProvider _source;
         private FixedSizedQueue<VideoFrame> _frameBuffer;
-        private LinkedList<PointFrame> _penPoints; // Eventually a sorted list would be the better and more comfortable choice
+        private FixedSizedQueue<PointFrame> _penPoints;
         private SemaphoreSlim _semaphore = new SemaphoreSlim(1);
 
         public FilterStrategy Strategy { get; set; }
@@ -31,8 +43,8 @@ namespace HSR.PresWriter.PenTracking
         {
             _source = source;
             Strategy = strategy;
-            _frameBuffer = new FixedSizedQueue<VideoFrame>(3); // 3 Video frames are used for discovering pen points
-            _penPoints = new LinkedList<PointFrame>();
+            _frameBuffer = new FixedSizedQueue<VideoFrame>(3);   // 3 video frames are used for discovering pen points
+            _penPoints = new FixedSizedQueue<PointFrame>(10000); // 10000 points are kept
         }
 
         public void Start()
@@ -58,7 +70,19 @@ namespace HSR.PresWriter.PenTracking
                 {
                     try
                     {
+                        // Time Keeper for Debugging
+                        Stopwatch sw = new Stopwatch();
+                        sw.Start();
+
                         processFrame(e.Frame);
+
+                        long stage1 = sw.ElapsedMilliseconds;
+                        sw.Stop();
+                        //if (stage1 >= 40)
+                        //{
+                        Console.WriteLine("-> Pen Tracking Time: {0}", stage1);
+                        //}
+
                     }
                     finally
                     {
@@ -76,76 +100,52 @@ namespace HSR.PresWriter.PenTracking
 
         private void processFrame(VideoFrame currentFrame)
         {
-            VideoFrame previousFrame;
-
-            // Lock buffer for adding elements in dependency of queue length and preserving order.
-            lock (this._frameBuffer) 
+            // We can only do our work if there is at least one frame in the buffer already
+            if (this._frameBuffer.Count < 1)
             {
-                // We can only do our work if there is at least one frame in the buffer already
-                if (this._frameBuffer.Count < 1)
-                {
-                    this._frameBuffer.Enqueue(currentFrame);
-                    return;
-                }
-                else
-                {
-                    // we can do our work, since there is a previous frame.
-                    previousFrame = this._frameBuffer.Last(); 
-                    this._frameBuffer.Enqueue(currentFrame);
-                }
+                // But we keep the frame for the next incoming processing request
+                this._frameBuffer.Enqueue(currentFrame);
+                return;
             }
 
-            // Status: We now have references to a previous and a current frame in the correct order.
-            //         Additionally we have an uncertain location of a previous point
+            // We can do our work, since there is a previously taken frame.
+            VideoFrame previousFrame = this._frameBuffer.Last(); 
+            this._frameBuffer.Enqueue(currentFrame);
 
+            // Status: 
+            // - We now have references to a previous and a current video frame in the correct order.
+            // - Additionally we have some previous points location (not necessarily matching to the previous video frame).
             try
             {
-
-                // Time Keeper for Debugging
-                Stopwatch sw = new Stopwatch();
-                sw.Start();
-
-                // reference to the last found point is necessary to search more efficiently.
+                // Reference to the last found point is needed to search more efficiently.
                 // Efficiently means: Arround the last found point
-                // This point is not necessarily the real precedessor (stale values are ok here).
-                PointFrame maybePreviousPoint = null;
-                lock(this._penPoints)
-                {
-                    if (this._penPoints.Last != null)
-                    {
-                        maybePreviousPoint = this._penPoints.Last.Value;
-                    }
-                }
+                PointFrame previousPoint = this._penPoints.LastOrDefault();
 
                 // At first we search for the pen near the old one (if there was one)
                 IEnumerable<PenCandidate> candidates = null;
-                if (maybePreviousPoint != null)
+                if (previousPoint != null)
                 {
                     candidates = this.findPenCandidatesInArea(
-                         previousFrame.Bitmap,
-                         currentFrame.Bitmap,
-                         this.getEstimatedSearchArea(maybePreviousPoint)
+                         (Bitmap)previousFrame.Bitmap.Clone(),
+                         (Bitmap)currentFrame.Bitmap.Clone(),
+                         this.getEstimatedSearchArea(previousPoint)
                      );
                 }
 
-                // If there is no previous point or we couldn't use the information of a previously tracked point (candidates == 0), 
-                // we search the whole image.
+                // If there is no previous point (previousPoint == null) or we couldn't use the information 
+                // of a previously tracked point (candidates == 0), we search the whole image.
                 // WEAKNESS: if we detect one in our search area, but two are present on the whole picture, 
-                //           we give false feedback. Therefore, the searcharea must be choosen carefully
-                if (maybePreviousPoint == null || candidates.Count() == 0)
+                // we give FALSE feedback. Therefore, the searcharea must be choosen carefully
+                if (previousPoint == null || candidates.Count() == 0)
                 {
-                    candidates = this.findPenCandidatesInArea(previousFrame.Bitmap, currentFrame.Bitmap, Rectangle.Empty);
+                    candidates = this.findPenCandidatesInArea(
+                        (Bitmap)previousFrame.Bitmap.Clone(), 
+                        (Bitmap)currentFrame.Bitmap.Clone(), 
+                        Rectangle.Empty
+                    );
                 }
 
-                // Debug Out of elapsed Time
-                long stage1 = sw.ElapsedMilliseconds;
-                sw.Stop();
-                //if (stage1 >= 40)
-                //{
-                    Console.WriteLine("Pen Tracking Time: {0}", stage1);
-                //}
-
-                // Evaluate all the candidates (PenCandidates)
+                // Evaluate all the pen candidates for valid pen positions
                 Point foundPoint = this.findPen(candidates);
 
                 // TODO empty may be a valid point (0,0)
@@ -158,36 +158,13 @@ namespace HSR.PresWriter.PenTracking
                     return;
                 }
 
-                // Put the qualified result in a new point frame and queue it in the correct order
+                // Put the qualified result in a new point frame and queue it to the result list
                 PointFrame resultFrame = new PointFrame(currentFrame.Number, foundPoint, currentFrame.Timestamp);
-                bool resultFrameWasOvertaken = false; ;
+                this._penPoints.Enqueue(resultFrame);
 
-                lock (this._penPoints)
-                {
-                    LinkedListNode<PointFrame> insertAfterThisNode = this._penPoints.Last;
-
-                    // go back in the list until there is the right result ordering
-                    while(insertAfterThisNode != null && insertAfterThisNode.Value.Number > resultFrame.Number)
-                    {
-                        insertAfterThisNode = insertAfterThisNode.Previous;
-                        resultFrameWasOvertaken = true;
-                    }
-
-                    // add frame to an absolute ordered place
-                    if (insertAfterThisNode != null)
-                    {
-                        this._penPoints.AddAfter(insertAfterThisNode, resultFrame);
-                    }
-                    else
-                    {
-                        this._penPoints.AddLast(resultFrame);
-                    }
-                }
-
-                // Trigger registered event handlers
                 if (this.PenFound != null)
                 {
-                    this.PenFound(this, new PenFoundEventArgs(resultFrame, resultFrameWasOvertaken));
+                    this.PenFound(this, new PenFoundEventArgs(resultFrame));
                 }
             }
             catch (Exception e)
@@ -205,7 +182,7 @@ namespace HSR.PresWriter.PenTracking
         /// <returns></returns>
         private Rectangle getEstimatedSearchArea(PointFrame lastFoundPoint)
         {
-            int areaX = lastFoundPoint.Point.X - 50;
+            int areaX = lastFoundPoint.Point.X - 50; // TODO Magic Number
             int areaY = lastFoundPoint.Point.Y - 50;
             return new Rectangle(areaX, areaY, 100, 100);
         }
@@ -214,9 +191,9 @@ namespace HSR.PresWriter.PenTracking
         /// This is the time consuming part. We try to find pen candidates in two pictures 
         /// by their filtered difference in a specified area.
         /// </summary>
-        /// <param name="previous"></param>
-        /// <param name="current"></param>
-        /// <returns></returns>
+        /// <param name="previous">Previous video picture</param>
+        /// <param name="current">Current video picture</param>
+        /// <returns>Candidates</returns>
         private IEnumerable<PenCandidate> findPenCandidatesInArea(Bitmap previous, Bitmap current, Rectangle searchArea)
         {
             if (!searchArea.IsEmpty)
@@ -228,7 +205,7 @@ namespace HSR.PresWriter.PenTracking
 
             // calculate difference image
             this.Strategy.DifferenceFilter.OverlayImage = previous;
-            Bitmap diffImage = this.Strategy.DifferenceFilter.Apply(current);
+            Bitmap diffImage = current; //this.Strategy.DifferenceFilter.Apply(current);
             //diffImage.Save(@"c:\temp\images\diff-"+CurrentMillis.Millis+".png");
 
             // translate red parts to gray image
@@ -264,6 +241,11 @@ namespace HSR.PresWriter.PenTracking
             return candidates;
         }
 
+        /// <summary>
+        /// Delivers a concrete interpretation of the algorithms resulting candidates.
+        /// </summary>
+        /// <param name="candidates">Zero or multiple found pen candidates</param>
+        /// <returns>This is our final result: A pen position</returns>
         private Point findPen(IEnumerable<PenCandidate> candidates)
         {
             // Return intermediate point
@@ -315,8 +297,7 @@ namespace HSR.PresWriter.PenTracking
         /// <summary>
         /// Get last processed frame
         /// </summary>
-        /// <returns></returns>
-        public PointFrame GetLastFrame()
+        public PointFrame GetLastFound()
         {
             lock (this._penPoints)
             {
@@ -336,12 +317,12 @@ namespace HSR.PresWriter.PenTracking
         public Point GetPenPoint(long timestamp)
         {
             PointFrame previousFrame = null;
-            LinkedList<PointFrame>.Enumerator enumerator;
+            List<PointFrame>.Enumerator enumerator;
 
             lock (this._penPoints)
             {
-                enumerator = this._penPoints.GetEnumerator();
-
+                enumerator = this._penPoints.ToList().GetEnumerator();
+                // Search a predecessor and a successor
                 while (enumerator.MoveNext() && timestamp < enumerator.Current.Timestamp)
                 {
                     if (timestamp == enumerator.Current.Timestamp)
@@ -350,7 +331,7 @@ namespace HSR.PresWriter.PenTracking
                     }
                     previousFrame = enumerator.Current;
                 }
-
+                // Calculate interpolation
                 if (previousFrame != null && enumerator.Current != null)
                 {
                     long ratio = previousFrame.Timestamp / enumerator.Current.Timestamp;

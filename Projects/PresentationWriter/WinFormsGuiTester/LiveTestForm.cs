@@ -30,7 +30,7 @@ namespace WinFormsGuiTester
         private DataParser _parser;
         private FixedSizedQueue<PointFrame> penDrawingBuffer;
         private Form screenForm;
-        private AdvancedInputEmulator aie;
+        private AdvancedInputEmulator _inputEmulator;
         private bool InputEnabled = false;
 
         public LiveTestForm()
@@ -63,7 +63,7 @@ namespace WinFormsGuiTester
 
             // Form for visual feedback of tracking process
             //screenForm = new ScreenForm();
-            aie = new AdvancedInputEmulator();
+            _inputEmulator = new AdvancedInputEmulator();
         }
 
         private void _camera_FrameReady(object sender, FrameReadyEventArgs e)
@@ -126,6 +126,7 @@ namespace WinFormsGuiTester
         //    //ReleaseDC(desktopDC);
         //}
 
+        private FixedSizedQueue<PointFrame> _lastFoundPoints = new FixedSizedQueue<PointFrame>(3);
         private void parser_PenPositionChanged(object sender, PenPositionEventArgs e)
         {
             if(e.Frame == null)
@@ -133,12 +134,20 @@ namespace WinFormsGuiTester
                 AdvancedInputEmulator.NoData();
                 return;
             }
+            _lastFoundPoints.Enqueue(e.Frame);
+
             this.foundPointLabel.Text = "Found Point: " + e.Frame.Point.X + ", " + e.Frame.Point.Y;
-            Bitmap redaction = (Bitmap)this.cameraPictureBox.Image.Clone();
 
             if (InputEnabled)
-                    AdvancedInputEmulator.NewPoint(e.Frame.Point);
+            {
+                // prevent flickering by taking the average of the three last points
+                int x = (int)_lastFoundPoints.Average(el => el.Point.X);
+                int y = (int)_lastFoundPoints.Average(el => el.Point.Y);
+                //AdvancedInputEmulator.NewPoint(new Point(x, y));
+                AdvancedInputEmulator.NewPoint(e.Frame.Point);
+            }
 
+            //Bitmap redaction = (Bitmap)this.cameraPictureBox.Image.Clone();
             //if (e.Frame != null)
             //{
             //    penDrawingBuffer.Enqueue(e.Frame);
