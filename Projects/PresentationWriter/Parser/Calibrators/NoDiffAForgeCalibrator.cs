@@ -26,7 +26,7 @@ namespace HSR.PresWriter.PenTracking
         GreenAndBlue
     }
 
-    class NoDiffAForgeCalibrator: ICalibrator
+    internal class NoDiffAForgeCalibrator: ICalibrator
     {
         private IPictureProvider _cc;
         private int _calibrationStep;

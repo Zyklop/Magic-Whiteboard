@@ -16,9 +16,9 @@
 \end_preamble
 \use_default_options true
 \maintain_unincluded_children false
-\language english
+\language german-ch
 \language_package default
-\inputencoding auto
+\inputencoding utf8
 \fontencoding global
 \font_roman default
 \font_sans default
@@ -185,6 +185,7 @@ status open
 \begin_layout Plain Layout
 \begin_inset Graphics
 	filename Diagramme/SSD.emf
+	lyxscale 30
 	width 100col%
 
 \end_inset
@@ -499,9 +500,37 @@ Es werden 3 Rechtecke mit zufälligen Eckpunkten gezeichnet und die Eckpunkte
 \end_layout
 
 \begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
 \begin_inset Graphics
 	filename Diagramme/Scanlinien.emf
-	width 10cm
+	lyxscale 30
+	width 100col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Sacnlinien
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
 
 \end_inset
 
@@ -586,7 +615,52 @@ t, die bei jedem Frame leicht verschoben werden um mehr Referenzpunkte zu
  wir blau und grün.
  Zwei Farben sind ausreichend, wenn sie mit einem Feld Abstand projiziert
  werden, dass es keine Nachbarschaftskonflikte gibt.
- Bild 
+ 
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Bilder/Calibration/bgSchachbrett.png
+	width 45text%
+
+\end_inset
+
+
+\begin_inset Formula $\rightarrow$
+\end_inset
+
+
+\begin_inset Graphics
+	filename Bilder/Calibration/Scahcbrett erkannt.png
+	width 45text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Schachbrettmuster über zwei Farbkanäle
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Enumerate
@@ -599,7 +673,7 @@ Diese werden auf dem Differenzbild gesucht.
 Probleme: 
 \end_layout
 
-\begin_layout Standard
+\begin_layout Itemize
 Durch die Belichtungskorrektur der Kamera wird ein universeller Hintergrund
  für ein Differenzbild verunmöglicht.
  Es gibt zu viele Fehlerkennungen auf dem Bild.
@@ -668,7 +742,42 @@ An den Kanten bei denen das Bild aufgeteilt wurde entstehen häufig Einschnitte
  oder sonstige Ungenauigkeiten.
  Diese sind keine grossen Probleme für den Blob-Detector, jedoch sind sie
  eine weitere Quelle für Ungenauigkeiten.
+ Durch eine Filterung nach Grösse erhält man ein gutes Resultat.
  
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Bilder/Calibration/img3.jpg
+	width 100text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Erkannte grüne Quadrate
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsubsection
