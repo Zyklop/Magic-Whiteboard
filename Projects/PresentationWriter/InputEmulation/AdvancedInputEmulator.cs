@@ -10,8 +10,8 @@ namespace InputEmulation
         private static System.Drawing.Point _start;
         private static System.Drawing.Point _lastPosition = new System.Drawing.Point(-1,-1);
         private const int RightClickTimeOut = 1000;
-        private const int ReleaseTimeout = 120;
-        private const int Radius = 90;
+        private const int ReleaseTimeout = 160;
+        private const int Radius = 20;
         private static long _startTime;
         private static long _lastContact;
         private static bool _waiting = false;
@@ -29,7 +29,7 @@ namespace InputEmulation
                     // left click
                     _waiting = false;
                     Mouse.ClickEvent(true, false);
-                    Thread.Sleep(15);
+                    Thread.Sleep(7);
                     Mouse.ClickEvent(true, true);
                 }
                 if (_leftCicked)
@@ -87,7 +87,7 @@ namespace InputEmulation
                     _leftCicked = true;
                 }
             }
-            Debug.WriteLine((_waiting?"Waiting, ":"") + (_leftCicked?"left down, ":"") + (_rightCicked?"right down":""));
+            Debug.WriteLine("Wait time: " + (CurrentMillis.Millis - _startTime) + (_waiting ? "Waiting, " : "") + (_leftCicked ? "left down, " : "leftUp, ") + (_rightCicked ? "right down" : "rightUp, "));
             _lastContact = CurrentMillis.Millis;
             _lastPosition = p;
         }

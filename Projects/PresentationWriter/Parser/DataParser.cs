@@ -39,11 +39,11 @@ namespace HSR.PresWriter.PenTracking
             _calibrator.CalibrationCompleted += StartTracking; // begin pen tracking after calibration immediately
 
             // Initialize Pen Tracking Tools
-            _penTracker = new AForgePenTracker(new RedLaserStrategy(), provider);
+            _penTracker = new AForgePenTracker(new WhiteLedStrategy(), provider);
             _penTracker.PenFound += PenFound;
             _penTracker.NoPenFound += NoPenFound;
 
-            _mapperType = typeof(HorizontalHomogenTransformationPointMapper);
+            _mapperType = typeof(BarycentricIntegralPointMapper);
         }
 
         private void NoPenFound(object sender, EventArgs e)
@@ -201,7 +201,6 @@ namespace HSR.PresWriter.PenTracking
         /// <param name="e"></param>
         private void PenFound(object sender, PenFoundEventArgs e)
         {
-            Debug.WriteLine("Pen Nr\t{0} at {1},{2}", e.Frame.Number, e.Frame.Point.X, e.Frame.Point.Y);
             Point point = _mapper.FromPresentation(e.Frame.Point.X, e.Frame.Point.Y);
             PointFrame frame = e.Frame.ApplyRebase(point);
             if (PenPositionChanged != null)

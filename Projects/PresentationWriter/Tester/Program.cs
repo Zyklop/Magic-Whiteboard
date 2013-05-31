@@ -21,7 +21,7 @@ namespace HSR.PresWriter.Tester
     {
         public static void Main(string[] args)
         {
-            TestQuadRecognition();
+            TrackPenOnLibrary();
         }
 
         public static void TestQuadRecognition()
@@ -87,14 +87,9 @@ namespace HSR.PresWriter.Tester
                 Console.WriteLine("Cam Frame: {0}", e.Frame.Number);
             };
 
-            tracker.PenFound += delegate(object o, PenPositionEventArgs e) {
+            tracker.PenFound += delegate(object o, PenFoundEventArgs e) {
                 PointFrame p = e.Frame;
-                String outOfOrder = "";
-                if (e.IsOutOfOrder)
-                {
-                    outOfOrder = "(out of order)";
-                }
-                Console.WriteLine("Found {0} at {1},{2} {3}", p.Number, p.Point.X, p.Point.Y, outOfOrder);
+                Console.WriteLine("-> Found {0} at {1},{2}", p.Number, p.Point.X, p.Point.Y);
             };
 
             tracker.Start();
@@ -132,13 +127,13 @@ namespace HSR.PresWriter.Tester
 
         public static void PenTrackingPerformance()
         {
-            FilesystemCamera camera = new FilesystemCamera(new DirectoryInfo(@"C:\temp\images\laser"));
+            FilesystemCamera camera = new FilesystemCamera(new DirectoryInfo(@"c:\temp\live\cap-127"));
             camera.FrameReady += delegate(object o, FrameReadyEventArgs e) {
                 Console.WriteLine("got image nr {0}.", e.Frame.Number);
             };
 
             AForgePenTracker tracker = new AForgePenTracker(new RedLaserStrategy(), camera);
-            tracker.PenFound += delegate(object o, PenPositionEventArgs e)
+            tracker.PenFound += delegate(object o, PenFoundEventArgs e)
             {
                 Console.WriteLine("got point nr {0} ({1},{2}).", e.Frame.Number, e.Frame.Point.X, e.Frame.Point.Y);
             };
@@ -149,6 +144,7 @@ namespace HSR.PresWriter.Tester
             for (int i = 0; i < 50; i++)
             {
                 camera.Next();
+                Thread.Sleep(40); // every 40ms a picture
             }
 
             Console.ReadLine();

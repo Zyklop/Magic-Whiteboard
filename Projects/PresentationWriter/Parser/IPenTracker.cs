@@ -19,7 +19,7 @@ namespace HSR.PresWriter.PenTracking
         /// <summary>
         /// References the previously (last) found frame
         /// </summary>
-        PointFrame GetLastFrame();
+        PointFrame GetLastFound();
 
         /// <summary>
         /// Return an interpolated NOT REALLY FOUND point at a given time.
