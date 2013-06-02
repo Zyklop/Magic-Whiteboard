@@ -37,25 +37,6 @@ namespace InputEmulation
             return SendInput(2, pInputs, Marshal.SizeOf(structure));
         }
 
-        public static uint Z()
-        {
-            INPUT structure = new INPUT();
-            structure.type = (int) InputType.INPUT_KEYBOARD;
-            structure.ki.wVk = VkKeyScan((char) System.Windows.Forms.Keys.Z);
-            structure.ki.dwFlags = (int) KEYEVENTF.KEYDOWN;
-            structure.ki.dwExtraInfo = GetMessageExtraInfo();
-
-            INPUT input2 = new INPUT();
-            structure.type = (int) InputType.INPUT_KEYBOARD;
-            structure.ki.wVk = VkKeyScan((char) System.Windows.Forms.Keys.Z);
-            input2.mi.dwFlags = (int) KEYEVENTF.KEYUP;
-            input2.ki.dwExtraInfo = GetMessageExtraInfo();
-
-            INPUT[] pInputs = new INPUT[] {structure, input2};
-
-            return SendInput(2, pInputs, Marshal.SizeOf(structure));
-        }
-
         public static void SendKeyAsInput(System.Windows.Forms.Keys key)
         {
             INPUT structure = new INPUT();

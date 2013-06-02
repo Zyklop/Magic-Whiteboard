@@ -63,7 +63,7 @@ namespace WinFormsGuiTester
 
             // Form for visual feedback of tracking process
             //screenForm = new ScreenForm();
-            _inputEmulator = new AdvancedInputEmulator();
+            _inputEmulator = new AdvancedInputEmulator(VisualizerControl.GetVisualizer().Width, VisualizerControl.GetVisualizer().Height);
         }
 
         private void _camera_FrameReady(object sender, FrameReadyEventArgs e)
@@ -126,25 +126,19 @@ namespace WinFormsGuiTester
         //    //ReleaseDC(desktopDC);
         //}
 
-        private FixedSizedQueue<PointFrame> _lastFoundPoints = new FixedSizedQueue<PointFrame>(3);
         private void parser_PenPositionChanged(object sender, PenPositionEventArgs e)
         {
             if(e.Frame == null)
             {
-                AdvancedInputEmulator.NoData();
+                _inputEmulator.NoData();
                 return;
             }
-            _lastFoundPoints.Enqueue(e.Frame);
 
             this.foundPointLabel.Text = "Found Point: " + e.Frame.Point.X + ", " + e.Frame.Point.Y;
 
             if (InputEnabled)
             {
-                // prevent flickering by taking the average of the three last points
-                int x = (int)_lastFoundPoints.Average(el => el.Point.X);
-                int y = (int)_lastFoundPoints.Average(el => el.Point.Y);
-                //AdvancedInputEmulator.NewPoint(new Point(x, y));
-                AdvancedInputEmulator.NewPoint(e.Frame.Point);
+                _inputEmulator.NewPoint(e.Frame.Point);
             }
 
             //Bitmap redaction = (Bitmap)this.cameraPictureBox.Image.Clone();

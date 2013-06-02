@@ -28,20 +28,20 @@ namespace MockTester
             Main4(args);
         }
 
-        static void Main1(string[] args)
-        {
-            for (int i = 0; i < 90; i++)
-            {
-                AdvancedInputEmulator.NewPoint(new Point(1350,200));
-                Thread.Sleep(30);
-            }
-            for (int i = 0; i < 30; i++)
-            {
-                AdvancedInputEmulator.NoData();
-                Thread.Sleep(30);
-            }
-            Console.Read();
-        }
+        //static void Main1(string[] args)
+        //{
+        //    for (int i = 0; i < 90; i++)
+        //    {
+        //        AdvancedInputEmulator.NewPoint(new Point(1350,200));
+        //        Thread.Sleep(30);
+        //    }
+        //    for (int i = 0; i < 30; i++)
+        //    {
+        //        AdvancedInputEmulator.NoData();
+        //        Thread.Sleep(30);
+        //    }
+        //    Console.Read();
+        //}
 
         static void Main2(string[] args)
         {
