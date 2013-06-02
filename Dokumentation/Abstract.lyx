@@ -64,32 +64,56 @@ Abstract
 \end_layout
 
 \begin_layout Standard
-Die Software PresentationWriter versucht, die Funktionalität eines digitalen
- Whiteboards mit wenig zusätzlicher Hardware nachzubilden.
- Das Ziel ist, mit 20 CHF etwas zu entwickeln, das die Funktionalität bietet,
- Anmerkungen auf Präsentationen zu machen.
- Zusätzlich darf es nicht zu stark von der Umgebung beeinflusst werden oder
- der Hardware des Baemers oder des Gerätes abhängen.
- Zudem darf es höchstens so gross sein, dass man es einfach in einer Notbooktasc
-he transportieren kann.
+Herkömmliche elektronische Präsentationsmethoden mit Beamer und Laptop haben
+ den Nachteil, dass sie wenig Freiheiten für Interaktionen mit dem Publikum
+ zulassen.
+ Fernbedienungen oder Funkmäuse sind Ansätze für eine etwas agilere Steuerung
+ der Präsentation.
+ Falls jedoch mehr Interaktion, wie z.B.
+ das Klären einer spontanen Frage aus dem Plenum erforderlich ist, wird
+ auf Mittel wie Hellraumprojektor, Wandtafel oder ein Zeichnungsprogramm
+ auf dem Laptop selbst (ev.
+ Touch) zurückgegriffen.
 \end_layout
 
 \begin_layout Standard
-Wir haben einen Prototypen entwickelt, der all das erfüllt.
- Wir können die Webcam eines Notebooks auf die Beamerprojektion richten
- und nach einer kurzen Zeit ist alles kalibriert.
- Nach einer manuellen Umstellung der Kamerakonfiguration können wir eine
- Led mit einer genauigkeit von +- 5cm genau verfolgen.
- Durch eine Emulation können wir die erkannte Position als Mausinput ins
- System einspeisen, wodurch der ganze Pc von der Leinwand bedient werden
+Das Ziel dieser Arbeit ist die Entwicklung eines elektronischen Stiftes
+ inkl.
+ Software für ein virtuelles Whiteboard.
+ Mit einem speziellen Stift soll das von einem Beamer projizierte Bild an
+ einer Leinwand mit dem Publikum diskutiert werden können.
+ Dabei wird der Stift optisch von einer einfachen Laptopkamera erkannt und
+ getrackt.
+\end_layout
+
+\begin_layout Standard
+Eine Herausforderung an der Abbildung 
+\begin_inset Quotes eld
+\end_inset
+
+Laptop-Beamer-Kamera
+\begin_inset Quotes erd
+\end_inset
+
+ ist die perspektivische Verzerrung.
+ Es wurden diverse Ansätze untersucht, wie der Stift auf dem Kamerabild
+ erkannt und der entsprechenden Position auf dem Beamerbild zugeordnet werden
  kann.
+ Dazu gehören homogene Abbildungen, Vereinfachung des Problems auf ein zweidimen
+sionales, baryzentrische Glättung, Caymeans und ein rekursiver Ansatz.
 \end_layout
 
 \begin_layout Standard
-In unserer Arbeit konnten wir die perspektive Verzerrung korrigieren, sodass
- wir eine sehr gute Genauigkeit erhalten.
- Diese ist nur noch durch die Auflösung der Webcam beschränkt, von deren
- Bild wir natürlich nur einen Teil berücksichtigen können.
+Die Verfasser dieser Arbeit haben eine Software entwickelt, welche einige
+ dieser Probleme löst.
+ Es ist damit möglich, mit günstiger Hardware einen Punkt auf deinem Kamerabild
+ zu finden und seine Position auf das ursprüngliche Beamerbild mit einer
+ Genauigkeit von ca.
+ 2cm zurückzurechnen.
+ Die Güte des Resultates liesse sich durch Optimierungen am Verfahren noch
+ weiter verbessern.
+ Ansätze dazu werden genauso beschrieben, wie die Idee, das virtuelle Whiteboard
+ ohne Stift nur mit Gesten zu bedienen.
 \end_layout
 
 \end_body
