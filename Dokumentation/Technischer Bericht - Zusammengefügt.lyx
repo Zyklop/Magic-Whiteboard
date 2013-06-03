@@ -129,7 +129,7 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
-	filename D:/hsr/FS13/BA/magic-whiteboard/Dokumentation/Bilder/Aufbau/rendered-perspective.png
+	filename Bilder/Aufbau/rendered-perspective.png
 	lyxscale 20
 	width 100col%
 
@@ -254,7 +254,7 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
-	filename D:/hsr/FS13/BA/magic-whiteboard/Dokumentation/Bilder/Camera/whitebalance.png
+	filename Bilder/Camera/whitebalance.png
 	lyxscale 50
 	width 100col%
 
@@ -342,7 +342,7 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
-	filename D:/hsr/FS13/BA/magic-whiteboard/Dokumentation/Bilder/Aufbau/wireframe-top.png
+	filename Bilder/Aufbau/wireframe-top.png
 	lyxscale 50
 	width 100col%
 
@@ -383,7 +383,7 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
-	filename D:/hsr/FS13/BA/magic-whiteboard/Dokumentation/Bilder/Aufbau/aufbau-verzerrung.png
+	filename Bilder/Aufbau/aufbau-verzerrung.png
 	lyxscale 50
 	width 100col%
 
@@ -579,7 +579,7 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
-	filename D:/hsr/FS13/BA/magic-whiteboard/Dokumentation/Diagramme/SSD.emf
+	filename Diagramme/SSD.emf
 	lyxscale 30
 	width 100col%
 
@@ -844,7 +844,7 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
-	filename D:/hsr/FS13/BA/magic-whiteboard/Dokumentation/Bilder/Calibration/Verzögerung1.png
+	filename Bilder/Calibration/Verzögerung1.png
 	width 100col%
 
 \end_inset
@@ -854,7 +854,7 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
-	filename D:/hsr/FS13/BA/magic-whiteboard/Dokumentation/Bilder/Calibration/Verzögerung2.png
+	filename Bilder/Calibration/Verzögerung2.png
 	width 100col%
 
 \end_inset
@@ -978,21 +978,21 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
-	filename D:/hsr/FS13/BA/magic-whiteboard/Dokumentation/Bilder/Calibration/img01-0-0.jpg
+	filename Bilder/Calibration/img01-0-0.jpg
 	width 45col%
 
 \end_inset
 
 - 
 \begin_inset Graphics
-	filename D:/hsr/FS13/BA/magic-whiteboard/Dokumentation/Bilder/Calibration/img02-0-0.jpg
+	filename Bilder/Calibration/img02-0-0.jpg
 	width 45col%
 
 \end_inset
 
  = 
 \begin_inset Graphics
-	filename D:/hsr/FS13/BA/magic-whiteboard/Dokumentation/Bilder/Calibration/diff.png
+	filename Bilder/Calibration/diff.png
 	width 100col%
 
 \end_inset
@@ -1006,7 +1006,7 @@ Gaussfilter mit Rafius 3, um die Erkennung zu verbessern:
 
 \begin_layout Plain Layout
 \begin_inset Graphics
-	filename D:/hsr/FS13/BA/magic-whiteboard/Dokumentation/Bilder/Calibration/diffblur.png
+	filename Bilder/Calibration/diffblur.png
 	width 100col%
 
 \end_inset
@@ -1078,7 +1078,7 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
-	filename D:/hsr/FS13/BA/magic-whiteboard/Dokumentation/Bilder/PenTracking/RedDot ohne Weissabgleich/laser-standalone.png
+	filename Bilder/PenTracking/RedDot ohne Weissabgleich/laser-standalone.png
 	lyxscale 50
 	width 100col%
 
@@ -1112,7 +1112,7 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
-	filename D:/hsr/FS13/BA/magic-whiteboard/Dokumentation/Bilder/PenTracking/RedDot ohne Weissabgleich/laser-rauschen.png
+	filename Bilder/PenTracking/RedDot ohne Weissabgleich/laser-rauschen.png
 	lyxscale 50
 	width 100col%
 
@@ -1156,7 +1156,7 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
-	filename D:/hsr/FS13/BA/magic-whiteboard/Dokumentation/Bilder/PenTracking/RedDot ohne Weissabgleich/laser-diff.png
+	filename Bilder/PenTracking/RedDot ohne Weissabgleich/laser-diff.png
 	lyxscale 50
 	width 100col%
 
@@ -1190,7 +1190,7 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
-	filename D:/hsr/FS13/BA/magic-whiteboard/Dokumentation/Bilder/PenTracking/RedDot ohne Weissabgleich/laser-diffgray.png
+	filename Bilder/PenTracking/RedDot ohne Weissabgleich/laser-diffgray.png
 	lyxscale 50
 	width 100col%
 
@@ -1225,7 +1225,7 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
-	filename D:/hsr/FS13/BA/magic-whiteboard/Dokumentation/Bilder/PenTracking/RedDot ohne Weissabgleich/laser-diffthreshold.png
+	filename Bilder/PenTracking/RedDot ohne Weissabgleich/laser-diffthreshold.png
 	lyxscale 50
 	width 100col%
 
@@ -1296,19 +1296,19 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
-	filename D:/hsr/FS13/BA/magic-whiteboard/Dokumentation/Bilder/PenTracking/LightPoints/one-or-two-blobs/frame1.png
+	filename Bilder/PenTracking/LightPoints/one-or-two-blobs/frame1.png
 
 \end_inset
 
  
 \begin_inset Graphics
-	filename D:/hsr/FS13/BA/magic-whiteboard/Dokumentation/Bilder/PenTracking/LightPoints/one-or-two-blobs/frame2.png
+	filename Bilder/PenTracking/LightPoints/one-or-two-blobs/frame2.png
 
 \end_inset
 
  
 \begin_inset Graphics
-	filename D:/hsr/FS13/BA/magic-whiteboard/Dokumentation/Bilder/PenTracking/LightPoints/one-or-two-blobs/diff.png
+	filename Bilder/PenTracking/LightPoints/one-or-two-blobs/diff.png
 
 \end_inset
 
@@ -1337,19 +1337,19 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
-	filename D:/hsr/FS13/BA/magic-whiteboard/Dokumentation/Bilder/PenTracking/LightPoints/one-blob/frame1.png
+	filename Bilder/PenTracking/LightPoints/one-blob/frame1.png
 
 \end_inset
 
  
 \begin_inset Graphics
-	filename D:/hsr/FS13/BA/magic-whiteboard/Dokumentation/Bilder/PenTracking/LightPoints/one-blob/frame2.png
+	filename Bilder/PenTracking/LightPoints/one-blob/frame2.png
 
 \end_inset
 
  
 \begin_inset Graphics
-	filename D:/hsr/FS13/BA/magic-whiteboard/Dokumentation/Bilder/PenTracking/LightPoints/one-blob/diff.png
+	filename Bilder/PenTracking/LightPoints/one-blob/diff.png
 
 \end_inset
 
@@ -1391,19 +1391,19 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
-	filename D:/hsr/FS13/BA/magic-whiteboard/Dokumentation/Bilder/PenTracking/LightPoints/two-blobs/frame1.png
+	filename Bilder/PenTracking/LightPoints/two-blobs/frame1.png
 
 \end_inset
 
  
 \begin_inset Graphics
-	filename D:/hsr/FS13/BA/magic-whiteboard/Dokumentation/Bilder/PenTracking/LightPoints/two-blobs/frame2.png
+	filename Bilder/PenTracking/LightPoints/two-blobs/frame2.png
 
 \end_inset
 
  
 \begin_inset Graphics
-	filename D:/hsr/FS13/BA/magic-whiteboard/Dokumentation/Bilder/PenTracking/LightPoints/two-blobs/diff.png
+	filename Bilder/PenTracking/LightPoints/two-blobs/diff.png
 
 \end_inset
 
@@ -1478,7 +1478,7 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
-	filename D:/hsr/FS13/BA/magic-whiteboard/Dokumentation/Bilder/PenTracking/Interpolation/interpolation-random.png
+	filename Bilder/PenTracking/Interpolation/interpolation-random.png
 	width 100col%
 
 \end_inset
@@ -1513,7 +1513,7 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
-	filename D:/hsr/FS13/BA/magic-whiteboard/Dokumentation/Bilder/PenTracking/Interpolation/interpolation-smoothed.png
+	filename Bilder/PenTracking/Interpolation/interpolation-smoothed.png
 	width 100col%
 
 \end_inset
@@ -1546,7 +1546,7 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
-	filename D:/hsr/FS13/BA/magic-whiteboard/Dokumentation/Bilder/PenTracking/Interpolation/interpolation-curves.png
+	filename Bilder/PenTracking/Interpolation/interpolation-curves.png
 	width 100col%
 
 \end_inset
@@ -1594,13 +1594,13 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
-	filename D:/hsr/FS13/BA/magic-whiteboard/Dokumentation/Bilder/PenTracking/LightPoints/timed-position/frames1.png
+	filename Bilder/PenTracking/LightPoints/timed-position/frames1.png
 
 \end_inset
 
  
 \begin_inset Graphics
-	filename D:/hsr/FS13/BA/magic-whiteboard/Dokumentation/Bilder/PenTracking/LightPoints/timed-position/frames2.png
+	filename Bilder/PenTracking/LightPoints/timed-position/frames2.png
 
 \end_inset
 
@@ -1662,19 +1662,19 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
-	filename D:/hsr/FS13/BA/magic-whiteboard/Dokumentation/Bilder/PenTracking/LightPoints/two-blobs-overlay/diff1.png
+	filename Bilder/PenTracking/LightPoints/two-blobs-overlay/diff1.png
 
 \end_inset
 
  
 \begin_inset Graphics
-	filename D:/hsr/FS13/BA/magic-whiteboard/Dokumentation/Bilder/PenTracking/LightPoints/two-blobs-overlay/diff2.png
+	filename Bilder/PenTracking/LightPoints/two-blobs-overlay/diff2.png
 
 \end_inset
 
  
 \begin_inset Graphics
-	filename D:/hsr/FS13/BA/magic-whiteboard/Dokumentation/Bilder/PenTracking/LightPoints/two-blobs-overlay/diff3.png
+	filename Bilder/PenTracking/LightPoints/two-blobs-overlay/diff3.png
 
 \end_inset
 
@@ -1863,7 +1863,7 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
-	filename D:/hsr/FS13/BA/magic-whiteboard/Dokumentation/Diagramme/Scanlinien.emf
+	filename Diagramme/Scanlinien.emf
 	lyxscale 30
 	width 100col%
 
@@ -1975,7 +1975,7 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
-	filename D:/hsr/FS13/BA/magic-whiteboard/Dokumentation/Bilder/Calibration/bgSchachbrett.png
+	filename Bilder/Calibration/bgSchachbrett.png
 	width 45text%
 
 \end_inset
@@ -1986,7 +1986,7 @@ status open
 
 
 \begin_inset Graphics
-	filename D:/hsr/FS13/BA/magic-whiteboard/Dokumentation/Bilder/Calibration/Scahcbrett erkannt.png
+	filename Bilder/Calibration/Scahcbrett erkannt.png
 	width 45text%
 
 \end_inset
@@ -2099,7 +2099,7 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
-	filename D:/hsr/FS13/BA/magic-whiteboard/Dokumentation/Bilder/Calibration/img3.jpg
+	filename Bilder/Calibration/img3.jpg
 	width 100text%
 
 \end_inset
@@ -2144,14 +2144,14 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
-	filename D:/hsr/FS13/BA/magic-whiteboard/Dokumentation/Bilder/Calibration/img03-1-0.jpg
+	filename Bilder/Calibration/img03-1-0.jpg
 	width 45col%
 
 \end_inset
 
  - 
 \begin_inset Graphics
-	filename D:/hsr/FS13/BA/magic-whiteboard/Dokumentation/Bilder/Calibration/img03-0-0.jpg
+	filename Bilder/Calibration/img03-0-0.jpg
 	width 45col%
 
 \end_inset
@@ -2165,7 +2165,7 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
-	filename D:/hsr/FS13/BA/magic-whiteboard/Dokumentation/Bilder/Calibration/Colordiff.png
+	filename Bilder/Calibration/Colordiff.png
 	width 100col%
 
 \end_inset
@@ -2280,7 +2280,7 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
-	filename D:/hsr/FS13/BA/magic-whiteboard/Dokumentation/Diagramme/Rekursion.emf
+	filename Diagramme/Rekursion.emf
 	lyxscale 30
 	width 100col%
 
@@ -2777,6 +2777,20 @@ status open
 	lyxscale 30
 	width 100col%
 
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Formula $Ratio_{X}=\frac{Q_{X}}{Screen_{X}}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Formula $Ratio_{Y}=\frac{Q_{Y}}{Screen_{Y}}$
 \end_inset
 
 
