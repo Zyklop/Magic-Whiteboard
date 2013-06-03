@@ -689,7 +689,6 @@ Beim grafischen Framework haben wir uns für AForge entschieden, da es nativ
  gehabt.
  Da wir nur einen Prototypen produzieren, ist Performance für uns nicht
  besonders wichtig, was unsere Wahl ebenfalls beeinflusst hat.
- 
 \end_layout
 
 \begin_layout Subsection
@@ -834,7 +833,10 @@ Bis die Bilder der Kamera dem entsprechen, was man erwarten würde, muss
  man ca.
  100ms warten.
  Diese Dauer ist zudem vom gewählten Visualisierer abhängig.
- 
+\begin_inset Newline newline
+\end_inset
+
+
 \begin_inset Float figure
 wide false
 sideways false
@@ -946,10 +948,14 @@ Ablauf
 \end_layout
 
 \begin_layout Enumerate
-Es wird ein Schachbrett mit n x m Quadraten projiziert.
+Es wird ein Schachbrett mit 
+\begin_inset Formula $n\times m$
+\end_inset
+
+ Quadraten projiziert.
  Das Verhältnis von n zu m sollte dem Bildschirmverhältnis entsprechen und
- die Quadrate sollten noch gut auf dem Kamerabild sichtbar sein (15 – 30
- Pixel Seitenlänge) 
+ die Quadrate sollten noch gut auf dem Kamerabild sichtbar sein (15-30 Pixel
+ Seitenlänge) 
 \end_layout
 
 \begin_layout Enumerate
@@ -961,7 +967,10 @@ Das Schachbrett wird erneut projiziert, diesmal mit invertierten Farben.
  mit einem Gaussfilter mit einer kleinen Kernel-Size eliminieren, da es
  sonst bei der Bloberkennung zu Fehlerkennungen kommt.
  Jetzt können die Ecken des Bildschirms sehr genau erkannt werden.
- 
+\begin_inset Newline newline
+\end_inset
+
+
 \begin_inset Float figure
 wide false
 sideways false
@@ -2850,7 +2859,10 @@ Durch eine entsprechende Gewichtung kann man zu dem die Knicke so interpolieren,
  des Rechtecks bestimmen können.
  Diese korrigieren jedoch die perspektivische Verzerrung nicht.
  Diesen Faktor können jedoch mit einem feineren Raster kompensieren.
- 
+\end_layout
+
+\begin_layout Subsection
+Versuche zur Umsetzung von Touch
 \end_layout
 
 \end_body
