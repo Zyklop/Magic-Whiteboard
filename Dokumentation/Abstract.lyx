@@ -99,14 +99,16 @@ Laptop-Beamer-Kamera
  Es wurden diverse Ansätze untersucht, wie der Stift auf dem Kamerabild
  erkannt und der entsprechenden Position auf dem Beamerbild zugeordnet werden
  kann.
- Dazu gehören homogene Abbildungen, Vereinfachung des Problems auf ein zweidimen
-sionales, baryzentrische Glättung, Caymeans und ein rekursiver Ansatz.
+ Dazu gehören homogene Abbildungen, baryzentrische Glättung, K-Means und
+ ein rekursiver Ansatz.
+ Mit diesen Verfahren kann ein dreidimensionales Problem auf ein zweidimensional
+es abgebildet werden.
 \end_layout
 
 \begin_layout Standard
 Die Verfasser dieser Arbeit haben eine Software entwickelt, welche einige
  dieser Probleme löst.
- Es ist damit möglich, mit günstiger Hardware einen Punkt auf deinem Kamerabild
+ Es ist damit möglich, mit günstiger Hardware einen Punkt auf einem Kamerabild
  zu finden und seine Position auf das ursprüngliche Beamerbild mit einer
  Genauigkeit von ca.
  2cm zurückzurechnen.
