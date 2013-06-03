@@ -110,7 +110,7 @@ Die in dieser Arbeit entworfene Software soll einer Person ermöglichen,
  Das geschriebene wird aufgezeichnet und wieder auf das Beamerbild projiziert.
 \end_layout
 
-\begin_layout Subsection
+\begin_layout Paragraph
 Aufbau
 \end_layout
 
@@ -155,7 +155,7 @@ Beispiel eines Aufbaus in der Perspektive
 
 \end_layout
 
-\begin_layout Subsection
+\begin_layout Paragraph
 Kalibrierung
 \end_layout
 
@@ -178,7 +178,7 @@ Projiziertes Bild erkennen und ein Mapping von Kamerakoordinaten zu Bildschirmko
 ordinaten berechnen
 \end_layout
 
-\begin_layout Subsection
+\begin_layout Paragraph
 Präsentation
 \end_layout
 
@@ -187,7 +187,8 @@ Die Person soll mit einem Stift auf die das Beamerbild schreiben können.
  Sie benutzt dazu ein helles Licht.
  Die Person muss darauf achten, dass der Stift für die Kamera sichtbar ist.
  Das erfordert Disziplin.
- Deshalb ist abzuklären, ob und wie das Präsentationssystem akzeptiert wird.
+ Deshalb gilt abzuklären, ob und wie das Präsentationssystem akzeptiert
+ wird.
 \end_layout
 
 \begin_layout Section
@@ -213,14 +214,21 @@ Aufnahmegerät
 
 \begin_layout Standard
 Das in dieser Arbeit verwendete Aufnahmegerät ist eine integrierte Laptopkamera
- mit einer Auflösung von 640x480 Pixel à 30 Bilder pro Sekunde.
+ eines Thinkpad T420s mit einer Auflösung von 640x480 Pixel à 30 Bilder
+ pro Sekunde.
  Sie übertreibt es völlig mit dem automatischen Weissabgleich, hat aber
  einen in den Treiber integrierten Konfigurationsdialog, mit welchem sich
  das Problem manuell minimieren lässt.
  Allgemein formuliert ist an der verwendeten Kamera die Bildauflösung weniger
  wichtig als eine korrekte Belichtung.
- Das helle Licht eines Stiftes auf der Leinwand zu finden bereitet Probleme,
- wenn es nicht das hellste Licht in der Aufnahme ist.
+ Das liegt daran, dass die präsentierende Person immer in Bewegung ist,
+ mal mehr beleuchtet, mal weniger, und somit ein irritierendes Ungleichgewicht
+ für die Kamera schafft.
+ Übertriebene Änderungen der Beleuchtung seitens der Kamera übertönen den
+ Stift.
+ Folglich ist er nicht mehr der hellste Punkte der Aufnahme und wird nicht
+ mehr erkannt, bzw.
+ gefunden.
 \end_layout
 
 \begin_layout Paragraph
@@ -277,8 +285,8 @@ Fazit:
 \end_layout
 
 \begin_layout Standard
-Der automatische Weissabgleich kann über den Softwaretreiber abgestellt
- werden, erforderte aber einiges an Arbeit (bei Windows schwierig, bei Linux
+Der automatische Weissabgleich kann über den Hardwaretreiber abgestellt
+ werden, erfordert aber einiges an Arbeit (bei Windows schwierig, bei Linux
  einfacher).
  Die verwendeten Geräte müssten genau bekannt sein, um ihre Treiber konfiguriere
 n zu können.
@@ -422,6 +430,15 @@ Rechts ist das Bild in alle Richtungen verzerrt und stellt somit die grössten
  Anforderungen an die Kalibrierung.
 \end_layout
 
+\begin_layout Standard
+Zur Vereinfachung des zu lösenden Problems wird im Folgenden jeweils angenommen,
+ dass die perspektivische Verzerrung lediglich auf der Horizontalen (X-Achse)
+ der aufgenommenen Bilder verläuft.
+ Messungen zur Genauigkeit unseres verwendeten Abbildungsverfahrens (s.u.)
+ zeigen, dass die Verzerrung auf der Vertikalen (Y-Achse) vernachlässigt
+ werden kann.
+\end_layout
+
 \begin_layout Subsubsection
 Leinwand
 \end_layout
@@ -431,6 +448,9 @@ Es ergeben sich Beschränkungen aus dem Untergrund, auf welchen präsentiert
  wird.
  Unebene oder glänzende Texturen sind ungeeignete Präsentationsflächen,
  da sowohl Kalibrierung als auch Stifterkennung darunter leiden können.
+ Grosse Probleme können Reflexionen der Beamerlampe auf der Leinwand verursachen.
+ Dies kann passieren, wenn Beamer und Laptop in einem ungünstigen Winkel
+ zueinander stehen.
 \end_layout
 
 \begin_layout Subsubsection
@@ -669,7 +689,6 @@ Beim grafischen Framework haben wir uns für AForge entschieden, da es nativ
  gehabt.
  Da wir nur einen Prototypen produzieren, ist Performance für uns nicht
  besonders wichtig, was unsere Wahl ebenfalls beeinflusst hat.
- 
 \end_layout
 
 \begin_layout Subsection
@@ -814,7 +833,10 @@ Bis die Bilder der Kamera dem entsprechen, was man erwarten würde, muss
  man ca.
  100ms warten.
  Diese Dauer ist zudem vom gewählten Visualisierer abhängig.
- 
+\begin_inset Newline newline
+\end_inset
+
+
 \begin_inset Float figure
 wide false
 sideways false
@@ -926,10 +948,14 @@ Ablauf
 \end_layout
 
 \begin_layout Enumerate
-Es wird ein Schachbrett mit n x m Quadraten projiziert.
+Es wird ein Schachbrett mit 
+\begin_inset Formula $n\times m$
+\end_inset
+
+ Quadraten projiziert.
  Das Verhältnis von n zu m sollte dem Bildschirmverhältnis entsprechen und
- die Quadrate sollten noch gut auf dem Kamerabild sichtbar sein (15 – 30
- Pixel Seitenlänge) 
+ die Quadrate sollten noch gut auf dem Kamerabild sichtbar sein (15-30 Pixel
+ Seitenlänge) 
 \end_layout
 
 \begin_layout Enumerate
@@ -941,7 +967,10 @@ Das Schachbrett wird erneut projiziert, diesmal mit invertierten Farben.
  mit einem Gaussfilter mit einer kleinen Kernel-Size eliminieren, da es
  sonst bei der Bloberkennung zu Fehlerkennungen kommt.
  Jetzt können die Ecken des Bildschirms sehr genau erkannt werden.
- 
+\begin_inset Newline newline
+\end_inset
+
+
 \begin_inset Float figure
 wide false
 sideways false
@@ -2948,7 +2977,10 @@ Durch eine entsprechende Gewichtung kann man zu dem die Knicke so interpolieren,
  des Rechtecks bestimmen können.
  Diese korrigieren jedoch die perspektivische Verzerrung nicht.
  Diesen Faktor können jedoch mit einem feineren Raster kompensieren.
- 
+\end_layout
+
+\begin_layout Subsection
+Versuche zur Umsetzung von Touch
 \end_layout
 
 \end_body
