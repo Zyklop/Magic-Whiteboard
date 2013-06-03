@@ -5,9 +5,9 @@
 \textclass article
 \use_default_options false
 \maintain_unincluded_children false
-\language ngerman
+\language german-ch
 \language_package default
-\inputencoding auto
+\inputencoding utf8
 \fontencoding global
 \font_roman default
 \font_sans default
@@ -77,6 +77,12 @@ Das Ziel der Bachelorarbeit ist die Entwicklung eines elektronischen Stiftes
  geschrieben werden.
  Weiter wird untersucht ob es denn wirklich einen Stift braucht um an eine
  Leinwand zu schreiben.
+\begin_inset CommandInset toc
+LatexCommand tableofcontents
+
+\end_inset
+
+
 \begin_inset Newpage pagebreak
 \end_inset
 
@@ -480,10 +486,6 @@ Das Erkennen des Stiftes beruht auf der optischen Eigenschaft, dass der
 Finde den hellsten Punkt auf dem Bild.
  Das hat Schwächen.
  Insbesondere wenn das Bild viel Rauschen beinhaltet.
-\begin_inset Newline newline
-\end_inset
-
-
 \end_layout
 
 \begin_layout Itemize
