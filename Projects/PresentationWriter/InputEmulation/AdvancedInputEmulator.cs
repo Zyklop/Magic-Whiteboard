@@ -100,7 +100,7 @@ namespace InputEmulation
             if (p.X < 0 && p.X > -1*BorderWidth)
             {
                 // left from screen
-                if (!_pDown)
+                if (!_pDown && !_leftCicked && !_rightCicked)
                 {
                     VirtualKeys.SendKeyDown(Keys.P);
                     _pDown = true;
@@ -109,7 +109,7 @@ namespace InputEmulation
             else if (p.X > _screenWidth && p.X < _screenWidth + BorderWidth)
             {
                 // right from screen
-                if (!_nDown)
+                if (!_nDown && !_leftCicked && !_rightCicked)
                 {
                     VirtualKeys.SendKeyDown(Keys.N);
                     _nDown = true;

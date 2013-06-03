@@ -411,6 +411,50 @@ Bis die Bilder der Kamera dem entsprechen, was man erwarten würde, muss
  100ms warten.
  Diese Dauer ist zudem vom gewählten Visualisierer abhängig.
  
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Bilder/Calibration/Verzögerung1.png
+	width 100col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Bilder/Calibration/Verzögerung2.png
+	width 100col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Verzögerung der Darstellung
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Enumerate
@@ -781,7 +825,7 @@ Erkannte grüne Quadrate
 \end_layout
 
 \begin_layout Subsubsection
-Schachbrett-Muster
+Schachbrett-Differenzbilder
 \end_layout
 
 \begin_layout Standard
@@ -816,6 +860,68 @@ Das Schachbrett wird erneut projiziert, diesmal mit invertierten Farben.
  sonst bei der Bloberkennung zu Fehlerkennungen kommt.
  Jetzt können die Ecken des Bildschirms sehr genau erkannt werden.
  
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Bilder/Calibration/img01-0-0.jpg
+	width 45col%
+
+\end_inset
+
+- 
+\begin_inset Graphics
+	filename Bilder/Calibration/img02-0-0.jpg
+	width 45col%
+
+\end_inset
+
+ = 
+\begin_inset Graphics
+	filename Bilder/Calibration/diff.png
+	width 100col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+Gaussfilter mit Rafius 3, um die Erkennung zu verbessern:
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Bilder/Calibration/diffblur.png
+	width 100col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Erkennung des Bildschirms
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Enumerate
@@ -827,6 +933,61 @@ Anschliessend werden jeweils zwei Bilder projiziert, deren Differenz genau
  Farbkanälen kann das meiste Bildrauschen und allfällige Unsicherheiten
  entfernt werden.
  
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Bilder/Calibration/img03-1-0.jpg
+	width 45col%
+
+\end_inset
+
+ - 
+\begin_inset Graphics
+	filename Bilder/Calibration/img03-0-0.jpg
+	width 45col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+=
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Bilder/Calibration/Colordiff.png
+	width 100col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Farbmuster
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+Störungen wie sie hier in der oberen linken Ecke Vorhanden sind können entfernt
+ werden, dadurch, dass sie nicht innerhalb der erkannten Bildschirmecken
+ liegen.
+ Die Grundkalibration ist durchch die Bedingung, dass alle Bildschirmecken
+ mindestens 5 Pixel Abstand zu jedem Rand haben müssen.
 \end_layout
 
 \begin_layout Subsection
@@ -908,6 +1069,41 @@ Die Funktion berechnet die Koordinaten die der gefundene Blob haben muss
 Der rekursive Aufruf prüft zudem, ob die übergebenen Koordinaten plausibel
  erscheinen und bestimmt anhand deren, wie viele Nachbarn zu erwarten sind.
  
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Diagramme/Rekursion.emf
+	lyxscale 30
+	width 100col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Vorgehen Rekursion
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Paragraph
