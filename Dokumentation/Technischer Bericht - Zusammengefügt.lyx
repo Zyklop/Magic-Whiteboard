@@ -2436,9 +2436,18 @@ Nachteile
 \end_layout
 
 \begin_layout Itemize
-Es wird nur ein kleiner Teil der Blobs korrekt erkannt, die meisten bleiben
- ungültig.
++ieses Verfahren ist von einer guten interpolation abhängig.
  
+\end_layout
+
+\begin_layout Itemize
+Wenn dieses jedoch gut ist, erübrigen sich weitere Kalibrationsschritte.
+ 
+\end_layout
+
+\begin_layout Itemize
+Mit einem linearen Ansatz werden nur ein kleiner Teil der Blobs korrekt
+ erkannt, die meisten bleiben ungültig.
 \end_layout
 
 \begin_layout Itemize
@@ -2447,9 +2456,10 @@ Durch Vergrösserung der Quadrate wird die Menge der nutzbaren Daten ebenfalls
 \end_layout
 
 \begin_layout Itemize
-Vereinzelt kommt es zu Fehlerkennungen, die als gültig erkannt werden.
- Dies resultiert in schwerwiegenden Fehlern beim komende mapping und kann
- nicht detektiert werden.
+Vereinzelt kommt es mit dem linearen Ansatz zu Fehlerkennungen, die als
+ gültig erkannt werden.
+ Dies resultiert in schwerwiegenden Fehlern bei kommenden Schritten und
+ kann nicht detektiert werden.
 \end_layout
 
 \begin_layout Subsubsection
@@ -2468,6 +2478,41 @@ Eine zusätzliche Voraussetzung dafür ist dafür ist, dass die Projektion
  Das heisst, dass die Trapezkorrektur des Beamers immer zwingend ausgeführt
  werden muss.
  
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Diagramme/Lochkamera.emf
+	lyxscale 30
+	width 30col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Lochkamera Modell
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsubsection
@@ -2497,6 +2542,44 @@ Die erkannten Punkte werden mit K-Means zu den erwarteten Werten zugeordnet.
 Aus dem Ergebnis resultieren weitere Rechtecke, auf denen das Verfahren
  wieder angewandt werden kann.
  
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Diagramme/Clustering.emf
+	lyxscale 30
+	width 100col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Ablauf K-Means
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Paragraph
@@ -2653,7 +2736,42 @@ Hierbei wird ausgenutzt, dass die Verhältnisse der Strecken auf der Abbildung
 \end_layout
 
 \begin_layout Standard
-Formel: Formel 
+Formel: 
+\begin_inset Float algorithm
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Diagramme/Lineare Interpolation.emf
+	lyxscale 30
+	width 100col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Berechnung der linearen Interpolation
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsubsection
