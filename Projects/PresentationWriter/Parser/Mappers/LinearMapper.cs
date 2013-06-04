@@ -15,12 +15,15 @@ namespace HSR.PresWriter.PenTracking.Mappers
 
         public LinearMapper(Grid grid) : base(grid)
         {
+            Calculate();
         }
 
         public override Point FromPresentation(Point p)
         {
             var x = (int)Math.Round(p.X);
             var y = (int)Math.Round(p.Y);
+            if (x == 0 && y == 0)
+                return new Point(-1, -1);
             return new Point(_mapData[x, y].X, _mapData[x, y].Y);
         }
 
@@ -28,7 +31,8 @@ namespace HSR.PresWriter.PenTracking.Mappers
         {
             int xmax = Grid.ScreenSize.Width;
             int ymax = Grid.ScreenSize.Height;
-            _calibratorData = new SortedDictionary<int, SortedDictionary<int, List<System.Drawing.Point>>>(_calibratorData);
+            _calibratorData = new SortedDictionary<int, SortedDictionary<int, List<System.Drawing.Point>>>();
+            _mapData = new System.Drawing.Point[xmax, ymax];
             //copy calibrator data after backup
             for (int i = 0; i < xmax; i += 2)
             {

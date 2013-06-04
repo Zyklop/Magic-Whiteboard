@@ -48,7 +48,8 @@ namespace HSR.PresWriter.PenTracking.Mappers
             // calculate beamer x and beamer y (from 0 to 1)
             double xb = _cameraXToBeamerX(presentation.X - _xkOffset, _a, _b) / _xCorrectionShortening;
             // correct extreme distortion by a square function (y also becomes better)
-            xb -= _correctBySquareFunction(xb, 0.025); // TODO evaluate correction automatically 
+            double c = (_a / _b -1)/10; // TODO bloss Näherungswert. Korrektur sollte über Mittelpunktabweichung erfolgen
+            xb -= _correctBySquareFunction(xb, c); // TODO evaluate correction automatically
             double yb = _cameraYToBeamerY(presentation.Y - Grid.PresentationQuad.TopRight.Y, xb, _a, _b, _yk0);
 
             if (!this._useNormSource)

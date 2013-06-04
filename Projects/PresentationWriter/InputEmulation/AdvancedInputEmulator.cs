@@ -31,7 +31,7 @@ namespace InputEmulation
             RightClickTimeOut = 1000;
             ReleaseTimeout = 160;
             KeyboardReleaseTimeout = 500;
-            Radius = 20;
+            Radius = 5;
             BorderWidth = 200;
         }
 
@@ -74,7 +74,7 @@ namespace InputEmulation
                     Mouse.ClickEvent(false, true);
                 }
             }
-            else if (CurrentMillis.Millis - _lastContact > KeyboardReleaseTimeout)
+            if (CurrentMillis.Millis - _lastContact > KeyboardReleaseTimeout)
             {
                 if (_nDown)
                 {
@@ -131,8 +131,10 @@ namespace InputEmulation
                     _lastPosition = p;
                 }
                 _cache.Enqueue(p);
-                while (_cache.Count > 3)
+                while (_cache.Count >= 6)
+                {
                     _cache.Dequeue();
+                }
                 if (!_leftCicked && !_rightCicked)
                     Mouse.MoveMouseAbsolute(p.X, p.Y);
                 else
@@ -179,8 +181,8 @@ namespace InputEmulation
 
         private void MoveToAverage()
         {
-            Mouse.MoveMouseAbsolute((int)Math.Round(_cache.Average(x => x.X)),
-                    (int)Math.Round(_cache.Average(x => x.Y)));
+            Mouse.MoveMouseAbsolute((int)Math.Round(_cache.Average(p => p.X)),
+                    (int)Math.Round(_cache.Average(p => p.Y)));
         }
     }
 }

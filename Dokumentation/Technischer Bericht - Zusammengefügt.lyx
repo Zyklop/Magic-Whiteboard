@@ -1091,6 +1091,47 @@ Mapping
 Stift Erkennen
 \end_layout
 
+\begin_layout Standard
+Als Ziel dieser Arbeit soll ein Stift an einer Leinwand gefunden werden.
+ Dies soll das virtuelle Schreiben auf diese Leinwand ermöglichen.
+ Da Bildverarbeitung auch heute noch viel Rechenleistung benötigt, gilt
+ es genau zu wissen, was man wann und wieso tut.
+\end_layout
+
+\begin_layout Standard
+Das Finden eines Stiftes besteht aus verschiedenen Teilproblemen, die verschiede
+n zu lösen sind.
+ So sind Präsenz- und Positionsaspekt des Stiftes zu unterscheiden.
+ Es ist teilweise nicht unbedingt notwendig zu wissen, wo der Stift auf
+ dem Bild ist.
+ Falls es zum Beispiel einfach ist, die Präsenz des Stiftes festzustellen,
+ nicht aber die Position, kann erstere Information verwendet werden um komplizer
+te und rechenintensive Schritte erst anzustossen wenn nötig.
+\end_layout
+
+\begin_layout Standard
+Neben den verschiedenen vorzunehmenden Schritten, ist auch Kontextwissen
+ wichtig.
+ Ein Bild kann gezielter nach Präsenz und Position des Stiftes durchsucht
+ werden, wenn bekannt ist, wie er sich zeitlich bewegt.
+\end_layout
+
+\begin_layout Paragraph
+Präsenz durch Helligkeit
+\end_layout
+
+\begin_layout Paragraph*
+Position durch Mittelwerte
+\end_layout
+
+\begin_layout Paragraph*
+Gezieltes Suchen
+\end_layout
+
+\begin_layout Paragraph*
+Stabilität durch Differenzbilder
+\end_layout
+
 \begin_layout Subsection
 Architektur
 \end_layout
