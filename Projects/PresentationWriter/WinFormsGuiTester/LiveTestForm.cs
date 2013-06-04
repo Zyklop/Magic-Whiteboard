@@ -64,6 +64,11 @@ namespace WinFormsGuiTester
             // Form for visual feedback of tracking process
             //screenForm = new ScreenForm();
             _inputEmulator = new AdvancedInputEmulator(VisualizerControl.GetVisualizer().Width, VisualizerControl.GetVisualizer().Height);
+
+            if (!File.Exists(@"C:\temp\foundpoints.csv"))
+            {
+                File.Create(@"C:\temp\foundpoints.csv");
+            }
         }
 
         private void _camera_FrameReady(object sender, FrameReadyEventArgs e)
@@ -135,6 +140,13 @@ namespace WinFormsGuiTester
             }
 
             this.foundPointLabel.Text = "Found Point: " + e.Frame.Point.X + ", " + e.Frame.Point.Y;
+
+            // Write Values to CSV
+            using (var fs = new StreamWriter(new FileStream(@"C:\temp\foundpoints.csv", FileMode.Append, FileAccess.Write)))
+            {
+                fs.WriteLine(e.Frame.Timestamp+";"+e.Frame.Point.X+";"+e.Frame.Point.Y);
+                fs.Flush();
+            }
 
             if (InputEnabled)
             {

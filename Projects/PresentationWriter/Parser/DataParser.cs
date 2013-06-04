@@ -35,7 +35,7 @@ namespace HSR.PresWriter.PenTracking
         public DataParser(IPictureProvider provider, IVisualizerControl visualizer)
         {
             // Initialize Calibration Tools
-            _calibrator = new NoDiffAForgeCalibrator(provider, visualizer);
+            _calibrator = new SimpleAForgeCalibrator(provider, visualizer);
             _calibrator.CalibrationCompleted += StartTracking; // begin pen tracking after calibration immediately
 
             // Initialize Pen Tracking Tools
@@ -89,40 +89,40 @@ namespace HSR.PresWriter.PenTracking
             _mapper = (AbstractPointMapper)mCtor.Invoke(new Grid[] { CalibratorGrid });
             //_mapper = (AbstractPointMapper)Activator.CreateInstance(_mapperType, 
             //    BindingFlags.CreateInstance, null, new Grid[] { CalibratorGrid });
-            if (_mapperType.Equals(typeof(LinearMapper))) // check for runtimeType
-            {
-                ((LinearMapper)_mapper).Calculate();
-            }
+            //if (_mapperType.Equals(typeof(LinearMapper))) // check for runtimeType
+            //{
+            //    ((LinearMapper)_mapper).Calculate();
+            //}
 #if DEBUG
             var bm = new Bitmap(640, 480);
             var sw = new Stopwatch();
             //for (int i = CalibratorGrid.TopLeft.X; i < CalibratorGrid.BottomRight.X; i++)
-            sw.Start();
-            try
-            {
-                for (int i = 0; i < 640; i++)
-                {
-                    Debug.WriteLine(i);
-                    for (int j = 0; j < 480; j++)
-                        //for (int j = CalibratorGrid.TopLeft.Y; j < CalibratorGrid.BottomRight.Y; j++)
-                    {
-                        //Debug.WriteLineIf(i == 639,j);
-                        if (CalibratorGrid.Contains(new Point(i, j)))
-                        {
-                            var position = _mapper.FromPresentation(i, j);
-                            if (position.X >= 0 && position.Y >= 0)
-                                bm.SetPixel(i, j,
-                                            Color.FromArgb(255, (position.Y + 8192) % 160, //(position.Y + 8192)%160, 255));
-                                    (position.Y + 4096) % 256, 255));
-                        }
-                    }
-                }
-                sw.Stop();
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.Message);
-            }
+            //sw.Start();
+            //try
+            //{
+            //    for (int i = 0; i < 640; i++)
+            //    {
+            //        Debug.WriteLine(i);
+            //        for (int j = 0; j < 480; j++)
+            //            //for (int j = CalibratorGrid.TopLeft.Y; j < CalibratorGrid.BottomRight.Y; j++)
+            //        {
+            //            //Debug.WriteLineIf(i == 639,j);
+            //            if (CalibratorGrid.Contains(new Point(i, j)))
+            //            {
+            //                var position = _mapper.FromPresentation(i, j);
+            //                if (position.X >= 0 && position.Y >= 0)
+            //                    bm.SetPixel(i, j,
+            //                                Color.FromArgb(255, (position.Y + 8192) % 160, //(position.Y + 8192)%160, 255));
+            //                        (position.Y + 4096) % 256, 255));
+            //            }
+            //        }
+            //    }
+            //    sw.Stop();
+            //}
+            //catch (Exception ex)
+            //{
+            //    Debug.WriteLine(ex.Message);
+            //}
             if (_mapperType.Equals(typeof(FineBarycentricMapper))) //check for runntimeType
             {
                 var fbc = (FineBarycentricMapper) _mapper;
