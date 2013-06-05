@@ -7,10 +7,11 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using Visualizer;
 
 namespace ImageVisualizer
 {
-    public static class VisualizerControl
+    public static class VisualizerControl:IVisualizerControl
     {
         private static CalibratorWindow _cw = new CalibratorWindow();
 

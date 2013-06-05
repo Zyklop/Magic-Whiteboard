@@ -1779,21 +1779,23 @@ status open
 \begin_layout Plain Layout
 \begin_inset Graphics
 	filename Bilder/Calibration/img01-0-0.jpg
-	width 45col%
+	lyxscale 30
+	width 40col%
 
 \end_inset
 
-- 
+ - 
 \begin_inset Graphics
 	filename Bilder/Calibration/img02-0-0.jpg
-	width 45col%
+	lyxscale 30
+	width 40col%
 
 \end_inset
 
  = 
 \begin_inset Graphics
 	filename Bilder/Calibration/diff.png
-	width 100col%
+	width 90col%
 
 \end_inset
 
@@ -1801,13 +1803,13 @@ status open
 \end_layout
 
 \begin_layout Plain Layout
-Gaussfilter mit Rafius 3, um die Erkennung zu verbessern:
+Gaussfilter mit Radius 3, um die Erkennung zu verbessern:
 \end_layout
 
 \begin_layout Plain Layout
 \begin_inset Graphics
 	filename Bilder/Calibration/diffblur.png
-	width 100col%
+	width 90col%
 
 \end_inset
 
