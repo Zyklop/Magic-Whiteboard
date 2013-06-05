@@ -64,6 +64,10 @@
 Abstract
 \end_layout
 
+\begin_layout Subsubsection*
+Ausgangslage
+\end_layout
+
 \begin_layout Standard
 Herkömmliche elektronische Präsentationsmethoden mit Beamer und Laptop haben
  den Nachteil, dass sie wenig Freiheiten für Interaktionen mit dem Publikum
@@ -87,6 +91,10 @@ Das Ziel dieser Arbeit ist die Entwicklung eines elektronischen Stiftes
  getrackt.
 \end_layout
 
+\begin_layout Subsubsection*
+Vorgehen/Technologie
+\end_layout
+
 \begin_layout Standard
 Eine Herausforderung an der Abbildung 
 \begin_inset Quotes eld
@@ -104,6 +112,10 @@ Laptop-Beamer-Kamera
  ein rekursiver Ansatz.
  Mit diesen Verfahren kann ein dreidimensionales Problem auf ein zweidimensional
 es abgebildet werden.
+\end_layout
+
+\begin_layout Subsubsection*
+Ergebnis
 \end_layout
 
 \begin_layout Standard

@@ -982,6 +982,11 @@ Probleme mit nicht erkannten Blobs
 \end_layout
 
 \begin_layout Itemize
+Fehlerdetektion ist nist absolut möglich, höchstens Fehlerwahrscheinlichkeiten
+ abschätzen.
+\end_layout
+
+\begin_layout Itemize
 Verbesserungen verursachen hohe Code-Komplexität
 \end_layout
 
@@ -1029,10 +1034,6 @@ Gravierende Fehlerkennungen
 
 \begin_layout Itemize
 Abhängig von einer guten Interpolation.
-\end_layout
-
-\begin_layout Itemize
-Verbesserungen verursachen hohe Code-Komplexität
 \end_layout
 
 \begin_layout Subparagraph
@@ -1085,6 +1086,183 @@ Dieser Algorithmus ist sehr stabil und 100% korrekt.
 
 \begin_layout Subsubsection
 Mapping
+\end_layout
+
+\begin_layout Paragraph
+Linear
+\end_layout
+
+\begin_layout Standard
+Dieser Ansatz berücksichtigt keine Perspektivische Verzerrung.
+\end_layout
+
+\begin_layout Subparagraph
+Vorteile
+\end_layout
+
+\begin_layout Itemize
+Berechnung ist relativ schnell
+\end_layout
+
+\begin_layout Itemize
+Keine Knicke
+\end_layout
+
+\begin_layout Itemize
+Eckpunkte reichen
+\end_layout
+
+\begin_layout Subparagraph
+Nachteile
+\end_layout
+
+\begin_layout Itemize
+Vorberechnung nötig
+\end_layout
+
+\begin_layout Itemize
+Starke Abweichungen aufgrund der perspektifischen Verzerrung
+\end_layout
+
+\begin_layout Subparagraph
+Fazit
+\end_layout
+
+\begin_layout Standard
+Dieser Ansatzt war gut für einen schnellen Test.
+ Wenn keine Perspektivische Verzerrung vorhanden ist, funktioniert er relativ
+ gut.
+ Das ist jedoch nicht Realtitätsnah.
+\end_layout
+
+\begin_layout Paragraph
+Baryzentrische Koordinaten
+\end_layout
+
+\begin_layout Standard
+Normale Baryzentrische Koordinaten in Dreiecken
+\end_layout
+
+\begin_layout Subparagraph*
+Vorteile
+\end_layout
+
+\begin_layout Itemize
+Erhöhte Genauigkeit mit mehr Refernzpunkten
+\end_layout
+
+\begin_layout Itemize
+Relativ einfacher Algorithmus
+\end_layout
+
+\begin_layout Subparagraph
+Nachteile
+\end_layout
+
+\begin_layout Itemize
+Gewisse Ungenauigkeiten
+\end_layout
+
+\begin_layout Itemize
+Hoher Rechenaufwand
+\end_layout
+
+\begin_layout Itemize
+Gewichtung ist nur schwer realisierbar
+\end_layout
+
+\begin_layout Subparagraph
+Fazit
+\end_layout
+
+\begin_layout Standard
+Dieses Verfahren funktioniert zwar, hat jedoch zu wenig Verbesserungspotenzial
+ und ist abhängig von einer sehr stabilen Konfiguration.
+\end_layout
+
+\begin_layout Paragraph
+Baryzentrische Vierecke mit Korrenkturfaktor
+\end_layout
+
+\begin_layout Standard
+Dieses Verfahren berücksichtigt zusätzlich noch den Faktor, dass die Rechtecke
+ weder Winkel- noch Flächentreu sind, wovon die Barizentrischen Dreiecke
+ ausgehen aber bei uns nicht der Fall ist.
+\end_layout
+
+\begin_layout Subparagraph
+Vorteile
+\end_layout
+
+\begin_layout Itemize
+Genauere Interpolation
+\end_layout
+
+\begin_layout Itemize
+Gewichtung ist möglich
+\end_layout
+
+\begin_layout Subparagraph
+Nachteile
+\end_layout
+
+\begin_layout Itemize
+Setzt eine Ordnung der Referenzpunkte voraus
+\end_layout
+
+\begin_layout Itemize
+Komplizierterer Algorithmus
+\end_layout
+
+\begin_layout Subparagraph
+Fazit
+\end_layout
+
+\begin_layout Standard
+Dieser Algorithmus sollte relativ gut funktionieren, wenn man entsprechende
+ Referenzpunkte hat.
+ Er kann Knicke komplett eliminieren.
+\end_layout
+
+\begin_layout Paragraph
+Homogene Tranmsformation
+\end_layout
+
+\begin_layout Standard
+Hierbei verwenden wir den Algorithmus der Homogenen Transformation.
+\end_layout
+
+\begin_layout Subparagraph
+Vorteile
+\end_layout
+
+\begin_layout Itemize
+Berücksichtigt die perspektivische Verzerrung bis zu einem gewissen Grad
+\end_layout
+
+\begin_layout Itemize
+Schnelle Berechnung
+\end_layout
+
+\begin_layout Itemize
+Funktioniert mit vier Punkten
+\end_layout
+
+\begin_layout Subparagraph
+Nachteile
+\end_layout
+
+\begin_layout Itemize
+Kompliziert um eigen Anpassungen anzubringen
+\end_layout
+
+\begin_layout Subparagraph
+Fazit
+\end_layout
+
+\begin_layout Standard
+Dieser Algorithmus funktioniert etwas besser als der lineare Ansatz, ist
+ aber weniger genau als der Integral-Ansatz
 \end_layout
 
 \begin_layout Subsection
@@ -2428,12 +2606,181 @@ n gefordert.
  ein Rechtsklick durch warten an einem Ort.
 \end_layout
 
+\begin_layout Standard
+Um die erkannten Pixel zu glätten, mitteln wir jeweils die letzten 6 Punkte,
+ die wir interpoliert haben.
+ So können wir einen grossen Teil des Rauschens ausgleichen und erhalten
+ eine Genauigkeit, die höher ist, als wir überhaupt aus dem Kamerabild extrahier
+en können.
+ Die Verzögerung wird für den User erst ab einer Mittelung mit 15 Punkten
+ bemerkbar.
+\end_layout
+
 \begin_layout Subsection
 Erkenntnisse
 \end_layout
 
+\begin_layout Subsubsection*
+Kamera
+\end_layout
+
+\begin_layout Standard
+Wir müssen die Kamera noch mit einem eigenen Fenster konfigurieren.
+ Das ist nicht ideal, aber immerhin können wir gewisse Werte einstellen.
+\end_layout
+
+\begin_layout Subsubsection*
+Kalibration
+\end_layout
+
+\begin_layout Standard
+Wir haben gesehen, dass man auch anhand von vier Referenzpunkten sehr genau
+ interpolieren kann.
+ Es gibt Möglichkeiten, um mehr Referenzpunkte zu erhalten, diese sind aber
+ meist relativ kompliziert und Zeitintensiv.
+ Wenn man eine stabile und sichere Kalibration möchte, sollte man sich auf
+ die Eckpunkte beschränken.
+\end_layout
+
+\begin_layout Subsubsection*
+Emulation
+\end_layout
+
+\begin_layout Standard
+Unser Prototyp funktioniert sehr genau und ist sehr Fehlertolerant.
+ Durch die Mittelung von Uneren Ergebnissen der Interpolation erhalten wir
+ sehr gute Ergebnisse, die sehr feine Zeichnungen ermöglichen.
+ Zudem gibt es durch die Mittelung keine Sprünge der Linien da solche Pixelgenau
+ gezeichnet werden können.
+\end_layout
+
 \begin_layout Section
 Ausblick
+\end_layout
+
+\begin_layout Subsection
+Kamera
+\end_layout
+
+\begin_layout Standard
+Hier besteht noch viel Verbesserungspotenzial.
+ Die Konfiguration müsste irgendwie Automatisiert werden.
+ Zudem wäre eine Nutzung von Infrarot-Signalen sehr nützlich.
+\end_layout
+
+\begin_layout Standard
+Auswahl???
+\end_layout
+
+\begin_layout Subsection
+Kalibration
+\end_layout
+
+\begin_layout Standard
+Hier gibt es zwei Ansätzte, die weiterverfolgt werden können um mehr Referenzpun
+kte zu erhalten.
+ Diese knn man nutzen um allfälliger Korrekturfaktoren einzuführen und die
+ Genuigkeit zu verbessern.
+\end_layout
+
+\begin_layout Standard
+Ein anderer Ansatz wäre, dass man die Kalibration nicht mehr automatisch
+ durchführt, sondern durch den Nutzer machen lässt.
+ Das ist aufwändiger für diesen, andernseits kann man so noch Störfaktoren
+ korrigieren, die vom Stift und dem Winkel, mit dem dieser gehalten wird,
+ korrigiert werden.
+\end_layout
+
+\begin_layout Paragraph
+Kamera mit Infrarot-Kanal
+\end_layout
+
+\begin_layout Standard
+Hierbei haben wir natürlich stark erweiterte Möglichkeiten
+\end_layout
+
+\begin_layout Itemize
+Überprüfen, ob die Kalibration immer noch stimmt, während dem laufenden
+ Betrieb
+\end_layout
+
+\begin_layout Itemize
+In-Time anpassen der Korrekturfaktoren
+\end_layout
+
+\begin_layout Itemize
+Verifizieren, ob sich der Pen dort befindet, wo er erwartet wird und allenfalls
+ korrigieren.
+\end_layout
+
+\begin_layout Itemize
+Nachkalibration auslösen, wenn die Webcam oder der Beamer bewegt wird.
+\end_layout
+
+\begin_layout Standard
+Das kann sehr viel Verbesserungen bringen, erübrigt eine Kalibration der
+ Kamera und verkürzt die Kalibrationszeit.
+ Dies wird zusätzlichen Aufwand bedeuten, jedoch sollte sich das eigentlich
+ gut in unsere Ansätze integrieren lassen.
+ Durch diese Anpassung wird die Nutzerfreundlichkeit sehr stark verbessert.
+ Dieser Schritt ist nötig, um dieses Produkt verschiedenen Kundensegmenten
+ anzubieten, da eis die Benutzung ungemein vereinfacht.
+\end_layout
+
+\begin_layout Subsection
+Pen Tracking
+\end_layout
+
+\begin_layout Standard
+MultiPen für Multitouch?
+\end_layout
+
+\begin_layout Subsection
+Handdetektion
+\end_layout
+
+\begin_layout Subsection
+Input Emulation
+\end_layout
+
+\begin_layout Standard
+Wenn weiterhin der ganze PC damit bedient werden soll, ist die injection
+ in den Maustreiber die einzige gangbare Möglichkeit.
+ Dabei sollte aber darauf geachtet werden, dass relative Mausbewegungen
+ gesendet werden, da es sonst mit gewissen Programmen, die Mausinputs auf
+ einem sehr tiefen Level verarbeiten, zu komplikationen kommen wird.
+ Dies erfordert jedoch die Möglichkeit, die am PC eingestellte Mausbeschleunigun
+g auslesen zu können und Positionen verifizieren zu können.
+\end_layout
+
+\begin_layout Paragraph
+Touch
+\end_layout
+
+\begin_layout Standard
+Mit der Touch-Emulation unter Windows 8 unterstützen wir schon alle implementier
+ten Touch-Gesten.
+ In kombination mit einem Pentracker, der mehrer Pens detektieren kann,
+ wären auch Multitouch-Gesten möglich.
+\end_layout
+
+\begin_layout Standard
+Diese Funktionalität sollte jedoch unter anderen Betriebssystemen nachgebildet
+ werden, damit man zumindest eine ähnliche Funktionalität unter älteren
+ Systemen gewährleistet werden kann.
+\end_layout
+
+\begin_layout Paragraph
+API
+\end_layout
+
+\begin_layout Standard
+Eine weitere Möglichkeit ist, eine API bereitzuistellen, die von anderen
+ Softwareherstellern verwendet werden kann, und so unser Produkt in ihre
+ Software einbinden können.
+ Das kann auch zusätzlich zur Mausemulation gemacht werden.
+ Dies wird zwar für unsere Software nicht unbedingt benötigt und ich erachte
+ diesen Schritt im Moment als unnötig.
 \end_layout
 
 \begin_layout Section
@@ -3029,7 +3376,7 @@ n.
 \end_layout
 
 \begin_layout Paragraph
-Vorteile 
+Erkenntnisse
 \end_layout
 
 \begin_layout Itemize
@@ -3052,12 +3399,8 @@ Dieses Verfahren ist viel performanter als andere.
  
 \end_layout
 
-\begin_layout Paragraph
-Nachteile
-\end_layout
-
 \begin_layout Itemize
-+ieses Verfahren ist von einer guten interpolation abhängig.
+Dieses Verfahren ist von einer guten Interpolation abhängig.
  
 \end_layout
 
@@ -3238,15 +3581,6 @@ Fehlerkennungen führen dazu, dass die weiteren Schritte fehlschlagen werden.
 Es gibt praktisch keine Fehlerkennungen.
  Stattdessen wird die Erkennung komplett fehlschlagen, auf was besser reagiert
  werden kann.
- 
-\end_layout
-
-\begin_layout Itemize
-
-\series bold
-Diesen Ansatz lohnt es sich weiterzuverfolgen
-\series default
-.
  
 \end_layout
 
