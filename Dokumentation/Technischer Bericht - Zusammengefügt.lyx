@@ -502,13 +502,22 @@ TODO: Bild einer vorbildlich präsentierenden Person
 Analyse
 \end_layout
 
+\begin_layout Standard
+Im Folgenden werden Überlegungen zur Beziehung Beamer-Kamera und zu den
+ konkreten Eigenschaften eines Stiftes gemacht.
+ Es gilt zu analysieren, wie und ob die oben postulierten Probleme gelöst
+ werden können.
+ Es wird auf Kamerakalibrierung, Bildverarbeitungsschritte und deren geplante
+ Umsetzung in Software eingegangen.
+\end_layout
+
 \begin_layout Subsection
 Kalibrierung
 \end_layout
 
 \begin_layout Standard
 Bei der Kalibrierung geht es darum, Punkte im Kamerabild zu erkennen, die
- eindeutig Punkten auf der Präsentation zugeordnet werden können.
+ eindeutigen Punkten auf der Präsentation zugeordnet werden können.
  Dabei müssen sicher die Eckpunkte der Präsentation erkannt werden.
  Durch erkennung weiterer Punkte kann allerdings die Genauigkeit des Mappings
  erhöht werden.
@@ -1274,21 +1283,15 @@ Als Ziel dieser Arbeit soll ein Stift an einer Leinwand gefunden werden.
  Dies soll das virtuelle Schreiben auf diese Leinwand ermöglichen.
  Da Bildverarbeitung auch heute noch viel Rechenleistung benötigt, gilt
  es genau zu wissen, was man wann und wieso tut.
-\end_layout
-
-\begin_layout Standard
-Das Finden eines Stiftes besteht aus verschiedenen Teilproblemen, die verschiede
-n zu lösen sind.
- So sind Präsenz- und Positionsaspekt des Stiftes zu unterscheiden.
+ Das Finden eines Stiftes besteht aus verschiedenen Teilproblemen, die verschied
+en zu lösen sind.
+ So sind zum Beispiel Präsenz- und Positionsaspekt des Stiftes zu unterscheiden.
  Es ist teilweise nicht unbedingt notwendig zu wissen, wo der Stift auf
  dem Bild ist.
- Falls es zum Beispiel einfach ist, die Präsenz des Stiftes festzustellen,
- nicht aber die Position, kann erstere Information verwendet werden um komplizer
-te und rechenintensive Schritte erst anzustossen wenn nötig.
-\end_layout
-
-\begin_layout Standard
-Neben den verschiedenen vorzunehmenden Schritten, ist auch Kontextwissen
+ Falls es einfach ist, die Präsenz des Stiftes festzustellen, nicht aber
+ die Position, kann erstere Information verwendet werden um komplizerte
+ und rechenintensive Schritte erst anzustossen wenn nötig.
+ Neben den verschiedenen vorzunehmenden Schritten, ist auch Kontextwissen
  wichtig.
  Ein Bild kann gezielter nach Präsenz und Position des Stiftes durchsucht
  werden, wenn bekannt ist, wie er sich zeitlich bewegt.
@@ -1298,16 +1301,376 @@ Neben den verschiedenen vorzunehmenden Schritten, ist auch Kontextwissen
 Präsenz durch Helligkeit
 \end_layout
 
+\begin_layout Standard
+Generell ist es nicht einfach, herauszufinden, ob sich ein Objekt in einem
+ Bild befindet.
+ Ansätze aus der digitalen Bildverarbeitung wie die Diskrete Fourier-Transformat
+ion
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+Die Diskrete Fourier-Transformation erhält die Eigenschaften Verschiebung
+ und Skalierung in Zeit und Frequenz.
+\end_layout
+
+\end_inset
+
+ oder der Gradientenabstieg mittels dynamischer Bildskalierung
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+James MacLean in 
+\begin_inset Quotes gld
+\end_inset
+
+Fast Pattern Recognition Using Gradient-Descent Search in an Image Pyramid
+\begin_inset Quotes grd
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+ sind kompliziert und benötigen viel Rechenleistung.
+ Die Komplexität des Problems wird immens reduziert, wenn die Eigenschaften
+ des Stiftes klarer definiert sind.
+ Es wäre möglich, Form, Farbe, Helligkeit, Farbtemperatur, Geschwindigkeit,
+ Bewegung, Puls, etc.
+ auf einem oder mehreren Kamerabilder zu analysieren.
+ Der Einfachheit halber reduzieren wir den Stift auf seine Helligkeit.
+ Wir gehen noch weiter und sagen, der Stift ist der hellste Punkt in einem
+ Bild.
+ Zur Umsetzung könnte ein optisches Licht (ev.
+ Infrarot) als Stift verwendet werden.
+\end_layout
+
+\begin_layout Paragraph
+Präsenz durch Kardinalität
+\end_layout
+
+\begin_layout Standard
+Der hellste Punkt auf dem Kamerabild bildet den Stift ab.
+ Es gibt verschiedene Möglichkeiten, den Fall, dass mehrere Spot auftreten,
+ zu behandeln.
+ 
+\end_layout
+
+\begin_layout Itemize
+Es könnte lediglich der hellste Punkt gewertet werden.
+\end_layout
+
+\begin_layout Itemize
+Es könnte eine genaue Anzahl Punkte aus dem Kontext gewählt werden.
+\end_layout
+
+\begin_layout Itemize
+Es könnten alle Punkte verworfen werden.
+\end_layout
+
+\begin_layout Standard
+Um Fehler zu vermeiden, scheint es sinnvoll, alle undefinierten Zustände
+ zu verwerfen, Punkte also nur zu werten, wenn sie alleine in ihrem definierten
+ Zustand auftreten.
+ Es befindet sich also ein Stift auf dem Kamerabild, wenn ein gewisser Helligkei
+tswert überschritten wird.
+ Diese Entscheidung ist nur sinnvoll, wenn die Fehlerrate (zu viele Punkte
+ erkannt) nicht zu hoch und die Framerate nicht zu tief ist.
+\end_layout
+
 \begin_layout Paragraph*
-Position durch Mittelwerte
+Position durch Mittelwert oder Schwerpunkt
+\end_layout
+
+\begin_layout Standard
+Die Position des Stiftes hängt vorzugsweise von der Präsenz eines Stiftes
+ ab.
+ So muss die Position des Stiftes nur dann gesucht werden wenn er präsent
+ ist.
+ Dies spart Rechenzeit.
+ Die oben beschriebenen Kriterien zur Präsenz ergeben jeweils eine Stiftpräsenz.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Bilder/PenTracking/LightPoints/theory/light-point.png
+	scale 200
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Stehender Lichtpunkt in der Theorie
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Die genaue Position des Stiftes befindet sich in der Mittel am hellsten
+ Punkt.
+ In der Theorie ist das der Mittelwert aller hellen umgebenden Pixel oder
+ der Schwerpunkt.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Bilder/PenTracking/LightPoints/two-blobs/frame1.png
+
+\end_inset
+
+ 
+\begin_inset Graphics
+	filename Bilder/PenTracking/LightPoints/two-blobs/frame2.png
+
+\end_inset
+
+ 
+\begin_inset Graphics
+	filename Bilder/PenTracking/LightPoints/two-blobs/diff.png
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Frame x, Frame x+1, Differenz - Der Punkt bewegt sich nach rechts unten
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Messungen zeigen, dass ein bewegter Lichtpunkt in der Praxis nicht rund
+ ist, sondern in der Bewegungsrichtung gestaucht.
+ Die Stauchung wird durch die Belichtung verursacht.
+ In der Bewegungsrichtung erfährt der CCD-Sensor der Kamera eine starke
+ Intensitätsänderung, während sich die Intensität am Rand der Laufrichtung
+ weniger stark ändert.
+ Der CCD trägt der starken Änderung mehr Rechnung als der schwachen.
+ Im Weiteren ist die Helligkeit des Lichtpunktes vom Zentrum her nicht weich
+ abfallend, sonder eher scharfkantig.
+ Die rührt von Reflexionen auf der dahinter liegenden Leinwand.
+\end_layout
+
+\begin_layout Standard
+Um der Stabilität Willen wird vorgeschlagen, die Position der Stiftposition
+ nicht zu genau zu bestimmen.
+ Für eine Anwendung, die lediglich auf eine Leinwand zeichnen kann, sollte
+ die Mitte einer Umrandung der hellsten Werte mittels fixem Grenzwert reichen.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Bilder/PenTracking/LightPoints/theory/light-point - thresholded.png
+	scale 200
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Per Grenzwert wird der Lichtpunkt in das Zentrum eines Vierecks gelegt.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Paragraph*
 Gezieltes Suchen
 \end_layout
 
+\begin_layout Standard
+Ein Algorithmus zum Finden der Stiftposition sollte den erarbeiteten Kontext
+ berücksichtigen.
+ In einem Bild kann zum Beispiel in der Nähe eines im vorherigen Bild gefundenen
+ Punktes gesucht werden.
+ So reduziert sich der Aufwand des Algorithmus von 
+\begin_inset Formula $O\left(cn^{2}\right)$
+\end_inset
+
+auf 
+\begin_inset Formula $O\left(c\left(\frac{n}{x}\right)^{2}\right)$
+\end_inset
+
+wobei 
+\begin_inset Formula $x$
+\end_inset
+
+ die Seitenlänge 
+\begin_inset Formula $n$
+\end_inset
+
+ des Kamerabildes in ein kleineres Suchfenster mit Seitenlänge 
+\begin_inset Formula $\frac{n}{x}$
+\end_inset
+
+ teilt
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+Asymptotisch wird angenommen, dass das Kamerabild quadratisch ist.
+\end_layout
+
+\end_inset
+
+.
+ Im Fall, dass entweder keine oder keine brauchbaren Kontextinformationen
+ vorhanden sind, kann die Suche auf ein grösseres oder das ganze Suchfenster
+ ausgeweitet werden.
+ Dies erhöht die Worstcase Laufzeit auf 
+\begin_inset Formula $O\left(c\left(\frac{n}{x}\right)^{2}+c\left(y\frac{n}{x}\right)^{2}\right)$
+\end_inset
+
+, wobei 
+\begin_inset Formula $y$
+\end_inset
+
+ der Faktor der Vergrösserung ist.
+ Wir denken, dass es reicht, 
+\begin_inset Formula $y:=x$
+\end_inset
+
+ zu setzen, wenn das erste Suchfenster gut gewählt ist, da die Wahrscheinlichkei
+t gross ist, dass entweder gar kein Punkt gefunden wird oder dass sich der
+ Punkte entgegen dem Kontext verhält
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+Dies macht den kontextabhängigen Algorithmus per se unbrauchbar.
+\end_layout
+
+\end_inset
+
+.
+\end_layout
+
 \begin_layout Paragraph*
 Stabilität durch Differenzbilder
+\end_layout
+
+\begin_layout Standard
+Reduktionen des Kontextes muss nicht unbedingt wie oben beschrieben zu Instabili
+tät und mehr Fallunterscheidungen führen.
+ Zum Beispiel können relevante Informationen durch Differenzbilder hervorgehoben
+ und Rauschen unterdrückt werden.
+ Sogar Kriterien, die mit den Eigenschaften eines Stiftes konkurrieren,
+ wie zum Beispiel helle statische Reflexionen auf der Leinwand können so
+ unterdrückt werden.
+ Falls Differenzbilder verwendet werden, müssen weitere Überlegungen zur
+ Kardinalität der Lichtpunkte gemacht werden.
+ Was nun ein oder zwei resultierende Punkte auf dem Bild bedeutet ist nicht
+ ganz klar (s.u.).
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Bilder/PenTracking/RedDot ohne Weissabgleich/rauschen-small.png
+	width 50col%
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename Bilder/PenTracking/RedDot ohne Weissabgleich/rauschen-small-diff.png
+	width 50col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Auf dem Differenzbild (rechts) ist der Laserpointer Punkt viel besser sichtbar
+ als auf dem Quellbild (links).
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsection
@@ -1842,7 +2205,7 @@ Verfahren
 \end_layout
 
 \begin_layout Standard
-Das Erkennen des Stiftes beruht auf der optischen Eigenschaft, dass der
+Wie oben beschrieben, haben wir uns auf den Ansatz beschränkt, dass der
  Stift das hellste sichtbare Licht auf dem Kamerabild darstellt.
  Der hellste Punkt sollte also die aktuelle Stiftposition sein.
  Es gibt zwei naheliegende Ansätze um diesen Punkt zu finden.
@@ -1855,7 +2218,13 @@ Finde den hellsten Punkt auf dem Bild.
 \end_layout
 
 \begin_layout Itemize
-Finde den hellsten Punkt der sich bewegt
+Finde den hellsten Punkt der sich bewegt.
+\end_layout
+
+\begin_layout Standard
+In unserer Software verwenden wird für guten Input den Ansatz ohne Differenzbild
+er und für schlechten Input (wenig Licht, viel Rauschen) den stabileren
+ Ansatz mit Differenzbildern.
 \end_layout
 
 \begin_layout Paragraph
@@ -1863,7 +2232,7 @@ Beispiel
 \end_layout
 
 \begin_layout Standard
-Im folgenden Beispiel wurde der automatische weissabgleich der Kamera auf
+Im folgenden Beispiel wurde der automatische Weissabgleich der Kamera auf
  Rot konzentriert und die Überbeleuchtung drastisch reduziert.
  Resultierend sieht man die hellsten Punkte auf dem Beamerbild.
  Der alleinstehende Punkt im ersten Bild ist ein Laserpointer-Punkt.
@@ -2236,6 +2605,7 @@ Es wurden mehr als zwei Blobs gefunden:
 
 Ungültig.
  Wird gemüllt.
+ Optimierung: Man könnte den hellsten Punkt suche und als Resultat zurückgeben.
 \end_layout
 
 \begin_layout Standard
@@ -2497,8 +2867,11 @@ Problematische Einzelfunde
 
 \end_inset
 
-Der Vorteil, wenn man Tests haben gezeigt, dass das aktuelle Interpolationsverfa
-hren genügend genau ist.
+Tests haben gezeigt, dass das aktuelle Interpolationsverfahren genügend
+ genau ist.
+ Bei stabilem Input wird ohne Differenzbilder direkt mit dem hellsten Punkt
+ gearbeitet.
+ Da hat die Interpolation keine negativen Auswirkungen.
 \end_layout
 
 \begin_layout Subparagraph
@@ -2513,6 +2886,18 @@ Position per Faltung
 Umsetzung
 \end_layout
 
+\begin_layout Standard
+Die Umsetzung ist auf die Stabilität des Verfahrens mit Differenzbildern
+ ausgerichtet.
+ Sie funktioniert bei sehr schwachen Lichtpunkten wie Laserpointern und
+ mit viel Rauschen.
+ Nichtsdestotrotz wurde schlussendlich im Prototypen wieder auf die einfachere
+ Version ohne Differenzbilder umgestellt.
+ Bei guten Umgebungsbedingungen, wie guter Sichtbarkeit des Lichts und wenig
+ Rauschen benötigt man die Stabilität nicht.
+ Zudem wird so Rechenzeit gespart.
+\end_layout
+
 \begin_layout Paragraph
 Laufzeit
 \end_layout
@@ -2523,6 +2908,8 @@ Falls schon Punkte gefunden wurden, wird zuerst nur ein Bildausschnitt um
  Im Erfolgsfall spart das Rechenzeit.
  Falls man im Bildausschnitt kein Punkt findet, wird die Suche auf das ganze
  Bild ausgeweitet.
+ Im Mittel benötigt man so auf einem Intel Core Duo mit 2Ghz ca 4ms pro
+ gefundenem Lichtpunkt.
 \end_layout
 
 \begin_layout Paragraph
@@ -2675,7 +3062,7 @@ Auswahl???
 \end_layout
 
 \begin_layout Subsection
-Kalibration
+Kalibrierung
 \end_layout
 
 \begin_layout Standard
@@ -5083,6 +5470,10 @@ Durch eine entsprechende Gewichtung kann man zu dem die Knicke so interpolieren,
  des Rechtecks bestimmen können.
  Diese korrigieren jedoch die perspektivische Verzerrung nicht.
  Diesen Faktor können jedoch mit einem feineren Raster kompensieren.
+\end_layout
+
+\begin_layout Subsection
+Exkurs: Bewegter Lichtpunkt
 \end_layout
 
 \begin_layout Subsection
