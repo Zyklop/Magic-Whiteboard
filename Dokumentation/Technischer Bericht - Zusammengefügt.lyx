@@ -191,6 +191,13 @@ Die Person soll mit einem Stift auf die das Beamerbild schreiben können.
  wird.
 \end_layout
 
+\begin_layout Standard
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
 \begin_layout Section
 Problemstellung
 \end_layout
@@ -498,6 +505,13 @@ TODO: Bild einer vorbildlich präsentierenden Person
 
 \end_layout
 
+\begin_layout Standard
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
 \begin_layout Section
 Analyse
 \end_layout
@@ -524,6 +538,53 @@ Bei der Kalibrierung geht es darum, Punkte im Kamerabild zu erkennen, die
  Hierbei haben wir verschiedene Ansätze ausprobiert.
  Hier wird nur die Analyse beschrieben, das genaue Vorgehen ist jeweils
  im Anhang beschrieben.
+\end_layout
+
+\begin_layout Subsubsection
+Referenzpunkte
+\end_layout
+
+\begin_layout Standard
+Die Abbildung vom Kamerabild zum ursprünglich projizierten Beamerbild ist
+ eine Transformation 
+\begin_inset Formula $\left(x_{k},y_{k}\right)\rightarrow\left(x_{b},y_{b}\right)$
+\end_inset
+
+ und lässt sich durch eine Transformationsmatrix mit 11 Freiheitsgraden
+ korrekt beschreiben
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+3 Translation, 3 Rotation, 2 Kameranullpunkt, 1 Brennweite, 2 Bildskalierung
+ 
+\end_layout
+
+\end_inset
+
+.
+ Falls die Brennweite ausser Acht gelassen und mit einer bekannten Bildskalierun
+g gearbeitet wird, hat die Transformation lediglich 8 Freiheitsgrade, welche
+ durch 4 Messpunkte gebunden werden können.
+ Unsere Implementationen der Abbildungsberechnungen verlassen sich jeweils
+ auf die vier gemessenen Eckpunkte der Projektion und lassen somit Linseneffekte
+ ausser Acht.
+\end_layout
+
+\begin_layout Subsubsection
+Abbildung & Interpolation
+\end_layout
+
+\begin_layout Standard
+Es wurden verschiedene Verfahren zur Beschreibung der Abbildungen erarbeitet.
+\end_layout
+
+\begin_layout Standard
+blablablabla
+\end_layout
+
+\begin_layout Standard
+blabla
 \end_layout
 
 \begin_layout Subsubsection
@@ -1818,6 +1879,13 @@ Kalibration wird erfolgreich abgeschlossen und das Pentracking gestartet.
  
 \end_layout
 
+\begin_layout Standard
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
 \begin_layout Section
 Umsetzung
 \end_layout
@@ -3043,6 +3111,13 @@ Unser Prototyp funktioniert sehr genau und ist sehr Fehlertolerant.
  gezeichnet werden können.
 \end_layout
 
+\begin_layout Standard
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
 \begin_layout Section
 Ausblick
 \end_layout
@@ -3170,6 +3245,13 @@ Eine weitere Möglichkeit ist, eine API bereitzuistellen, die von anderen
  Das kann auch zusätzlich zur Mausemulation gemacht werden.
  Dies wird zwar für unsere Software nicht unbedingt benötigt und ich erachte
  diesen Schritt im Moment als unnötig.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage newpage
+\end_inset
+
+
 \end_layout
 
 \begin_layout Section
