@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Drawing;
 
-namespace HSR.PresWriter.Containers
+namespace PresWriter.Common.Containers
 {
     public class VideoFrame : Frame
     {
@@ -25,7 +20,7 @@ namespace HSR.PresWriter.Containers
         public VideoFrame(int number, Bitmap image, long timestamp = 0)
             : base(number, timestamp)
         {
-            this.Bitmap = image;
+            Bitmap = image;
         }
     }
 }

@@ -1,13 +1,13 @@
-﻿using HSR.PresWriter.Containers;
+﻿using PresWriter.Common.Containers;
 
-namespace HSR.PresWriter.IO.Events
+namespace PresWriter.Common.IO.Events
 {
     public class FrameReadyEventArgs
     {
-        public readonly VideoFrame Frame; // TODO why no prperty?
+        public VideoFrame Frame { get; private set; };
         public FrameReadyEventArgs(VideoFrame frame)
         {
-            this.Frame = frame;
+            Frame = frame;
         }
     }
 }

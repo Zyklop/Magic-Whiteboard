@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Drawing;
 
-namespace HSR.PresWriter.Containers
+namespace PresWriter.Common.Containers
 {
     /// <summary>
     /// Container for a time dependent capture</summary>
@@ -25,16 +24,16 @@ namespace HSR.PresWriter.Containers
         /// Frame Index</param>
         /// <param name="timestamp">
         /// Time when the object was captured in milliseconds</param>
-        public Frame(int number, long timestamp = 0)
+        protected Frame(int number, long timestamp = 0)
         {
-            this.Number = number;
-            this.Timestamp = timestamp != 0 ? timestamp : CurrentMillis.Millis;
+            Number = number;
+            Timestamp = timestamp != 0 ? timestamp : CurrentMillis.Millis;
         }
 
         public int CompareTo(object obj)
         {
-            Frame right = obj as Frame;
-            return this.Number.CompareTo(right.Number);
+            var right = obj as Frame;
+            return Number.CompareTo(right.Number);
         }
     }
 }

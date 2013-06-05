@@ -1,8 +1,6 @@
 ﻿using AForge.Imaging;
 using AForge.Imaging.Filters;
-using HSR.PresWriter.Containers;
 using HSR.PresWriter.IO;
-using HSR.PresWriter.IO.Events;
 using HSR.PresWriter.PenTracking.Events;
 using System;
 using System.Collections.Generic;
@@ -13,6 +11,9 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using PresWriter.Common.Containers;
+using PresWriter.Common.IO;
+using PresWriter.Common.IO.Events;
 
 namespace HSR.PresWriter.PenTracking
 {

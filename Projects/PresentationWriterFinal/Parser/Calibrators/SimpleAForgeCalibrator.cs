@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.Threading;
 using System.Linq;
@@ -9,22 +8,16 @@ using AForge;
 using AForge.Imaging;
 using AForge.Imaging.Filters;
 using AForge.Math.Geometry;
-using HSR.PresWriter.IO.Events;
-using HSR.PresWriter.IO;
+using PresWriter.Common.IO;
+using PresWriter.Common.IO.Events;
 using Visualizer;
 using Point = System.Drawing.Point;
 
-namespace HSR.PresWriter.PenTracking
+namespace HSR.PresWriter.PenTracking.Calibrators
 {
 
     public interface ICalibrator
     {
-        /// <summary>
-        /// Calibrating colors
-        /// </summary>
-        //TODO implement or remove
-        void CalibrateColors();
-
         /// <summary>
         /// Calibrate the grid
         /// </summary>
@@ -59,14 +52,15 @@ namespace HSR.PresWriter.PenTracking
     /// </summary>
     public class SimpleAForgeCalibrator : ICalibrator
     {
-        private IPictureProvider _cc;
+        private readonly IPictureProvider _cc;
         private int _calibrationStep;
         private int _errors;
-        private IVisualizerControl _vs;
+        private readonly IVisualizerControl _vs;
         private const int CalibrationFrames = 3; //must be n^2+3
-        private Difference diffFilter = new Difference();
+        private readonly Difference _diffFilter = new Difference();
         private const int Rowcount = 20;
         private const int Columncount = 15;
+        private const int _millisecondsDelay = 500;
         private SemaphoreSlim _sem;
         private Task _t;
         private double _sqrheight;
@@ -77,22 +71,11 @@ namespace HSR.PresWriter.PenTracking
         {
             _cc = provider;
             _vs = visualizer;
-            //var thread = new Thread(() => _vs = new CalibratorWindow());
-            //thread.SetApartmentState(ApartmentState.STA);
-            //thread.Start();
-            //thread.Join();
+            MaxErrorCount = 20;
         }
-
-        // TODO Calibrate Funktionen aufräumen
         public void StartCalibration()
         {
             Calibrate();
-            CalibrateColors();
-        }
-
-
-        public void CalibrateColors()
-        {
         }
 
         public void Calibrate()
@@ -118,9 +101,9 @@ namespace HSR.PresWriter.PenTracking
         {
             if (_t != null && _t.Exception != null)
             {
-                throw _t.Exception;
+                Logger.Log(_t.Exception);
             }
-            if (_sem.CurrentCount >= 1)//_t.Status != TaskStatus.Running)
+            if (_sem.CurrentCount >= 1)
             {
                 _sem.Wait();
                 Task.Factory.StartNew(() => _t = CalibThread(e));
@@ -130,143 +113,162 @@ namespace HSR.PresWriter.PenTracking
 
         private async Task CalibThread(FrameReadyEventArgs e)
         {
-            //Debug.WriteLine("Calibrating " + _calibrationStep + " " + _drawing);
-            //e.Frame.Bitmap.Save(@"C:\temp\daforge\src\img" + (_calibrationStep<10?"0":"") + _calibrationStep + "-" + (_drawing?"1":"0") + "-" + _errors + ".jpg", ImageFormat.Jpeg);
-            if (_errors > 100)
+            try
             {
-                //calibration not possible
-                return;
-            }
-            if (_calibrationStep == CalibrationFrames)
-            {
-                _cc.FrameReady -= BaseCalibration; // TODO
-                //Grid.Calculate();
-                //Grid.PredictFromCorners();
-                _vs.Close();
-                Console.WriteLine("Calibration complete");
-                CalibrationCompleted(this, new EventArgs());
-            }
-            else
-                switch (_calibrationStep)
+                if (_errors > MaxErrorCount)
                 {
-                        // get the corners from the difference image
-                    case 2:
-                        var bm = UnmanagedImage.FromManagedImage(e.Frame.Bitmap);
-                        //diffFilter.OverlayImage.Save(@"C:\temp\daforge\diff\src" + _errors + ".jpg", ImageFormat.Jpeg);
-                        bm = diffFilter.Apply(bm);
-                        var gf = new GaussianBlur(9.0, 3);
-                        gf.ApplyInPlace(bm);
-                        var cf = new ColorFiltering(new IntRange(10, 255), new IntRange(20, 255),
-                                                    new IntRange(20, 255));
-                        cf.ApplyInPlace(bm);
-                        var blobCounter = new BlobCounter
+                    _cc.FrameReady -= BaseCalibration;
+                    _vs.Close();
+                    Console.WriteLine("Calibration impossible");
+                }
+                if (_calibrationStep == CalibrationFrames)
+                {
+                    _cc.FrameReady -= BaseCalibration;
+                    _vs.Close();
+                    Console.WriteLine("Calibration complete");
+                    CalibrationCompleted(this, new EventArgs());
+                }
+                else
+                    switch (_calibrationStep)
+                    {
+                            // get the corners from the difference image
+                        case 2:
+                            var bm = UnmanagedImage.FromManagedImage(e.Frame.Bitmap);
+                            bm = _diffFilter.Apply(bm);
+                            var gf = new GaussianBlur(9.0, 3);
+                            gf.ApplyInPlace(bm);
+                            var cf = new ColorFiltering(new IntRange(10, 255), new IntRange(20, 255),
+                                                        new IntRange(20, 255));
+                            cf.ApplyInPlace(bm);
+                            var blobCounter = new BlobCounter
+                                {
+                                    ObjectsOrder = ObjectsOrder.Size,
+                                    BackgroundThreshold = Color.FromArgb(255, 15, 20, 20),
+                                    FilterBlobs = true
+                                };
+                            blobCounter.ProcessImage(bm);
+                            var blobs = blobCounter.GetObjectsInformation();
+                            if (blobs.Any())
                             {
-                                ObjectsOrder = ObjectsOrder.Size,
-                                BackgroundThreshold = Color.FromArgb(255, 15, 20, 20),
-                                FilterBlobs = true
-                            };
-                        blobCounter.ProcessImage(bm);
-                        //bm.ToManagedImage().Save(@"C:\temp\daforge\diff\img" + _calibrationStep + "-" + _errors + ".jpg", ImageFormat.Jpeg);
-                        var blobs = blobCounter.GetObjectsInformation();
-                        if (blobs.Any())
-                        {
-                            int i = 0;
-                            List<IntPoint> corners;
-                            do
-                            {
-                                corners =
-                                    PointsCloud.FindQuadrilateralCorners(blobCounter.GetBlobsEdgePoints(blobs[i++]));
-                            } while (corners.Count != 4);
-                            RecursiveAForgeCalibrator.GridBlobs.InPlaceSort(corners);
-                            Grid.TopLeft = new Point(corners[0].X, corners[0].Y);
-                            Grid.TopRight = new Point(corners[1].X, corners[1].Y);
-                            Grid.BottomLeft = new Point(corners[2].X, corners[2].Y);
-                            Grid.BottomRight = new Point(corners[3].X, corners[3].Y);
-                            if (Grid.TopLeft.X > 10 && Grid.TopRight.X < _vs.Width - 5 && Grid.BottomLeft.X > 5 &&
-                                Grid.BottomRight.X < _vs.Width - 5 && Grid.TopLeft.Y > 10 && Grid.TopRight.Y > 5 &&
-                                Grid.BottomLeft.Y < _vs.Height - 5 && Grid.BottomRight.Y < _vs.Height - 5 &&
-                                Grid.TopLeft.X < Grid.BottomRight.X && //blobs[i - 1].Area > 60000 &&
-                                Grid.BottomLeft.X < Grid.TopRight.X && Grid.BottomLeft.X < Grid.BottomRight.X &&
-                                Grid.TopLeft.Y < Grid.BottomLeft.Y && Grid.TopLeft.Y < Grid.BottomRight.Y &&
-                                Grid.TopRight.Y < Grid.BottomLeft.Y && Grid.TopRight.Y < Grid.BottomRight.Y)
-                            {
-                                _calibrationStep++;
-                                _vs.Clear();
-                                Grid.AddPoint(new Point(), new Point(corners[0].X, corners[0].Y));
-                                Grid.AddPoint(new Point(0, _vs.Height), new Point(corners[1].X, corners[1].Y));
-                                Grid.AddPoint(new Point(_vs.Width, 0), new Point(corners[2].X, corners[2].Y));
-                                Grid.AddPoint(new Point(_vs.Width, _vs.Height),
-                                              new Point(corners[3].X, corners[3].Y));
+                                int i = 0;
+                                List<IntPoint> corners;
+                                do
+                                {
+                                    corners =
+                                        PointsCloud.FindQuadrilateralCorners(blobCounter.GetBlobsEdgePoints(blobs[i++]));
+                                } while (corners.Count != 4);
+                                InPlaceSort(corners);
+                                Grid.TopLeft = new Point(corners[0].X, corners[0].Y);
+                                Grid.TopRight = new Point(corners[1].X, corners[1].Y);
+                                Grid.BottomLeft = new Point(corners[2].X, corners[2].Y);
+                                Grid.BottomRight = new Point(corners[3].X, corners[3].Y);
+                                if (Grid.TopLeft.X > 10 && Grid.TopRight.X < _vs.Width - 5 && Grid.BottomLeft.X > 5 &&
+                                    Grid.BottomRight.X < _vs.Width - 5 && Grid.TopLeft.Y > 10 && Grid.TopRight.Y > 5 &&
+                                    Grid.BottomLeft.Y < _vs.Height - 5 && Grid.BottomRight.Y < _vs.Height - 5 &&
+                                    Grid.TopLeft.X < Grid.BottomRight.X && //blobs[i - 1].Area > 60000 &&
+                                    Grid.BottomLeft.X < Grid.TopRight.X && Grid.BottomLeft.X < Grid.BottomRight.X &&
+                                    Grid.TopLeft.Y < Grid.BottomLeft.Y && Grid.TopLeft.Y < Grid.BottomRight.Y &&
+                                    Grid.TopRight.Y < Grid.BottomLeft.Y && Grid.TopRight.Y < Grid.BottomRight.Y)
+                                {
+                                    _calibrationStep++;
+                                    _vs.Clear();
+                                    Grid.AddPoint(new Point(), new Point(corners[0].X, corners[0].Y));
+                                    Grid.AddPoint(new Point(0, _vs.Height), new Point(corners[1].X, corners[1].Y));
+                                    Grid.AddPoint(new Point(_vs.Width, 0), new Point(corners[2].X, corners[2].Y));
+                                    Grid.AddPoint(new Point(_vs.Width, _vs.Height),
+                                                  new Point(corners[3].X, corners[3].Y));
+                                }
+                                else
+                                {
+                                    _calibrationStep = 0;
+                                    _errors++;
+                                }
                             }
                             else
                             {
                                 _calibrationStep = 0;
                                 _errors++;
+                                _vs.Draw();
                             }
-                        }
-                        else
-                        {
-                            _calibrationStep = 0;
-                            _errors++;
+                            break;
+                        case 1: // draw second image, store the first
+                            _diffFilter.OverlayImage = e.Frame.Bitmap;
+                            _vs.Clear();
+                            for (int y = 0; y < Columncount; y++)
+                            {
+                                for (int x = 0; x < Rowcount; x++)
+                                {
+                                    if (!(y%2 == 0 && x%2 == 0 || y%2 == 1 && x%2 == 1))
+                                    {
+                                        _vs.AddRect((int) (x*_sqrwidth), (int) (y*_sqrheight),
+                                                    (int) _sqrwidth, (int) _sqrheight,
+                                                    Color.FromArgb(255, 255, 255, 255));
+                                    }
+                                }
+                            }
                             _vs.Draw();
-                        }
-                        break;
-                    case 1: // draw second image, store the first
-                        diffFilter.OverlayImage = e.Frame.Bitmap;
-                        //diffFilter.OverlayImage.Save(@"C:\temp\daforge\diff\srcf" + _errors + ".jpg", ImageFormat.Jpeg);
-                        //_vs.AddRect(0, 0, (int) _vs.Width, (int) _vs.Height, Color.FromArgb(255, 255, 255, 255));
-                        _vs.Clear();
-                        for (int y = 0; y < Columncount; y++)
-                        {
-                            for (int x = 0; x < Rowcount; x++)
-                            {
-                                if (!(y%2 == 0 && x%2 == 0 || y%2 == 1 && x%2 == 1))
+                            _calibrationStep++;
+                            break;
+                            //draw the first image
+                        case 0:
+                            Grid = new Grid(e.Frame.Bitmap.Width, e.Frame.Bitmap.Height)
                                 {
-                                    _vs.AddRect((int) (x*_sqrwidth), (int) (y*_sqrheight),
-                                                (int) _sqrwidth, (int) _sqrheight,
-                                                Color.FromArgb(255, 255, 255, 255));
+                                    ScreenSize = new Rectangle(0, 0, _vs.Width, _vs.Height)
+                                };
+                            var thread = new Thread(() =>
+                                {
+                                    _vs.Show();
+                                    _vs.AddRect(0, 0, _vs.Width, _vs.Height, Color.FromArgb(255, 0, 0, 0));
+                                });
+                            thread.SetApartmentState(ApartmentState.STA);
+                            thread.Start();
+                            thread.Join();
+                            for (int y = 0; y < Columncount; y++)
+                            {
+                                for (int x = 0; x < Rowcount; x++)
+                                {
+                                    if (y%2 == 0 && x%2 == 0 || y%2 == 1 && x%2 == 1)
+                                    {
+                                        _vs.AddRect((int) (x*_sqrwidth), (int) (y*_sqrheight),
+                                                    (int) _sqrwidth, (int) _sqrheight,
+                                                    Color.FromArgb(255, 255, 255, 255));
+                                    }
                                 }
                             }
-                        }
-                        _vs.Draw();
-                        _calibrationStep++;
-                        break;
-                        //draw the first image
-                    case 0:
-                        Grid = new Grid(e.Frame.Bitmap.Width, e.Frame.Bitmap.Height);
-                        Grid.ScreenSize = new Rectangle(0, 0, _vs.Width, _vs.Height);
-                        var thread = new Thread(() =>
-                            {
-                                _vs.Show();
-                                _vs.AddRect(0, 0, _vs.Width, _vs.Height, Color.FromArgb(255, 0, 0, 0));
-                            });
-                        thread.SetApartmentState(ApartmentState.STA);
-                        thread.Start();
-                        thread.Join();
-                        for (int y = 0; y < Columncount; y++)
-                        {
-                            for (int x = 0; x < Rowcount; x++)
-                            {
-                                if (y%2 == 0 && x%2 == 0 || y%2 == 1 && x%2 == 1)
-                                {
-                                    _vs.AddRect((int) (x*_sqrwidth), (int) (y*_sqrheight),
-                                                (int) _sqrwidth, (int) _sqrheight,
-                                                Color.FromArgb(255, 255, 255, 255));
-                                }
-                            }
-                        }
-                        _vs.Draw();
-                        _calibrationStep++;
-                        break;
-                }
-            Debug.WriteLine("Releasing");
-            await Task.Delay(500);
-            _sem.Release();
+                            _vs.Draw();
+                            _calibrationStep++;
+                            break;
+                    }
+                await Task.Delay(_millisecondsDelay);
+            }
+            finally
+            {
+                _sem.Release();
+            }
+        }
+
+        private static void InPlaceSort(List<IntPoint> rect)
+        {
+            if (rect == null || rect.Count != 4)
+                throw new ArgumentException("Not a rectancle");
+            var tmp = new List<IntPoint>(rect);
+            rect.Clear();
+            var tl = tmp.First(x => x.Y == tmp.Min(y => y.Y));
+            tmp.Remove(tl);
+            rect.Add(tl);
+            tl = tmp.First(x => x.Y == tmp.Min(y => y.Y));
+            tmp.Remove(tl);
+            rect.Add(tl);
+            rect.Sort((x, y) => x.X.CompareTo(y.X));
+            tmp = tmp.OrderBy(x => x.X).ToList();
+            rect.Add(tmp[0]);
+            rect.Add(tmp[1]);
         }
 
         public Grid Grid { get; private set; }
-        //public Colorfilter ColorFilter { get; private set; }
 
         public event EventHandler CalibrationCompleted;
+
+        public int MaxErrorCount { get; set; }
     }
 }

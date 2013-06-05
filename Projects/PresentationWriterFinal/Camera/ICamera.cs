@@ -1,7 +1,9 @@
-﻿using HSR.PresWriter.Containers;
-using System;
+﻿using System;
+using HSR.PresWriter.IO;
+using PresWriter.Common.Containers;
+using PresWriter.Common.IO;
 
-namespace HSR.PresWriter.IO
+namespace HSR.PresWriter.DataSources
 {
     public interface ICamera : IPictureProvider, IDisposable
     {

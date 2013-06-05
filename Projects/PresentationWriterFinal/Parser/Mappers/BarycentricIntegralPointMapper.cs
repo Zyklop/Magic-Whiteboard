@@ -1,17 +1,12 @@
 ﻿using AForge;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace HSR.PresWriter.PenTracking.Mappers
 {
     public class BarycentricIntegralPointMapper : IntegralPointMapper
     {
         // per Integral estimated camera coordinates (mapped from calculated )
-        private Quad _bariycentricEstimatedCameraCorners;
+        private readonly Quad _bariycentricEstimatedCameraCorners;
 
         public BarycentricIntegralPointMapper(Grid griddata)
             : base(griddata, true)
@@ -24,8 +19,8 @@ namespace HSR.PresWriter.PenTracking.Mappers
 
             // Process barycentric mapping back to presentation coordinates (beamer picture on camera)
             // This Corners are the new reference for a more precise mapping
-            _bariycentricEstimatedCameraCorners = new Quad()
-            {
+            _bariycentricEstimatedCameraCorners = new Quad
+                {
                 TopLeft     = _barycentricCorrectionFromSquare(beamerTopLeft, Grid.PresentationQuad),
                 TopRight    = _barycentricCorrectionFromSquare(beamerTopRight, Grid.PresentationQuad),
                 BottomLeft  = _barycentricCorrectionFromSquare(beamerBottomLeft, Grid.PresentationQuad),
@@ -62,9 +57,9 @@ namespace HSR.PresWriter.PenTracking.Mappers
         /// <returns></returns>
         public static Point _barycentricCorrectionFromSquare(Point point, Quad reference)
         {
-            float x = point.X;
-            float y = point.Y;
-            Point result = reference.TopLeft * (1 - x) * (1 - y)
+            var x = point.X;
+            var y = point.Y;
+            var result = reference.TopLeft * (1 - x) * (1 - y)
                 + reference.BottomLeft * y * (1 - x)
                 + reference.TopRight * (1 - y) * x
                 + reference.BottomRight * x * y;
@@ -80,36 +75,39 @@ namespace HSR.PresWriter.PenTracking.Mappers
         /// <returns></returns>
         public static Point _barycentricCorrectionToSquare(Point point, Quad reference)
         {
-            double px, py;
-            px = point.X; py = point.Y;
+            var px = point.X; 
+            var py = point.Y;
 
-            double LUx, LLx, RUx, RLx, LUy, LLy, RUy, RLy;
-            LUx = reference.TopLeft.X;     LUy = reference.TopLeft.Y;
-            LLx = reference.BottomLeft.X;  LLy = reference.BottomLeft.Y;
-            RUx = reference.TopRight.X;    RUy = reference.TopRight.Y;
-            RLx = reference.BottomRight.X; RLy = reference.BottomRight.Y;
+            double lUx = reference.TopLeft.X;     
+            double lUy = reference.TopLeft.Y;
+            double lLx = reference.BottomLeft.X;  
+            double lLy = reference.BottomLeft.Y;
+            double rUx = reference.TopRight.X;    
+            double rUy = reference.TopRight.Y;
+            double rLx = reference.BottomRight.X; 
+            double rLy = reference.BottomRight.Y;
 
-            double xh = (2 * LLy * LUx - 2 * LLx * LUy
-                - LLy * px + LUy * px + LLx * py - LUx * py
-                + LUy * RLx - py * RLx - LUx * RLy + px * RLy
-                - LLy * RUx + py * RUx + LLx * RUy - px * RUy
+            double xh = (2 * lLy * lUx - 2 * lLx * lUy
+                - lLy * px + lUy * px + lLx * py - lUx * py
+                + lUy * rLx - py * rLx - lUx * rLy + px * rLy
+                - lLy * rUx + py * rUx + lLx * rUy - px * rUy
                 + Math.Sqrt(
-                    -4 * (LLy * (LUx - px) + LUy * px - LUx * py + LLx * (-LUy + py)) * ((LLy - RLy) * (LUx - RUx) - (LLx - RLx) * (LUy - RUy))
+                    -4 * (lLy * (lUx - px) + lUy * px - lUx * py + lLx * (-lUy + py)) * ((lLy - rLy) * (lUx - rUx) - (lLx - rLx) * (lUy - rUy))
                     + Math.Pow(
-                        -py * RLx + LUy * (px + RLx) + px * RLy -
-                        LUx * (py + RLy) + LLy * (2 * LUx - px - RUx) + py * RUx - px * RUy +
-                        LLx * (-2 * LUy + py + RUy), 2)
+                        -py * rLx + lUy * (px + rLx) + px * rLy -
+                        lUx * (py + rLy) + lLy * (2 * lUx - px - rUx) + py * rUx - px * rUy +
+                        lLx * (-2 * lUy + py + rUy), 2)
                 )
-            ) / (2 * ((LLy - RLy) * (LUx - RUx) - (LLx - RLx) * (LUy - RUy)));
+            ) / (2 * ((lLy - rLy) * (lUx - rUx) - (lLx - rLx) * (lUy - rUy)));
 
-            double yh = (LLy * px - LUy * px - LLx * py + LUx * py - LUy * RLx + py * RLx + LUx * RLy -
-                px * RLy - LLy * RUx + 2 * LUy * RUx - py * RUx + LLx * RUy - 2 * LUx * RUy +
-                px * RUy + Math.Sqrt(-4 * ((LLy - LUy) * (RLx - RUx) - (LLx - LUx) * (RLy -
-                RUy)) * (-py * RUx + LUy * (-px + RUx) + LUx * (py - RUy) +
-                px * RUy) + Math.Pow(-LLx * py + LUx * py + py * RLx + LUx * RLy - px * RLy -
-                LUy * (px + RLx - 2 * RUx) + LLy * (px - RUx) -
-                py * RUx + (LLx - 2 * LUx + px) * RUy, 2))) / (2 * ((LLy - LUy) * (RLx -
-                RUx) - (LLx - LUx) * (RLy - RUy)));
+            double yh = (lLy * px - lUy * px - lLx * py + lUx * py - lUy * rLx + py * rLx + lUx * rLy -
+                px * rLy - lLy * rUx + 2 * lUy * rUx - py * rUx + lLx * rUy - 2 * lUx * rUy +
+                px * rUy + Math.Sqrt(-4 * ((lLy - lUy) * (rLx - rUx) - (lLx - lUx) * (rLy -
+                rUy)) * (-py * rUx + lUy * (-px + rUx) + lUx * (py - rUy) +
+                px * rUy) + Math.Pow(-lLx * py + lUx * py + py * rLx + lUx * rLy - px * rLy -
+                lUy * (px + rLx - 2 * rUx) + lLy * (px - rUx) -
+                py * rUx + (lLx - 2 * lUx + px) * rUy, 2))) / (2 * ((lLy - lUy) * (rLx -
+                rUx) - (lLx - lUx) * (rLy - rUy)));
 
             return new Point((float)xh, (float)yh);
         }

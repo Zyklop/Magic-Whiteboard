@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Drawing;
 
-namespace HSR.PresWriter.Containers
+namespace PresWriter.Common.Containers
 {
     public class PointFrame : Frame
     {
@@ -18,14 +13,13 @@ namespace HSR.PresWriter.Containers
         /// If no timestamp is given, we set one as soon the frame is ready</summary>
         /// <param name="number">
         /// Frame Index</param>
-        /// <param name="image">
-        /// Linked Point</param>
+        /// <param name="point"></param>
         /// <param name="timestamp">
         /// Time when the object was captured in milliseconds</param>
         public PointFrame(int number, Point point, long timestamp = 0)
             : base(number, timestamp)
         {
-            this.Point = point;
+            Point = point;
         }
 
         /// <summary>
@@ -35,7 +29,7 @@ namespace HSR.PresWriter.Containers
         /// <returns></returns>
         public PointFrame ApplyRebase(Point p)
         {
-            return new PointFrame(this.Number, p, this.Timestamp);
+            return new PointFrame(Number, p, Timestamp);
         }
 
         /// <summary>
@@ -45,7 +39,7 @@ namespace HSR.PresWriter.Containers
         /// <returns></returns>
         public void ApplyRebaseInPlace(Point p)
         {
-            this.Point = p;
+            Point = p;
         }
     }
 }

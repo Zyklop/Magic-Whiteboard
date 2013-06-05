@@ -1,10 +1,7 @@
-﻿using HSR.PresWriter.Containers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System;
+using PresWriter.Common.Containers;
 
-namespace HSR.PresWriter.PenTracking
+namespace HSR.PresWriter.PenTracking.Events
 {
     public class PenFoundEventArgs:EventArgs
     {

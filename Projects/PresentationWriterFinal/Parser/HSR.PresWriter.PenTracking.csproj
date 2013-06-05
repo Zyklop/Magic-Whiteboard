@@ -62,6 +62,7 @@
     <Compile Include="Events\PenPositionEventArgs.cs" />
     <Compile Include="FixedSizeQueue.cs" />
     <Compile Include="Mappers\BarycentricIntegralPointMapper.cs" />
+    <Compile Include="Mappers\IntegralPointMapper.cs" />
     <Compile Include="PointMapping.cs" />
     <Compile Include="Events\NewImageEventArgs.cs" />
     <Compile Include="Grid.cs" />

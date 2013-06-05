@@ -1,6 +1,5 @@
-using HSR.PresWriter.Containers;
 using System;
-using System.Windows;
+using PresWriter.Common.Containers;
 
 namespace HSR.PresWriter.PenTracking.Events
 {
@@ -9,9 +8,8 @@ namespace HSR.PresWriter.PenTracking.Events
         /// <summary>
         /// Location of the pen
         /// </summary>
-        // why PointFrame? 
-        // TODO use a common type!
         public PointFrame Frame { get; private set; }
+
         public bool IsOutOfOrder { get; private set; }
 
         public PenPositionEventArgs(PointFrame frame, bool isOutOfOrder = false)

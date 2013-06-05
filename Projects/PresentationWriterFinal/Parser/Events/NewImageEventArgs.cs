@@ -1,6 +1,5 @@
 using System;
 using System.Drawing;
-using HSR.PresWriter.PenTracking.Images;
 
 namespace HSR.PresWriter.PenTracking.Events
 {

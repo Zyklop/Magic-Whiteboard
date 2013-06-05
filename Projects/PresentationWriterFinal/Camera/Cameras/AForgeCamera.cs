@@ -1,24 +1,25 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using AForge.Imaging.Filters;
 using AForge.Video;
 using AForge.Video.DirectShow;
 using System.Drawing;
-using System.Diagnostics;
-using HSR.PresWriter.IO.Events;
-using HSR.PresWriter.Containers;
+using HSR.PresWriter.IO;
+using PresWriter.Common;
+using PresWriter.Common.Containers;
+using PresWriter.Common.IO.Events;
 
-
-
-namespace HSR.PresWriter.IO.Cameras
+namespace HSR.PresWriter.DataSources.Cameras
 {
     public class AForgeCamera : ICamera
     {
-        private FilterInfoCollection videoCaptureDevices;
-        private VideoCaptureDevice finalVideo;
-        private int lastFrameNumber = 0;
-        private long lastTimestamp = 0;
-        private Bitmap lastBitmap = null;
-        private Mirror filter = new Mirror( false, true );
+        private readonly FilterInfoCollection _videoCaptureDevices;
+        private readonly VideoCaptureDevice _finalVideo;
+        private int _lastFrameNumber;
+        private long _lastTimestamp;
+        private Bitmap _lastBitmap;
+        private readonly Mirror _filter = new Mirror( false, true );
 
         public bool IsRunning { get; protected set; }
 
@@ -28,59 +29,66 @@ namespace HSR.PresWriter.IO.Cameras
 
         public AForgeCamera()
         {
-            videoCaptureDevices = new FilterInfoCollection(FilterCategory.VideoInputDevice);
-            // TODO Choose camera device. We just use the first camera for now.
-            finalVideo = new VideoCaptureDevice(videoCaptureDevices[0].MonikerString);
+            _videoCaptureDevices = new FilterInfoCollection(FilterCategory.VideoInputDevice);
+            _finalVideo = new VideoCaptureDevice(_videoCaptureDevices[0].MonikerString);
+        }
+
+        public static Dictionary<string, string> GetCameras()
+        {
+            return new FilterInfoCollection(FilterCategory.VideoInputDevice).Cast<FilterInfo>().ToDictionary(fi => fi.MonikerString, fi => fi.Name);
+        }
+
+        public AForgeCamera(string monikerString)
+        {
+            _finalVideo = new VideoCaptureDevice(monikerString);
         }
 
         public void ShowConfigurationDialog()
         {
-            finalVideo.DisplayPropertyPage(new IntPtr(0));
+            _finalVideo.DisplayPropertyPage(new IntPtr(0));
         }
 
         public void Start()
         {
-            this.IsRunning = true;
-            finalVideo.NewFrame += finalVideo_NewFrame;
-            finalVideo.Start();
+            IsRunning = true;
+            _finalVideo.NewFrame += finalVideo_NewFrame;
+            _finalVideo.Start();
         }
 
         public void Stop()
         {
-            finalVideo.NewFrame -= finalVideo_NewFrame;
-            this.IsRunning = false;
-            finalVideo.SignalToStop();
+            _finalVideo.NewFrame -= finalVideo_NewFrame;
+            IsRunning = false;
+            _finalVideo.SignalToStop();
         }
 
         public VideoFrame GetLastFrame()
         {
-            if (lastBitmap != null)
+            if (_lastBitmap != null)
             {
-                return new VideoFrame(lastFrameNumber, lastBitmap, lastTimestamp);
+                return new VideoFrame(_lastFrameNumber, _lastBitmap, _lastTimestamp);
             }
             return null;
         }
 
         void finalVideo_NewFrame(object sender, NewFrameEventArgs eventArgs)
         {
-            lastTimestamp = CurrentMillis.Millis;
-            lastFrameNumber++;
-            lastBitmap = (Bitmap)eventArgs.Frame.Clone();
+            _lastTimestamp = CurrentMillis.Millis;
+            _lastFrameNumber++;
+            _lastBitmap = (Bitmap)eventArgs.Frame.Clone();
             if (IsMirrored)
             {
-                filter.ApplyInPlace(lastBitmap);
+                _filter.ApplyInPlace(_lastBitmap);
             }
             if (FrameReady != null)
             {
                 FrameReady(this, new FrameReadyEventArgs(GetLastFrame()));
             }
-
-            //Debug.WriteLine("Got Frame {0}", lastFrameNumber);
         }
 
         public void Dispose()
         {
-            this.Stop();
+            Stop();
         }
     }
 }

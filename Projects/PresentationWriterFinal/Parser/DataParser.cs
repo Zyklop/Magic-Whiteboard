@@ -1,16 +1,10 @@
 ﻿using System;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.Reflection;
+using HSR.PresWriter.PenTracking.Calibrators;
 using HSR.PresWriter.PenTracking.Events;
 using HSR.PresWriter.PenTracking.Mappers;
 using HSR.PresWriter.PenTracking.Strategies;
-using HSR.PresWriter.IO.Cameras;
-using System.IO;
-using HSR.PresWriter.Containers;
-using HSR.PresWriter.IO;
-using HSR.PresWriter.IO.Events;
-using System.Diagnostics;
+using PresWriter.Common.Containers;
+using PresWriter.Common.IO;
 using Visualizer;
 using Point = System.Drawing.Point;
 
@@ -93,60 +87,8 @@ namespace HSR.PresWriter.PenTracking
             //{
             //    ((LinearMapper)_mapper).Calculate();
             //}
-#if DEBUG
-            var bm = new Bitmap(640, 480);
-            var sw = new Stopwatch();
-            //for (int i = CalibratorGrid.TopLeft.X; i < CalibratorGrid.BottomRight.X; i++)
-            //sw.Start();
-            //try
-            //{
-            //    for (int i = 0; i < 640; i++)
-            //    {
-            //        Debug.WriteLine(i);
-            //        for (int j = 0; j < 480; j++)
-            //            //for (int j = CalibratorGrid.TopLeft.Y; j < CalibratorGrid.BottomRight.Y; j++)
-            //        {
-            //            //Debug.WriteLineIf(i == 639,j);
-            //            if (CalibratorGrid.Contains(new Point(i, j)))
-            //            {
-            //                var position = _mapper.FromPresentation(i, j);
-            //                if (position.X >= 0 && position.Y >= 0)
-            //                    bm.SetPixel(i, j,
-            //                                Color.FromArgb(255, (position.Y + 8192) % 160, //(position.Y + 8192)%160, 255));
-            //                        (position.Y + 4096) % 256, 255));
-            //            }
-            //        }
-            //    }
-            //    sw.Stop();
-            //}
-            //catch (Exception ex)
-            //{
-            //    Debug.WriteLine(ex.Message);
-            //}
-            if (_mapperType.Equals(typeof(FineBarycentricMapper))) //check for runntimeType
-            {
-                var fbc = (FineBarycentricMapper) _mapper;
-                var sum = 0.0;
-                using (
-                    var fs =
-                        new StreamWriter(new FileStream(@"C:\Temp\aforge\perf.csv", FileMode.Append, FileAccess.Write)))
-                {
-                    foreach (var i in fbc.NeighbourUsedCount)
-                    {
-                        fs.Write(i + ",");
-                        Console.Write(i + ", ");
-                        sum += i;
-                    }
-                    fs.WriteLine();
-                    fs.Flush();
-                }
-                Console.WriteLine("Average time per interpolation: " + ((double) sw.ElapsedMilliseconds/sum) + "ms");
-            }
-            bm.Save(@"C:\temp\daforge\grid.bmp", ImageFormat.MemoryBmp);
-#endif
             Console.WriteLine("Calbration completed");
             _penTracker.Start();
-            //_calibrator.Grid.PredictFromCorners();
         }
 
         /// <summary>
@@ -229,7 +171,7 @@ namespace HSR.PresWriter.PenTracking
         /// <summary>
         /// Calibrator with the grid data
         /// </summary>
-        internal PrimitiveCalibrator Calibrator { get; set; }
+        internal ICalibrator Calibrator { get; set; }
 
         /// <summary>
         /// TODO

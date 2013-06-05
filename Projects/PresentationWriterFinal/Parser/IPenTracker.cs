@@ -1,9 +1,8 @@
-﻿using HSR.PresWriter.Containers;
-using HSR.PresWriter.IO.Events;
-using HSR.PresWriter.PenTracking.Events;
+﻿using HSR.PresWriter.PenTracking.Events;
 using System;
 using System.Drawing;
 using System.Threading.Tasks;
+using PresWriter.Common.Containers;
 
 namespace HSR.PresWriter.PenTracking
 {

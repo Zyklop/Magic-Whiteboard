@@ -1,7 +1,7 @@
-﻿using HSR.PresWriter.IO.Events;
-using System;
+﻿using System;
+using PresWriter.Common.IO.Events;
 
-namespace HSR.PresWriter.IO
+namespace PresWriter.Common.IO
 {
     public interface IPictureProvider
     {

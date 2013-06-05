@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace HSR.PresWriter
+namespace PresWriter.Common
 {
     /// <summary>
     /// Class to get current timestamp with enough precision</summary>
