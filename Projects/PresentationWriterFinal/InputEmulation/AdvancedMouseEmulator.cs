@@ -104,6 +104,8 @@ namespace InputEmulation
             else if (p.Y > _screenHeight && p.Y < _screenHeight + BorderWidth)
             {
                 // under the screen
+                if (ShowMenu != null)
+                    ShowMenu(this, null);
             }
             else if (p.Y < 0 && p.Y > -1 * BorderWidth)
             {

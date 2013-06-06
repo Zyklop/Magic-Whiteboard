@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace InputEmulation
@@ -77,17 +73,22 @@ namespace InputEmulation
         /// <param name="positionY"></param>
         public static void MoveMouseAbsolute(int positionX, int positionY)
         {
-            Input[] i = new Input[1];
+            var i = new Input[1];
 
             // move the mouse to the position specified
-            i[0] = new Input();
-            i[0].Type = NativeMethods.InputMouse;
-            i[0].MouseInput.X = (positionX*65535)/Screen.PrimaryScreen.Bounds.Width;
-            i[0].MouseInput.Y = (positionY*65535)/Screen.PrimaryScreen.Bounds.Height;
-            i[0].MouseInput.Flags = NativeMethods.MouseEventAbsolute | NativeMethods.MouseEventMove;
+            i[0] = new Input
+                {
+                    Type = NativeMethods.InputMouse,
+                    MouseInput =
+                        {
+                            X = (positionX*65535)/Screen.PrimaryScreen.Bounds.Width,
+                            Y = (positionY*65535)/Screen.PrimaryScreen.Bounds.Height,
+                            Flags = NativeMethods.MouseEventAbsolute | NativeMethods.MouseEventMove
+                        }
+                };
 
             // send it off
-            uint result = NativeMethods.SendInput(1, i, Marshal.SizeOf(i[0]));
+            var result = NativeMethods.SendInput(1, i, Marshal.SizeOf(i[0]));
             if (result == 0)
                 throw new Win32Exception(Marshal.GetLastWin32Error());
         }
@@ -99,14 +100,14 @@ namespace InputEmulation
         /// <param name="positionY"></param>
         public static void MoveMouseRelative(int positionX, int positionY)
         {
-            Input[] i = new Input[1];
+            var i = new Input[1];
 
             // move the mouse to the position specified
-            i[0] = new Input();
-            i[0].Type = NativeMethods.InputMouse;
-            i[0].MouseInput.X = positionX;
-            i[0].MouseInput.Y = positionY;
-            i[0].MouseInput.Flags = NativeMethods.MouseEventMove;
+            i[0] = new Input
+                {
+                    Type = NativeMethods.InputMouse,
+                    MouseInput = {X = positionX, Y = positionY, Flags = NativeMethods.MouseEventMove}
+                };
 
             // send it off
             uint result = NativeMethods.SendInput(1, i, Marshal.SizeOf(i[0]));
@@ -121,32 +122,17 @@ namespace InputEmulation
         /// <param name="up">release or press? </param>
         public static void ClickEvent(bool left, bool up)
         {
-            Input[] i = new Input[1];
+            var i = new Input[1];
 
             // move the mouse to the position specified
-            i[0] = new Input();
-            i[0].Type = NativeMethods.InputMouse;
+            i[0] = new Input {Type = NativeMethods.InputMouse};
             if (left)
             {
-                if (up)
-                {
-                    i[0].MouseInput.Flags = NativeMethods.MouseEventLeftUp;
-                }
-                else
-                {
-                    i[0].MouseInput.Flags = NativeMethods.MouseEventLeftDown;
-                }
+                i[0].MouseInput.Flags = (uint) (up ? NativeMethods.MouseEventLeftUp : NativeMethods.MouseEventLeftDown);
             }
             else
             {
-                if (up)
-                {
-                    i[0].MouseInput.Flags = NativeMethods.MouseEventRightUp;
-                }
-                else
-                {
-                    i[0].MouseInput.Flags = NativeMethods.MouseEventRightDown;
-                }
+                i[0].MouseInput.Flags = (uint) (up ? NativeMethods.MouseEventRightUp : NativeMethods.MouseEventRightDown);
             }
             // send it off
             uint result = NativeMethods.SendInput(1, i, Marshal.SizeOf(i[0]));
@@ -160,20 +146,11 @@ namespace InputEmulation
         /// <param name="up"></param>
         public static void WheelEvent(bool up)
         {
-            Input[] i = new Input[1];
+            var i = new Input[1];
 
             // move the mouse to the position specified
-            i[0] = new Input();
-            i[0].Type = NativeMethods.InputMouse;
-            i[0].MouseInput.Flags = NativeMethods.MouseeventfWheel;
-            if (up)
-            {
-                i[0].MouseInput.MouseData = NativeMethods.WheelUp;
-            }
-            else
-            {
-                i[0].MouseInput.MouseData = NativeMethods.WheelDown;
-            }
+            i[0] = new Input {Type = NativeMethods.InputMouse, MouseInput = {Flags = NativeMethods.MouseeventfWheel}};
+            i[0].MouseInput.MouseData = up ? NativeMethods.WheelUp : NativeMethods.WheelDown;
             // send it off
             uint result = NativeMethods.SendInput(1, i, Marshal.SizeOf(i[0]));
             if (result == 0)
@@ -184,9 +161,6 @@ namespace InputEmulation
         {
             POINT lpPoint;
             NativeMethods.GetCursorPos(out lpPoint);
-            //bool success = User32.GetCursorPos(out lpPoint);
-            // if (!success)
-
             return lpPoint;
         }
     }

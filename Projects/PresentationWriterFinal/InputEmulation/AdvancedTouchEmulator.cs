@@ -32,6 +32,7 @@ namespace InputEmulation
         public int KeyboardReleaseTimeout { get; set; }
         public int Radius { get; set; }
         public int BorderWidth { get; set; }
+        public int AverageCount { get; set; }
         public int TouchPoints { get; set; }
 
         public void NoData()
@@ -56,6 +57,8 @@ namespace InputEmulation
             else if (p.Y > _screenHeight && p.Y < _screenHeight + BorderWidth)
             {
                 // under the screen
+                if (ShowMenu != null)
+                    ShowMenu(this, null);
             }
             else if (p.Y < 0 && p.Y > -1*BorderWidth)
             {
@@ -77,6 +80,8 @@ namespace InputEmulation
                     _touch.DragTo(Average.X, Average.Y);
             }
         }
+
+        public event EventHandler ShowMenu;
 
 
         private System.Drawing.Point Average
