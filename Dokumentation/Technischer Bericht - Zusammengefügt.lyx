@@ -118,7 +118,8 @@ Aufbau
 In einem normalen Sitzungszimmer soll ein Vortrag gehalten werden können.
  Dazu sollen Standardausstattung wie Laptop, integrierte Kamera und Beamer
  benutzt werden können.
- Als Addendum wird ein Stift mitgeliefert.
+ Als Addendum wird ein spezieller Stift mitgeliefert.
+ Der Stift soll günstig sein.
 \end_layout
 
 \begin_layout Standard
@@ -161,7 +162,8 @@ Kalibrierung
 
 \begin_layout Standard
 Bevor ein Stift auf der Leinwand gefunden werden kann, muss die Erkennungssoftwa
-re kalibriert werden:
+re kalibriert werden.
+ Dazu müssen folgende Schritte vorgenommen werden:
 \end_layout
 
 \begin_layout Itemize
@@ -198,12 +200,8 @@ Die Person soll mit einem Stift auf die das Beamerbild schreiben können.
 
 \end_layout
 
-\begin_layout Section
-Problemstellung
-\end_layout
-
 \begin_layout Subsection
-Einschränkungen
+Problemstellung
 \end_layout
 
 \begin_layout Standard
@@ -466,8 +464,11 @@ Laptop
 
 \begin_layout Standard
 Bildverarbeitung braucht in der Regel viel Rechenleistung.
- Die in dieser Arbeit entwickelte Software benötigt ...
- ??? Messung TODO.
+ Die in dieser Arbeit entwickelte Software berücksichtigt dies, indem zum
+ Teil Kompromisse eingegangen werden um den Leistungsanforderungen gerecht
+ zu werden.
+ Um eine reibungslose Erkennung zu gewährleisten, sollten 2GHz Doppelkernprozess
+oren oder ähnlich verwendet werden.
 \end_layout
 
 \begin_layout Subsubsection
@@ -477,9 +478,14 @@ Präsentationsweise
 \begin_layout Standard
 Da der Stift immer von der Laptopkamera gesehen werden muss, ist es am Präsentat
 or, die richtige Haltung beim Schreiben anzunehmen.
- Da dies jedoch den Vorteil hat, dass auch die Zuschauer sehen, wo der Präsentat
-or auf die Leinwand schreibt, wird diese Einschränkung ohne weiteren Diskurs
- in Kauf genommen.
+ Eine gute Art zu präsentieren ist, wenn das Publikum sieht, wo der Präsentator
+ hinzeigt.
+ Dies hat den Vorteil hat, dass auch die Laptopkamera sieht, wo auf die
+ Leinwand geschrieben werden soll.
+ Falls sich der Präsentator zwischen Kamera und Leinwand stellt, kann nicht
+ mehr geschrieben werden.
+ Da in diesem Fall meist auch das Publikum nichts mehr sieht, wird diese
+ Einschränkung ohne weiteren Diskurs in Kauf genommen.
 \end_layout
 
 \begin_layout Standard
@@ -489,14 +495,137 @@ sideways false
 status open
 
 \begin_layout Plain Layout
+\begin_inset Graphics
+	filename Bilder/Setup/IMGP0366.JPG
+	lyxscale 20
+	width 100col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
 \begin_inset Caption
 
 \begin_layout Plain Layout
-TODO: Bild einer vorbildlich präsentierenden Person
+Gute Präsentationsweise - Die zeigende Hand ist von Laptopkamera (links)
+ und Publikum aus (rechts) sichtbar.
 \end_layout
 
 \end_inset
 
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Ergebnis
+\end_layout
+
+\begin_layout Standard
+Das Resultat erstaunt.
+ Die in dieser Arbeit entwickelte Software 
+\begin_inset Quotes gld
+\end_inset
+
+Presentation Writer
+\begin_inset Quotes grd
+\end_inset
+
+ kann gewinnbringend für Vorträge eingesetzt werden.
+ Die tiefe Auflösung der Kamera von 640x480 Pixel und die schlechten Lichteigens
+chaften haben wenig Einfluss auf die Güte des Resultates.
+ Eine erfolgreiche Kalibrierung der Kamera, gute Einstellungen der Bildfilter
+ und genügend gute Abbildungsalgorithmen mit Interpolation machen dies möglich.
+ Optimierungen wie eine hochauflösendere Kamera würden noch genauere und
+ bessere Resultate liefern.
+ Aus Zeitgründen wurde in der Software zum Teil auf Optimierungen verzichtet.
+ Jene die erschlossen wurden, sind jedoch in der schriftlichen Arbeit jeweils
+ kurz erwähnt.
+\end_layout
+
+\begin_layout Standard
+Im Folgenden dieser Arbeit wird genauer darauf eingegangen, wie alle diese
+ Zwischenschritte vom Kamerabild bis zum gezeichneten Bildpunkt auf dem
+ Beamer analysiert und gelöst wurden.
+ Zum einen werden Ideen zum Finden eines Stiftes in einem Kamerabild diskutiert,
+ zum anderen werden verschiedene Ansätze erarbeitet, die eine näherungsweise
+ korrekte Abbildung von Kamera- zu Beamerpunkten ermöglichen.
+ Im Anhang werden erweiterte oder fehlgeschlagene Ideen genauer erläutert.
+ Zudem wird dort auch die Vision vom virtuellen Touchpanel ausgearbeitet,
+ eine Idee, die eventuell auch mit einer optischen Kamera, aber ohne Stift
+ lösbar ist.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Bilder/Setup/writing.jpg
+	lyxscale 20
+	width 100col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Presentation Writer - Unterstützung bei Vorträgen
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Bilder/Setup/classic-painting.jpg
+	lyxscale 20
+	width 100col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Kleines Gekritzel macht Spass - Trotz der tiefen Auflösung von 640x480 Pixel
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
 
 \end_layout
 
