@@ -123,7 +123,7 @@ namespace InputEmulation
         /// <summary>
         /// Check, if the OS is >= Win8 to support this
         /// </summary>
-        public bool IsSupported { get
+        public static bool IsSupported { get
         {
             return (Environment.OSVersion.Version.Major >= 6 && Environment.OSVersion.Version.Minor >= 2) ||
                    Environment.OSVersion.Version.Major > 6;
@@ -134,7 +134,7 @@ namespace InputEmulation
         /// </summary>
         /// <param name="touchPoints">Number of concurrent touch points</param>
         /// <param name="mode">Feedback mode</param>
-        public Touch(uint touchPoints, FeedbackMode mode)
+        public Touch(int touchPoints, FeedbackMode mode)
         {
             if(!IsSupported)
                 throw new ExternalException("Not Supported on your OS.");
@@ -146,7 +146,7 @@ namespace InputEmulation
             _contact.touchFlags = TouchApi.POINTER_FLAG_NONE;
             _contact.touchMask = TouchApi.TOUCH_MASK_CONTACTAREA | 
                 TouchApi.TOUCH_MASK_ORIENTATION | TouchApi.TOUCH_MASK_PRESSURE;
-            if(!TouchApi.InitializeTouchInjection(touchPoints, (uint) mode))
+            if(!TouchApi.InitializeTouchInjection((uint)touchPoints, (uint) mode))
                 throw new ExternalException("Initialisation failed. Code: " + Marshal.GetLastWin32Error());
         }
 

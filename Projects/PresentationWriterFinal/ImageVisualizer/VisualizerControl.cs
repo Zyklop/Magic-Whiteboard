@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Net.Mime;
 using System.Threading;
 using System.Windows;
 using System.Windows.Media;
@@ -12,29 +11,25 @@ namespace ImageVisualizer
     {
         private CalibratorWindow _cw;
         private static VisualizerControl _singleton;
-        private Thread t;
+        private readonly Thread _t;
         private VisualizerApp _app;
 
         public static VisualizerControl GetVisualizer()
         {
-            if (_singleton == null)
-            {
-                _singleton = new VisualizerControl();
-            }
-            return _singleton;
+            return _singleton ?? (_singleton = new VisualizerControl());
         }
 
         protected VisualizerControl()
         {
-            t = new Thread(() =>
+            _t = new Thread(() =>
             {
                 _app = new VisualizerApp();
                 _cw = _app.CalibratorWindow;
                 _app.ShutdownMode = ShutdownMode.OnExplicitShutdown;
                 _app.Run();
             });
-            t.SetApartmentState(ApartmentState.STA);
-            t.Start();
+            _t.SetApartmentState(ApartmentState.STA);
+            _t.Start();
         }
 
         public bool Transparent { get { return _cw.Transparent; } set { _cw.Transparent = value; } }
@@ -51,7 +46,7 @@ namespace ImageVisualizer
 
         public void Draw()
         {
-            //
+            //not needed
         }
 
         public void AddRect(int topLeft, int bottomRight, int width, int height, System.Drawing.Color color)
@@ -75,17 +70,7 @@ namespace ImageVisualizer
                 _cw.Dispatcher.BeginInvoke(new Action(()=> _cw.Show()));
         }
 
-        public int Width
-        {
-            get
-            {
-                //int i = -1;
-                //_cw.Dispatcher.Invoke(() => i = (int) _cw.ActualWidth);
-                //Debug.WriteLine(i);
-                //return i;
-                return (int) _cw.ActualWidth;
-            }
-        }
+        public int Width { get { return (int) _cw.ActualWidth; } }
 
         public int Height { get { return (int) _cw.ActualHeight; } }
     }

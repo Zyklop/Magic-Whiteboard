@@ -1,17 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Drawing;
+using HSR.PresWriter.Common.Extensions;
 using Point = System.Drawing.Point;
-using HSR.PresWriter.Extensions;
 
 namespace HSR.PresWriter.PenTracking
 {
     public class Grid
     {
         private SortedDictionary<int, SortedDictionary<int, List<Point>>> _calibratorData; //2d Dictionary of imag-coordinates
-        public Quad CameraQuad { get; set; }
+        internal Quad CameraQuad { get; private set; }
         private SortedDictionary<int, SortedDictionary<int, Point>> _refPoints; //2d dictionary of screen Coordinates
 
         /// <summary>
@@ -70,15 +69,6 @@ namespace HSR.PresWriter.PenTracking
         public Rectangle ScreenSize { get; set; }
 
         /// <summary>
-        /// A good area for calibration
-        /// </summary>
-        /// <returns></returns>
-        public Rectangle Needed()
-        {
-            return new Rectangle();
-        }
-
-        /// <summary>
         /// Top left corner
         /// </summary>
         public Point TopLeft { get; set; }
@@ -125,7 +115,7 @@ namespace HSR.PresWriter.PenTracking
         /// <summary>
         /// Reset temporary calibration data
         /// </summary>
-        public void Reset()
+        internal void Reset()
         {
             _calibratorData = new SortedDictionary<int, SortedDictionary<int, List<Point>>>();
         }
@@ -137,7 +127,7 @@ namespace HSR.PresWriter.PenTracking
         /// <param name="screenY">Beamer coordinate</param>
         /// <param name="imgX">Webcam coordinate</param>
         /// <param name="imgY"></param>
-        public void AddPoint(int screenX, int screenY, int imgX, int imgY)
+        internal void AddPoint(int screenX, int screenY, int imgX, int imgY)
         {
             AddCalibratorPoint(imgX, imgY, new Point(screenX, screenY));
             AddRefPoints(screenX, screenY, new Point(imgX, imgY));
@@ -164,7 +154,7 @@ namespace HSR.PresWriter.PenTracking
         /// </summary>
         /// <param name="screen">Beamer coordinate</param>
         /// <param name="img">Webcam coordinate</param>
-        public void AddPoint(Point screen, Point img)
+        internal void AddPoint(Point screen, Point img)
         {
             AddCalibratorPoint(img.X,img.Y,screen);
             AddRefPoints(screen.X, screen.Y, new Point(img.X, img.Y));
@@ -200,7 +190,7 @@ namespace HSR.PresWriter.PenTracking
         /// <param name="screenY"></param>
         /// <param name="radius">radius to look</param>
         /// <returns>Image coordinates</returns>
-        public Point GetRefPoint(int screenX, int screenY, int radius)
+        internal Point GetRefPoint(int screenX, int screenY, int radius)
         {
             if (!_refPoints.ContainsKey(screenX))
             {
@@ -312,9 +302,9 @@ namespace HSR.PresWriter.PenTracking
     }
 }
 
-namespace HSR.PresWriter.Extensions
+namespace HSR.PresWriter.Common.Extensions
 {
-    public static class SortedDictionaryNeighboursExtension
+    internal static class SortedDictionaryNeighboursExtension
     {
 
         /// <summary>

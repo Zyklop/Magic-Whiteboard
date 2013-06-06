@@ -14,8 +14,8 @@ namespace HSR.PresWriter.PenTracking
         /// </summary>
         public static Quad FromUnitSquare()
         {
-            return new Quad()
-            {
+            return new Quad
+                {
                 TopLeft = new Point(0, 0),
                 TopRight = new Point(1, 0),
                 BottomLeft = new Point(0, 1),

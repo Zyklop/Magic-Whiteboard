@@ -8,22 +8,21 @@ using HSR.PresWriter.Common;
 
 namespace InputEmulation
 {
-    public class AdvancedInputEmulator
+    internal class AdvancedMouseEmulator : IAdvancedInputEmulator
     {
         private System.Drawing.Point _start;
         private System.Drawing.Point _lastPosition = new System.Drawing.Point(-1,-1);
-        private int _screenWidth;
-        private int _screenHeight;
+        private readonly int _screenWidth;
+        private readonly int _screenHeight;
         private Queue<System.Drawing.Point> _cache;
-        private bool _nDown = false;
-        private bool _pDown = false;
         private long _startTime;
         private long _lastContact;
-        private bool _waiting = false;
-        private bool _leftCicked = false;
-        private bool _rightCicked = false;
+        private long _lastKeyPressed;
+        private bool _waiting;
+        private bool _leftCicked;
+        private bool _rightCicked;
 
-        public AdvancedInputEmulator(int screenWidth, int screenHeight)
+        public AdvancedMouseEmulator(int screenWidth, int screenHeight)
         {
             _cache = new Queue<System.Drawing.Point>();
             _screenWidth = screenWidth;
@@ -74,19 +73,6 @@ namespace InputEmulation
                     Mouse.ClickEvent(false, true);
                 }
             }
-            if (CurrentMillis.Millis - _lastContact > KeyboardReleaseTimeout)
-            {
-                if (_nDown)
-                {
-                    _nDown = false;
-                    VirtualKeys.SendKeyUp(Keys.N);
-                }
-                if (_pDown)
-                {
-                    _pDown = false;
-                    VirtualKeys.SendKeyUp(Keys.P);
-                }
-            }
             // wait
         }
 
@@ -100,19 +86,19 @@ namespace InputEmulation
             if (p.X < 0 && p.X > -1*BorderWidth)
             {
                 // left from screen
-                if (!_pDown && !_leftCicked && !_rightCicked)
+                if (!_leftCicked && !_rightCicked && CurrentMillis.Millis - _lastKeyPressed > KeyboardReleaseTimeout)
                 {
-                    VirtualKeys.SendKeyDown(Keys.P);
-                    _pDown = true;
+                    VirtualKeys.SendKeyAsInput(Keys.P, 7);
+                    _lastKeyPressed = CurrentMillis.Millis;
                 }
             }
             else if (p.X > _screenWidth && p.X < _screenWidth + BorderWidth)
             {
                 // right from screen
-                if (!_nDown && !_leftCicked && !_rightCicked)
+                if (!_leftCicked && !_rightCicked && CurrentMillis.Millis - _lastKeyPressed > KeyboardReleaseTimeout)
                 {
-                    VirtualKeys.SendKeyDown(Keys.N);
-                    _nDown = true;
+                    VirtualKeys.SendKeyAsInput(Keys.N, 7);
+                    _lastKeyPressed = CurrentMillis.Millis;
                 }
             }
             else if (p.Y > _screenHeight && p.Y < _screenHeight + BorderWidth)
@@ -131,7 +117,7 @@ namespace InputEmulation
                     _lastPosition = p;
                 }
                 _cache.Enqueue(p);
-                while (_cache.Count >= 6)
+                while (_cache.Count >= AverageCount)
                 {
                     _cache.Dequeue();
                 }
@@ -139,7 +125,6 @@ namespace InputEmulation
                     Mouse.MoveMouseAbsolute(p.X, p.Y);
                 else
                     MoveToAverage();
-                //Mouse.MoveMouseRelative(_lastPosition.X - p.X, _lastPosition.Y - p.Y);
                 if (!_waiting && !_leftCicked && !_rightCicked)
                 {
                     // no recent contact
@@ -179,10 +164,14 @@ namespace InputEmulation
             }
         }
 
+        public event EventHandler ShowMenu;
+
         private void MoveToAverage()
         {
             Mouse.MoveMouseAbsolute((int)Math.Round(_cache.Average(p => p.X)),
                     (int)Math.Round(_cache.Average(p => p.Y)));
         }
+
+        public int AverageCount { get; set; }
     }
 }

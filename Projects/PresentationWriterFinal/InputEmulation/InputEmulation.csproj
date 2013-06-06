@@ -41,17 +41,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AdvancedInputEmulator.cs" />
-    <Compile Include="DirectInput.cs" />
+    <Compile Include="AdvancedInputEmulatorFactory.cs" />
+    <Compile Include="AdvancedMouseEmulator.cs" />
+    <Compile Include="AdvancedTouchEmulator.cs" />
+    <Compile Include="IAdvancedInputEmulator.cs" />
     <Compile Include="KeyBoardEvent.cs" />
     <Compile Include="Mouse.cs" />
     <Compile Include="Pen.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Touch.cs" />
     <Compile Include="VirtualKeys.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="DInput.txt" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Common\HSR.PresWriter.csproj">
