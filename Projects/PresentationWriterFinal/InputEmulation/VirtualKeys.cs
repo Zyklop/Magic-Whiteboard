@@ -8,16 +8,16 @@ namespace InputEmulation
         #region Imports
 
         [DllImport("user32.dll", SetLastError = true)]
-        public static extern IntPtr GetMessageExtraInfo();
+        internal static extern IntPtr GetMessageExtraInfo();
 
         [DllImport("user32.dll", SetLastError = true)]
-        public static extern uint SendInput(uint nInputs, INPUT[] pInputs, int cbSize);
+        internal static extern uint SendInput(uint nInputs, INPUT[] pInputs, int cbSize);
 
         [DllImport("user32.dll")]
-        public static extern short VkKeyScan(char ch);
+        internal static extern short VkKeyScan(char ch);
 
         [DllImport("kernel32.dll", SetLastError = true)]
-        public static extern IntPtr WaitForSingleObject(IntPtr hHandle, uint dwMilliseconds);
+        internal static extern IntPtr WaitForSingleObject(IntPtr hHandle, uint dwMilliseconds);
 
         [DllImport("user32.dll")]
         static extern void keybd_event(byte bVk, byte bScan, uint dwFlags, int dwExtraInfo);
@@ -26,52 +26,52 @@ namespace InputEmulation
 
         public static uint Click()
         {
-            INPUT structure = new INPUT();
-            structure.mi.dx = 0;
-            structure.mi.dy = 0;
-            structure.mi.mouseData = 0;
-            structure.mi.dwFlags = 2;
-            INPUT input2 = structure;
+            var structure = new INPUT {mi = {dx = 0, dy = 0, mouseData = 0, dwFlags = 2}};
+            var input2 = structure;
             input2.mi.dwFlags = 4;
-            INPUT[] pInputs = new INPUT[] {structure, input2};
+            var pInputs = new INPUT[] {structure, input2};
             return SendInput(2, pInputs, Marshal.SizeOf(structure));
         }
 
         public static void SendKeyAsInput(System.Windows.Forms.Keys key)
         {
-            INPUT structure = new INPUT();
-            structure.type = (int) InputType.INPUT_KEYBOARD;
-            structure.ki.wVk = (short) key;
-            structure.ki.dwFlags = (int) KEYEVENTF.KEYDOWN;
-            structure.ki.dwExtraInfo = GetMessageExtraInfo();
+            var structure = new INPUT
+                {
+                    type = (int) InputType.INPUT_KEYBOARD,
+                    ki = {wVk = (short) key, dwFlags = (int) KEYEVENTF.KEYDOWN, dwExtraInfo = GetMessageExtraInfo()}
+                };
 
-            INPUT input2 = new INPUT();
-            input2.type = (int) InputType.INPUT_KEYBOARD;
-            input2.ki.wVk = (short) key;
-            input2.mi.dwFlags = (int) KEYEVENTF.KEYUP;
+            var input2 = new INPUT
+                {
+                    type = (int) InputType.INPUT_KEYBOARD,
+                    ki = {wVk = (short) key},
+                    mi = {dwFlags = (int) KEYEVENTF.KEYUP}
+                };
             input2.ki.dwExtraInfo = GetMessageExtraInfo();
 
-            INPUT[] pInputs = new INPUT[] {structure, input2};
+            var pInputs = new INPUT[] {structure, input2};
 
             SendInput(2, pInputs, Marshal.SizeOf(structure));
         }
 
-        public static void SendKeyAsInput(System.Windows.Forms.Keys key, int HoldTime)
+        public static void SendKeyAsInput(System.Windows.Forms.Keys key, int holdTime)
         {
-            INPUT INPUT1 = new INPUT();
-            INPUT1.type = (int) InputType.INPUT_KEYBOARD;
-            INPUT1.ki.wVk = (short) key;
-            INPUT1.ki.dwFlags = (int) KEYEVENTF.KEYDOWN;
-            INPUT1.ki.dwExtraInfo = GetMessageExtraInfo();
+            var INPUT1 = new INPUT
+                {
+                    type = (int) InputType.INPUT_KEYBOARD,
+                    ki = {wVk = (short) key, dwFlags = (int) KEYEVENTF.KEYDOWN, dwExtraInfo = GetMessageExtraInfo()}
+                };
             SendInput(1, new INPUT[] {INPUT1}, Marshal.SizeOf(INPUT1));
 
             keybd_event(0x41, 0, 0, 0);
-            WaitForSingleObject((IntPtr) 0xACEFDB, (uint) HoldTime);
+            WaitForSingleObject((IntPtr) 0xACEFDB, (uint) holdTime);
 
-            INPUT INPUT2 = new INPUT();
-            INPUT2.type = (int) InputType.INPUT_KEYBOARD;
-            INPUT2.ki.wVk = (short) key;
-            INPUT2.mi.dwFlags = (int) KEYEVENTF.KEYUP;
+            var INPUT2 = new INPUT
+                {
+                    type = (int) InputType.INPUT_KEYBOARD,
+                    ki = {wVk = (short) key},
+                    mi = {dwFlags = (int) KEYEVENTF.KEYUP}
+                };
             INPUT2.ki.dwExtraInfo = GetMessageExtraInfo();
             SendInput(1, new INPUT[] {INPUT2}, Marshal.SizeOf(INPUT2));
 
@@ -79,27 +79,29 @@ namespace InputEmulation
 
         public static void SendKeyDown(System.Windows.Forms.Keys key)
         {
-            INPUT INPUT1 = new INPUT();
-            INPUT1.type = (int) InputType.INPUT_KEYBOARD;
-            INPUT1.ki.wVk = (short) key;
-            INPUT1.ki.dwFlags = (int) KEYEVENTF.KEYDOWN;
-            INPUT1.ki.dwExtraInfo = GetMessageExtraInfo();
+            var INPUT1 = new INPUT
+                {
+                    type = (int) InputType.INPUT_KEYBOARD,
+                    ki = {wVk = (short) key, dwFlags = (int) KEYEVENTF.KEYDOWN, dwExtraInfo = GetMessageExtraInfo()}
+                };
             SendInput(1, new INPUT[] {INPUT1}, Marshal.SizeOf(INPUT1));
         }
 
 
         public static void SendKeyUp(System.Windows.Forms.Keys key)
         {
-            INPUT INPUT2 = new INPUT();
-            INPUT2.type = (int)InputType.INPUT_KEYBOARD;
-            INPUT2.ki.wVk = (short)key;
-            INPUT2.mi.dwFlags = (int)KEYEVENTF.KEYUP;
+            var INPUT2 = new INPUT
+                {
+                    type = (int) InputType.INPUT_KEYBOARD,
+                    ki = {wVk = (short) key},
+                    mi = {dwFlags = (int) KEYEVENTF.KEYUP}
+                };
             INPUT2.ki.dwExtraInfo = GetMessageExtraInfo();
             SendInput(1, new INPUT[] { INPUT2 }, Marshal.SizeOf(INPUT2));
         }
 
         [StructLayout(LayoutKind.Explicit)]
-        public struct INPUT
+        internal struct INPUT
         {
             [FieldOffset(4)] public HARDWAREINPUT hi;
             [FieldOffset(4)] public KEYBDINPUT ki;
@@ -108,7 +110,7 @@ namespace InputEmulation
         }
 
         [StructLayout(LayoutKind.Sequential)]
-        public struct MOUSEINPUT
+        internal struct MOUSEINPUT
         {
             public int dx;
             public int dy;
@@ -119,7 +121,7 @@ namespace InputEmulation
         }
 
         [StructLayout(LayoutKind.Sequential)]
-        public struct KEYBDINPUT
+        internal struct KEYBDINPUT
         {
             public short wVk;
             public short wScan;
@@ -137,7 +139,7 @@ namespace InputEmulation
         }
 
         [Flags]
-        public enum InputType
+        internal enum InputType
         {
             INPUT_MOUSE = 0,
             INPUT_KEYBOARD = 1,
@@ -145,7 +147,7 @@ namespace InputEmulation
         }
 
         [Flags]
-        public enum MOUSEEVENTF
+        internal enum MOUSEEVENTF
         {
             MOVE = 0x0001, /* mouse move */
             LEFTDOWN = 0x0002, /* left button down */
@@ -163,7 +165,7 @@ namespace InputEmulation
         }
 
         [Flags]
-        public enum KEYEVENTF
+        internal enum KEYEVENTF
         {
             KEYDOWN = 0,
             EXTENDEDKEY = 0x0001,

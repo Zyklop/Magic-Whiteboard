@@ -28,13 +28,6 @@ namespace Visualizer
         void AddRect(Point topLeft, Point bottomRight, Color fromRgb);
 
         /// <summary>
-        /// Show a rectangle
-        /// </summary>
-        /// <param name="rect"></param>
-        /// <param name="c"></param>
-        //void AddRect(Rect rect, Color c);
-
-        /// <summary>
         /// Remove all the rectangles
         /// </summary>
         void Clear();
