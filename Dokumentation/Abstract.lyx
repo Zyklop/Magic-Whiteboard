@@ -69,26 +69,15 @@ Ausgangslage
 \end_layout
 
 \begin_layout Standard
-Herkömmliche elektronische Präsentationsmethoden mit Beamer und Laptop haben
- den Nachteil, dass sie wenig Freiheiten für Interaktionen mit dem Publikum
- zulassen.
- Fernbedienungen oder Funkmäuse sind Ansätze für eine etwas agilere Steuerung
- der Präsentation.
- Falls jedoch mehr Interaktion, wie z.B.
- das Klären einer spontanen Frage aus dem Plenum erforderlich ist, wird
- auf Mittel wie Hellraumprojektor, Wandtafel oder ein Zeichnungsprogramm
- auf dem Laptop selbst (ev.
- Touch) zurückgegriffen.
-\end_layout
-
-\begin_layout Standard
-Das Ziel dieser Arbeit ist die Entwicklung eines elektronischen Stiftes
- inkl.
- Software für ein virtuelles Whiteboard.
- Mit einem speziellen Stift soll das von einem Beamer projizierte Bild an
- einer Leinwand mit dem Publikum diskutiert werden können.
- Dabei wird der Stift optisch von einer einfachen Laptopkamera erkannt und
- getrackt.
+Herkömmliche digitale Whiteboards benötigen spezielle Hardware und sind
+ teuer.
+ Das Ziel dieser Arbeit ist die Entwicklung eines günstigen mobilen Whiteboards.
+ Für dessen Betrieb werden lediglich ein Standard Beamer und ein Laptop
+ mit Webcam benötigt.
+ Mit einem speziellen Stift kann dann direkt auf die Leinwand geschrieben
+ werden.
+ Präsentationen im Sitzungsraum oder vor einer Schulklasse werden dadurch
+ interaktiver und flexibler.
 \end_layout
 
 \begin_layout Subsubsection*
@@ -96,22 +85,25 @@ Vorgehen/Technologie
 \end_layout
 
 \begin_layout Standard
-Eine Herausforderung an der Abbildung 
-\begin_inset Quotes eld
-\end_inset
-
-Laptop-Beamer-Kamera
-\begin_inset Quotes erd
-\end_inset
-
- ist die perspektivische Verzerrung.
+Nach einer kurzen Kalibrierung der Kamera wird der Stift wird optisch von
+ einer einfachen Laptopkamera erkannt und getrackt.
  Es wurden diverse Ansätze untersucht, wie der Stift auf dem Kamerabild
  erkannt und der entsprechenden Position auf dem Beamerbild zugeordnet werden
  kann.
- Dazu gehören homogene Abbildungen, baryzentrische Glättung, K-Means und
- ein rekursiver Ansatz.
- Mit diesen Verfahren kann ein dreidimensionales Problem auf ein zweidimensional
-es abgebildet werden.
+ Dazu wurden Algorithmen entwickelt, die das dreidimensionale Problem auf
+ ein zweidimensionales abbilden.
+\end_layout
+
+\begin_layout Standard
+Der in dieser Arbeit entwickelte Software-Prototyp arbeitet mit einer optischen
+ Lichtquelle im sichtbaren Bereich als Stiftwerkzeug.
+ In einem finalen Produkt würde wahrscheinlich ein Stift im Infrarotbereich
+ verwendet.
+ Ebenfalls denkbar ist, ganz ohne den Stift, die Handposition des Benutzers
+ optisch zu erkennen.
+ So ergäbe sich ein Touchpanel, ganze ohne zusätzliche Hardware, welches
+ mit einer Gestenbedienung heutigen Visionen für interaktive Benutzerführung
+ gerecht wird.
 \end_layout
 
 \begin_layout Subsubsection*
@@ -119,16 +111,19 @@ Ergebnis
 \end_layout
 
 \begin_layout Standard
-Die Verfasser dieser Arbeit haben eine Software entwickelt, welche einige
- dieser Probleme löst.
- Es ist damit möglich, mit günstiger Hardware einen Punkt auf einem Kamerabild
- zu finden und seine Position auf das ursprüngliche Beamerbild mit einer
- Genauigkeit von ca.
- 2cm zurückzurechnen.
+Mit Messungen wurde festgestell, dass der Stift (Lichtpunkt) auf einer Präsentat
+ion sehr gut erkannt werden kann.
+ Mit einer normalen Webcam kann mit einer Genauigkeit von ca.
+ 4 Pixel gezeichnet werden.
  Die Güte des Resultates liesse sich durch Optimierungen am Verfahren noch
  weiter verbessern.
  Ansätze dazu werden genauso beschrieben, wie die Idee, das virtuelle Whiteboard
  ohne Stift nur mit Gesten zu bedienen.
+ Gerade die Bedienung als Touchpanel beinhaltet viel Potential, da Betriebsystem
+hersteller wie Apple und Microsoft ihre Produkte auf volle Touchunterstützung
+ auslegen.
+ So kann zum Beispiel das ganze Windows 8 Konzept auf die Bedienung mit
+ einer Beamerpräsentation übertragen werden.
 \end_layout
 
 \end_body
