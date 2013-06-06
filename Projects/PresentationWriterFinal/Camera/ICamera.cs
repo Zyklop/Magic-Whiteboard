@@ -1,7 +1,6 @@
 ﻿using System;
-using HSR.PresWriter.IO;
-using PresWriter.Common.Containers;
-using PresWriter.Common.IO;
+using HSR.PresWriter.Common.Containers;
+using HSR.PresWriter.Common.IO;
 
 namespace HSR.PresWriter.DataSources
 {

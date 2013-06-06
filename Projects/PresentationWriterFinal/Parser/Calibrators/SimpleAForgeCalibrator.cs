@@ -8,6 +8,7 @@ using AForge;
 using AForge.Imaging;
 using AForge.Imaging.Filters;
 using AForge.Math.Geometry;
+using HSR.PresWriter.Common.IO;
 using PresWriter.Common.IO;
 using PresWriter.Common.IO.Events;
 using Visualizer;
@@ -58,9 +59,6 @@ namespace HSR.PresWriter.PenTracking.Calibrators
         private readonly IVisualizerControl _vs;
         private const int CalibrationFrames = 3; //must be n^2+3
         private readonly Difference _diffFilter = new Difference();
-        private const int Rowcount = 20;
-        private const int Columncount = 15;
-        private const int _millisecondsDelay = 500;
         private SemaphoreSlim _sem;
         private Task _t;
         private double _sqrheight;
@@ -72,6 +70,9 @@ namespace HSR.PresWriter.PenTracking.Calibrators
             _cc = provider;
             _vs = visualizer;
             MaxErrorCount = 20;
+            Rowcount = 20;
+            Columncount = 15;
+            MillisecondsDelay = 500;
         }
         public void StartCalibration()
         {
@@ -82,8 +83,8 @@ namespace HSR.PresWriter.PenTracking.Calibrators
         {
             _calibrationStep = 0;
             _errors = 0;
-            _sqrwidth = ((double)_vs.Width) / Rowcount;
-            _sqrheight = ((double)_vs.Height) / Columncount;
+            _sqrwidth = _vs.Width / (double) Rowcount;
+            _sqrheight = _vs.Height / (double) Columncount;
             _sem = new SemaphoreSlim(1, 1);
             _cc.FrameReady += BaseCalibration; // TODO
         }
@@ -239,7 +240,7 @@ namespace HSR.PresWriter.PenTracking.Calibrators
                             _calibrationStep++;
                             break;
                     }
-                await Task.Delay(_millisecondsDelay);
+                await Task.Delay(MillisecondsDelay);
             }
             finally
             {
@@ -270,5 +271,11 @@ namespace HSR.PresWriter.PenTracking.Calibrators
         public event EventHandler CalibrationCompleted;
 
         public int MaxErrorCount { get; set; }
+
+        public int Rowcount { get; set; }
+
+        public int Columncount { get; set; }
+
+        public int MillisecondsDelay { get; set; }
     }
 }

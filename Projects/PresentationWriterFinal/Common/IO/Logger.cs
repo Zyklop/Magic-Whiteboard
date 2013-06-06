@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace PresWriter.Common.IO
+namespace HSR.PresWriter.Common.IO
 {
     public static class Logger
     {

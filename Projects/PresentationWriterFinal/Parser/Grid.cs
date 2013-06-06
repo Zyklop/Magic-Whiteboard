@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Drawing;
-using System.Windows;
 using Point = System.Drawing.Point;
 using HSR.PresWriter.Extensions;
 
@@ -13,12 +11,7 @@ namespace HSR.PresWriter.PenTracking
     public class Grid
     {
         private SortedDictionary<int, SortedDictionary<int, List<Point>>> _calibratorData; //2d Dictionary of imag-coordinates
-        public Quad CameraQuad;
-        private bool _needed = true;
-        private Point _topLeft;
-        private Point _topRight;
-        private Point _bottomLeft;
-        private Point _bottomRight;
+        public Quad CameraQuad { get; set; }
         private SortedDictionary<int, SortedDictionary<int, Point>> _refPoints; //2d dictionary of screen Coordinates
 
         /// <summary>
@@ -28,8 +21,8 @@ namespace HSR.PresWriter.PenTracking
         /// <param name="height">height of the camea resolution</param>
         public Grid(int width, int height)
         {
-            CameraQuad = new Quad()
-            {
+            CameraQuad = new Quad
+                {
                 TopLeft = new AForge.Point(0, 0),
                 TopRight = new AForge.Point(width, 0),
                 BottomLeft = new AForge.Point(0, height),
@@ -77,11 +70,6 @@ namespace HSR.PresWriter.PenTracking
         public Rectangle ScreenSize { get; set; }
 
         /// <summary>
-        /// More data needed for Calibration
-        /// </summary>
-        public bool DataNeeded { get { return _needed; } }
-
-        /// <summary>
         /// A good area for calibration
         /// </summary>
         /// <returns></returns>
@@ -93,49 +81,22 @@ namespace HSR.PresWriter.PenTracking
         /// <summary>
         /// Top left corner
         /// </summary>
-        public Point TopLeft
-        {
-            get { return _topLeft; }
-            set { 
-                _topLeft = value;
-            }
-        }
+        public Point TopLeft { get; set; }
 
         /// <summary>
         /// Top right corner
         /// </summary>
-        public Point TopRight
-        {
-            get { return _topRight; }
-            set
-            {
-                _topRight = value;
-            }
-        }
+        public Point TopRight { get; set; }
 
         /// <summary>
         /// Bottom left corner
         /// </summary>
-        public Point BottomLeft
-        {
-            get { return _bottomLeft; }
-            set
-            {
-                _bottomLeft = value;
-            }
-        }
+        public Point BottomLeft { get; set; }
 
         /// <summary>
         /// Bottom left corner
         /// </summary>
-        public Point BottomRight
-        {
-            get { return _bottomRight; }
-            set
-            {
-                _bottomRight = value;
-            }
-        }
+        public Point BottomRight { get; set; }
 
         /// <summary>
         /// Checking if a camerapixel is inside of the grid
@@ -180,14 +141,6 @@ namespace HSR.PresWriter.PenTracking
         {
             AddCalibratorPoint(imgX, imgY, new Point(screenX, screenY));
             AddRefPoints(screenX, screenY, new Point(imgX, imgY));
-#if DEBUG
-            using (var fs = new StreamWriter(new FileStream(@"C:\Temp\aforge\points.csv", FileMode.Append, FileAccess.Write)))
-            {
-                var s = screenX + "," + screenY + "," + imgX + "," + imgY + ",";
-                fs.WriteLine(s);
-                fs.Flush();
-            }
-#endif
         }
 
         /// <summary>
@@ -213,14 +166,6 @@ namespace HSR.PresWriter.PenTracking
         /// <param name="img">Webcam coordinate</param>
         public void AddPoint(Point screen, Point img)
         {
-#if DEBUG
-            using (var fs = new StreamWriter(new FileStream(@"C:\Temp\aforge\points.csv", FileMode.Append, FileAccess.Write)))
-            {
-                var s = screen.X + "," + screen.Y + "," + img.X + "," + img.Y + ",";
-                fs.WriteLine(s);
-                fs.Flush();
-            }
-#endif
             AddCalibratorPoint(img.X,img.Y,screen);
             AddRefPoints(screen.X, screen.Y, new Point(img.X, img.Y));
         }
@@ -297,21 +242,15 @@ namespace HSR.PresWriter.PenTracking
         /// <returns>ordered by distance</returns>
         internal List<PointMapping> FindNearest(int x, int y, int desired)
         {
-            //var cols = PickNearest(_calibratorData, x, desired);
             var cols = _calibratorData.PickNearest(x, desired);
             var p = new List<PointMapping>();
             foreach (var col in cols)
             {
                 var tmp = col.Value.PickNearest(y, desired);
-                foreach (var range in tmp)
-                {
-                    p.Add(new PointMapping{Image = new Point(col.Key, range.Key), Screen = Average(range.Value)});
-                }
+                p.AddRange(tmp.Select(range => new PointMapping {Image = new Point(col.Key, range.Key), Screen = Average(range.Value)}));
             }
             p = p.OrderBy(p1 => DistanceTo(p1.Screen,new Point(x,y))).ToList();
-            if (desired >= p.Count)
-                return p;
-            return p.GetRange(0,desired);
+            return desired >= p.Count ? p : p.GetRange(0,desired);
         }
 
         /// <summary>
@@ -320,7 +259,7 @@ namespace HSR.PresWriter.PenTracking
         /// <param name="p1"></param>
         /// <param name="p2"></param>
         /// <returns></returns>
-        private double DistanceTo(Point p1, Point p2)
+        private static double DistanceTo(Point p1, Point p2)
         {
             var diff = new Point(p1.X - p2.X, p1.Y - p2.Y);
             return Math.Sqrt(diff.X * diff.X + diff.Y * diff.Y);
@@ -331,7 +270,7 @@ namespace HSR.PresWriter.PenTracking
         /// </summary>
         /// <param name="points"></param>
         /// <returns></returns>
-        private Point Average(List<Point> points)
+        private static Point Average(List<Point> points)
         {
             if (points.Count == 0)
                 throw new ArgumentException("List is empty");
@@ -347,8 +286,8 @@ namespace HSR.PresWriter.PenTracking
         {
             get
             {
-                return new Quad()
-                {
+                return new Quad
+                    {
                     TopLeft = new AForge.Point(TopLeft.X, TopLeft.Y),
                     TopRight = new AForge.Point(TopRight.X, TopRight.Y),
                     BottomLeft = new AForge.Point(BottomLeft.X, BottomLeft.Y),
@@ -361,8 +300,8 @@ namespace HSR.PresWriter.PenTracking
         {
             get
             {
-                return new Quad()
-                {
+                return new Quad
+                    {
                     TopLeft = new AForge.Point(ScreenSize.X, ScreenSize.Y),
                     TopRight = new AForge.Point(ScreenSize.X + ScreenSize.Width, ScreenSize.Y),
                     BottomLeft = new AForge.Point(ScreenSize.X, ScreenSize.Y + ScreenSize.Height),

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace PresWriter.Common.Containers
+namespace HSR.PresWriter.Common.Containers
 {
     /// <summary>
     /// Container for a time dependent capture</summary>

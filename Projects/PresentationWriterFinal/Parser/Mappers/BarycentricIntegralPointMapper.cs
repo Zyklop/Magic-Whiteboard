@@ -3,7 +3,7 @@ using System;
 
 namespace HSR.PresWriter.PenTracking.Mappers
 {
-    public class BarycentricIntegralPointMapper : IntegralPointMapper
+    internal class BarycentricIntegralPointMapper : IntegralPointMapper
     {
         // per Integral estimated camera coordinates (mapped from calculated )
         private readonly Quad _bariycentricEstimatedCameraCorners;
