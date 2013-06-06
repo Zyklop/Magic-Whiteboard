@@ -1,21 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using SDPoint = System.Drawing.Point;
+﻿using SDPoint = System.Drawing.Point;
 using APoint = AForge.Point;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace HSR.PresWriter.PenTracking
 {
-    public abstract class AbstractPointMapper
+    internal abstract class AbstractPointMapper
     {
         /// <summary>
         /// Grid holds the information for the mapping process
         /// </summary>
         public Grid Grid { get; protected set; }
 
-        public AbstractPointMapper(Grid grid)
+        protected AbstractPointMapper(Grid grid)
         {
             Grid = grid;
         }

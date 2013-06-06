@@ -27,10 +27,10 @@ namespace HSR.PresWriter.PenTracking
             base.Enqueue(obj);
             lock (this)
             {
-                while (base.Count > Size)
+                while (Count > Size)
                 {
                     T outObj;
-                    base.TryDequeue(out outObj);
+                    TryDequeue(out outObj);
                 }
             }
         }

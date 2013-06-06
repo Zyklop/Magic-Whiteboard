@@ -1,6 +1,6 @@
 ﻿using System.Drawing;
 
-namespace PresWriter.Common.Containers
+namespace HSR.PresWriter.Common.Containers
 {
     public class VideoFrame : Frame
     {

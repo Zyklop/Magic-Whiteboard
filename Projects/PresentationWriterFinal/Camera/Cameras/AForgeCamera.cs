@@ -5,9 +5,8 @@ using AForge.Imaging.Filters;
 using AForge.Video;
 using AForge.Video.DirectShow;
 using System.Drawing;
-using HSR.PresWriter.IO;
-using PresWriter.Common;
-using PresWriter.Common.Containers;
+using HSR.PresWriter.Common;
+using HSR.PresWriter.Common.Containers;
 using PresWriter.Common.IO.Events;
 
 namespace HSR.PresWriter.DataSources.Cameras

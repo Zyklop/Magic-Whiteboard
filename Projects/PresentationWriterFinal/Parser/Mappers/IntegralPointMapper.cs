@@ -3,7 +3,7 @@ using System;
 
 namespace HSR.PresWriter.PenTracking.Mappers
 {
-    public class IntegralPointMapper : AbstractPointMapper
+    internal class IntegralPointMapper : AbstractPointMapper
     {
         private readonly double _a;
         private readonly double _b;

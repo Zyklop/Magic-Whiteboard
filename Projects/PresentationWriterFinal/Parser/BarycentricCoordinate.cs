@@ -1,16 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace HSR.PresWriter.PenTracking
 {
     /// <summary>
     /// Calculates Barycentric coordinates and remapping
     /// </summary>
-    public class BarycentricCoordinate
+    internal class BarycentricCoordinate
     {
         public double Lambda1 { get; set; }
 
@@ -31,7 +27,6 @@ namespace HSR.PresWriter.PenTracking
             Lambda1 = ((corner2.Y - corner3.Y) * (target.X - corner3.X) + (corner3.X - corner2.X) * (target.Y - corner3.Y)) * den;
             Lambda2 = ((corner3.Y - corner1.Y) * (target.X - corner3.X) + (corner1.X - corner3.X) * (target.Y - corner3.Y)) * den;
             Lambda3 = 1.0 - Lambda1 - Lambda2;
-            //Debug.WriteLine("L1: " + Lambda1 + " L2: " + Lambda2 + " L3: " + Lambda3);
         }
 
         /// <summary>

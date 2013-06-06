@@ -58,7 +58,6 @@
     <Compile Include="KMeansClustering.cs" />
     <Compile Include="Calibrators\SimpleAForgeCalibrator.cs" />
     <Compile Include="AForgePenTracker.cs" />
-    <Compile Include="Colorfilter.cs" />
     <Compile Include="Events\PenPositionEventArgs.cs" />
     <Compile Include="FixedSizeQueue.cs" />
     <Compile Include="Mappers\BarycentricIntegralPointMapper.cs" />

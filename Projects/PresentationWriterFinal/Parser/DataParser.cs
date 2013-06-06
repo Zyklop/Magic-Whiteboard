@@ -1,22 +1,19 @@
 ﻿using System;
+using HSR.PresWriter.Common.IO;
 using HSR.PresWriter.PenTracking.Calibrators;
 using HSR.PresWriter.PenTracking.Events;
 using HSR.PresWriter.PenTracking.Mappers;
 using HSR.PresWriter.PenTracking.Strategies;
-using PresWriter.Common.Containers;
-using PresWriter.Common.IO;
 using Visualizer;
-using Point = System.Drawing.Point;
 
 namespace HSR.PresWriter.PenTracking
 {
     public class DataParser
     {
-        private ICalibrator _calibrator; // TODO Interface anpassen an StartCalibration etc
-        private IPenTracker _penTracker;
-        private Type _mapperType;
+        private readonly ICalibrator _calibrator; // TODO Interface anpassen an StartCalibration etc
+        private readonly IPenTracker _penTracker;
+        private readonly Type _mapperType;
         private AbstractPointMapper _mapper;
-        private int _gridcheck=1000;
 
         public bool IsRunning { get; protected set; }
 
@@ -49,44 +46,14 @@ namespace HSR.PresWriter.PenTracking
         }
 
         /// <summary>
-        /// Initialize the Parser with a non-standart calibrator or tracker
-        /// </summary>
-        /// <param name="calibrator">Custom calibrator</param>
-        /// <param name="tracker">Custom PenTracker</param>
-        public DataParser(ICalibrator calibrator, IPenTracker tracker, Type mapperType)
-        {
-            if(!(typeof(AbstractPointMapper).IsAssignableFrom(mapperType)))
-                throw new ArgumentException(mapperType.FullName + " doesn't inherit form AbstractPointMapper");
-            // Initialize Calibration Tools
-            _calibrator = calibrator;
-            _calibrator.CalibrationCompleted += StartTracking; // begin pen tracking after calibration immediately
-
-            // Initialize Pen Tracking Tools
-            _penTracker = tracker;
-            _penTracker.PenFound += PenFound;
-            _penTracker.NoPenFound += NoPenFound;
-
-            _mapperType = mapperType;
-        }
-
-        /// <summary>
         /// Calibration is finished, starting PenTracker
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void StartTracking(object sender, EventArgs e)
         {
-            //_pictureProvider.ShowConfigurationDialog();
-            //_pictureProvider.FrameReady += _camera_FrameReady; // TODO siehe _camera_FrameReady
-            //_calibrator.Grid.Calculate();
             var mCtor = _mapperType.GetConstructor(new Type[] { typeof(Grid) });
             _mapper = (AbstractPointMapper)mCtor.Invoke(new Grid[] { CalibratorGrid });
-            //_mapper = (AbstractPointMapper)Activator.CreateInstance(_mapperType, 
-            //    BindingFlags.CreateInstance, null, new Grid[] { CalibratorGrid });
-            //if (_mapperType.Equals(typeof(LinearMapper))) // check for runtimeType
-            //{
-            //    ((LinearMapper)_mapper).Calculate();
-            //}
             Console.WriteLine("Calbration completed");
             _penTracker.Start();
         }
@@ -96,10 +63,7 @@ namespace HSR.PresWriter.PenTracking
         /// </summary>
         public void Start()
         {
-            this.IsRunning = true;
-            //var filesystemCamera = new FilesystemCamera(new DirectoryInfo(@"c:\temp\aforge\inp"));
-            //filesystemCamera.Start();
-            //_calibrator = new AForgeDiffCalibrator(_pictureProvider, TODO); // TODO
+            IsRunning = true;
             _calibrator.CalibrationCompleted += StartTracking;
             _calibrator.Calibrate();
         }
@@ -120,9 +84,8 @@ namespace HSR.PresWriter.PenTracking
         /// </summary>
         public void Stop()
         {
-            //_pictureProvider.FrameReady -= _camera_FrameReady; // TODO siehe _camera_FrameReady
             _penTracker.Stop();
-            this.IsRunning = false;
+            IsRunning = false;
         }
 
         /// <summary>
@@ -143,38 +106,16 @@ namespace HSR.PresWriter.PenTracking
         /// <param name="e"></param>
         private void PenFound(object sender, PenFoundEventArgs e)
         {
-            Point point = _mapper.FromPresentation(e.Frame.Point.X, e.Frame.Point.Y);
-            PointFrame frame = e.Frame.ApplyRebase(point);
+            var point = _mapper.FromPresentation(e.Frame.Point.X, e.Frame.Point.Y);
+            var frame = e.Frame.ApplyRebase(point);
             if (PenPositionChanged != null)
             {
                 PenPositionChanged(this, new VirtualPenPositionEventArgs(frame, CalibratorGrid.Contains(point)));
             }
         }
 
-        private void NewImage(object sender, NewImageEventArgs e)
-        {
-            //if (PenPositionChanged != null) PenPositionChanged(this, PenTracker.GetPenPosition(e.NewImage));
-            _gridcheck--;
-            if (_gridcheck == 0) // calibration check needed
-            {
-                _gridcheck = 1000;
-                switch (_calibrator.CheckCalibration())
-                {
-                    case 1: Calibrator.Calibrate();
-                        break;
-                    case 2: Calibrator.CalibrateColors();
-                        break;
-                }
-            }
-        }
-
         /// <summary>
-        /// Calibrator with the grid data
-        /// </summary>
-        internal ICalibrator Calibrator { get; set; }
-
-        /// <summary>
-        /// TODO
+        /// Grid of the Calibrator
         /// </summary>
         public Grid CalibratorGrid { get { return _calibrator.Grid; } }
 

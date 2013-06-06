@@ -1,7 +1,7 @@
 ﻿using System;
 using PresWriter.Common.IO.Events;
 
-namespace PresWriter.Common.IO
+namespace HSR.PresWriter.Common.IO
 {
     public interface IPictureProvider
     {

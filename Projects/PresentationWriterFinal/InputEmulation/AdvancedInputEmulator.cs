@@ -4,8 +4,7 @@ using System.Diagnostics;
 using System.Threading;
 using System.Linq;
 using System.Windows.Forms;
-using HSR.PresWriter;
-using PresWriter.Common;
+using HSR.PresWriter.Common;
 
 namespace InputEmulation
 {
