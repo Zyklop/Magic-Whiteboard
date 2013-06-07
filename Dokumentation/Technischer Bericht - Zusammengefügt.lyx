@@ -66,13 +66,7 @@ Presentation Writer
 \end_layout
 
 \begin_layout Standard
-\begin_inset CommandInset include
-LatexCommand include
-filename "Abstract.lyx"
-
-\end_inset
-
-
+TODO: richtiges Abstract
 \end_layout
 
 \begin_layout Standard
@@ -1753,151 +1747,6 @@ Auf dem Differenzbild (rechts) ist der Laserpointer Punkt viel besser sichtbar
 
 \end_layout
 
-\begin_layout Subsection
-Architektur
-\end_layout
-
-\begin_layout Subsubsection
-Domain
-\end_layout
-
-\begin_layout Standard
-\begin_inset Float figure
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
-\begin_inset Graphics
-	filename Diagramme/Domain.emf
-	lyxscale 20
-	width 100col%
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Caption
-
-\begin_layout Plain Layout
-Das Domain Modell berücksichtigt modulare Erweiterungen.
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Subsubsection
-Hauptsequenz
-\end_layout
-
-\begin_layout Standard
-Unser Hauptprojekt wird eine ausführbare Datei, die alle unsere Subprojekte
- zusammenbringt.
- 
-\end_layout
-
-\begin_layout Standard
-\noindent
-Grobablauf unseres Programms: 
-\end_layout
-
-\begin_layout Standard
-\begin_inset Float figure
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
-\begin_inset Graphics
-	filename Diagramme/SSD.emf
-	lyxscale 30
-	width 100col%
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Caption
-
-\begin_layout Plain Layout
-SSD
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\begin_inset Newpage pagebreak
-\end_inset
-
-
-\end_layout
-
-\begin_layout Enumerate
-Verbindung mit der Kamera 
-\end_layout
-
-\begin_deeper
-\begin_layout Enumerate
-Der Nutzer kriegt eine Auswahl aller gefundenen Kameras und entscheidet
- sich für eine.
- 
-\end_layout
-
-\begin_layout Enumerate
-Anhand der Auswahl wird die Kamera angelegt und gestartet.
- 
-\end_layout
-
-\end_deeper
-\begin_layout Enumerate
-Das Programm sucht einen passenden Visualisierer und legt diesen an.
- 
-\end_layout
-
-\begin_layout Enumerate
-Ein DataParser wird angelegt.
- 
-\end_layout
-
-\begin_layout Enumerate
-Die Kalibration kann nun automatisch oder nach einer Interaktion des Benutzers
- gestartet werden.
- 
-\end_layout
-
-\begin_layout Enumerate
-Die Details über den Ablauf des Kalibrationsvorgang sind im Abschnitt Kalibratio
-n aufgeführt.
- 
-\end_layout
-
-\begin_layout Enumerate
-Kalibration wird erfolgreich abgeschlossen und das Pentracking gestartet.
- Die Details über den Ablauf des Trackings sind im Abschnitt Pen-Tracking
- aufgeführt.
- 
-\end_layout
-
 \begin_layout Standard
 \begin_inset Newpage newpage
 \end_inset
@@ -2072,6 +1921,147 @@ Fazit
 Für einen Prototypen ist die Nutztung von AForge ideal aufgrund der kurzen
  Einarbeitungszeit.
  Für ein Release sollt dies Entscheidung allerdings nochmals überdenkt werden.
+\end_layout
+
+\begin_layout Subsection
+Architektur
+\end_layout
+
+\begin_layout Subsubsection
+Domain
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Diagramme/Domain.emf
+	lyxscale 20
+	width 100col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Das Domain Modell berücksichtigt modulare Erweiterungen.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Hauptsequenz
+\end_layout
+
+\begin_layout Standard
+Unser Hauptprojekt wird eine ausführbare Datei, die alle unsere Subprojekte
+ zusammenbringt.
+ 
+\end_layout
+
+\begin_layout Standard
+\noindent
+Grobablauf unseres Programms: 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Diagramme/SSD.emf
+	lyxscale 30
+	width 100col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+SSD
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newpage pagebreak
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+Verbindung mit der Kamera 
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+Der Nutzer kriegt eine Auswahl aller gefundenen Kameras und entscheidet
+ sich für eine.
+ 
+\end_layout
+
+\begin_layout Enumerate
+Anhand der Auswahl wird die Kamera angelegt und gestartet.
+ 
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+Das Programm sucht einen passenden Visualisierer und legt diesen an.
+ 
+\end_layout
+
+\begin_layout Enumerate
+Ein DataParser wird angelegt.
+ 
+\end_layout
+
+\begin_layout Enumerate
+Die Kalibration kann nun automatisch oder nach einer Interaktion des Benutzers
+ gestartet werden.
+ 
+\end_layout
+
+\begin_layout Enumerate
+Die Details über den Ablauf des Kalibrationsvorgang sind im Abschnitt Kalibratio
+n aufgeführt.
+ 
+\end_layout
+
+\begin_layout Enumerate
+Kalibration wird erfolgreich abgeschlossen und das Pentracking gestartet.
+ Die Details über den Ablauf des Trackings sind im Abschnitt Pen-Tracking
+ aufgeführt.
+ 
 \end_layout
 
 \begin_layout Subsection
@@ -3096,10 +3086,6 @@ Tests haben gezeigt, dass das aktuelle Interpolationsverfahren genügend
 
 \begin_layout Subparagraph
 Genauere Punktposition
-\end_layout
-
-\begin_layout Subparagraph
-Position per Faltung
 \end_layout
 
 \begin_layout Subsubsection
