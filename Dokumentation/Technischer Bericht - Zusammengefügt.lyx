@@ -118,7 +118,8 @@ Aufbau
 In einem normalen Sitzungszimmer soll ein Vortrag gehalten werden können.
  Dazu sollen Standardausstattung wie Laptop, integrierte Kamera und Beamer
  benutzt werden können.
- Als Addendum wird ein Stift mitgeliefert.
+ Als Addendum wird ein spezieller Stift mitgeliefert.
+ Der Stift soll günstig sein.
 \end_layout
 
 \begin_layout Standard
@@ -161,7 +162,8 @@ Kalibrierung
 
 \begin_layout Standard
 Bevor ein Stift auf der Leinwand gefunden werden kann, muss die Erkennungssoftwa
-re kalibriert werden:
+re kalibriert werden.
+ Dazu müssen folgende Schritte vorgenommen werden:
 \end_layout
 
 \begin_layout Itemize
@@ -198,12 +200,8 @@ Die Person soll mit einem Stift auf die das Beamerbild schreiben können.
 
 \end_layout
 
-\begin_layout Section
-Problemstellung
-\end_layout
-
 \begin_layout Subsection
-Einschränkungen
+Problemstellung
 \end_layout
 
 \begin_layout Standard
@@ -466,8 +464,11 @@ Laptop
 
 \begin_layout Standard
 Bildverarbeitung braucht in der Regel viel Rechenleistung.
- Die in dieser Arbeit entwickelte Software benötigt ...
- ??? Messung TODO.
+ Die in dieser Arbeit entwickelte Software berücksichtigt dies, indem zum
+ Teil Kompromisse eingegangen werden um den Leistungsanforderungen gerecht
+ zu werden.
+ Um eine reibungslose Erkennung zu gewährleisten, sollten 2GHz Doppelkernprozess
+oren oder ähnlich verwendet werden.
 \end_layout
 
 \begin_layout Subsubsection
@@ -477,9 +478,14 @@ Präsentationsweise
 \begin_layout Standard
 Da der Stift immer von der Laptopkamera gesehen werden muss, ist es am Präsentat
 or, die richtige Haltung beim Schreiben anzunehmen.
- Da dies jedoch den Vorteil hat, dass auch die Zuschauer sehen, wo der Präsentat
-or auf die Leinwand schreibt, wird diese Einschränkung ohne weiteren Diskurs
- in Kauf genommen.
+ Eine gute Art zu präsentieren ist, wenn das Publikum sieht, wo der Präsentator
+ hinzeigt.
+ Dies hat den Vorteil hat, dass auch die Laptopkamera sieht, wo auf die
+ Leinwand geschrieben werden soll.
+ Falls sich der Präsentator zwischen Kamera und Leinwand stellt, kann nicht
+ mehr geschrieben werden.
+ Da in diesem Fall meist auch das Publikum nichts mehr sieht, wird diese
+ Einschränkung ohne weiteren Diskurs in Kauf genommen.
 \end_layout
 
 \begin_layout Standard
@@ -489,14 +495,137 @@ sideways false
 status open
 
 \begin_layout Plain Layout
+\begin_inset Graphics
+	filename Bilder/Setup/IMGP0366.JPG
+	lyxscale 20
+	width 100col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
 \begin_inset Caption
 
 \begin_layout Plain Layout
-TODO: Bild einer vorbildlich präsentierenden Person
+Gute Präsentationsweise - Die zeigende Hand ist von Laptopkamera (links)
+ und Publikum aus (rechts) sichtbar.
 \end_layout
 
 \end_inset
 
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Ergebnis
+\end_layout
+
+\begin_layout Standard
+Das Resultat erstaunt.
+ Die in dieser Arbeit entwickelte Software 
+\begin_inset Quotes gld
+\end_inset
+
+Presentation Writer
+\begin_inset Quotes grd
+\end_inset
+
+ kann gewinnbringend für Vorträge eingesetzt werden.
+ Die tiefe Auflösung der Kamera von 640x480 Pixel und die schlechten Lichteigens
+chaften haben wenig Einfluss auf die Güte des Resultates.
+ Eine erfolgreiche Kalibrierung der Kamera, gute Einstellungen der Bildfilter
+ und genügend gute Abbildungsalgorithmen mit Interpolation machen dies möglich.
+ Optimierungen wie eine hochauflösendere Kamera würden noch genauere und
+ bessere Resultate liefern.
+ Aus Zeitgründen wurde in der Software zum Teil auf Optimierungen verzichtet.
+ Jene die erschlossen wurden, sind jedoch in der schriftlichen Arbeit jeweils
+ kurz erwähnt.
+\end_layout
+
+\begin_layout Standard
+Im Folgenden dieser Arbeit wird genauer darauf eingegangen, wie alle diese
+ Zwischenschritte vom Kamerabild bis zum gezeichneten Bildpunkt auf dem
+ Beamer analysiert und gelöst wurden.
+ Zum einen werden Ideen zum Finden eines Stiftes in einem Kamerabild diskutiert,
+ zum anderen werden verschiedene Ansätze erarbeitet, die eine näherungsweise
+ korrekte Abbildung von Kamera- zu Beamerpunkten ermöglichen.
+ Im Anhang werden erweiterte oder fehlgeschlagene Ideen genauer erläutert.
+ Zudem wird dort auch die Vision vom virtuellen Touchpanel ausgearbeitet,
+ eine Idee, die eventuell auch mit einer optischen Kamera, aber ohne Stift
+ lösbar ist.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Bilder/Setup/writing.jpg
+	lyxscale 20
+	width 100col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Presentation Writer - Unterstützung bei Vorträgen
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Bilder/Setup/classic-painting.jpg
+	lyxscale 20
+	width 100col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Kleines Gekritzel macht Spass - Trotz der tiefen Auflösung von 640x480 Pixel
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
 
 \end_layout
 
@@ -521,468 +650,15 @@ Im Folgenden werden Überlegungen zur Beziehung Beamer-Kamera und zu den
  konkreten Eigenschaften eines Stiftes gemacht.
  Es gilt zu analysieren, wie und ob die oben postulierten Probleme gelöst
  werden können.
- Es wird auf Kamerakalibrierung, Bildverarbeitungsschritte und deren geplante
- Umsetzung in Software eingegangen.
+ Es wird auf Kamerakalibrierung und Bildverarbeitungsschritte eingegangen.
+ Dazu werden eigene Algorithmen beschrieben und analysiert.
 \end_layout
 
 \begin_layout Subsection
-Kalibrierung
-\end_layout
-
-\begin_layout Standard
-Bei der Kalibrierung geht es darum, Punkte im Kamerabild zu erkennen, die
- eindeutigen Punkten auf der Präsentation zugeordnet werden können.
- Dabei müssen sicher die Eckpunkte der Präsentation erkannt werden.
- Durch erkennung weiterer Punkte kann allerdings die Genauigkeit des Mappings
- erhöht werden.
- Hierbei haben wir verschiedene Ansätze ausprobiert.
- Hier wird nur die Analyse beschrieben, das genaue Vorgehen ist jeweils
- im Anhang beschrieben.
+Erkennen von Vierecken
 \end_layout
 
 \begin_layout Subsubsection
-Referenzpunkte
-\end_layout
-
-\begin_layout Standard
-Die Abbildung vom Kamerabild zum ursprünglich projizierten Beamerbild ist
- eine Transformation 
-\begin_inset Formula $\left(x_{k},y_{k}\right)\rightarrow\left(x_{b},y_{b}\right)$
-\end_inset
-
- und lässt sich durch eine Transformationsmatrix mit 11 Freiheitsgraden
- korrekt beschreiben
-\begin_inset Foot
-status open
-
-\begin_layout Plain Layout
-3 Translation, 3 Rotation, 2 Kameranullpunkt, 1 Brennweite, 2 Bildskalierung
- 
-\end_layout
-
-\end_inset
-
-.
- Falls die Brennweite ausser Acht gelassen und mit einer bekannten Bildskalierun
-g gearbeitet wird, hat die Transformation lediglich 8 Freiheitsgrade, welche
- durch 4 Messpunkte gebunden werden können.
- Unsere Implementationen der Abbildungsberechnungen verlassen sich jeweils
- auf die vier gemessenen Eckpunkte der Projektion und lassen somit Linseneffekte
- ausser Acht.
-\end_layout
-
-\begin_layout Subsubsection
-Abbildung & Interpolation
-\end_layout
-
-\begin_layout Standard
-Es wurden verschiedene Verfahren zur Beschreibung der Abbildungen erarbeitet.
-\end_layout
-
-\begin_layout Standard
-blablablabla
-\end_layout
-
-\begin_layout Standard
-blabla
-\end_layout
-
-\begin_layout Subsubsection
-Ansätze zur Erkennung der projizierten Bilder
-\end_layout
-
-\begin_layout Paragraph
-Version Eigenbau (Eckdetektion in einem Differenzbild)
-\end_layout
-
-\begin_layout Standard
-Ergebnisse sind brauchbar aber nicht sicher.
- Fehlerkennungen kommen gelegentlich vor.
-\end_layout
-
-\begin_layout Subparagraph
-Vorteile
-\end_layout
-
-\begin_layout Itemize
-Ecken des Bildschirms wurden ungefähr erkannt, die meisten der dargestellten
- Rechtecken auch.
- 
-\end_layout
-
-\begin_layout Subparagraph
-Nachteile
-\end_layout
-
-\begin_layout Itemize
-Ich habe nur wenig Verbesserungspotenzial bei dieser Lösung gesehen, und
- dieses wäre teuer zu erkaufen gewesen.
- 
-\end_layout
-
-\begin_layout Itemize
-Da grosse Teile des Bildschirms umgefärbt wurden, gab es Probleme mit der
- Belichtungskorrektur.
- 
-\end_layout
-
-\begin_layout Itemize
-Zufällig verteilte Punkte sind für ein Mapping nicht gut brauchbar.
-\end_layout
-
-\begin_layout Itemize
-Die Farbkanäle waren schwierig sauber zu trennen und haben häufig Probleme
- verursacht.
- Überschneidungen waren sehr Problematisch.
- 
-\end_layout
-
-\begin_layout Subparagraph
-Fazit
-\end_layout
-
-\begin_layout Standard
-Dieses Verfahren birgt zu viele Risiken und Aufgrund des kleinen Verbesserungspo
-tenzials lohnt es sich nicht, diesen Ansatz weiterzuverfolgen.
-\end_layout
-
-\begin_layout Paragraph
-OpenCV
-\end_layout
-
-\begin_layout Standard
-OpenCV ist ein riesiges Produkt, das alle Möglichkeiten zur Bildanalyse
- bietet.
- Es gibt einen wrapper für C#, jedoch hat sich auch dieser in unseren Versuchen
- als nicht besonders Einfach in der Benutzung herausgestellt.
- 
-\end_layout
-
-\begin_layout Subparagraph
-Vorteile
-\end_layout
-
-\begin_layout Itemize
-Unglaublich breite Einsatztmöglichkeiten
-\end_layout
-
-\begin_layout Itemize
-Bietet native Unterstützung um eine Kamera zu kalibrieren.
-\end_layout
-
-\begin_layout Itemize
-Grosse Community
-\end_layout
-
-\begin_layout Itemize
-Sehr performant
-\end_layout
-
-\begin_layout Subparagraph
-Nachteile
-\end_layout
-
-\begin_layout Itemize
-Nutzung unter C# ist kompliziert
-\end_layout
-
-\begin_layout Itemize
-Miserable Dokumentation
-\end_layout
-
-\begin_layout Itemize
-Für eine Verwendung Out-of-the-Box müssen ca.
- 600MB zusätzliche libraries eingebunden werden, selbst wenn diese nicht
- benutzt werden.
-\end_layout
-
-\begin_layout Itemize
-Aufwand für Einarbeitung ist sehr gross
-\end_layout
-
-\begin_layout Itemize
-Algorithmen lassen sich nur geringfügig beeinflussen.
-\end_layout
-
-\begin_layout Itemize
-Es ist unklar, wie die Algorithmen genau funktionieren und eine Codeanalyse
- ist unglaublich Zeitaufwändig.
-\end_layout
-
-\begin_layout Subparagraph
-Fazit
-\end_layout
-
-\begin_layout Standard
-Für unseren Prototypen ist OpenCV viel zu aufwändig und benötigt zu viel
- Aufwand um das Framework zu verstehen und korrekt zu nutzen.
-\end_layout
-
-\begin_layout Paragraph
-AForge
-\end_layout
-
-\begin_layout Standard
-AForge bietet eine stabile Blob-Detektion, die zuverlässig funktioniert
- und Attribute zur Analyse und Fehlerdetektion bieten.
- Zudem funktieoniert das Anwenden von Filtern auf Bilder sehr zuverlässig
- und intuitiv.
-\end_layout
-
-\begin_layout Subparagraph
-Vorteile
-\end_layout
-
-\begin_layout Itemize
-Es stehen viele Filter zur Verfügung
-\end_layout
-
-\begin_layout Itemize
-Blobs werden genau erkannt.
-\end_layout
-
-\begin_layout Itemize
-Die Berechnungen sind genügend performant.
-\end_layout
-
-\begin_layout Itemize
-Die Dokumentation ist sehr gut.
-\end_layout
-
-\begin_layout Itemize
-Der Code ist einfach zu verstehen.
-\end_layout
-
-\begin_layout Subparagraph
-Nachteile
-\end_layout
-
-\begin_layout Itemize
-Die Performance ist etwas schlechter als OpenCV
-\end_layout
-
-\begin_layout Itemize
-Der Code enhält noch kleine Bugs
-\end_layout
-
-\begin_layout Itemize
-Der Entwickler kümmert sich nicht gut um das Projekt.
-\end_layout
-
-\begin_layout Subparagraph
-Fazit
-\end_layout
-
-\begin_layout Standard
-Für einen Prototypen ist die Nutztung von AForge ideal aufgrund der kurzen
- Einarbeitungszeit.
- Für ein Release sollt dies Entscheidung allerdings nochmals überdenkt werden.
-\end_layout
-
-\begin_layout Subsubsection
-Verbesserung der Bilderekennung
-\end_layout
-
-\begin_layout Standard
-Da die Helligkeitskorrektur der Kamera sehr unberechenbar reagiert müssen
- wir sehr ähnliche Bilder projizieren, da wir sonst nicht mit Differenzbilder
- arbeiten können.
-\end_layout
-
-\begin_layout Paragraph
-Einfacher Differenzbildansatz
-\end_layout
-
-\begin_layout Standard
-Es wird ein universeller Differenzbild-hintergrund verwendet.
- Damit werden alle Bilder so dargestellt, wie sie sein sollten.
-\end_layout
-
-\begin_layout Subparagraph
-Vorteile
-\end_layout
-
-\begin_layout Itemize
-Es müssen weiger Bilder dargestellt werden.
-\end_layout
-
-\begin_layout Itemize
-Statische Störungen (Umgebung werden herausgefiltert.
-\end_layout
-
-\begin_layout Subparagraph
-Nachteile
-\end_layout
-
-\begin_layout Itemize
-Gleichmässige Lichtverhältnisse sind unmöglich einzuhalten.
-\end_layout
-
-\begin_layout Itemize
-Belichtungskorrektur kann grosse Probleme bereiten
-\end_layout
-
-\begin_layout Itemize
-Rauschen nimmt mit der Zeit zu
-\end_layout
-
-\begin_layout Subparagraph
-Fazit
-\end_layout
-
-\begin_layout Standard
-Solange wir keinen Zugriff auf die Konfiguration der Kamera haben, funktioniert
- dieses Verfahren nicht.
-\end_layout
-
-\begin_layout Paragraph
-Histogramm-Analyse
-\end_layout
-
-\begin_layout Standard
-Hierbei wird direkt mit Kamerabildern gearbeitet.
- Die Bilder werden nach Helligkeitsverteilung analysiert.
-\end_layout
-
-\begin_layout Subparagraph
-Vorteile
-\end_layout
-
-\begin_layout Itemize
-Es müssen keine zusätzlichen Bilder dargestellt werden.
-\end_layout
-
-\begin_layout Subparagraph
-Nachteile
-\end_layout
-
-\begin_layout Itemize
-Die Farbverteilung ist in verschiedenen Bildregionen unterschiedlich.
-\end_layout
-
-\begin_layout Itemize
-Starkes Rauschen
-\end_layout
-
-\begin_layout Itemize
-Ungenaue Erkennung
-\end_layout
-
-\begin_layout Subparagraph
-Fazit
-\end_layout
-
-\begin_layout Standard
-Es werden höchstens Teile des Bildes richtig erkannt.
- Unbrauchbar für uns.
-\end_layout
-
-\begin_layout Paragraph
-Histogramm-Analyse auf Bildausschnitten
-\end_layout
-
-\begin_layout Standard
-Auch hierbei wird direkt mit Kamerabildern gearbeitet.
- Die Bilder werden aufgeteilt, nach Helligkeitsverteilung analysiert und
- wieder zusammengesetzt.
-\end_layout
-
-\begin_layout Subparagraph
-Vorteile
-\end_layout
-
-\begin_layout Itemize
-Es müssen keine zusätzlichen Bilder dargestellt werden.
-\end_layout
-
-\begin_layout Itemize
-Regionen mit unterschiedlichen Lichtverhältnissen werden gut korrigiert.
-\end_layout
-
-\begin_layout Itemize
-Zu erkennende Objekte werden erkannt
-\end_layout
-
-\begin_layout Subparagraph
-Nachteile
-\end_layout
-
-\begin_layout Itemize
-Noch stärkeres Rauschen
-\end_layout
-
-\begin_layout Itemize
-Unscharfe Kanten
-\end_layout
-
-\begin_layout Itemize
-Viele Fehlerkennungen
-\end_layout
-
-\begin_layout Itemize
-Unscharfe Übergänge
-\end_layout
-
-\begin_layout Subparagraph
-Fazit
-\end_layout
-
-\begin_layout Standard
-Dieses Verfahren funktioniert erkennt meist alle gesuchten Blobs.
- Deren Erkennung ist aber nicht gut und die Kanten sind unscharf.
- Das führt zu unkorrekten Werten.
- Zudem müssen viele Fehlerkennungen herausgefiltert werden.
- Brauchbar aber nicht optimal.
-\end_layout
-
-\begin_layout Paragraph
-Schachbrett-Muster
-\end_layout
-
-\begin_layout Standard
-Es werden nur Bilder projiziert, die eine identische Helligkeitsverteilung
- aufweisen.
-\end_layout
-
-\begin_layout Subparagraph
-Vorteile
-\end_layout
-
-\begin_layout Itemize
-Die Belichtungskorrektur der Kamera macht keine Probleme mehr
-\end_layout
-
-\begin_layout Itemize
-Fast kein Rauschen vorhanden
-\end_layout
-
-\begin_layout Subparagraph
-Nachteile
-\end_layout
-
-\begin_layout Itemize
-Es müssen doppelt so viele Bilder projiziert werden, wie genutzt werden
- können
-\end_layout
-
-\begin_layout Itemize
-Aufwändige Bildkonstruktion
-\end_layout
-
-\begin_layout Subparagraph
-Fazit
-\end_layout
-
-\begin_layout Standard
-Aufgrund der hohen stabilität verwenden wir dieses Verfahren.
- Wir sind zudem nicht so stark auf Performance angewisesen.
-\end_layout
-
-\begin_layout Subsubsection
-Erkennungsmethoden
-\end_layout
-
-\begin_layout Paragraph
 Eckpunkte erkennen
 \end_layout
 
@@ -990,7 +666,7 @@ Eckpunkte erkennen
 Es werden lediglich die Bildschirmecken erkannt.
 \end_layout
 
-\begin_layout Subparagraph
+\begin_layout Paragraph
 Vorteile
 \end_layout
 
@@ -1002,7 +678,7 @@ Zuverlässigkeit
 Fehlerkennungen können einfach detektiert werden
 \end_layout
 
-\begin_layout Subparagraph
+\begin_layout Paragraph
 Nachteile
 \end_layout
 
@@ -1010,7 +686,7 @@ Nachteile
 Nur vier nutzbare Punkte
 \end_layout
 
-\begin_layout Subparagraph
+\begin_layout Paragraph
 Fazit
 \end_layout
 
@@ -1154,8 +830,341 @@ Dieser Algorithmus ist sehr stabil und 100% korrekt.
  werden.
 \end_layout
 
+\begin_layout Subsection
+Kalibrierung
+\end_layout
+
+\begin_layout Standard
+Bei der Kalibrierung geht es darum, Punkte im Kamerabild zu erkennen, die
+ eindeutigen Punkten auf der Präsentation zugeordnet werden können.
+ Dabei müssen sicher die Eckpunkte der Präsentation erkannt werden.
+ Durch erkennung weiterer Punkte kann allerdings die Genauigkeit des Mappings
+ erhöht werden.
+ Hierbei haben wir verschiedene Ansätze ausprobiert.
+ Hier wird nur die Analyse beschrieben, das genaue Vorgehen ist jeweils
+ im Anhang beschrieben.
+\end_layout
+
 \begin_layout Subsubsection
-Mapping
+Referenzpunkte
+\end_layout
+
+\begin_layout Standard
+Die Abbildung vom Kamerabild zum ursprünglich projizierten Beamerbild ist
+ eine Transformation 
+\begin_inset Formula $\left(x_{k},y_{k}\right)\rightarrow\left(x_{b},y_{b}\right)$
+\end_inset
+
+ und lässt sich durch eine Transformationsmatrix mit 11 Freiheitsgraden
+ korrekt beschreiben
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+3 Translation, 3 Rotation, 2 Kameranullpunkt, 1 Brennweite, 2 Bildskalierung
+ 
+\end_layout
+
+\end_inset
+
+.
+ Falls die Brennweite ausser Acht gelassen und mit einer bekannten Bildskalierun
+g gearbeitet wird, hat die Transformation lediglich 8 Freiheitsgrade, welche
+ durch 4 Messpunkte gebunden werden können.
+ Unsere Implementationen der Abbildungsberechnungen verlassen sich jeweils
+ auf die vier gemessenen Eckpunkte der Projektion und lassen somit Linseneffekte
+ ausser Acht.
+ Messungen haben ergeben, dass auftretende Ungenauigkeiten regelmässig sind
+ und sich grösstenteils auf die horizontale Achse beschränken.
+ Durch eine einfache Korrekturfunktion lassen sich sichtbare Effekte vermeiden.
+ 4 Referenzpunkte reichen also für das zu entwickelnde Präsentationssystem.
+\end_layout
+
+\begin_layout Paragraph
+Eckdetektion per Differenzbild
+\end_layout
+
+\begin_layout Standard
+TODO: genau beschreiben was wieso gemacht wird
+\end_layout
+
+\begin_layout Standard
+Ergebnisse sind brauchbar aber nicht sicher.
+ Fehlerkennungen kommen gelegentlich vor.
+\end_layout
+
+\begin_layout Subparagraph
+Vorteile
+\end_layout
+
+\begin_layout Itemize
+Ecken des Bildschirms wurden ungefähr erkannt, die meisten der dargestellten
+ Rechtecken auch.
+ 
+\end_layout
+
+\begin_layout Subparagraph
+Nachteile
+\end_layout
+
+\begin_layout Itemize
+Ich habe nur wenig Verbesserungspotenzial bei dieser Lösung gesehen, und
+ dieses wäre teuer zu erkaufen gewesen.
+ 
+\end_layout
+
+\begin_layout Itemize
+Da grosse Teile des Bildschirms umgefärbt wurden, gab es Probleme mit der
+ Belichtungskorrektur.
+ 
+\end_layout
+
+\begin_layout Itemize
+Zufällig verteilte Punkte sind für ein Mapping nicht gut brauchbar.
+\end_layout
+
+\begin_layout Itemize
+Die Farbkanäle waren schwierig sauber zu trennen und haben häufig Probleme
+ verursacht.
+ Überschneidungen waren sehr Problematisch.
+ 
+\end_layout
+
+\begin_layout Subparagraph
+Fazit
+\end_layout
+
+\begin_layout Standard
+Dieses Verfahren birgt zu viele Risiken und Aufgrund des kleinen Verbesserungspo
+tenzials lohnt es sich nicht, diesen Ansatz weiterzuverfolgen.
+\end_layout
+
+\begin_layout Paragraph
+Einfacher Differenzbildansatz
+\end_layout
+
+\begin_layout Standard
+TODO: genau beschreiben was wieso gemacht wird
+\end_layout
+
+\begin_layout Standard
+Es wird ein universeller Differenzbild-hintergrund verwendet.
+ Damit werden alle Bilder so dargestellt, wie sie sein sollten.
+\end_layout
+
+\begin_layout Subparagraph
+Vorteile
+\end_layout
+
+\begin_layout Itemize
+Es müssen weiger Bilder dargestellt werden.
+\end_layout
+
+\begin_layout Itemize
+Statische Störungen (Umgebung werden herausgefiltert.
+\end_layout
+
+\begin_layout Subparagraph
+Nachteile
+\end_layout
+
+\begin_layout Itemize
+Gleichmässige Lichtverhältnisse sind unmöglich einzuhalten.
+\end_layout
+
+\begin_layout Itemize
+Belichtungskorrektur kann grosse Probleme bereiten
+\end_layout
+
+\begin_layout Itemize
+Rauschen nimmt mit der Zeit zu
+\end_layout
+
+\begin_layout Subparagraph
+Fazit
+\end_layout
+
+\begin_layout Standard
+Solange wir keinen Zugriff auf die Konfiguration der Kamera haben, funktioniert
+ dieses Verfahren nicht.
+\end_layout
+
+\begin_layout Paragraph
+Histogramm-Analyse
+\end_layout
+
+\begin_layout Standard
+TODO: genau beschreiben was wieso gemacht wird
+\end_layout
+
+\begin_layout Standard
+Hierbei wird direkt mit Kamerabildern gearbeitet.
+ Die Bilder werden nach Helligkeitsverteilung analysiert.
+\end_layout
+
+\begin_layout Subparagraph
+Vorteile
+\end_layout
+
+\begin_layout Itemize
+Es müssen keine zusätzlichen Bilder dargestellt werden.
+\end_layout
+
+\begin_layout Subparagraph
+Nachteile
+\end_layout
+
+\begin_layout Itemize
+Die Farbverteilung ist in verschiedenen Bildregionen unterschiedlich.
+\end_layout
+
+\begin_layout Itemize
+Starkes Rauschen
+\end_layout
+
+\begin_layout Itemize
+Ungenaue Erkennung
+\end_layout
+
+\begin_layout Subparagraph
+Fazit
+\end_layout
+
+\begin_layout Standard
+Es werden höchstens Teile des Bildes richtig erkannt.
+ Unbrauchbar für uns.
+\end_layout
+
+\begin_layout Paragraph
+Histogramm-Analyse auf Bildausschnitten
+\end_layout
+
+\begin_layout Standard
+TODO: genau beschreiben was wieso gemacht wird
+\end_layout
+
+\begin_layout Standard
+Auch hierbei wird direkt mit Kamerabildern gearbeitet.
+ Die Bilder werden aufgeteilt, nach Helligkeitsverteilung analysiert und
+ wieder zusammengesetzt.
+\end_layout
+
+\begin_layout Subparagraph
+Vorteile
+\end_layout
+
+\begin_layout Itemize
+Es müssen keine zusätzlichen Bilder dargestellt werden.
+\end_layout
+
+\begin_layout Itemize
+Regionen mit unterschiedlichen Lichtverhältnissen werden gut korrigiert.
+\end_layout
+
+\begin_layout Itemize
+Zu erkennende Objekte werden erkannt
+\end_layout
+
+\begin_layout Subparagraph
+Nachteile
+\end_layout
+
+\begin_layout Itemize
+Noch stärkeres Rauschen
+\end_layout
+
+\begin_layout Itemize
+Unscharfe Kanten
+\end_layout
+
+\begin_layout Itemize
+Viele Fehlerkennungen
+\end_layout
+
+\begin_layout Itemize
+Unscharfe Übergänge
+\end_layout
+
+\begin_layout Subparagraph
+Fazit
+\end_layout
+
+\begin_layout Standard
+Dieses Verfahren funktioniert erkennt meist alle gesuchten Blobs.
+ Deren Erkennung ist aber nicht gut und die Kanten sind unscharf.
+ Das führt zu unkorrekten Werten.
+ Zudem müssen viele Fehlerkennungen herausgefiltert werden.
+ Brauchbar aber nicht optimal.
+\end_layout
+
+\begin_layout Paragraph
+Schachbrett-Muster
+\end_layout
+
+\begin_layout Standard
+Es werden nur Bilder projiziert, die eine identische Helligkeitsverteilung
+ aufweisen.
+\end_layout
+
+\begin_layout Subparagraph
+Vorteile
+\end_layout
+
+\begin_layout Itemize
+Die Belichtungskorrektur der Kamera macht keine Probleme mehr
+\end_layout
+
+\begin_layout Itemize
+Fast kein Rauschen vorhanden
+\end_layout
+
+\begin_layout Subparagraph
+Nachteile
+\end_layout
+
+\begin_layout Itemize
+Es müssen doppelt so viele Bilder projiziert werden, wie genutzt werden
+ können
+\end_layout
+
+\begin_layout Itemize
+Aufwändige Bildkonstruktion
+\end_layout
+
+\begin_layout Subparagraph
+Fazit
+\end_layout
+
+\begin_layout Standard
+Aufgrund der hohen stabilität verwenden wir dieses Verfahren.
+ Wir sind zudem nicht so stark auf Performance angewisesen.
+\end_layout
+
+\begin_layout Paragraph
+Bestehende Bibliotheken
+\end_layout
+
+\begin_layout Standard
+Es gibt die Möglichkeit, eine Kamerakalibration mit vollständiger Transformation
+smatrix (11 Freiheitsgrade) mit OpenCV vollautomatisch vornehmen zu lassen.
+ Diese Funktionalität konnte mit OpenCV nicht erfolgreich getestet werden.
+ Aufgrund dessen wurde schliesslich vollständig auf OpenCV verzichtet.
+\end_layout
+
+\begin_layout Subsubsection
+Abbildung & Interpolation
+\end_layout
+
+\begin_layout Standard
+Es wurden verschiedene Verfahren zur Beschreibung der Abbildungen erarbeitet.
+\end_layout
+
+\begin_layout Standard
+blablablabla
+\end_layout
+
+\begin_layout Standard
+blabla
 \end_layout
 
 \begin_layout Paragraph
@@ -1333,6 +1342,16 @@ Fazit
 \begin_layout Standard
 Dieser Algorithmus funktioniert etwas besser als der lineare Ansatz, ist
  aber weniger genau als der Integral-Ansatz
+\end_layout
+
+\begin_layout Subsubsection
+Optimierungen
+\end_layout
+
+\begin_layout Standard
+Da die Helligkeitskorrektur der Kamera sehr unberechenbar reagiert müssen
+ wir sehr ähnliche Bilder projizieren, da wir sonst nicht mit Differenzbilder
+ arbeiten können.
 \end_layout
 
 \begin_layout Subsection
@@ -1920,6 +1939,139 @@ Beim grafischen Framework haben wir uns für AForge entschieden, da es nativ
  gehabt.
  Da wir nur einen Prototypen produzieren, ist Performance für uns nicht
  besonders wichtig, was unsere Wahl ebenfalls beeinflusst hat.
+\end_layout
+
+\begin_layout Paragraph
+OpenCV
+\end_layout
+
+\begin_layout Standard
+OpenCV ist ein riesiges Produkt, das alle Möglichkeiten zur Bildanalyse
+ bietet.
+ Es gibt einen wrapper für C#, jedoch hat sich auch dieser in unseren Versuchen
+ als nicht besonders Einfach in der Benutzung herausgestellt.
+ 
+\end_layout
+
+\begin_layout Subparagraph
+Vorteile
+\end_layout
+
+\begin_layout Itemize
+Unglaublich breite Einsatztmöglichkeiten
+\end_layout
+
+\begin_layout Itemize
+Bietet native Unterstützung um eine Kamera zu kalibrieren.
+\end_layout
+
+\begin_layout Itemize
+Grosse Community
+\end_layout
+
+\begin_layout Itemize
+Sehr performant
+\end_layout
+
+\begin_layout Subparagraph
+Nachteile
+\end_layout
+
+\begin_layout Itemize
+Nutzung unter C# ist kompliziert
+\end_layout
+
+\begin_layout Itemize
+Miserable Dokumentation
+\end_layout
+
+\begin_layout Itemize
+Für eine Verwendung Out-of-the-Box müssen ca.
+ 600MB zusätzliche libraries eingebunden werden, selbst wenn diese nicht
+ benutzt werden.
+\end_layout
+
+\begin_layout Itemize
+Aufwand für Einarbeitung ist sehr gross
+\end_layout
+
+\begin_layout Itemize
+Algorithmen lassen sich nur geringfügig beeinflussen.
+\end_layout
+
+\begin_layout Itemize
+Es ist unklar, wie die Algorithmen genau funktionieren und eine Codeanalyse
+ ist unglaublich Zeitaufwändig.
+\end_layout
+
+\begin_layout Subparagraph
+Fazit
+\end_layout
+
+\begin_layout Standard
+Für unseren Prototypen ist OpenCV viel zu aufwändig und benötigt zu viel
+ Aufwand um das Framework zu verstehen und korrekt zu nutzen.
+\end_layout
+
+\begin_layout Paragraph
+AForge
+\end_layout
+
+\begin_layout Standard
+AForge bietet eine stabile Blob-Detektion, die zuverlässig funktioniert
+ und Attribute zur Analyse und Fehlerdetektion bieten.
+ Zudem funktieoniert das Anwenden von Filtern auf Bilder sehr zuverlässig
+ und intuitiv.
+\end_layout
+
+\begin_layout Subparagraph
+Vorteile
+\end_layout
+
+\begin_layout Itemize
+Es stehen viele Filter zur Verfügung
+\end_layout
+
+\begin_layout Itemize
+Blobs werden genau erkannt.
+\end_layout
+
+\begin_layout Itemize
+Die Berechnungen sind genügend performant.
+\end_layout
+
+\begin_layout Itemize
+Die Dokumentation ist sehr gut.
+\end_layout
+
+\begin_layout Itemize
+Der Code ist einfach zu verstehen.
+\end_layout
+
+\begin_layout Subparagraph
+Nachteile
+\end_layout
+
+\begin_layout Itemize
+Die Performance ist etwas schlechter als OpenCV
+\end_layout
+
+\begin_layout Itemize
+Der Code enhält noch kleine Bugs
+\end_layout
+
+\begin_layout Itemize
+Der Entwickler kümmert sich nicht gut um das Projekt.
+\end_layout
+
+\begin_layout Subparagraph
+Fazit
+\end_layout
+
+\begin_layout Standard
+Für einen Prototypen ist die Nutztung von AForge ideal aufgrund der kurzen
+ Einarbeitungszeit.
+ Für ein Release sollt dies Entscheidung allerdings nochmals überdenkt werden.
 \end_layout
 
 \begin_layout Subsection
