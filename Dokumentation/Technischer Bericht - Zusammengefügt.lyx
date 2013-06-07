@@ -665,7 +665,8 @@ status open
 \begin_inset Caption
 
 \begin_layout Plain Layout
-Kleines Gekritzel macht Spass - Trotz der tiefen Auflösung von 640x480 Pixel
+Kleines Gekritzel macht Spass - Trotz der tiefen Tracking-Auflösung von
+ 640x480 Pixel.
 \end_layout
 
 \end_inset
@@ -700,6 +701,135 @@ Im Folgenden werden Überlegungen zur Beziehung Beamer-Kamera und zu den
  werden können.
  Es wird auf Kamerakalibrierung und Bildverarbeitungsschritte eingegangen.
  Dazu werden eigene Algorithmen beschrieben und analysiert.
+\end_layout
+
+\begin_layout Paragraph
+Begriffe
+\end_layout
+
+\begin_layout Standard
+Im folgenden wird jeweils von Beamerbild und Kamerabild gesprochen.
+ Das Beamerbild beschreibt das ursprüngliche Bild, welches projiziert wird.
+ Es besitzt die Auflösung des Beamers.
+ Das Kamerabild ist das von der Kamera aufgenommene Bild.
+ Es besitzt die Auflösung der Kamera.
+ Auf dem Kamerabild ist die Projektion des Beamerbilder verzerrt sichtbar.
+ Ein Stift soll auf diesem verzerrten Bild gefunden und auf das rücktransformier
+te Beamerbild abgebildet werden.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename Bilder/Camera/Transformation/beamer-grid.jpg
+	lyxscale 20
+	width 85col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Zu projizierendes Beamerbild
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename Bilder/Camera/Transformation/camera-grid.png
+	lyxscale 20
+	width 85col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Das Kamerabild enthält das verzerrte Beamerbild
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename Bilder/Camera/Transformation/backtransformed-grid.png
+	lyxscale 20
+	width 85col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Das im Kamerabild gefundene und auf die Beamerauflösung rücktransformierte
+ entzerrte Beamerbild
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsection
@@ -1227,7 +1357,10 @@ Linear
 \end_layout
 
 \begin_layout Standard
-Dieser Ansatz berücksichtigt keine Perspektivische Verzerrung.
+Der lineare Ansatz berücksichtigt weder perspektivische Verzerrung noch
+ Linseneffekte.
+ Es wird angenommen, dass die zwei vertikalen Seiten des projizierten Beamerbild
+er im Kamerabild annähernd parallel sind.
 \end_layout
 
 \begin_layout Subparagraph
@@ -1400,12 +1533,13 @@ Dieser Algorithmus funktioniert etwas besser als der lineare Ansatz, ist
 \end_layout
 
 \begin_layout Subsubsection
-Optimierungen
+Projizieren und Messen
 \end_layout
 
 \begin_layout Standard
-Für die Kalibrierung projizierte Referenzbilder haben Einfluss auf den automatis
-chen Weissabgleich der Kamera.
+Die Lichtverhältnisse sind entscheidend für eine erfolgreiche Messungen.
+ Für die Kalibrierung projizierte Referenzbilder haben Einfluss auf den
+ automatischen Weissabgleich der Kamera.
  Grosse Helligkeitswerte im projizierten Bild verursachen schnelles Abdunkeln
  des Kamerabildes, tiefe Helligkeitswerte das Gegenteil.
  Es kann nicht genau vorausgesagt werden, wie die Kamera auf Helligkeitsuntersch
@@ -1414,7 +1548,17 @@ iede reagiert.
 der.
  Der hier beschriebene Effekt kann minimiert werden, wenn nur Bilder mit
  im Mittel ähnlichen Helligkeitswerten verwendet werden.
- Die schlussendlich verwendete Methode verwendet ein Schachbrettmuster.
+ Die schlussendlich eingesetzte Lösung verwendet zwei Schachbrettmuster,
+ deren Durchschnittshelligkeiten beinahe gleich sind.
+ Die Kamera passt den Weissabgleich kaum an.
+ Dies wird unter 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Schachbrett-Differenz"
+
+\end_inset
+
+ genauer beschrieben.
 \end_layout
 
 \begin_layout Standard
@@ -1500,7 +1644,7 @@ reference "fig:diff-fail-pictures"
 
 \end_inset
 
- resultierendede Differenzbild ist für die Leinwanddetektion kaum brauchbar.
+ resultierende Differenzbild ist für die Leinwanddetektion kaum brauchbar.
 \end_layout
 
 \end_inset
@@ -1644,6 +1788,7 @@ sideways false
 status open
 
 \begin_layout Plain Layout
+\align center
 \begin_inset Graphics
 	filename Bilder/PenTracking/LightPoints/theory/light-point.png
 	scale 200
@@ -1688,6 +1833,7 @@ sideways false
 status open
 
 \begin_layout Plain Layout
+\align center
 \begin_inset Graphics
 	filename Bilder/PenTracking/LightPoints/two-blobs/frame1.png
 
@@ -1752,6 +1898,7 @@ sideways false
 status open
 
 \begin_layout Plain Layout
+\align center
 \begin_inset Graphics
 	filename Bilder/PenTracking/LightPoints/theory/light-point - thresholded.png
 	scale 200
@@ -2472,6 +2619,13 @@ Nach jedem Zeichnen wird 100 ms gewartet bevor die Semaphore freigegeben
 
 \begin_layout Subsection
 Umsetzung: Schachbrett-Differenzbilder
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Schachbrett-Differenz"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
