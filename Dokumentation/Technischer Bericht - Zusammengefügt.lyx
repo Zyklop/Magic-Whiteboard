@@ -65,6 +65,41 @@
 Presentation Writer
 \end_layout
 
+\begin_layout Author
+Renato Bosshart, Josua Schmid
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename Bilder/Setup/writing.jpg
+	lyxscale 20
+	width 85col%
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace bigskip
+\end_inset
+
+
+\end_layout
+
 \begin_layout Abstract
 Es wird eine neue digitale Whiteboard-Technologie beschrieben.
  Während herkömmliche digitale Whiteboards viel Geld kosten, verspricht
