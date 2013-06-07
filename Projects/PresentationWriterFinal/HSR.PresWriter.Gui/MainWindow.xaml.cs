@@ -123,13 +123,19 @@ namespace HSR.PresWriter.Gui
             PosTxt.Text = e.Frame.Point.ToString();
             if (_emulating)
             {
-                _emulator.NewPoint(e.Frame.Point);
+                if(e.Frame == null)
+                    _emulator.NoData();
+                else
+                    _emulator.NewPoint(e.Frame.Point);
             }
         }
 
         private void CalibrationComplete(object sender, EventArgs e)
         {
-            EmuBtn.IsEnabled = true;
+            if (Dispatcher.CheckAccess())
+                EmuBtn.IsEnabled = true;
+            else
+                Dispatcher.Invoke(() => EmuBtn.IsEnabled = true);
         }
 
         private void StartEmu(object sender, RoutedEventArgs e)
