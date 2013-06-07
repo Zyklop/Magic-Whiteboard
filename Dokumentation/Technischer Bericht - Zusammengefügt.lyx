@@ -1540,6 +1540,53 @@ x_{b}=\frac{\sqrt{a^{2}+2x_{k}(b-a)}-a}{b-a}
 \end_layout
 
 \begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Diagramme/Mathematik/xk-aus-xb-quadratisch.emf
+	lyxscale 20
+	width 100col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+In der Mitte weich die perspektivische Verzerung mehr vom linearen Ansatz
+ ab als am Rand (hier: 
+\begin_inset Formula $a=2$
+\end_inset
+
+, 
+\begin_inset Formula $b=1$
+\end_inset
+
+).
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
 Für die Abbildung der Y-Koordinaten wird ein von X abhängiger linearer Ansatz
  verwendet.
  
