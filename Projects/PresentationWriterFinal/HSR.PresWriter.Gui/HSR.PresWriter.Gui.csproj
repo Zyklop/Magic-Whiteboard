@@ -55,8 +55,16 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ImageArgs.cs" />
+    <Compile Include="ImagePreview.xaml.cs">
+      <DependentUpon>ImagePreview.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Settings.cs" />
     <Compile Include="Tools.cs" />
+    <Page Include="ImagePreview.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -120,6 +128,10 @@
     <ProjectReference Include="..\Parser\HSR.PresWriter.PenTracking.csproj">
       <Project>{c9d79db6-72b8-461a-b725-8fee1dc05eb6}</Project>
       <Name>HSR.PresWriter.PenTracking</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Visualizer\HSR.PresWriter.Visualizer.csproj">
+      <Project>{9674E9A0-EC6B-44D9-9700-85B6ACF9A5FB}</Project>
+      <Name>HSR.PresWriter.Visualizer</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

@@ -20,30 +20,59 @@ namespace HSR.PresWriter.ImageVisualizer
 
         public void AddRect(int x, int y, int width, int height, Color c)
         {
-            var t = new Thread(() =>
-                {
-                    if (Dispatcher.CheckAccess())
+            if (Dispatcher.Thread.GetApartmentState() != ApartmentState.STA)
+            {
+                var t = new Thread(() =>
+                    {
+                        if (Dispatcher.CheckAccess())
+                            MainGrid.Children.Add(new Rectangle
+                                {
+                                    Width = width,
+                                    Height = height,
+                                    Margin = new Thickness(x, y, 0, 0),
+                                    Fill = new SolidColorBrush(c)
+                                });
+                        else
+                            Dispatcher.Invoke(() =>
+                                {
+                                    MainGrid.Children.Add(new Rectangle
+                                        {
+                                            VerticalAlignment = VerticalAlignment.Top,
+                                            HorizontalAlignment = HorizontalAlignment.Left,
+                                            Width = width,
+                                            Height = height,
+                                            Margin = new Thickness(x, y, 0, 0),
+                                            Fill = new SolidColorBrush(c)
+                                        });
+                                });
+                    });
+                t.SetApartmentState(ApartmentState.STA);
+                t.Start();
+            }
+            else
+            {
+                if (Dispatcher.CheckAccess())
+                    MainGrid.Children.Add(new Rectangle
+                    {
+                        Width = width,
+                        Height = height,
+                        Margin = new Thickness(x, y, 0, 0),
+                        Fill = new SolidColorBrush(c)
+                    });
+                else
+                    Dispatcher.Invoke(() =>
+                    {
                         MainGrid.Children.Add(new Rectangle
-                                    {
-                                        Width = width,
-                                        Height = height,
-                                        Margin = new Thickness(x, y, 0, 0),
-                                        Fill = new SolidColorBrush(c)
-                                    });
-                    else
-                        Dispatcher.Invoke(() =>
-                            {
-                                MainGrid.Children.Add(new Rectangle
-                                    {
-                                        Width = width,
-                                        Height = height,
-                                        Margin = new Thickness(x, y, 0, 0),
-                                        Fill = new SolidColorBrush(c)
-                                    });
-                            });
-                });
-            t.SetApartmentState(ApartmentState.STA);
-            t.Start();
+                        {
+                            VerticalAlignment = VerticalAlignment.Top,
+                            HorizontalAlignment = HorizontalAlignment.Left,
+                            Width = width,
+                            Height = height,
+                            Margin = new Thickness(x, y, 0, 0),
+                            Fill = new SolidColorBrush(c)
+                        });
+                    });
+            }
         }
 
         public void Clear()

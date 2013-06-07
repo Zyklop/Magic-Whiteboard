@@ -2,9 +2,10 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="PresentationWriter" Height="200" Width="800" WindowStyle="None" ResizeMode="NoResize"
-        WindowStartupLocation="Manual" Left="0" Top="500" Topmost="True">
+        WindowStartupLocation="Manual" Left="0" Top="500">
     <Grid>
         <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="Auto"/>
@@ -14,9 +15,15 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <ComboBox Name="CameraBox" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-        <Button Content="Show Camera Config" HorizontalAlignment="Center" VerticalAlignment="Center" Click="ShowConfig" Grid.Row="1"/>
-        <ToggleButton Name="MirrorBtn" Content="Mirror Camera" Click="MirrorCam" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="2"/>
-        <Image Name="CameraImage" MouseUp="ShowImage" MaxHeight="200" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.RowSpan="3" Grid.Column="2"/>
+        <ComboBox Name="CameraBox" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
+        <Button Content="Show Camera Config" HorizontalAlignment="Stretch" VerticalAlignment="Center" Click="ShowConfig" Grid.Row="1"/>
+        <ToggleButton Name="MirrorBtn" Content="Mirror Camera" Click="MirrorCam" HorizontalAlignment="Stretch" VerticalAlignment="Center" Grid.Row="2"/>
+        <Button Content="Start Calibration" Click="StartCalib" HorizontalAlignment="Stretch" VerticalAlignment="Center" Grid.Column="1"/>
+        <ToggleButton Name="EmuBtn"  Content="Start Input Emulation" Click="StartEmu" HorizontalAlignment="Stretch" VerticalAlignment="Center" IsEnabled="False" Grid.Column="2"/>
+        <StackPanel Grid.Row="1" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <TextBlock Text="Position of the Pen:"/>
+            <TextBlock Name="PosTxt"/>
+        </StackPanel>
+        <Image Name="CameraImage" MouseUp="ShowImage" MaxHeight="200" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.RowSpan="3" Grid.Column="3"/>
     </Grid>
 </Window>
