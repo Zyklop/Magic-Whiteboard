@@ -106,8 +106,7 @@ Es wird eine neue digitale Whiteboard-Technologie beschrieben.
  das in dieser Arbeit entwickelte System eine günstige Alternative.
  Es wird gezeigt, dass Standardhardware und einfache Algorithmen mit der
  Genauigkeit von herkömmlichen Produkten konkurrenzieren können.
- Mit einem selbst entwickelten günstigen Stift emuliert die hier beschriebene
- Software 
+ Mit einem selbst entwickelten günstigen Stift emuliert die Software 
 \begin_inset Quotes gld
 \end_inset
 
@@ -248,12 +247,18 @@ Problemstellung
 \end_layout
 
 \begin_layout Standard
-Sowohl bei der verwendeten Hardware als auch bei der Art und Weise wie die
- Software benutzt werden kann, gibt es Einschränkungen.
+Diese Arbeit stellt sich verschiedenen Herausforderungen.
+ Es soll ein günstiger Stift von einer Standardkamera mittels eines Standardbeam
+ers gefunden und erkannt werden können.
+ Sowohl bei der dazu verwendeten Hardware als auch bei der Art und Weise
+ wie die hier entwickelte Software benutzt werden kann, gibt es Einschränkungen.
  Obwohl das erarbeitete Präsentationssystem zum Ziel hat, einschneidende
  Beschränkungen zu vermeiden, gibt es doch verschiedene Grenzen, die von
  Anfang an definiert sind und als nicht überwindbar gelten.
  Grundsätzlich sind sie physischer und physikalischer Art.
+ Im Folgenden werden die Probleme kurz diskutiert.
+ Für einen besseren Überblick wird zum Teil kurz angeschnitten wie das jeweilige
+ Problem gelöst werden soll.
 \end_layout
 
 \begin_layout Subsubsection
@@ -1199,23 +1204,22 @@ Abbildung & Interpolation
 \end_layout
 
 \begin_layout Standard
-Es wurden verschiedene Verfahren zur Beschreibung der Abbildung 
+Um einen Stift zu tracken ist es notwendig, dass im Kamerabild gefundene
+ Punkte auf ursprüngliche Punkte im projizierten Bild (Beamerbild) abgebildet
+ werden können (
 \shape italic
-Kamera 
+Kamerakoordinaten
 \begin_inset Formula $\rightarrow$
 \end_inset
 
-Beamer
+Beamerkoordinaten
 \shape default
- erarbeitet.
-\end_layout
-
-\begin_layout Standard
-blablablabla
-\end_layout
-
-\begin_layout Standard
-blabla
+).
+ In der Praxis wird dies aufgrund von Beschränkungen wie der tiefen Kameraauflös
+ung und der grösse des Stiftes nicht perfekt möglich sein.
+ Es gilt eine Funktion zu finden, welche diese Abbildung möglichst gut annähert.
+ Dazu wurden verschiedene Ansätze analysiert, welche im Folgenden beschrieben
+ werden.
 \end_layout
 
 \begin_layout Paragraph
