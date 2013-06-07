@@ -716,6 +716,17 @@ Im folgenden wird jeweils von Beamerbild und Kamerabild gesprochen.
  Auf dem Kamerabild ist die Projektion des Beamerbilder verzerrt sichtbar.
  Ein Stift soll auf diesem verzerrten Bild gefunden und auf das rücktransformier
 te Beamerbild abgebildet werden.
+ Diese Abbildung wird jeweils beschrieben durch 
+\begin_inset Formula $\left(x_{Kamera},y_{Kamera}\right)\rightarrow\left(x_{Beamer},y_{Beamer}\right)$
+\end_inset
+
+ oder kürzer durch 
+\begin_inset Formula $\left(x_{k},y_{k}\right)\rightarrow\left(x_{b},y_{b}\right)$
+\end_inset
+
+.
+ Die X-Koordinate läuft im Bild von Links nach rechts.
+ Die Y-Koordinate läuft von oben nach unten.
 \end_layout
 
 \begin_layout Standard
@@ -1361,6 +1372,12 @@ Der lineare Ansatz berücksichtigt weder perspektivische Verzerrung noch
  Linseneffekte.
  Es wird angenommen, dass die zwei vertikalen Seiten des projizierten Beamerbild
 er im Kamerabild annähernd parallel sind.
+ Für die Abbildung der X-Koordinaten wird eine Gerade in Abhängigkeit von
+ Y von links nach rechts durch das verzerrte Beamerbild gelegt.
+\end_layout
+
+\begin_layout Standard
+TODO: Mathematisch mit Grafiken die Abbildung in beide Richtungen erklären!!!
 \end_layout
 
 \begin_layout Subparagraph
@@ -1400,6 +1417,132 @@ Dieser Ansatzt war gut für einen schnellen Test.
  Wenn keine Perspektivische Verzerrung vorhanden ist, funktioniert er relativ
  gut.
  Das ist jedoch nicht Realtitätsnah.
+\end_layout
+
+\begin_layout Paragraph
+Zweidimensional per Integration
+\end_layout
+
+\begin_layout Standard
+Der schlussendlich in der Software verwendete Ansatz zur Punktabbildung
+ berücksichtigt die perspektivische Verzerrung in X-Richtung.
+ Dafür wird ein vereinfachtes zweidimensionales Lochkameramodel verwendet.
+ Der leichtere Einstieg bietet die Abbildung von Beamer zu Kamera.
+ Die mathematische Umkehrung wird erst nach der nun folgenden Herleitung
+ gemacht.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename Diagramme/Mathematik/2d-ansatz-lochkamera.emf
+	lyxscale 20
+	width 85col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Vereinfachtes Lochkameramodell - Es wird über die Strecke das Beamerbild
+ in X-Richtung integriert.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Die Abbildungsfunktion 
+\shape italic
+Beamer
+\begin_inset Formula $\rightarrow$
+\end_inset
+
+Kamera
+\shape default
+ benutzt die Tatsache, dass Strecken von Beamerbild zu Kamerabild verschieden
+ aber herleitbar verschieden verzerrt sind.
+ Konkret wird benutzt, dass eine Strecke links auf dem Beamerbild um einen
+ Faktor 
+\begin_inset Formula $a$
+\end_inset
+
+ gestreckt oder gestaucht auf das Kamerabild abgebildet wird.
+ Auf der rechten Seite des Beamerbildes ist dies ein anderer Faktor 
+\begin_inset Formula $b$
+\end_inset
+
+.
+ Über die X-Koordinaten des Beamerbildes kann nun ein Integral definiert
+ werden, welches diese Abbildung von links nach recht durchläuft und all
+ diese Streckungen/Stauchungen indefinitdesimal aufsummiert bis zur Beamerpositi
+on 
+\begin_inset Formula $x_{b}$
+\end_inset
+
+, die gesucht ist.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+x_{k}=\intop_{0}^{x}a\left(1-x_{b}\right)+bx_{b}\delta x_{b}=\frac{1}{2}\left(b-a\right)x_{b}^{2}+ax_{b}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Die Mathematische Umkehrfunktion bildet jedes 
+\begin_inset Formula $x_{k}$
+\end_inset
+
+ auf ein 
+\begin_inset Formula $x_{b}$
+\end_inset
+
+ ab und ist folgendermassen definiert.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+x_{b}=\frac{\sqrt{a^{2}+2x_{k}(b-a)}-a}{b-a}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Für die Abbildung der Y-Koordinaten wird ein von X abhängiger linearer Ansatz
+ verwendet.
+ 
 \end_layout
 
 \begin_layout Paragraph
