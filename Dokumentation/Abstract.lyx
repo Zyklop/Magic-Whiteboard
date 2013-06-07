@@ -89,10 +89,8 @@ Am Anfang wird wie gewohnt der Beamer an ein Notebook angeschlossen.
  Danach wird die Webcam auf die Projektion ausgrichtet und nach einer kurzen
  Kalibrierung der Kamera wird der Stift wird optisch erkannt und verfolgt.
  Es wurden diverse Ansätze untersucht, wie der Stift auf dem Kamerabild
- erkannt und der entsprechenden Position auf dem Beamerbild zugeordnet werden
- kann.
- Mit der Weiterentwicklung bestehender Algorithmen konnten wir diese auf
- unsere Befürfnisse anpassen.
+ erkannt und der entsprechenden Position auf dem ursprünglichen Beamerbild
+ zugeordnet werden kann.
 \end_layout
 
 \begin_layout Standard
@@ -112,10 +110,10 @@ Mit Messungen wurde festgestell, dass der Stift (Lichtpunkt) auf einer Präsenta
 ion sehr gut erkannt werden kann.
  Mit einer normalen Webcam kann mit einer Genauigkeit von ca.
  4 Pixel gezeichnet werden.
- Die Genauigkeit ist so gut, dass wir sogar genaue Mausklicks ausführen
- kann.
- Eine weitere Untersuchung beschäftigt sich damit, das virtuelle Whiteboard
- ohne Stift nur mit der Hand zu bedienen, um eine Gestenerkennung zu ermöglichen.
+ Die Genauigkeit ist genug gut um präzise Mausklicks auszuführen.
+ Eine weitergehende Untersuchung beschäftigt sich damit, das virtuelle Whiteboar
+d ohne Stift nur mit der Hand zu bedienen, um eine Gestenerkennung zu ermögliche
+n.
  Gerade die Bedienung als Touchpanel beinhaltet viel Potential, da Betriebsystem
 hersteller wie Apple und Microsoft ihre Produkte auf volle Touchunterstützung
  auslegen.
