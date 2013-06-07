@@ -72,8 +72,8 @@ Ausgangslage
 Herkömmliche digitale Whiteboards benötigen spezielle Hardware und sind
  teuer.
  Das Ziel dieser Arbeit ist die Entwicklung eines günstigen mobilen Whiteboards.
- Für dessen Betrieb werden lediglich ein Standard Beamer und ein Laptop
- mit Webcam benötigt.
+ Für dessen Betrieb werden lediglich ein Beamer und ein Laptop mit Webcam
+ benötigt.
  Mit einem speziellen Stift, der sehr billig zu produzieren ist, kann dann
  direkt auf die Leinwand geschrieben werden.
  Präsentationen im Sitzungsraum oder vor einer Schulklasse werden dadurch
@@ -89,8 +89,8 @@ Am Anfang wird wie gewohnt der Beamer an ein Notebook angeschlossen.
  Danach wird die Webcam auf die Projektion ausgrichtet und nach einer kurzen
  Kalibrierung der Kamera wird der Stift wird optisch erkannt und verfolgt.
  Es wurden diverse Ansätze untersucht, wie der Stift auf dem Kamerabild
- erkannt und der entsprechenden Position auf dem ursprünglichen Beamerbild
- zugeordnet werden kann.
+ erkannt und der entsprechenden Position auf dem Bildschirm zugeordnet werden
+ kann.
 \end_layout
 
 \begin_layout Standard
@@ -114,9 +114,8 @@ ion sehr gut erkannt werden kann.
  Eine weitergehende Untersuchung beschäftigt sich damit, das virtuelle Whiteboar
 d ohne Stift nur mit der Hand zu bedienen, um eine Gestenerkennung zu ermögliche
 n.
- Gerade die Bedienung als Touchpanel beinhaltet viel Potential, da Betriebsystem
-hersteller wie Apple und Microsoft ihre Produkte auf volle Touchunterstützung
- auslegen.
+ Gerade die Bedienung als Touchpanel beinhaltet viel Potential, da Hersteller
+ wie Apple und Microsoft ihre Produkte auf volle Touchunterstützung auslegen.
  So kann zum Beispiel das ganze Windows 8 Konzept auf die Bedienung mit
  einer Beamerpräsentation übertragen werden.
 \end_layout
