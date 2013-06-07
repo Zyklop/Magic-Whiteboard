@@ -1,6 +1,6 @@
 ﻿using System.Drawing;
 
-namespace Visualizer
+namespace HSR.PresWriter.Visualizer
 {
     public interface IVisualizerControl
     {

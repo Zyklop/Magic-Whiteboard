@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace InputEmulation
+namespace HSR.PresWriter.InputEmulation
 {
     public class Pen : IInputMethod
     {

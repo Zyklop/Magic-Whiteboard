@@ -49,9 +49,9 @@ namespace HSR.PresWriter.DataSources.Cameras
 
         public void Start()
         {
-            IsRunning = true;
-            _finalVideo.NewFrame += finalVideo_NewFrame;
             _finalVideo.Start();
+            _finalVideo.NewFrame += finalVideo_NewFrame;
+            IsRunning = true;
         }
 
         public void Stop()

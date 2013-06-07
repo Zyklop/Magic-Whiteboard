@@ -2,10 +2,10 @@
 using System.Threading;
 using System.Windows;
 using System.Windows.Media;
+using HSR.PresWriter.Visualizer;
 using Point = System.Drawing.Point;
-using Visualizer;
 
-namespace ImageVisualizer
+namespace HSR.PresWriter.ImageVisualizer
 {
     public class VisualizerControl:IVisualizerControl
     {

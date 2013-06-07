@@ -6,7 +6,7 @@ using System.Linq;
 using System.Windows.Forms;
 using HSR.PresWriter.Common;
 
-namespace InputEmulation
+namespace HSR.PresWriter.InputEmulation
 {
     internal class AdvancedMouseEmulator : IAdvancedInputEmulator
     {

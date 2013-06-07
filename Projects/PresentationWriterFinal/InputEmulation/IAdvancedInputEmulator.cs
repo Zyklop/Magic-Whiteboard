@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace InputEmulation
+namespace HSR.PresWriter.InputEmulation
 {
     public interface IAdvancedInputEmulator
     {

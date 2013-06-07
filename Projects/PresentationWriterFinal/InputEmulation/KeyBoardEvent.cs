@@ -1,7 +1,7 @@
 ﻿using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
-namespace InputEmulation
+namespace HSR.PresWriter.InputEmulation
 {
     class KeyBoardEvent
     {

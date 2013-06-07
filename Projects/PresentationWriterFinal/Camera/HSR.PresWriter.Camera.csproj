@@ -104,9 +104,9 @@
       <Project>{1386f52b-ab44-46f8-b442-ec2662df1e3a}</Project>
       <Name>HSR.PresWriter</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Visualizer\Visualizer.csproj">
+    <ProjectReference Include="..\Visualizer\HSR.PresWriter.Visualizer.csproj">
       <Project>{9674E9A0-EC6B-44D9-9700-85B6ACF9A5FB}</Project>
-      <Name>Visualizer</Name>
+      <Name>HSR.PresWriter.Visualizer</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

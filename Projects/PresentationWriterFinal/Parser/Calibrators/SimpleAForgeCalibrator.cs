@@ -9,9 +9,8 @@ using AForge.Imaging;
 using AForge.Imaging.Filters;
 using AForge.Math.Geometry;
 using HSR.PresWriter.Common.IO;
-using PresWriter.Common.IO;
+using HSR.PresWriter.Visualizer;
 using PresWriter.Common.IO.Events;
-using Visualizer;
 using Point = System.Drawing.Point;
 
 namespace HSR.PresWriter.PenTracking.Calibrators

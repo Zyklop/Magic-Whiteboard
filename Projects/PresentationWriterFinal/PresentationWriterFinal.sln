@@ -5,15 +5,17 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HSR.PresWriter.PenTracking"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HSR.PresWriter.Camera", "Camera\HSR.PresWriter.Camera.csproj", "{C7BC83D8-DDFF-4B93-B747-22C8C2CCD812}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImageVisualizer", "ImageVisualizer\ImageVisualizer.csproj", "{3AF7E3B7-7ED1-4F0D-9426-58150F6697F8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HSR.PresWriter.ImageVisualizer", "ImageVisualizer\HSR.PresWriter.ImageVisualizer.csproj", "{3AF7E3B7-7ED1-4F0D-9426-58150F6697F8}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{16DDBE5B-F38A-414C-A0D4-5388BE957A33}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Visualizer", "Visualizer\Visualizer.csproj", "{9674E9A0-EC6B-44D9-9700-85B6ACF9A5FB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HSR.PresWriter.Visualizer", "Visualizer\HSR.PresWriter.Visualizer.csproj", "{9674E9A0-EC6B-44D9-9700-85B6ACF9A5FB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HSR.PresWriter", "Common\HSR.PresWriter.csproj", "{1386F52B-AB44-46F8-B442-EC2662DF1E3A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InputEmulation", "InputEmulation\InputEmulation.csproj", "{EBE618E1-865A-477B-BE85-4F9ECBC31551}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HSR.PresWriter.InputEmulation", "InputEmulation\HSR.PresWriter.InputEmulation.csproj", "{EBE618E1-865A-477B-BE85-4F9ECBC31551}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HSR.PresWriter.Gui", "HSR.PresWriter.Gui\HSR.PresWriter.Gui.csproj", "{436FF6F5-18F6-492E-9253-CF90B9D8A4BE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{EBE618E1-865A-477B-BE85-4F9ECBC31551}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EBE618E1-865A-477B-BE85-4F9ECBC31551}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EBE618E1-865A-477B-BE85-4F9ECBC31551}.Release|Any CPU.Build.0 = Release|Any CPU
+		{436FF6F5-18F6-492E-9253-CF90B9D8A4BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{436FF6F5-18F6-492E-9253-CF90B9D8A4BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{436FF6F5-18F6-492E-9253-CF90B9D8A4BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{436FF6F5-18F6-492E-9253-CF90B9D8A4BE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

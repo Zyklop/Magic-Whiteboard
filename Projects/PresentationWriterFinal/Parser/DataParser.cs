@@ -4,7 +4,7 @@ using HSR.PresWriter.PenTracking.Calibrators;
 using HSR.PresWriter.PenTracking.Events;
 using HSR.PresWriter.PenTracking.Mappers;
 using HSR.PresWriter.PenTracking.Strategies;
-using Visualizer;
+using HSR.PresWriter.Visualizer;
 
 namespace HSR.PresWriter.PenTracking
 {

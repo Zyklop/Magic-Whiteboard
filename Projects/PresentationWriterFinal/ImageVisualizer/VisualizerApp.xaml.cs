@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace ImageVisualizer
+namespace HSR.PresWriter.ImageVisualizer
 {
     /// <summary>
     /// Interaction logic for VisualizerApp.xaml
@@ -9,7 +9,7 @@ namespace ImageVisualizer
     {
         public VisualizerApp()
         {
-            CalibratorWindow = new CalibratorWindow();
+            CalibratorWindow = new CalibratorWindow {Topmost = true};
             CalibratorWindow.Show();
             CalibratorWindow.Hide();
         }

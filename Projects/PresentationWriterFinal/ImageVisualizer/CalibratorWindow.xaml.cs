@@ -3,7 +3,7 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Shapes;
 
-namespace ImageVisualizer
+namespace HSR.PresWriter.ImageVisualizer
 {
     /// <summary>
     /// Interaction logic for CalibratorWindow.xaml

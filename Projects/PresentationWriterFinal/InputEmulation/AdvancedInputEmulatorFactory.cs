@@ -1,4 +1,4 @@
-﻿namespace InputEmulation
+﻿namespace HSR.PresWriter.InputEmulation
 {
     public static class AdvancedInputEmulatorFactory
     {

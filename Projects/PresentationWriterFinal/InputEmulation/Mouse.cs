@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
-namespace InputEmulation
+namespace HSR.PresWriter.InputEmulation
 {
     public class Mouse
     {

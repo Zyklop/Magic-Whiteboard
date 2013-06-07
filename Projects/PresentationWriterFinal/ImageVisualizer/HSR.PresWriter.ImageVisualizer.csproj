@@ -96,9 +96,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Visualizer\Visualizer.csproj">
+    <ProjectReference Include="..\Visualizer\HSR.PresWriter.Visualizer.csproj">
       <Project>{9674e9a0-ec6b-44d9-9700-85b6acf9a5fb}</Project>
-      <Name>Visualizer</Name>
+      <Name>HSR.PresWriter.Visualizer</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
