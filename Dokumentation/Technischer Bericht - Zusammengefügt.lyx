@@ -106,8 +106,7 @@ Es wird eine neue digitale Whiteboard-Technologie beschrieben.
  das in dieser Arbeit entwickelte System eine günstige Alternative.
  Es wird gezeigt, dass Standardhardware und einfache Algorithmen mit der
  Genauigkeit von herkömmlichen Produkten konkurrenzieren können.
- Mit einem selbst entwickelten günstigen Stift emuliert die hier beschriebene
- Software 
+ Mit einem selbst entwickelten günstigen Stift emuliert die Software 
 \begin_inset Quotes gld
 \end_inset
 
@@ -248,12 +247,18 @@ Problemstellung
 \end_layout
 
 \begin_layout Standard
-Sowohl bei der verwendeten Hardware als auch bei der Art und Weise wie die
- Software benutzt werden kann, gibt es Einschränkungen.
+Diese Arbeit stellt sich verschiedenen Herausforderungen.
+ Es soll ein günstiger Stift von einer Standardkamera mittels eines Standardbeam
+ers gefunden und erkannt werden können.
+ Sowohl bei der dazu verwendeten Hardware als auch bei der Art und Weise
+ wie die hier entwickelte Software benutzt werden kann, gibt es Einschränkungen.
  Obwohl das erarbeitete Präsentationssystem zum Ziel hat, einschneidende
  Beschränkungen zu vermeiden, gibt es doch verschiedene Grenzen, die von
  Anfang an definiert sind und als nicht überwindbar gelten.
  Grundsätzlich sind sie physischer und physikalischer Art.
+ Im Folgenden werden die Probleme kurz diskutiert.
+ Für einen besseren Überblick wird zum Teil kurz angeschnitten wie das jeweilige
+ Problem gelöst werden soll.
 \end_layout
 
 \begin_layout Subsubsection
@@ -1199,23 +1204,22 @@ Abbildung & Interpolation
 \end_layout
 
 \begin_layout Standard
-Es wurden verschiedene Verfahren zur Beschreibung der Abbildung 
+Um einen Stift zu tracken ist es notwendig, dass im Kamerabild gefundene
+ Punkte auf ursprüngliche Punkte im projizierten Bild (Beamerbild) abgebildet
+ werden können (
 \shape italic
-Kamera 
+Kamerakoordinaten
 \begin_inset Formula $\rightarrow$
 \end_inset
 
-Beamer
+Beamerkoordinaten
 \shape default
- erarbeitet.
-\end_layout
-
-\begin_layout Standard
-blablablabla
-\end_layout
-
-\begin_layout Standard
-blabla
+).
+ In der Praxis wird dies aufgrund von Beschränkungen wie der tiefen Kameraauflös
+ung und der grösse des Stiftes nicht perfekt möglich sein.
+ Es gilt eine Funktion zu finden, welche diese Abbildung möglichst gut annähert.
+ Dazu wurden verschiedene Ansätze analysiert, welche im Folgenden beschrieben
+ werden.
 \end_layout
 
 \begin_layout Paragraph
@@ -1400,9 +1404,117 @@ Optimierungen
 \end_layout
 
 \begin_layout Standard
-Da die Helligkeitskorrektur der Kamera sehr unberechenbar reagiert müssen
- wir sehr ähnliche Bilder projizieren, da wir sonst nicht mit Differenzbilder
- arbeiten können.
+Für die Kalibrierung projizierte Referenzbilder haben Einfluss auf den automatis
+chen Weissabgleich der Kamera.
+ Grosse Helligkeitswerte im projizierten Bild verursachen schnelles Abdunkeln
+ des Kamerabildes, tiefe Helligkeitswerte das Gegenteil.
+ Es kann nicht genau vorausgesagt werden, wie die Kamera auf Helligkeitsuntersch
+iede reagiert.
+ In jedem Fall hat dies Einfluss auf in der Kalibrierung verwendete Differenzbil
+der.
+ Der hier beschriebene Effekt kann minimiert werden, wenn nur Bilder mit
+ im Mittel ähnlichen Helligkeitswerten verwendet werden.
+ Die schlussendlich verwendete Methode verwendet ein Schachbrettmuster.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Bilder/Calibration/WhitebalanceFail/frame1.jpg
+	lyxscale 20
+	width 50col%
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename Bilder/Calibration/WhitebalanceFail/frame2.jpg
+	lyxscale 20
+	width 50col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Zwei schlecht gewählte Referenzbilder.
+ Sie haben zu grosse Helligkeitsunterschiede.
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:diff-fail-pictures"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Bilder/Calibration/WhitebalanceFail/diff.jpg
+	lyxscale 40
+	width 100col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Das aus Abb.
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:diff-fail-pictures"
+
+\end_inset
+
+ resultierendede Differenzbild ist für die Leinwanddetektion kaum brauchbar.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsection
