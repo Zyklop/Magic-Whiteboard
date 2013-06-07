@@ -74,8 +74,8 @@ Herkömmliche digitale Whiteboards benötigen spezielle Hardware und sind
  Das Ziel dieser Arbeit ist die Entwicklung eines günstigen mobilen Whiteboards.
  Für dessen Betrieb werden lediglich ein Standard Beamer und ein Laptop
  mit Webcam benötigt.
- Mit einem speziellen Stift kann dann direkt auf die Leinwand geschrieben
- werden.
+ Mit einem speziellen Stift, der sehr billig zu produzieren ist, kann dann
+ direkt auf die Leinwand geschrieben werden.
  Präsentationen im Sitzungsraum oder vor einer Schulklasse werden dadurch
  interaktiver und flexibler.
 \end_layout
@@ -85,25 +85,22 @@ Vorgehen/Technologie
 \end_layout
 
 \begin_layout Standard
-Nach einer kurzen Kalibrierung der Kamera wird der Stift wird optisch von
- einer einfachen Laptopkamera erkannt und getrackt.
+Am Anfang wird wie gewohnt der Beamer an ein Notebook angeschlossen.
+ Danach wird die Webcam auf die Projektion ausgrichtet und nach einer kurzen
+ Kalibrierung der Kamera wird der Stift wird optisch erkannt und verfolgt.
  Es wurden diverse Ansätze untersucht, wie der Stift auf dem Kamerabild
  erkannt und der entsprechenden Position auf dem Beamerbild zugeordnet werden
  kann.
- Dazu wurden Algorithmen entwickelt, die das dreidimensionale Problem auf
- ein zweidimensionales abbilden.
+ Mit der Weiterentwicklung bestehender Algorithmen konnten wir diese auf
+ unsere Befürfnisse anpassen.
 \end_layout
 
 \begin_layout Standard
 Der in dieser Arbeit entwickelte Software-Prototyp arbeitet mit einer optischen
  Lichtquelle im sichtbaren Bereich als Stiftwerkzeug.
  In einem finalen Produkt würde wahrscheinlich ein Stift im Infrarotbereich
- verwendet.
- Ebenfalls denkbar ist, ganz ohne den Stift, die Handposition des Benutzers
- optisch zu erkennen.
- So ergäbe sich ein Touchpanel, ganze ohne zusätzliche Hardware, welches
- mit einer Gestenbedienung heutigen Visionen für interaktive Benutzerführung
- gerecht wird.
+ verwendet, was von Zuschauern als weniger störend empfunden wird.
+ 
 \end_layout
 
 \begin_layout Subsubsection*
@@ -115,10 +112,10 @@ Mit Messungen wurde festgestell, dass der Stift (Lichtpunkt) auf einer Präsenta
 ion sehr gut erkannt werden kann.
  Mit einer normalen Webcam kann mit einer Genauigkeit von ca.
  4 Pixel gezeichnet werden.
- Die Güte des Resultates liesse sich durch Optimierungen am Verfahren noch
- weiter verbessern.
- Ansätze dazu werden genauso beschrieben, wie die Idee, das virtuelle Whiteboard
- ohne Stift nur mit Gesten zu bedienen.
+ Die Genauigkeit ist so gut, dass wir sogar genaue Mausklicks ausführen
+ kann.
+ Eine weitere Untersuchung beschäftigt sich damit, das virtuelle Whiteboard
+ ohne Stift nur mit der Hand zu bedienen, um eine Gestenerkennung zu ermöglichen.
  Gerade die Bedienung als Touchpanel beinhaltet viel Potential, da Betriebsystem
 hersteller wie Apple und Microsoft ihre Produkte auf volle Touchunterstützung
  auslegen.
