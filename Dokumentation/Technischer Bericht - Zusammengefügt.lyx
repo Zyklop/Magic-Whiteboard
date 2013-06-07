@@ -65,8 +65,22 @@
 Presentation Writer
 \end_layout
 
-\begin_layout Standard
-TODO: richtiges Abstract
+\begin_layout Abstract
+Es wird eine neue digitale Whiteboard-Technologie beschrieben.
+ Während herkömmliche digitale Whiteboards viel Geld kosten, verspricht
+ das in dieser Arbeit entwickelte System eine günstige Alternative.
+ Es wird gezeigt, dass Standardhardware und einfache Algorithmen mit der
+ Genauigkeit von herkömmlichen Produkten konkurrenzieren können.
+ Mit einem selbst entwickelten günstigen Stift emuliert die hier beschriebene
+ Software 
+\begin_inset Quotes gld
+\end_inset
+
+Presentation Writer
+\begin_inset Quotes grd
+\end_inset
+
+ Mausklicks auf einer normalen Beamerleinwand - und das auf 4 Pixel genau.
 \end_layout
 
 \begin_layout Standard
@@ -1150,7 +1164,15 @@ Abbildung & Interpolation
 \end_layout
 
 \begin_layout Standard
-Es wurden verschiedene Verfahren zur Beschreibung der Abbildungen erarbeitet.
+Es wurden verschiedene Verfahren zur Beschreibung der Abbildung 
+\shape italic
+Kamera 
+\begin_inset Formula $\rightarrow$
+\end_inset
+
+Beamer
+\shape default
+ erarbeitet.
 \end_layout
 
 \begin_layout Standard
