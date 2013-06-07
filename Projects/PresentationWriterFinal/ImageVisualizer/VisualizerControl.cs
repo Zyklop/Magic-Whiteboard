@@ -12,7 +12,7 @@ namespace HSR.PresWriter.ImageVisualizer
         private CalibratorWindow _cw;
         private static VisualizerControl _singleton;
         private readonly Thread _t;
-        private VisualizerApp _app;
+        private Application _app;
 
         public static VisualizerControl GetVisualizer()
         {
@@ -21,15 +21,27 @@ namespace HSR.PresWriter.ImageVisualizer
 
         protected VisualizerControl()
         {
-            _t = new Thread(() =>
+            if (Application.Current == null)
             {
-                _app = new VisualizerApp();
-                _cw = _app.CalibratorWindow;
-                _app.ShutdownMode = ShutdownMode.OnExplicitShutdown;
-                _app.Run();
-            });
-            _t.SetApartmentState(ApartmentState.STA);
-            _t.Start();
+                //started form a non wpf Context
+                _t = new Thread(() =>
+                    {
+                        _app = new VisualizerApp();
+                        _cw = ((VisualizerApp)_app).CalibratorWindow;
+                        _app.ShutdownMode = ShutdownMode.OnExplicitShutdown;
+                        _app.Run();
+                    });
+                _t.SetApartmentState(ApartmentState.STA);
+                _t.Start();
+            }
+            else
+            {
+                //started form a WPF application
+                _app = Application.Current;
+                _cw = new CalibratorWindow();
+                _cw.Show();
+                _cw.Hide();
+            }
         }
 
         public bool Transparent { get { return _cw.Transparent; } set { _cw.Transparent = value; } }

@@ -56,6 +56,8 @@ namespace HSR.PresWriter.PenTracking
             _mapper = (AbstractPointMapper)mCtor.Invoke(new Grid[] { CalibratorGrid });
             Console.WriteLine("Calbration completed");
             _penTracker.Start();
+            if(CalibrationComplete != null)
+                CalibrationComplete(this, null);
         }
 
         /// <summary>
@@ -123,5 +125,7 @@ namespace HSR.PresWriter.PenTracking
         /// The pen changed the position
         /// </summary>
         public event EventHandler<PenPositionEventArgs> PenPositionChanged;
+
+        public event EventHandler CalibrationComplete;
     }
 }

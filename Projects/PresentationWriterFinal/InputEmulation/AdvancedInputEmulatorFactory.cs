@@ -5,7 +5,7 @@
         public static IAdvancedInputEmulator GetInputEmulator(int width, int height)
         {
             if(Touch.IsSupported)
-                return new AdvancedTouchEmulator(width, height, 1);
+                return new AdvancedTouchEmulator(1, width, height);
             return new AdvancedMouseEmulator(width, height);
         }
     }
