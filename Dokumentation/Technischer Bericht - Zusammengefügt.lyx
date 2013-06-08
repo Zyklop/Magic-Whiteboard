@@ -4152,6 +4152,10 @@ Falls schon Punkte gefunden wurden, wird zuerst nur ein Bildausschnitt um
  Bild ausgeweitet.
  Im Mittel benötigt man so auf einem Intel Core Duo mit 2Ghz ca 4ms pro
  gefundenem Lichtpunkt.
+ Gerade falls die Software auf einem schwächeren Rechner läuft, sollte sicherges
+tellt werden, dass der Kamerainput nicht verrauscht ist.
+ Dann kann die Punkterkennung ohne Differenzbilder ablaufen und so Rechenleistun
+g sparen.
 \end_layout
 
 \begin_layout Paragraph
@@ -6734,6 +6738,538 @@ Exkurs: Bewegter Lichtpunkt
 
 \begin_layout Subsection
 Versuche zur Umsetzung von Touch
+\end_layout
+
+\begin_layout Standard
+Dieser Exkurs befasst sich mit der Vision, eine projizierte Beamerwand mittels
+ Touch zu bedienen.
+ Der Benutzer soll die projizierte Fläche mit der Hand antippen und so das
+ System hinter der Projektion steuern können.
+ Diese Aufgabenstellung lässt sich über verschiedene Fragestellungen analysieren.
+\end_layout
+
+\begin_layout Paragraph
+Relevante Informationen finden
+\end_layout
+
+\begin_layout Standard
+Zuerst muss klar werden, woraus die benötigten Informationen gewonnen werden.
+ Es sind ein oder mehrere Kamerabilder denkbar
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+3D-Analysesysteme wurden vollständig ausser acht gelassen, da sie teurer
+ sind als die in dieser Arbeit gesetzten Kostengrenze von Zusatzhardwarekosten
+ (ca.
+ 20.-).
+\end_layout
+
+\end_inset
+
+.
+ Ebenfalls fragt sich, wie die Informationen aus diesem Kontext gewonnen
+ werden können.
+ Es ist möglich, die Person vor der Leinwand gegen ein Basisbild zu vergleichen
+ oder bewegte Teile mittels Differenzbildanalyse über zwei oder mehr Bilder
+ zu erkennen.
+ Es könne der Person ein Handschuh angezogen werden, der eine eindeutige
+ Farbe hat und so immer sogar in nur einem Kamerabild zu erkennen ist.
+ Es wäre denkbar, eine Person mit komplizerteren Algorithmen über ein vorher
+ konfiguriertes Pattern zu tracken.
+ Die Mathematik birgt mit Fouriertransformation und Direct Linear Transformation
+ viele Möglichkeiten Patternmatching zu betreiben.
+ Die in dieser Arbeit untersuchten Ansätze sind einfacherer Art und beschränken
+ sich darauf zu zeigen welche Aspekte betrachtet werden müssen.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Bilder/Handtracking/no-touch-basediff.png
+	lyxscale 20
+	width 49col%
+
+\end_inset
+
+ 
+\begin_inset Graphics
+	filename Bilder/Handtracking/touch-basediff.png
+	lyxscale 20
+	width 49col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Finger in Ruhestellung (links) - Finger tippt auf Leinwand (rechts)
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:perspos-diffs"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Paragraph
+Hand und Finger finden
+\end_layout
+
+\begin_layout Standard
+Die Hand einer Person zu finden mit wenig Aufwand gut zu beschreiben.
+ Über den unteren Rand des Kamerabildes wird die im Bild stehende Person
+ mittels Differenzbilder gefunden.
+ Die Position und das Ausmass des Körpers der Person ist mit wenig Spiel
+ gut abschätzbar entlang zweier senkrechter Linien am Rand der Beine (siehe
+ Abb.
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:PersonPosition"
+
+\end_inset
+
+).
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Bilder/Handtracking/PersonPosition/pos-base.png
+	lyxscale 20
+	width 49.25col%
+
+\end_inset
+
+
+\begin_inset space \enskip{}
+\end_inset
+
+
+\begin_inset Graphics
+	filename Bilder/Handtracking/PersonPosition/pos-frame.png
+	lyxscale 20
+	width 49.25col%
+
+\end_inset
+
+
+\begin_inset VSpace 0.5em
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Bilder/Handtracking/PersonPosition/pos-diff.png
+	lyxscale 20
+	width 49.25col%
+
+\end_inset
+
+
+\begin_inset space \enskip{}
+\end_inset
+
+
+\begin_inset Graphics
+	filename Bilder/Handtracking/PersonPosition/pos-median.png
+	lyxscale 20
+	width 49.25col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset VSpace 0.5em
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Bilder/Handtracking/PersonPosition/pos-final.png
+	lyxscale 20
+	width 100col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+1)
+\begin_inset space ~
+\end_inset
+
+Basisbild, 2)
+\begin_inset space ~
+\end_inset
+
+Frame, 3)
+\begin_inset space ~
+\end_inset
+
+Differenz, 4)
+\begin_inset space ~
+\end_inset
+
+entrauschtes Differenzbild, 5)
+\begin_inset space ~
+\end_inset
+
+Personenposition
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:PersonPosition"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Paragraph
+Handgesten erkennen
+\end_layout
+
+\begin_layout Standard
+Handgesten wie Touch oder Greifen zu erkenn ist nicht ganz trivial.
+ Der hier vorgeschlagene Ansatz versucht den Körper der Person vom Hintergrund
+ durch den Schatten zu trennen.
+ Die Unterscheidung zwischen Schatten und Person geschieht auf der Differenz
+ gegen das Basisbild.
+ So bleiben alle nicht benötigten Informationen unbeachtet.
+ In Abb.
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:farbanalyse-schatten"
+
+\end_inset
+
+ ist der Unterschied zwischen Schatten und Arm auf dem Differenzbild sichtbar.
+ Im Diagramm wurde analysiert, welche durchschnittlichen Farbwerte das Differenz
+bild in einem vertikalen Streifen besitzt.
+ Der Streifen wurde von oben nach unten über 480 Pixel durchlaufen.
+ Das Maximux bezeichnet den Schatten das lokale Minimum den Arm.
+ Sobald klar ist, an welcher Position sich der Übergang von Schatten zu
+ Arm befindet, kann die Schattenfarbe im Originalbild nachgeschaut werden.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Bilder/Handtracking/Gestenanalyse/arm-shadow-stripe.png
+	lyxscale 50
+	width 100col%
+
+\end_inset
+
+
+\begin_inset VSpace 0.5em
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Bilder/Handtracking/arm-colors.png
+	lyxscale 50
+	width 100col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Die Helligkeitsanalyse innerhalb des oben gekennzeichneten vertikalen Streifen
+ des Differenzbildes ergibt im Schnitt diese Farbaufteilung (unten).
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:farbanalyse-schatten"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Die Schattenfarbe wird aus dem Originalbild als weiss markiert und vom eingeschr
+änkten Differenzbild abgezogen.
+ Dann bleibt der Arm übrig ohne Schatteninformation.
+ Der Gesamtanteil an Schatteninformation sind die vom eingeschränkten Differenzb
+ild abgezogenen Pixel.
+ Unter Umständen könnte die Menge an Schattenpixel und deren Position für
+ die Detektion verwendet werden ob die Person die Leinwand antippt oder
+ nicht.
+ Dies ist eine sehr vage Theorie und bedarf weiterer Untersuchungen.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Bilder/Handtracking/Gestenanalyse/arm-shadow-diff.png
+	lyxscale 50
+	width 23.5col%
+
+\end_inset
+
+
+\begin_inset space \enskip{}
+\end_inset
+
+
+\begin_inset Graphics
+	filename Bilder/Handtracking/Gestenanalyse/arm-shadow-thres.png
+	lyxscale 50
+	width 23.5col%
+
+\end_inset
+
+
+\begin_inset space \enskip{}
+\end_inset
+
+
+\begin_inset Graphics
+	filename Bilder/Handtracking/Gestenanalyse/shadow-base.png
+	lyxscale 50
+	width 23.5col%
+
+\end_inset
+
+
+\begin_inset space \enskip{}
+\end_inset
+
+
+\begin_inset Graphics
+	filename Bilder/Handtracking/Gestenanalyse/just-the-arm.png
+	lyxscale 50
+	width 23.5col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+1)
+\begin_inset space ~
+\end_inset
+
+Differenzbild gegen Basis, 2)
+\begin_inset space ~
+\end_inset
+
+Helldunkel-Schranke über Differenzbild, 3)
+\begin_inset space ~
+\end_inset
+
+Schattenfarbe weiss markiert aus dem Originalbild, 4)
+\begin_inset space ~
+\end_inset
+
+zweites minus drittes Bild
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Da nun der Arm gefunden ist, könnte in diesem eingeschränkten Bereich ein
+ Pattern Matching durchgeführt werden.
+ Ein Sample der Hand oder des Fingers könnte an Schlüsselpositionen gefunden
+ werden.
+ Die Information ob eine Geste wie Touch durchgeführt wurde, kann aus der
+ streifenweisen Schattenanalyse geholt werden.
+ Ist der Schatten in der richtigen Intensität am Richtigen Ort, so fand
+ ein Touch statt, sonst nicht.
+ Einfach dürfte dieses Vorgehen jedoch nicht sein.
+ Es gibt zu viele Arten, wie die Schattenverteilung sein könnte.
+ Hier wird vorgeschlagen, sich zuerst auf das genaue Finden der Hand festzulegen.
+ Sobald die Hand getrackt werden kann, ist es möglich, weitere Schlüsse
+ aus den sich daraus ergebenden Analysemöglichkeiten zu ziehen.
+ 
+\end_layout
+
+\begin_layout Standard
+Eine Idee dazu ist, Bewegungen der Gelenke Schulter, Ellbogen und Hand aufzuzeic
+hnen.
+ Dies könnte über einen Ansatz mit Ausgleichsgeraden geschehen.
+ Dazu wird von der Schulter mit einer radialen Scanline von unten über die
+ Punktmenge des Armes gefahren.
+ Sobald ein Punkt auftaucht, ist entweder die Hand oder der Ellbogen gefunden
+ worden.
+ Je nach Entfernung des Punktes von der Schulter lässt sich das einfach
+ entscheiden.
+ Am Ellbogen wird das Verfahren wiederholt bis der erste Punkt der Hand
+ gefunden wurde.
+ Das Fahren der Scanline kann mathematisch als Koordinatentransformation
+ von euklidischen- zu Polarkoordinaten beschrieben werden.
+ Dies vereinfacht das Modellieren der Scanline.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename Bilder/Handtracking/Gestenanalyse/polar-scan.emf
+	lyxscale 20
+	width 50col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Scanline-Ansatz um Gelenke zu finden
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Paragraph
+Ergebnisse
+\end_layout
+
+\begin_layout Standard
+Es ist schwierig zu sagen, ob es sinnvoll ist, Touch auf der Leinwand weiter
+ zu verfolgen.
+ Einerseits wäre diese Funktionalität intuitiv und wünschenswert.
+ Sie ist an keine weitere Hardware gebunden und die zugehörige Software
+ könnte mit dem Betriebsystem zusammen ausgeliefert werden.
+ Andererseits ist es sehr schwierig zu erkennen, ob eine Person die Leinwand
+ angetippt hat.
+ Bei schlechten Lichtbedingungen und komplizierterej projizierten Bildern
+ konnte die Hand bei schneller Bewegung nicht einmal mehr mit blossem Auge
+ erkannt werden.
+ Ob eine Webcam mit schlechter Auflösung, niedriger Framerate und schlechter
+ Belichtung überhaupt den Input für eine zuverlässige Datenverarbeitung
+ liefern kann ist fraglich.
+ Es sollte möglich sein, die Hand zu tracken und bei einem geübten Benutzer
+ die Finger.
+ Dies allerdings nur bei optimalen Lichtbedingungen.
+ Es ist hingegen nicht klar, wie dass mit hoher Trefferrate festgestellt
+ werden kann, ob die Person die Leinwand angetippt hat.
+ Das oben beschriebene Vorgehen für die Schattenanalyse befasst sich lediglich
+ mit den Daten, welche in dieser Arbeit aufgenommen wurde.
+ Es müsste systematische untersucht werden, ob die dies für jeden Fall zuverläss
+ig gelöst werden könnte.
 \end_layout
 
 \end_body
