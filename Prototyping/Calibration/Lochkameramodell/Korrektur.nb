@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       157,          7]
-NotebookDataLength[      8453,        188]
-NotebookOptionsPosition[      8032,        168]
-NotebookOutlinePosition[      8375,        183]
-CellTagsIndexPosition[      8332,        180]
+NotebookDataLength[      8767,        196]
+NotebookOptionsPosition[      8344,        176]
+NotebookOutlinePosition[      8689,        191]
+CellTagsIndexPosition[      8646,        188]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -46,12 +46,16 @@ Cell[BoxData[{
     RowBox[{"f", "[", "x", "]"}], "/.", 
     RowBox[{"h", "\[Rule]", "25"}]}], ",", 
    RowBox[{"{", 
-    RowBox[{"x", ",", "0", ",", "1"}], "}"}]}], "]"}]}], "Input",
+    RowBox[{"x", ",", "0", ",", "1"}], "}"}], ",", 
+   RowBox[{"AxesLabel", "\[Rule]", 
+    RowBox[{"{", 
+     RowBox[{"x", ",", 
+      SubscriptBox["y", "corr"]}], "}"}]}]}], "]"}]}], "Input",
  CellChangeTimes->{{3.5788277638101177`*^9, 3.578827787773489*^9}, {
   3.578827826766719*^9, 3.5788278726353426`*^9}, {3.5788279402522097`*^9, 
   3.5788279749661956`*^9}, {3.578828363847438*^9, 3.5788283881898303`*^9}, {
   3.5788284581488323`*^9, 3.5788284758128424`*^9}, {3.5788285646299224`*^9, 
-  3.5788287494204917`*^9}}],
+  3.5788287494204917`*^9}, {3.579690270429953*^9, 3.579690292190198*^9}}],
 
 Cell[BoxData[
  GraphicsBox[{{}, {}, 
@@ -151,7 +155,10 @@ s7SEr+dqTP77f8j/AZWVb8U=
      "]]}},
   AspectRatio->NCache[GoldenRatio^(-1), 0.6180339887498948],
   Axes->True,
-  AxesLabel->{None, None},
+  AxesLabel->{
+    FormBox["x", TraditionalForm], 
+    FormBox[
+     SubscriptBox["y", "corr"], TraditionalForm]},
   AxesOrigin->{0, 0},
   Method->{},
   PlotRange->{{0, 1}, {0., 24.99999940764176}},
@@ -162,12 +169,13 @@ s7SEr+dqTP77f8j/AZWVb8U=
  CellChangeTimes->{{3.5788278457618055`*^9, 3.5788278730023637`*^9}, {
    3.5788279490417128`*^9, 3.578827975645234*^9}, 3.578828389020878*^9, {
    3.578828459534911*^9, 3.5788284762598677`*^9}, {3.578828599678927*^9, 
-   3.5788286080714073`*^9}, {3.578828667848826*^9, 3.578828749935521*^9}}]
+   3.5788286080714073`*^9}, {3.578828667848826*^9, 3.578828749935521*^9}, {
+   3.579690272405066*^9, 3.579690296796461*^9}}]
 }, Open  ]]
 }, Open  ]]
 },
 WindowSize->{707, 637},
-WindowMargins->{{0, Automatic}, {Automatic, 0}},
+WindowMargins->{{Automatic, 71}, {Automatic, 37}},
 FrontEndVersion->"9.0 for Microsoft Windows (64-bit) (November 20, 2012)",
 StyleDefinitions->"Default.nb"
 ]
@@ -186,8 +194,8 @@ Cell[CellGroupData[{
 Cell[579, 22, 114, 1, 79, "Section"],
 Cell[696, 25, 260, 5, 49, "Text"],
 Cell[CellGroupData[{
-Cell[981, 34, 765, 19, 52, "Input"],
-Cell[1749, 55, 6255, 109, 246, "Output"]
+Cell[981, 34, 939, 23, 52, "Input"],
+Cell[1923, 59, 6393, 113, 289, "Output"]
 }, Open  ]]
 }, Open  ]]
 }
@@ -195,4 +203,3 @@ Cell[1749, 55, 6255, 109, 246, "Output"]
 *)
 
 (* End of internal cache information *)
-

@@ -1420,6 +1420,51 @@ Dieser Ansatzt war gut für einen schnellen Test.
 \end_layout
 
 \begin_layout Paragraph
+Baryzentrische Koordinaten
+\end_layout
+
+\begin_layout Standard
+Normale Baryzentrische Koordinaten in Dreiecken
+\end_layout
+
+\begin_layout Subparagraph*
+Vorteile
+\end_layout
+
+\begin_layout Itemize
+Erhöhte Genauigkeit mit mehr Refernzpunkten
+\end_layout
+
+\begin_layout Itemize
+Relativ einfacher Algorithmus
+\end_layout
+
+\begin_layout Subparagraph
+Nachteile
+\end_layout
+
+\begin_layout Itemize
+Gewisse Ungenauigkeiten
+\end_layout
+
+\begin_layout Itemize
+Hoher Rechenaufwand
+\end_layout
+
+\begin_layout Itemize
+Gewichtung ist nur schwer realisierbar
+\end_layout
+
+\begin_layout Subparagraph
+Fazit
+\end_layout
+
+\begin_layout Standard
+Dieses Verfahren funktioniert zwar, hat jedoch zu wenig Verbesserungspotenzial
+ und ist abhängig von einer sehr stabilen Konfiguration.
+\end_layout
+
+\begin_layout Paragraph
 Zweidimensional per Integration
 \end_layout
 
@@ -1508,7 +1553,7 @@ on
 \begin_layout Standard
 \begin_inset Formula 
 \begin{equation}
-x_{k}=\intop_{0}^{x}a\left(1-x_{b}\right)+bx_{b}\delta x_{b}=\frac{1}{2}\left(b-a\right)x_{b}^{2}+ax_{b}
+x_{k}\left(x_{b}\right)=\intop_{0}^{x}a\left(1-x_{b}\right)+bx_{b}\delta x_{b}=\frac{1}{2}\left(b-a\right)x_{b}^{2}+ax_{b}
 \end{equation}
 
 \end_inset
@@ -1517,7 +1562,15 @@ x_{k}=\intop_{0}^{x}a\left(1-x_{b}\right)+bx_{b}\delta x_{b}=\frac{1}{2}\left(b-
 \end_layout
 
 \begin_layout Standard
-Die Mathematische Umkehrfunktion bildet jedes 
+Die Mathematische Umkehrfunktion (
+\shape italic
+Kamera
+\begin_inset Formula $\rightarrow$
+\end_inset
+
+Beamer
+\shape default
+) bildet jedes 
 \begin_inset Formula $x_{k}$
 \end_inset
 
@@ -1531,7 +1584,7 @@ Die Mathematische Umkehrfunktion bildet jedes
 \begin_layout Standard
 \begin_inset Formula 
 \begin{equation}
-x_{b}=\frac{\sqrt{a^{2}+2x_{k}(b-a)}-a}{b-a}
+x_{b}\left(x_{k}\right)=\frac{\sqrt{a^{2}+2x_{k}(b-a)}-a}{b-a}\label{eq:xb-aus-xk-quadratisch}
 \end{equation}
 
 \end_inset
@@ -1560,8 +1613,14 @@ status open
 \begin_inset Caption
 
 \begin_layout Plain Layout
-In der Mitte weich die perspektivische Verzerung mehr vom linearen Ansatz
- ab als am Rand (hier: 
+Graph der Gleichung 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:xb-aus-xk-quadratisch"
+
+\end_inset
+
+ für 
 \begin_inset Formula $a=2$
 \end_inset
 
@@ -1569,7 +1628,195 @@ In der Mitte weich die perspektivische Verzerung mehr vom linearen Ansatz
 \begin_inset Formula $b=1$
 \end_inset
 
+ (blau): In der Mitte weicht die perspektivische Verzerung in X-Richtung
+ mehr vom linearen Ansatz (violett) ab als am Rand.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Zu beachten gilt, dass der Ursprung des verzerrten Beamerbild nicht unbedingt
+ auf den Ursprung des Kamerabildes zu liegen kommt.
+ 
+\begin_inset Formula $x_{b}$
+\end_inset
+
+ und 
+\begin_inset Formula $x_{k}$
+\end_inset
+
+ müssen also um einen gemessenen Offset angepasst werden, bevor die jeweilige
+ Abbildung ausgerechnet wird.
+ In der hier beschriebenen Lösung wird nicht der korrekte Offset verwendet
+ (Schnittpunkt der zwei zur Gerade verlängerten Abschnitte Kamerabild und
+ Beamerbild).
+ Es wird jeweils nur der Offset zum Kamerabildanfang verwendet.
+ Dies hat zur Folge, dass resultierende X-Koordinaten gleichmässig zu lang
+ oder zu kurz sind (je nach Abbildungsrichtung).
+ Damit nicht der Schnittpunkt der zwei Ebenen Kamera und Beamer berechnet
+ werden muss, wird in dieser Arbeit jeweils die berechnete X-Strecke auf
+ die berechnete Maximalstrecke gegenüber der gemessenen Maximalstrecke normiert
+ (Stauchung 
+\begin_inset Formula $s$
+\end_inset
+
 ).
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+s=\frac{x_{maxmeasure}}{x_{maxcalc}}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Für die Abbildung der Y-Koordinaten wird ein von X abhängiger linearer Ansatz
+ verwendet.
+ Wieder spielt dabei der Gedanke eine Rolle, dass die rechte und die linke
+ Seite des verzerrter Kamerabildes etwa parallel sind.
+ 
+\begin_inset Formula $y_{k}$
+\end_inset
+
+ wird durch eine von 
+\begin_inset Formula $y_{b}$
+\end_inset
+
+ abhängige Gerade definiert - sie wird mit 
+\begin_inset Formula $x_{b}$
+\end_inset
+
+ durchlaufen.
+ Die Gleichung 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:yk-aus-yb-linear"
+
+\end_inset
+
+ beschreibt die Abbildung 
+\shape italic
+Beamer
+\begin_inset Formula $\rightarrow$
+\end_inset
+
+Kamera.
+ 
+\shape default
+Dabei beschreibt 
+\begin_inset Formula $y_{k0}$
+\end_inset
+
+ den vertikalen Offset zwischen linker und rechter Bildlinie.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+y_{k}\left(x_{b}\right)=\left(ay_{b}+y_{k0}\right)\left(1-x_{b}\right)+by_{b}x_{b}\label{eq:yk-aus-yb-linear}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Die Mathematische Umkehrfunktion (
+\shape italic
+Kamera
+\begin_inset Formula $\rightarrow$
+\end_inset
+
+Beamer
+\shape default
+) bildet jedes 
+\begin_inset Formula $y_{k}$
+\end_inset
+
+ auf ein 
+\begin_inset Formula $y_{b}$
+\end_inset
+
+ ab und ist mit Gleichung 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:yb-aus-yk-linear"
+
+\end_inset
+
+ beschrieben.
+ Steigung und Offset der Geraden wird dabei durch 
+\begin_inset Formula $x_{b}$
+\end_inset
+
+ kontrolliert.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+y_{b}\left(y_{k}\right)=\frac{x_{b}y_{k0}+y_{k}-y_{k0}}{a(-x_{b})+a+bx_{b}}\label{eq:yb-aus-yk-linear}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Diagramme/Mathematik/yk-aus-xb-linear.emf
+	lyxscale 20
+	width 100col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Sample der Gleichungen 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:yk-aus-yb-linear"
+
+\end_inset
+
+.
+ Der gezeigte Ausschnitt bildet genau das verzerrte Beamerbild nach, wobei
+ 
+\begin_inset Formula $x_{b}$
+\end_inset
+
+ auf einen Wert zwischen 0 und 1 normiert ist.
+ 
+\begin_inset Formula $y_{k}$
+\end_inset
+
+ ist der Pixelwert ind Y-Richtung auf dem Kamerabild.
 \end_layout
 
 \end_inset
@@ -1587,58 +1834,364 @@ In der Mitte weich die perspektivische Verzerung mehr vom linearen Ansatz
 \end_layout
 
 \begin_layout Standard
-Für die Abbildung der Y-Koordinaten wird ein von X abhängiger linearer Ansatz
- verwendet.
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Diagramme/Mathematik/yb-aus-xk-linear.emf
+	lyxscale 20
+	width 100col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Sample der Gleichung 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:yb-aus-yk-linear"
+
+\end_inset
+
+.
+ Werte zwischen 0 und 400 werden auf das Beamerbild rückprojiziert.
+ Das Beamerbild wird jedoch nur getroffen, wenn 
+\begin_inset Formula $y_{b}$
+\end_inset
+
+ zwischen 0 und 1 resultiert.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subparagraph
+Beispiel
+\end_layout
+
+\begin_layout Standard
+Die Güte dieses Ansatzes wurde gemessen.
+ Dazu wurde ein Bild an eine Leinwand projiziert und mit einer einfachen
+ Laptopkamera aufgenommen.
+ Die verzerrten projizierten Punkte des Beamerbildes wurden manuell auf
+ dem Kamerabild gemessen und den ursprünglichen Punktpositionen auf dem
+ Beamerbild zugewiesen.
+ Die gemessenen Punkte des Kamerabildes wurden mit den in den Gleichungen
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:xb-aus-xk-quadratisch"
+
+\end_inset
+
+ und 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:yb-aus-yk-linear"
+
+\end_inset
+
+ beschriebenen Ansätzen auf Beamerkoordinaten umgerechnet.
+ In Abb.
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:kamera-messung-berechnung"
+
+\end_inset
+
+ ist das Resultat ersichtlich.
+ Die Schräge im rechten Teil der Abbildung rührt davon, dass die linke und
+ die rechte Seite des abgebildeten Beamerbildes nicht genau parallel sind.
+ Die Abb.
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:beamer-rueckrechnung-quadratisch"
+
+\end_inset
+
+ zeigt die Rückberechnung der agebildeten auf die abzubildenden Koordinaten.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Diagramme/Mathematik/quadratische-berechnung-ohne-bary.emf
+	lyxscale 20
+	width 100col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Die gemessenen Punkte weichen von den geschätzen (berechneten) ab.
+ 
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:kamera-messung-berechnung"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Diagramme/Mathematik/quadratische-rueckberechnung-ohne-bary.emf
+	lyxscale 20
+	width 100col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Vergleich zwischen Projektion und Berechnung.
+ Die Schräge der linken und rechten Bildlinien ergibt Abweichungen.
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:beamer-rueckrechnung-quadratisch"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subparagraph
+Baryzentrische Viereck-Korrektur
+\end_layout
+
+\begin_layout Standard
+Die im Beispiel ersichtlichen Abweichungen lassen sich zumindest an den
+ Ecken mit einer baryzentrischen Viereck-Korrektur beheben.
+ Dieses Verfahren 
+\begin_inset Quotes gld
+\end_inset
+
+zieht
+\begin_inset Quotes grd
+\end_inset
+
+ alle Punkte in Richtung der Referenzpunkte eines vierdimensionalen baryzentrisc
+hen Koordinatensystems.
+ Das Resultat ist in Abb.
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:messung-projektion-mit-bary"
+
+\end_inset
+
+ blau markiert.
+ Das Resultat wird an den meisten Orten besser.
+ Sehr viel besser wird es an den Rändern.
+ Die Rückabbildung verhält sich gleich.
+\end_layout
+
+\begin_layout Standard
+TODO: Baryzentrische Viereckskorrektur beschreiben
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Diagramme/Mathematik/quadratische-berechnung-mit-bary.emf
+	lyxscale 20
+	width 100col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Baryzentrische Korrektur gibt beinahe überall ein besseres Resultat.
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:messung-projektion-mit-bary"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subparagraph
+Pragmatische Korrektur
+\end_layout
+
+\begin_layout Standard
+Tests in der Praxis haben ergeben, dass nicht nur die perspektivische Verzerrung
+ eine Rolle spielt.
+ Vorallem wenn der Winkel zwischen Kamera und Beamer vergrössert wird, sind
+ systematisch stärkere Abweichungen sichtbar.
+ Linseneffekte und Trapezkorrektur des Beamers wurden in dieser Arbeit nicht
+ weiter modelliert.
+ Stattdessen wird für alle zusätzlichen Abweichungen eine quadratische Korrektur
+funktion über die X-Richtung gelegt.
+ Sie soll nicht weiter betrachtete Abweichungen symmetrisch ausgleichen.
+ Die Gleichung 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:pragmatische-korrekturfunktion"
+
+\end_inset
+
+ beschreibt die zur Korrektur verwendete Funktion.
+ Sie geht durch 0 und 1 und hat ein durch 
+\begin_inset Formula $h$
+\end_inset
+
+ festgelegtes Maximum bei 0.5.
+ Wie 
+\begin_inset Formula $h$
+\end_inset
+
+ zu wählen ist, hängt von der bei 0.5 zu korrigierenden Abweichung ab.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+y_{corr}\left(x\right)=-4hx^{2}+4hx\label{eq:pragmatische-korrekturfunktion}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Paragraph
+Homogene Transformation
+\end_layout
+
+\begin_layout Standard
+Die Abbildung von Punkte zwischen Kamera und Beamer mittels homogener Transforma
+tion wurde nur kurz angetestet.
+ Eine sauber erarbeitete Transformationsmatrix verspricht sehr genaue Resultate.
+ Die für das traditionelle Lochkameramodell benötigte Matrix wird durch
+ 11 Freiheitsgrade beschrieben
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+3 Translation, 3 Rotation, 2 Kameranullpunkt, 1 Brennweite, 2 Bildskalierung
  
 \end_layout
 
-\begin_layout Paragraph
-Baryzentrische Koordinaten
+\end_inset
+
+.
+ Es reichen also 5.5 gemessene Referenzpunktpaare.
+ Da dieses Vorgehen erweiterte mathematische Kenntnisse voraussetzt, wurde
+ es nicht genauer untersucht.
+ Programmbibliotheken wie OpenCV unterstützen diese Art der Transformation
+ nativ und schnell
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+Der interessierte Leser möge folgenden Artikel über die benötigten Transformatio
+nsmatrizen konsultieren: http://de.wikipedia.org/wiki/Homogene_Koordinaten#Wichtig
+e_elementare_homogene_Transformationsmatrizen
 \end_layout
 
-\begin_layout Standard
-Normale Baryzentrische Koordinaten in Dreiecken
-\end_layout
+\end_inset
 
-\begin_layout Subparagraph*
-Vorteile
-\end_layout
-
-\begin_layout Itemize
-Erhöhte Genauigkeit mit mehr Refernzpunkten
-\end_layout
-
-\begin_layout Itemize
-Relativ einfacher Algorithmus
-\end_layout
-
-\begin_layout Subparagraph
-Nachteile
-\end_layout
-
-\begin_layout Itemize
-Gewisse Ungenauigkeiten
-\end_layout
-
-\begin_layout Itemize
-Hoher Rechenaufwand
-\end_layout
-
-\begin_layout Itemize
-Gewichtung ist nur schwer realisierbar
-\end_layout
-
-\begin_layout Subparagraph
-Fazit
-\end_layout
-
-\begin_layout Standard
-Dieses Verfahren funktioniert zwar, hat jedoch zu wenig Verbesserungspotenzial
- und ist abhängig von einer sehr stabilen Konfiguration.
+.
 \end_layout
 
 \begin_layout Paragraph
-Baryzentrische Vierecke mit Korrenkturfaktor
+Baryzentrische Vierecke mit Korrekturfaktor
 \end_layout
 
 \begin_layout Standard
@@ -1679,47 +2232,6 @@ Fazit
 Dieser Algorithmus sollte relativ gut funktionieren, wenn man entsprechende
  Referenzpunkte hat.
  Er kann Knicke komplett eliminieren.
-\end_layout
-
-\begin_layout Paragraph
-Homogene Tranmsformation
-\end_layout
-
-\begin_layout Standard
-Hierbei verwenden wir den Algorithmus der Homogenen Transformation.
-\end_layout
-
-\begin_layout Subparagraph
-Vorteile
-\end_layout
-
-\begin_layout Itemize
-Berücksichtigt die perspektivische Verzerrung bis zu einem gewissen Grad
-\end_layout
-
-\begin_layout Itemize
-Schnelle Berechnung
-\end_layout
-
-\begin_layout Itemize
-Funktioniert mit vier Punkten
-\end_layout
-
-\begin_layout Subparagraph
-Nachteile
-\end_layout
-
-\begin_layout Itemize
-Kompliziert um eigen Anpassungen anzubringen
-\end_layout
-
-\begin_layout Subparagraph
-Fazit
-\end_layout
-
-\begin_layout Standard
-Dieser Algorithmus funktioniert etwas besser als der lineare Ansatz, ist
- aber weniger genau als der Integral-Ansatz
 \end_layout
 
 \begin_layout Subsubsection
