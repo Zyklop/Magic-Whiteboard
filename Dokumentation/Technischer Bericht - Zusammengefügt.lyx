@@ -2053,11 +2053,15 @@ reference "fig:messung-projektion-mit-bary"
  blau markiert.
  Das Resultat wird an den meisten Orten besser.
  Sehr viel besser wird es an den Rändern.
- Die Rückabbildung verhält sich gleich.
-\end_layout
+ Dieses Verfahren kann auch bei der Rückabbildung (
+\shape italic
+Kamera
+\begin_inset Formula $\rightarrow$
+\end_inset
 
-\begin_layout Standard
-TODO: Baryzentrische Viereckskorrektur beschreiben
+Beamer
+\shape default
+) angewendet werden.
 \end_layout
 
 \begin_layout Standard
@@ -2096,13 +2100,18 @@ name "fig:messung-projektion-mit-bary"
 
 \end_layout
 
-\begin_layout Plain Layout
-
-\end_layout
-
 \end_inset
 
 
+\end_layout
+
+\begin_layout Standard
+Die baryzentrische Vierecks-Korrektur bildet die gemessenen Eckpunkte der
+ 
+\end_layout
+
+\begin_layout Standard
+TODO: genauer beschreiben.
 \end_layout
 
 \begin_layout Subparagraph
@@ -4109,8 +4118,10 @@ Tests haben gezeigt, dass das aktuelle Interpolationsverfahren genügend
  Da hat die Interpolation keine negativen Auswirkungen.
 \end_layout
 
-\begin_layout Subparagraph
-Genauere Punktposition
+\begin_layout Standard
+Für gute Kamerabilder (wenig rauschen) wird der Differenzbildansansatz nicht
+ verwendet.
+ Automatisch sind dann Ort und Zeit eines gefundenen Punktes besser.
 \end_layout
 
 \begin_layout Subsubsection
