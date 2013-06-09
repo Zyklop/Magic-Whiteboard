@@ -722,6 +722,9 @@ Im Folgenden werden Überlegungen zur Beziehung Beamer-Kamera und zu den
  werden können.
  Es wird auf Kamerakalibrierung und Bildverarbeitungsschritte eingegangen.
  Dazu werden eigene Algorithmen beschrieben und analysiert.
+ Zuerst werden die für die Kamerakalibrierung nötigen oder/und möglichen
+ Schritte diskutiert.
+ Danach folgt ein Abschnitt über das Finden eines Stiftes in einem Kamerabild.
 \end_layout
 
 \begin_layout Paragraph
@@ -807,7 +810,7 @@ status open
 \begin_inset Caption
 
 \begin_layout Plain Layout
-Das Kamerabild enthält das verzerrte Beamerbild
+Das Kamerabild enthält das verzerrte Beamerbild.
 \end_layout
 
 \end_inset
@@ -865,7 +868,7 @@ Das im Kamerabild gefundene und auf die Beamerauflösung rücktransformierte
 \end_layout
 
 \begin_layout Subsection
-Erkennen von Vierecken
+Generell: Erkennen von Vierecken
 \end_layout
 
 \begin_layout Subsubsection
@@ -1041,26 +1044,15 @@ Dieser Algorithmus ist sehr stabil und 100% korrekt.
 \end_layout
 
 \begin_layout Subsection
-Kalibrierung
+Kalibrierung: Referenzpunkte
 \end_layout
 
 \begin_layout Standard
-Bei der Kalibrierung geht es darum, Punkte im Kamerabild zu erkennen, die
- eindeutigen Punkten auf der Präsentation zugeordnet werden können.
- Dabei müssen sicher die Eckpunkte der Präsentation erkannt werden.
- Durch erkennung weiterer Punkte kann allerdings die Genauigkeit des Mappings
- erhöht werden.
- Hierbei haben wir verschiedene Ansätze ausprobiert.
- Hier wird nur die Analyse beschrieben, das genaue Vorgehen ist jeweils
- im Anhang beschrieben.
-\end_layout
-
-\begin_layout Subsubsection
-Referenzpunkte
-\end_layout
-
-\begin_layout Standard
-Die Abbildung vom Kamerabild zum ursprünglich projizierten Beamerbild ist
+Der Beginn der Kalibrierung bildet das Finden von Referenzpunkten.
+ Diese Punkte bilden die Orientierung für darauf aufbauende Abbildungen.
+ Je nach Güte der Abbildung sind mehr oder weniger gemessene Referenzpunkte
+ nötig.
+ Die Abbildung vom Kamerabild zum ursprünglich projizierten Beamerbild ist
  eine Transformation 
 \begin_inset Formula $\left(x_{k},y_{k}\right)\rightarrow\left(x_{b},y_{b}\right)$
 \end_inset
@@ -1090,7 +1082,7 @@ g gearbeitet wird, hat die Transformation lediglich 8 Freiheitsgrade, welche
  4 Referenzpunkte reichen also für das zu entwickelnde Präsentationssystem.
 \end_layout
 
-\begin_layout Paragraph
+\begin_layout Subsubsection
 Eckdetektion per Differenzbild
 \end_layout
 
@@ -1103,7 +1095,7 @@ Ergebnisse sind brauchbar aber nicht sicher.
  Fehlerkennungen kommen gelegentlich vor.
 \end_layout
 
-\begin_layout Subparagraph
+\begin_layout Paragraph
 Vorteile
 \end_layout
 
@@ -1113,7 +1105,7 @@ Ecken des Bildschirms wurden ungefähr erkannt, die meisten der dargestellten
  
 \end_layout
 
-\begin_layout Subparagraph
+\begin_layout Paragraph
 Nachteile
 \end_layout
 
@@ -1140,7 +1132,7 @@ Die Farbkanäle waren schwierig sauber zu trennen und haben häufig Probleme
  
 \end_layout
 
-\begin_layout Subparagraph
+\begin_layout Paragraph
 Fazit
 \end_layout
 
@@ -1149,7 +1141,7 @@ Dieses Verfahren birgt zu viele Risiken und Aufgrund des kleinen Verbesserungspo
 tenzials lohnt es sich nicht, diesen Ansatz weiterzuverfolgen.
 \end_layout
 
-\begin_layout Paragraph
+\begin_layout Subsubsection
 Einfacher Differenzbildansatz
 \end_layout
 
@@ -1162,7 +1154,7 @@ Es wird ein universeller Differenzbild-hintergrund verwendet.
  Damit werden alle Bilder so dargestellt, wie sie sein sollten.
 \end_layout
 
-\begin_layout Subparagraph
+\begin_layout Paragraph
 Vorteile
 \end_layout
 
@@ -1174,7 +1166,7 @@ Es müssen weiger Bilder dargestellt werden.
 Statische Störungen (Umgebung werden herausgefiltert.
 \end_layout
 
-\begin_layout Subparagraph
+\begin_layout Paragraph
 Nachteile
 \end_layout
 
@@ -1190,7 +1182,7 @@ Belichtungskorrektur kann grosse Probleme bereiten
 Rauschen nimmt mit der Zeit zu
 \end_layout
 
-\begin_layout Subparagraph
+\begin_layout Paragraph
 Fazit
 \end_layout
 
@@ -1199,7 +1191,7 @@ Solange wir keinen Zugriff auf die Konfiguration der Kamera haben, funktioniert
  dieses Verfahren nicht.
 \end_layout
 
-\begin_layout Paragraph
+\begin_layout Subsubsection
 Histogramm-Analyse
 \end_layout
 
@@ -1212,7 +1204,7 @@ Hierbei wird direkt mit Kamerabildern gearbeitet.
  Die Bilder werden nach Helligkeitsverteilung analysiert.
 \end_layout
 
-\begin_layout Subparagraph
+\begin_layout Paragraph
 Vorteile
 \end_layout
 
@@ -1220,7 +1212,7 @@ Vorteile
 Es müssen keine zusätzlichen Bilder dargestellt werden.
 \end_layout
 
-\begin_layout Subparagraph
+\begin_layout Paragraph
 Nachteile
 \end_layout
 
@@ -1236,7 +1228,7 @@ Starkes Rauschen
 Ungenaue Erkennung
 \end_layout
 
-\begin_layout Subparagraph
+\begin_layout Paragraph
 Fazit
 \end_layout
 
@@ -1245,7 +1237,7 @@ Es werden höchstens Teile des Bildes richtig erkannt.
  Unbrauchbar für uns.
 \end_layout
 
-\begin_layout Paragraph
+\begin_layout Subsubsection
 Histogramm-Analyse auf Bildausschnitten
 \end_layout
 
@@ -1259,7 +1251,7 @@ Auch hierbei wird direkt mit Kamerabildern gearbeitet.
  wieder zusammengesetzt.
 \end_layout
 
-\begin_layout Subparagraph
+\begin_layout Paragraph
 Vorteile
 \end_layout
 
@@ -1275,7 +1267,7 @@ Regionen mit unterschiedlichen Lichtverhältnissen werden gut korrigiert.
 Zu erkennende Objekte werden erkannt
 \end_layout
 
-\begin_layout Subparagraph
+\begin_layout Paragraph
 Nachteile
 \end_layout
 
@@ -1295,7 +1287,7 @@ Viele Fehlerkennungen
 Unscharfe Übergänge
 \end_layout
 
-\begin_layout Subparagraph
+\begin_layout Paragraph
 Fazit
 \end_layout
 
@@ -1307,7 +1299,7 @@ Dieses Verfahren funktioniert erkennt meist alle gesuchten Blobs.
  Brauchbar aber nicht optimal.
 \end_layout
 
-\begin_layout Paragraph
+\begin_layout Subsubsection
 Schachbrett-Muster
 \end_layout
 
@@ -1316,7 +1308,7 @@ Es werden nur Bilder projiziert, die eine identische Helligkeitsverteilung
  aufweisen.
 \end_layout
 
-\begin_layout Subparagraph
+\begin_layout Paragraph
 Vorteile
 \end_layout
 
@@ -1328,7 +1320,7 @@ Die Belichtungskorrektur der Kamera macht keine Probleme mehr
 Fast kein Rauschen vorhanden
 \end_layout
 
-\begin_layout Subparagraph
+\begin_layout Paragraph
 Nachteile
 \end_layout
 
@@ -1341,7 +1333,7 @@ Es müssen doppelt so viele Bilder projiziert werden, wie genutzt werden
 Aufwändige Bildkonstruktion
 \end_layout
 
-\begin_layout Subparagraph
+\begin_layout Paragraph
 Fazit
 \end_layout
 
@@ -1350,19 +1342,20 @@ Aufgrund der hohen stabilität verwenden wir dieses Verfahren.
  Wir sind zudem nicht so stark auf Performance angewisesen.
 \end_layout
 
-\begin_layout Paragraph
+\begin_layout Subsubsection
 Bestehende Bibliotheken
 \end_layout
 
 \begin_layout Standard
-Es gibt die Möglichkeit, eine Kamerakalibration mit vollständiger Transformation
-smatrix (11 Freiheitsgrade) mit OpenCV vollautomatisch vornehmen zu lassen.
+Es gibt die Möglichkeit, eine Kamerakalibrierung mit vollständiger Transformatio
+nsmatrix (11 Freiheitsgrade) mit OpenCV vollautomatisch vornehmen zu lassen.
  Diese Funktionalität konnte mit OpenCV nicht erfolgreich getestet werden.
- Aufgrund dessen wurde schliesslich vollständig auf OpenCV verzichtet.
+ Aufgrund dessen und der Tatsache, dass OpenCV nicht sehr gut dokumentiert
+ zu sein scheint, wurde schliesslich vollständig darauf verzichtet.
 \end_layout
 
-\begin_layout Subsubsection
-Abbildung & Interpolation
+\begin_layout Subsection
+Kalibrierung: Abbildung & Interpolation
 \end_layout
 
 \begin_layout Standard
@@ -1378,13 +1371,13 @@ Beamerkoordinaten
 \shape default
 ).
  In der Praxis wird dies aufgrund von Beschränkungen wie der tiefen Kameraauflös
-ung und der grösse des Stiftes nicht perfekt möglich sein.
+ung und der Grösse des Stiftes nicht perfekt möglich sein.
  Es gilt eine Funktion zu finden, welche diese Abbildung möglichst gut annähert.
  Dazu wurden verschiedene Ansätze analysiert, welche im Folgenden beschrieben
  werden.
 \end_layout
 
-\begin_layout Paragraph
+\begin_layout Subsubsection
 Linear
 \end_layout
 
@@ -1398,10 +1391,10 @@ er im Kamerabild annähernd parallel sind.
 \end_layout
 
 \begin_layout Standard
-TODO: Mathematisch mit Grafiken die Abbildung in beide Richtungen erklären!!!
+TODO: Mathematisch mit Grafiken die Abbildung in beide Richtungen erklären.
 \end_layout
 
-\begin_layout Subparagraph
+\begin_layout Paragraph
 Vorteile
 \end_layout
 
@@ -1417,7 +1410,7 @@ Keine Knicke
 Eckpunkte reichen
 \end_layout
 
-\begin_layout Subparagraph
+\begin_layout Paragraph
 Nachteile
 \end_layout
 
@@ -1429,7 +1422,7 @@ Vorberechnung nötig
 Starke Abweichungen aufgrund der perspektifischen Verzerrung
 \end_layout
 
-\begin_layout Subparagraph
+\begin_layout Paragraph
 Fazit
 \end_layout
 
@@ -1440,7 +1433,7 @@ Dieser Ansatzt war gut für einen schnellen Test.
  Das ist jedoch nicht Realtitätsnah.
 \end_layout
 
-\begin_layout Paragraph
+\begin_layout Subsubsection
 Baryzentrische Koordinaten
 \end_layout
 
@@ -1448,7 +1441,7 @@ Baryzentrische Koordinaten
 Normale Baryzentrische Koordinaten in Dreiecken
 \end_layout
 
-\begin_layout Subparagraph*
+\begin_layout Paragraph*
 Vorteile
 \end_layout
 
@@ -1460,7 +1453,7 @@ Erhöhte Genauigkeit mit mehr Refernzpunkten
 Relativ einfacher Algorithmus
 \end_layout
 
-\begin_layout Subparagraph
+\begin_layout Paragraph
 Nachteile
 \end_layout
 
@@ -1476,7 +1469,7 @@ Hoher Rechenaufwand
 Gewichtung ist nur schwer realisierbar
 \end_layout
 
-\begin_layout Subparagraph
+\begin_layout Paragraph
 Fazit
 \end_layout
 
@@ -1485,7 +1478,7 @@ Dieses Verfahren funktioniert zwar, hat jedoch zu wenig Verbesserungspotenzial
  und ist abhängig von einer sehr stabilen Konfiguration.
 \end_layout
 
-\begin_layout Paragraph
+\begin_layout Subsubsection
 Zweidimensional per Integration
 \end_layout
 
@@ -1574,7 +1567,7 @@ on
 \begin_layout Standard
 \begin_inset Formula 
 \begin{equation}
-x_{k}\left(x_{b}\right)=\intop_{0}^{x}a\left(1-x_{b}\right)+bx_{b}\delta x_{b}=\frac{1}{2}\left(b-a\right)x_{b}^{2}+ax_{b}
+x_{k}\left(x_{b}\right)=\intop_{0}^{x}a\left(1-x_{b}\right)+bx_{b}\delta x_{b}=\frac{1}{2}\left(b-a\right)x_{b}^{2}+ax_{b}\label{eq:xk-aus-xb-quadratisch}
 \end{equation}
 
 \end_inset
@@ -1599,7 +1592,14 @@ Beamer
 \begin_inset Formula $x_{b}$
 \end_inset
 
- ab und ist folgendermassen definiert.
+ ab und ist durch das Lösen der quadratischen Gleichung 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:xk-aus-xb-quadratisch"
+
+\end_inset
+
+ herleitbar.
 \end_layout
 
 \begin_layout Standard
@@ -1664,7 +1664,7 @@ reference "eq:xb-aus-xk-quadratisch"
 \end_layout
 
 \begin_layout Standard
-Zu beachten gilt, dass der Ursprung des verzerrten Beamerbild nicht unbedingt
+Zu beachten gilt, dass der Ursprung des verzerrten Beamerbildes nicht unbedingt
  auf den Ursprung des Kamerabildes zu liegen kommt.
  
 \begin_inset Formula $x_{b}$
@@ -1707,7 +1707,7 @@ s=\frac{x_{maxmeasure}}{x_{maxcalc}}
 Für die Abbildung der Y-Koordinaten wird ein von X abhängiger linearer Ansatz
  verwendet.
  Wieder spielt dabei der Gedanke eine Rolle, dass die rechte und die linke
- Seite des verzerrter Kamerabildes etwa parallel sind.
+ Seite des verzerrten Kamerabildes etwa parallel sind.
  
 \begin_inset Formula $y_{k}$
 \end_inset
@@ -1905,7 +1905,7 @@ reference "eq:yb-aus-yk-linear"
 
 \end_layout
 
-\begin_layout Subparagraph
+\begin_layout Paragraph
 Beispiel
 \end_layout
 
@@ -1952,6 +1952,8 @@ reference "fig:beamer-rueckrechnung-quadratisch"
 \end_inset
 
  zeigt die Rückberechnung der agebildeten auf die abzubildenden Koordinaten.
+ Im Weiteren ist anzumerken, dass als linke und rechte Bildlinien jeweils
+ genau senkrecht verlaufende gemittelte Geraden verwendet wurden.
 \end_layout
 
 \begin_layout Standard
@@ -2046,7 +2048,7 @@ name "fig:beamer-rueckrechnung-quadratisch"
 
 \end_layout
 
-\begin_layout Subparagraph
+\begin_layout Paragraph
 Baryzentrische Viereck-Korrektur
 \end_layout
 
@@ -2135,7 +2137,7 @@ Die baryzentrische Vierecks-Korrektur bildet die gemessenen Eckpunkte der
 TODO: genauer beschreiben.
 \end_layout
 
-\begin_layout Subparagraph
+\begin_layout Paragraph
 Pragmatische Korrektur
 \end_layout
 
@@ -2148,7 +2150,7 @@ Tests in der Praxis haben ergeben, dass nicht nur die perspektivische Verzerrung
  weiter modelliert.
  Stattdessen wird für alle zusätzlichen Abweichungen eine quadratische Korrektur
 funktion über die X-Richtung gelegt.
- Sie soll nicht weiter betrachtete Abweichungen symmetrisch ausgleichen.
+ Sie soll nicht ausgearbeitete Abweichungen symmetrisch ausgleichen.
  Die Gleichung 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -2180,7 +2182,7 @@ y_{corr}\left(x\right)=-4hx^{2}+4hx\label{eq:pragmatische-korrekturfunktion}
 
 \end_layout
 
-\begin_layout Paragraph
+\begin_layout Subsubsection
 Homogene Transformation
 \end_layout
 
@@ -2220,7 +2222,7 @@ e_elementare_homogene_Transformationsmatrizen
 .
 \end_layout
 
-\begin_layout Paragraph
+\begin_layout Subsubsection
 Baryzentrische Vierecke mit Korrekturfaktor
 \end_layout
 
@@ -2230,7 +2232,7 @@ Dieses Verfahren berücksichtigt zusätzlich noch den Faktor, dass die Rechtecke
  ausgehen aber bei uns nicht der Fall ist.
 \end_layout
 
-\begin_layout Subparagraph
+\begin_layout Paragraph
 Vorteile
 \end_layout
 
@@ -2242,7 +2244,7 @@ Genauere Interpolation
 Gewichtung ist möglich
 \end_layout
 
-\begin_layout Subparagraph
+\begin_layout Paragraph
 Nachteile
 \end_layout
 
@@ -2254,7 +2256,7 @@ Setzt eine Ordnung der Referenzpunkte voraus
 Komplizierterer Algorithmus
 \end_layout
 
-\begin_layout Subparagraph
+\begin_layout Paragraph
 Fazit
 \end_layout
 
@@ -2264,8 +2266,8 @@ Dieser Algorithmus sollte relativ gut funktionieren, wenn man entsprechende
  Er kann Knicke komplett eliminieren.
 \end_layout
 
-\begin_layout Subsubsection
-Projizieren und Messen
+\begin_layout Subsection
+Kalibrierung: Projizieren und Messen
 \end_layout
 
 \begin_layout Standard
@@ -2472,7 +2474,7 @@ Präsenz durch Kardinalität
 
 \begin_layout Standard
 Der hellste Punkt auf dem Kamerabild bildet den Stift ab.
- Es gibt verschiedene Möglichkeiten, den Fall, dass mehrere Spot auftreten,
+ Es gibt verschiedene Möglichkeiten den Fall, dass mehrere Spot auftreten,
  zu behandeln.
  
 \end_layout
@@ -2590,7 +2592,7 @@ status open
 \begin_inset Caption
 
 \begin_layout Plain Layout
-Frame x, Frame x+1, Differenz - Der Punkt bewegt sich nach rechts unten
+Frame x, Frame x+1, Differenz - Der Punkt bewegt sich nach rechts unten.
 \end_layout
 
 \end_inset
@@ -2613,7 +2615,7 @@ Messungen zeigen, dass ein bewegter Lichtpunkt in der Praxis nicht rund
  Der CCD trägt der starken Änderung mehr Rechnung als der schwachen.
  Im Weiteren ist die Helligkeit des Lichtpunktes vom Zentrum her nicht weich
  abfallend, sonder eher scharfkantig.
- Die rührt von Reflexionen auf der dahinter liegenden Leinwand.
+ Dies rührt von Reflexionen auf der dahinter liegenden Leinwand.
 \end_layout
 
 \begin_layout Standard
@@ -2724,7 +2726,7 @@ t gross ist, dass entweder gar kein Punkt gefunden wird oder dass sich der
 status open
 
 \begin_layout Plain Layout
-Dies macht den kontextabhängigen Algorithmus per se unbrauchbar.
+Dies würde den kontextabhängigen Algorithmus per se unbrauchbar machen.
 \end_layout
 
 \end_inset
@@ -2737,8 +2739,8 @@ Stabilität durch Differenzbilder
 \end_layout
 
 \begin_layout Standard
-Reduktionen des Kontextes muss nicht unbedingt wie oben beschrieben zu Instabili
-tät und mehr Fallunterscheidungen führen.
+Reduktion des Kontextes muss nicht unbedingt wie oben beschrieben zu Instabilitä
+t und mehr Fallunterscheidungen führen.
  Zum Beispiel können relevante Informationen durch Differenzbilder hervorgehoben
  und Rauschen unterdrückt werden.
  Sogar Kriterien, die mit den Eigenschaften eines Stiftes konkurrieren,
@@ -2746,7 +2748,7 @@ tät und mehr Fallunterscheidungen führen.
  unterdrückt werden.
  Falls Differenzbilder verwendet werden, müssen weitere Überlegungen zur
  Kardinalität der Lichtpunkte gemacht werden.
- Was nun ein oder zwei resultierende Punkte auf dem Bild bedeutet ist nicht
+ Was nun ein oder zwei resultierende Punkte auf dem Bild bedeuten ist nicht
  ganz klar (s.u.).
 \end_layout
 
