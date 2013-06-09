@@ -142,11 +142,11 @@ Einleitung
 \end_layout
 
 \begin_layout Standard
-Die in dieser Arbeit entworfene Software soll einer Person ermöglichen,
- interaktive Präsentationen in einem kleinen oder mittelgrossen Sitzungszimmer
- zu halten.
+Die in dieser Arbeit entworfenen und in einem Prototyp eingesetzten Algorithmen
+ sollen einer Person ermöglichen, interaktive Präsentationen in einem kleinen
+ oder mittelgrossen Sitzungszimmer zu halten.
  Die Person kann ihren eigenen Laptop dafür verwenden.
- Der Laptop wird am dort vorhandenen Beamer angeschlossen.
+ Der Laptop wird am lokal vorhandenen Beamer angeschlossen.
  Nach einer kurzen Kalibrierung kann die Person die Präsentation starten.
  Dabei schreibt sie falls gewünscht mit einem virtuellen Stift an die Leinwand.
  Das geschriebene wird aufgezeichnet und wieder auf das Beamerbild projiziert.
@@ -162,6 +162,8 @@ In einem normalen Sitzungszimmer soll ein Vortrag gehalten werden können.
  benutzt werden können.
  Als Addendum wird ein spezieller Stift mitgeliefert.
  Der Stift soll günstig sein.
+ Der Aufbau unterliegt zu definierenden Beschränkungen wie Winkel und Raumbeleuc
+htung.
 \end_layout
 
 \begin_layout Standard
@@ -205,7 +207,7 @@ Kalibrierung
 \begin_layout Standard
 Bevor ein Stift auf der Leinwand gefunden werden kann, muss die Erkennungssoftwa
 re kalibriert werden.
- Dazu müssen folgende Schritte vorgenommen werden:
+ Dazu werden folgende Schritte vorgenommen:
 \end_layout
 
 \begin_layout Itemize
@@ -227,12 +229,15 @@ Präsentation
 \end_layout
 
 \begin_layout Standard
-Die Person soll mit einem Stift auf die das Beamerbild schreiben können.
- Sie benutzt dazu ein helles Licht.
+Nach der erfolgreichen Kalibrierung kann der Benutzer mit einem speziellen
+ Stift an die Leinwand zeichnen.
+ Vorläufig ist dieser Stift eine einfache weisse LED.
  Die Person muss darauf achten, dass der Stift für die Kamera sichtbar ist.
  Das erfordert Disziplin.
  Deshalb gilt abzuklären, ob und wie das Präsentationssystem akzeptiert
  wird.
+ Es ist einem Benutzer vermutlich zumutbar, nur dann schreiben zu können,
+ wenn ihn das Publikum sieht.
 \end_layout
 
 \begin_layout Standard
@@ -267,7 +272,7 @@ Aufnahmegerät
 
 \begin_layout Standard
 Das in dieser Arbeit verwendete Aufnahmegerät ist eine integrierte Laptopkamera
- eines Thinkpad T420s mit einer Auflösung von 640x480 Pixel à 30 Bilder
+ eines Thinkpad T430s mit einer Auflösung von 640x480 Pixel à 30 Bilder
  pro Sekunde.
  Sie übertreibt es völlig mit dem automatischen Weissabgleich, hat aber
  einen in den Treiber integrierten Konfigurationsdialog, mit welchem sich
@@ -360,7 +365,7 @@ Präsentationsgerät
 \begin_layout Standard
 Ein weniger wichtige Rolle als die Kamera spielt der Beamer.
  Weder die Auflösung, noch die Bildwiederholrate spielen eine nennenswerte
- Rolle auf die Qualität des Präsentationssystem.
+ Rolle für die Qualität des Präsentationssystem.
  Die Helligkeitseinstellung ist jedoch wichtig.
  Der in dieser Arbeit verwendete Beamer beleuchtet die Leinwand sehr stark
  und verstärkt dadurch das Problem des automatischen Weissabgleiches der
@@ -446,7 +451,14 @@ status open
 \begin_inset Caption
 
 \begin_layout Plain Layout
-Leinwand mit drei verschiedenen Verzerrungen
+Leinwand aus drei verschiedenen Blickwinkeln
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:leinwand-verzerrungen"
+
+\end_inset
+
+
 \end_layout
 
 \end_inset
@@ -460,16 +472,22 @@ Leinwand mit drei verschiedenen Verzerrungen
 \end_layout
 
 \begin_layout Standard
-So sieht die Kamera die Leinwand aus drei verschiedenen Winkeln.
- Die Kalibrierung kann die perspektivische Verzerrung nur begrenzt ausgleichen.
- Deshalb kann die Position eines Stiftes nicht immer gut oder in allen Bereichen
- der Leinwand gleich gut erfolgen.
+Abb.
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:leinwand-verzerrungen"
+
+\end_inset
+
+ zeigt die Leinwand aus drei verschiedenen Winkel mit den daraus resultierenden
+ einfachen perspektivischen Verzerrungen.
 \end_layout
 
 \begin_layout Itemize
-Links sieht man den üblichen Fall: Beamerbild und Laptopkamera liegen auf
- zwei parallelen Ebenen.
- 
+Die linke Abbildung zeigt den angenäherten Normalfall: Beamerbild und Laptopkame
+ra liegen auf zwei parallelen Ebenen.
+ Es wird nur in X-Richtung verzerrt.
 \end_layout
 
 \begin_layout Itemize
@@ -484,9 +502,12 @@ Rechts ist das Bild in alle Richtungen verzerrt und stellt somit die grössten
 \end_layout
 
 \begin_layout Standard
-Zur Vereinfachung des zu lösenden Problems wird im Folgenden jeweils angenommen,
- dass die perspektivische Verzerrung lediglich auf der Horizontalen (X-Achse)
- der aufgenommenen Bilder verläuft.
+Die Kalibrierung kann die perspektivische Verzerrung nur begrenzt ausgleichen.
+ Deshalb kann die Position eines Stiftes nicht immer gut oder in allen Bereichen
+ der Leinwand gleich gut erfolgen.
+ Zur Vereinfachung des zu lösenden Problems wird im Folgenden jeweils angenommen
+, dass die perspektivische Verzerrung lediglich auf der Horizontalen (X-Achse)
+ der aufgenommenen Bilder verläuft (linke Abbildung).
  Messungen zur Genauigkeit unseres verwendeten Abbildungsverfahrens (s.u.)
  zeigen, dass die Verzerrung auf der Vertikalen (Y-Achse) vernachlässigt
  werden kann.
@@ -601,7 +622,7 @@ chaften haben wenig Einfluss auf die Güte des Resultates.
 Im Folgenden dieser Arbeit wird genauer darauf eingegangen, wie alle diese
  Zwischenschritte vom Kamerabild bis zum gezeichneten Bildpunkt auf dem
  Beamer analysiert und gelöst wurden.
- Zum einen werden Ideen zum Finden eines Stiftes in einem Kamerabild diskutiert,
+ Zum einen werden Ideen zum Finden eines Stiftes in einem Kamerabild diskutiert
  zum anderen werden verschiedene Ansätze erarbeitet, die eine näherungsweise
  korrekte Abbildung von Kamera- zu Beamerpunkten ermöglichen.
  Im Anhang werden erweiterte oder fehlgeschlagene Ideen genauer erläutert.
@@ -7214,7 +7235,7 @@ status open
 \align center
 \begin_inset Graphics
 	filename Bilder/Handtracking/Gestenanalyse/polar-scan.emf
-	lyxscale 20
+	lyxscale 10
 	width 50col%
 
 \end_inset
@@ -7250,12 +7271,12 @@ Ergebnisse
 \begin_layout Standard
 Es ist schwierig zu sagen, ob es sinnvoll ist, Touch auf der Leinwand weiter
  zu verfolgen.
- Einerseits wäre diese Funktionalität intuitiv und wünschenswert.
+ Einerseits wäre diese Funktionalität innovativ und wünschenswert.
  Sie ist an keine weitere Hardware gebunden und die zugehörige Software
  könnte mit dem Betriebsystem zusammen ausgeliefert werden.
  Andererseits ist es sehr schwierig zu erkennen, ob eine Person die Leinwand
  angetippt hat.
- Bei schlechten Lichtbedingungen und komplizierterej projizierten Bildern
+ Bei schlechten Lichtbedingungen und komplizierteren projizierten Bildern
  konnte die Hand bei schneller Bewegung nicht einmal mehr mit blossem Auge
  erkannt werden.
  Ob eine Webcam mit schlechter Auflösung, niedriger Framerate und schlechter
