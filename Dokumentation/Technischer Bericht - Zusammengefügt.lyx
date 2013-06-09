@@ -847,41 +847,29 @@ Das im Kamerabild gefundene und auf die Beamerauflösung rücktransformierte
 Erkennen von Vierecken
 \end_layout
 
+\begin_layout Standard
+Tauschen mit mit Bilddetekionsalgorithmen!
+\end_layout
+
 \begin_layout Subsubsection
 Eckpunkte erkennen
 \end_layout
 
 \begin_layout Standard
-Es werden lediglich die Bildschirmecken erkannt.
-\end_layout
-
-\begin_layout Paragraph
-Vorteile
-\end_layout
-
-\begin_layout Itemize
-Zuverlässigkeit
-\end_layout
-
-\begin_layout Itemize
-Fehlerkennungen können einfach detektiert werden
-\end_layout
-
-\begin_layout Paragraph
-Nachteile
-\end_layout
-
-\begin_layout Itemize
-Nur vier nutzbare Punkte
-\end_layout
-
-\begin_layout Paragraph
-Fazit
-\end_layout
-
-\begin_layout Standard
-Für die meisten Interpolationsansätze reicht das schon.
- Wir haben schon damit sehr gute Ergebnisse erzielt.
+Mit diesem Verfahren werden lediglich die Ecken des Bildschirms erkannt.
+ Dafür gibt es mehrere Verfahren, die im nächsten Punkt evaluiert werden.
+ Anhand dieser vier Punkte können schon viele verschiede Berechnungen gemacht
+ werden und auch die perspektivische Verzerrung kann schon korrigiert werden.
+ Aufgrund der Einfachheit dieses Verfahren, ist es sehr stabil aund Fehlertolera
+nt.
+ Ein weiterer Vorteil esteht darin, dass der Benutzter selber verifizieren
+ kann anhand des Kamerabildes, ob die Ecken richtig erkannt wurden.
+ Der Nachteil dieses Verfahrens besteht darin, dass man keine zusätzlichen
+ Refernezpunkte hat, um die Erkennung zu verbessern.
+ Wir haben dieses Verfahren angewandt, da wir mit der Genauigkeit und der
+ Fehlertoleranz sehr zufrieden waren.
+ Zudem hatten wir zu wenig Zeit, ein Verfahren zu implementieren, das zusätzlich
+e Refernzpunkte gut ausgenutzt hätte.
 \end_layout
 
 \begin_layout Paragraph
@@ -889,50 +877,21 @@ Rekursives traversieren von Vierecken
 \end_layout
 
 \begin_layout Standard
-Rechtecke werden mit einem rekursiven Algorithmus erkannt.
-\end_layout
-
-\begin_layout Subparagraph
-Vorteile
-\end_layout
-
-\begin_layout Itemize
-Stabile Erkennung
-\end_layout
-
-\begin_layout Itemize
-Verbesserungsmöglichkeiten
-\end_layout
-
-\begin_layout Subparagraph
-Nachteile
-\end_layout
-
-\begin_layout Itemize
-Gravierende Fehlerkennungen
-\end_layout
-
-\begin_layout Itemize
-Probleme mit nicht erkannten Blobs
-\end_layout
-
-\begin_layout Itemize
-Fehlerdetektion ist nist absolut möglich, höchstens Fehlerwahrscheinlichkeiten
- abschätzen.
-\end_layout
-
-\begin_layout Itemize
-Verbesserungen verursachen hohe Code-Komplexität
-\end_layout
-
-\begin_layout Subparagraph
-Fazit
-\end_layout
-
-\begin_layout Standard
-Dieser Algorithmus lässt sich unendlich verbessern, wird aber niemals korrekt
- funktionieren.
- Für ein Mapping sind wir aber auf 100% Korrektheit.
+Auf einem mehrfarbigen Schachbrettmuster werden Quadrate erkannt mit einem
+ weiter unten genannten Verfahren.
+ Danach können alle Quadrate rekursiv iteriert werden.
+ Die Itaration erhält die Struktur eines Baumes.
+ Das Verfahren ist in der Theorie sehr stabil und und kann sehr weit angepasst
+ werden.
+ Bei fehlenden Erkennungen kann der Algortihmus sogar um eine Lücke herumgehen.
+ Bei Versuchen haben wir jedoch gesehen,dass dieses Verfahren sehr Fehleranfälli
+g ist.
+ Man erhält bis zu 90% Korrektheit, jedoch ist das zu wenig für uns.
+ Verbesserungen lassen sich zwar umsetzten, jedoch führen diese zu einer
+ stark erhöhten Kopmlexität und tragen nur sehr wenig zur Verbesserung bei.
+ Weitere Proble bereiten diesem Algorithmus fehlende Blobs, da dann die
+ Diagolale als direkter Nachbar erkannt wird, was verheerende Folgen hat.
+ Zudem ist keine Fehlerdetektion möglich.
 \end_layout
 
 \begin_layout Paragraph
@@ -940,44 +899,18 @@ Nutzung der Interpolation
 \end_layout
 
 \begin_layout Standard
-Zuordning aufgrund der Interpolation anzand der Eckpunkten.
-\end_layout
-
-\begin_layout Subparagraph
-Vorteile
-\end_layout
-
-\begin_layout Itemize
-Einfaches Verfahren
-\end_layout
-
-\begin_layout Itemize
-Die meisten Fehler können korrigiert werden
-\end_layout
-
-\begin_layout Itemize
-Sehr performant.
-\end_layout
-
-\begin_layout Subparagraph
-Nachteile
-\end_layout
-
-\begin_layout Itemize
-Gravierende Fehlerkennungen
-\end_layout
-
-\begin_layout Itemize
-Abhängig von einer guten Interpolation.
-\end_layout
-
-\begin_layout Subparagraph
-Fazit
-\end_layout
-
-\begin_layout Standard
-Mit einem guten Interpolationsverfahren wird das nicht mehr benötigt.
- Es könnte sich allenfalls lohnen, diese Verfahren später nochmals anzusehen.
+Hierbei werden die Rechtecke anhand einer Interpolation zu den Eckpunkten
+ zugeordnet.
+ Dieses Verfahren ist sehr einfach und es können Fehler mit einer Abweichung
+ einer halben Seitenlänge eines Rechteks korrigiert werden und zusätzlich
+ eine ganze Seitenlänge detektiert werden.
+ Zudem ist dieser Algorithmus sehr performant.
+ Er ist allerdings auch auch von einem guten Interpolationsverfahren abhängig,
+ was wiederum Referenzpunkte erübrigt.
+ Dieser Algorithmus kann durch eine Vergrösserung der Rechtecke stabilisiert
+ werden, was wiederum zu weniger Referenzpunkten führt.
+ Mit einem schlechten Interpolationsverfahren kann es zu gravierenden Fehlerkenn
+ungen kommen.
 \end_layout
 
 \begin_layout Paragraph
@@ -985,38 +918,16 @@ K-Means Clustering
 \end_layout
 
 \begin_layout Standard
-Inkrementeller Clustering-Algorithmus
-\end_layout
-
-\begin_layout Subparagraph
-Vorteile
-\end_layout
-
-\begin_layout Itemize
-Fehler sind detektierbar
-\end_layout
-
-\begin_layout Subparagraph
-Nachteile
-\end_layout
-
-\begin_layout Itemize
-Iterationstiefe abhängig von der Rechteckgrösse
-\end_layout
-
-\begin_layout Itemize
-Stellt hohe Anforderungen an Blobdetektion
-\end_layout
-
-\begin_layout Subparagraph
-Fazit
-\end_layout
-
-\begin_layout Standard
-Dieser Algorithmus ist sehr stabil und 100% korrekt.
- Im Fehlerfall kann er jedoch nie abschliessen.
- Mit Verbesserungen könnte jedoch auch dieser Algorithmus sinnvoll eingesetzt
- werden.
+Hiermit werden auf dem Bildschirm immer feiner aufgeteilte Cluster erstellt.
+ Dieses Verfahren bietet gute Möglichkeiten zur Fehlerdetektion und liefert
+ gute Ergebnisse.
+ Mit der Fehlerdetektion kann man alle üblichen Fehlerkennungen ausschliessen.
+ Allerdings ist es ziemlich intolerant gegenüber Fehlerkennungen und stellt
+ ziemlich hohe anforderungen an das Kamerabild.
+ Ebenso ist die Anzahl der Nutzbaren referenzpunkte von der Kameraauflösung
+ abhängig.
+ Dieses Verfahren ist sehr genau und stabil, jdoch stellt es erhöhte Anforderung
+en, die dazu führen, dass die Kalibhration nicht immer klappt.
 \end_layout
 
 \begin_layout Subsection
@@ -1070,62 +981,22 @@ g gearbeitet wird, hat die Transformation lediglich 8 Freiheitsgrade, welche
 \end_layout
 
 \begin_layout Paragraph
-Eckdetektion per Differenzbild
+Selbstimplementierte Eckdetektion mit Differenzbildern
 \end_layout
 
 \begin_layout Standard
-TODO: genau beschreiben was wieso gemacht wird
-\end_layout
-
-\begin_layout Standard
-Ergebnisse sind brauchbar aber nicht sicher.
- Fehlerkennungen kommen gelegentlich vor.
-\end_layout
-
-\begin_layout Subparagraph
-Vorteile
-\end_layout
-
-\begin_layout Itemize
-Ecken des Bildschirms wurden ungefähr erkannt, die meisten der dargestellten
- Rechtecken auch.
- 
-\end_layout
-
-\begin_layout Subparagraph
-Nachteile
-\end_layout
-
-\begin_layout Itemize
-Ich habe nur wenig Verbesserungspotenzial bei dieser Lösung gesehen, und
- dieses wäre teuer zu erkaufen gewesen.
- 
-\end_layout
-
-\begin_layout Itemize
-Da grosse Teile des Bildschirms umgefärbt wurden, gab es Probleme mit der
- Belichtungskorrektur.
- 
-\end_layout
-
-\begin_layout Itemize
-Zufällig verteilte Punkte sind für ein Mapping nicht gut brauchbar.
-\end_layout
-
-\begin_layout Itemize
-Die Farbkanäle waren schwierig sauber zu trennen und haben häufig Probleme
- verursacht.
- Überschneidungen waren sehr Problematisch.
- 
-\end_layout
-
-\begin_layout Subparagraph
-Fazit
-\end_layout
-
-\begin_layout Standard
-Dieses Verfahren birgt zu viele Risiken und Aufgrund des kleinen Verbesserungspo
-tenzials lohnt es sich nicht, diesen Ansatz weiterzuverfolgen.
+Hierbei werden auf Dizzerenzbildern entlang von Scanlinien Eckpunkte gesucht
+ und so Rechtecke gefunden.
+ Dieses Verfahren kann auch auf Farbkanäle erweitert werden.
+ Dieses Verfahren funktioniert relativ gut auf Billdern mit konstanter Belichtun
+gskorrektur und stark unterschiedlichen Helligkeitsverteilungen.
+ Diese zwei Faktoren sind in unserer Problemstellung nicht gegeben, was
+ die Erkennung erschwert.
+ Zudem müssen gewisse Parameter angepasst werden, wenn sich die Raumhelligkeit
+ oder die Kamera zu stark unterscheidet.
+ Das ist nicht realistisch.
+ Eine Weiterentwicklung dieses Lösung haben wir verworfen aufgrund des Verhältni
+sses von Aufwand und Ertrag.
 \end_layout
 
 \begin_layout Paragraph
@@ -1133,49 +1004,15 @@ Einfacher Differenzbildansatz
 \end_layout
 
 \begin_layout Standard
-TODO: genau beschreiben was wieso gemacht wird
-\end_layout
-
-\begin_layout Standard
-Es wird ein universeller Differenzbild-hintergrund verwendet.
- Damit werden alle Bilder so dargestellt, wie sie sein sollten.
-\end_layout
-
-\begin_layout Subparagraph
-Vorteile
-\end_layout
-
-\begin_layout Itemize
-Es müssen weiger Bilder dargestellt werden.
-\end_layout
-
-\begin_layout Itemize
-Statische Störungen (Umgebung werden herausgefiltert.
-\end_layout
-
-\begin_layout Subparagraph
-Nachteile
-\end_layout
-
-\begin_layout Itemize
-Gleichmässige Lichtverhältnisse sind unmöglich einzuhalten.
-\end_layout
-
-\begin_layout Itemize
-Belichtungskorrektur kann grosse Probleme bereiten
-\end_layout
-
-\begin_layout Itemize
-Rauschen nimmt mit der Zeit zu
-\end_layout
-
-\begin_layout Subparagraph
-Fazit
-\end_layout
-
-\begin_layout Standard
-Solange wir keinen Zugriff auf die Konfiguration der Kamera haben, funktioniert
- dieses Verfahren nicht.
+Bei diesen Verfahren wird ein universeller Differenzbild-Hintergrund verwendet.
+ Damit kann der statische Hintergrund des Bildes gut entfernt werden und
+ es muss nur ein zusätzliches Bild projiziert werden.
+ Somit wird nur wenig zusätzliche Zeit für die Kalibration benötigt.
+ Dieser Ansatzt hat dafür Probleme, wenn die Kamera die Belichtungskorrektur
+ ändert.
+ Dies kommt leider sehr häufig vor, wenn sich die Projektion ändert.
+ Da dies genau unser Kalibrationsansatz ist, können wir leider auch diese
+ Lösung nicht verwenden.
 \end_layout
 
 \begin_layout Paragraph
@@ -1183,45 +1020,16 @@ Histogramm-Analyse
 \end_layout
 
 \begin_layout Standard
-TODO: genau beschreiben was wieso gemacht wird
-\end_layout
-
-\begin_layout Standard
-Hierbei wird direkt mit Kamerabildern gearbeitet.
- Die Bilder werden nach Helligkeitsverteilung analysiert.
-\end_layout
-
-\begin_layout Subparagraph
-Vorteile
-\end_layout
-
-\begin_layout Itemize
-Es müssen keine zusätzlichen Bilder dargestellt werden.
-\end_layout
-
-\begin_layout Subparagraph
-Nachteile
-\end_layout
-
-\begin_layout Itemize
-Die Farbverteilung ist in verschiedenen Bildregionen unterschiedlich.
-\end_layout
-
-\begin_layout Itemize
-Starkes Rauschen
-\end_layout
-
-\begin_layout Itemize
-Ungenaue Erkennung
-\end_layout
-
-\begin_layout Subparagraph
-Fazit
-\end_layout
-
-\begin_layout Standard
-Es werden höchstens Teile des Bildes richtig erkannt.
- Unbrauchbar für uns.
+Hierbei werden keine Differenzbilder verwendet sondern mit den Aktuellen
+ Kamerabildern gearbeitet.
+ Darauf analysieren wir die Durchschnittlich Helligkeitsverteilung und die
+ Standartabweichung.
+ Alles was heller ist, akzeptieren wir.Dadurch müssen bei der Kalibration
+ keine zusätzlichen Bilder angezeigt werden.
+ Analysen haben jedoch gezeigt, dass der Helligkeitsunterschied zwischen
+ verschiedenen Bildteilen (z.B: obere und untere Bildhälfte) viel grösser
+ ist als der Projektionsrand.
+ Daraus ist die Idee entstanden, das Bild aufzuteilen für die Analyse:
 \end_layout
 
 \begin_layout Paragraph
@@ -1229,115 +1037,55 @@ Histogramm-Analyse auf Bildausschnitten
 \end_layout
 
 \begin_layout Standard
-TODO: genau beschreiben was wieso gemacht wird
-\end_layout
-
-\begin_layout Standard
-Auch hierbei wird direkt mit Kamerabildern gearbeitet.
- Die Bilder werden aufgeteilt, nach Helligkeitsverteilung analysiert und
- wieder zusammengesetzt.
-\end_layout
-
-\begin_layout Subparagraph
-Vorteile
-\end_layout
-
-\begin_layout Itemize
-Es müssen keine zusätzlichen Bilder dargestellt werden.
-\end_layout
-
-\begin_layout Itemize
-Regionen mit unterschiedlichen Lichtverhältnissen werden gut korrigiert.
-\end_layout
-
-\begin_layout Itemize
-Zu erkennende Objekte werden erkannt
-\end_layout
-
-\begin_layout Subparagraph
-Nachteile
-\end_layout
-
-\begin_layout Itemize
-Noch stärkeres Rauschen
-\end_layout
-
-\begin_layout Itemize
-Unscharfe Kanten
-\end_layout
-
-\begin_layout Itemize
-Viele Fehlerkennungen
-\end_layout
-
-\begin_layout Itemize
-Unscharfe Übergänge
-\end_layout
-
-\begin_layout Subparagraph
-Fazit
-\end_layout
-
-\begin_layout Standard
-Dieses Verfahren funktioniert erkennt meist alle gesuchten Blobs.
- Deren Erkennung ist aber nicht gut und die Kanten sind unscharf.
- Das führt zu unkorrekten Werten.
- Zudem müssen viele Fehlerkennungen herausgefiltert werden.
- Brauchbar aber nicht optimal.
+Hierbei wird das Bild am Anfang in kleine Ausschnitte aufgeteilt und anschliesse
+nd das obige Verfahren angewandt.
+ So können wir den Hauptnachteil des obigen Verfahrens eliminieren.
+ Die Resultate sind relativ gut, mit dem Nachteil, dass wir keine klaren
+ Kanten erhalten, wie dies bei Differenzbildern der Fall ist.
+ EIne weitere Konsequenz sind uneinheitliche Übergänge an den Bildausschnitten,
+ die jedoch für unsere Eckdetektion keine Rolle spielen.
+ Dieses Verfahren funktioniert ziemlich gut, aber die Einschränkung der
+ ungenauen Kanten stört uns relativ stark, da wir von diesen abhängig sind.
 \end_layout
 
 \begin_layout Paragraph
-Schachbrett-Muster
+Individuelle Differenzbilder
 \end_layout
 
 \begin_layout Standard
-Es werden nur Bilder projiziert, die eine identische Helligkeitsverteilung
- aufweisen.
-\end_layout
-
-\begin_layout Subparagraph
-Vorteile
-\end_layout
-
-\begin_layout Itemize
-Die Belichtungskorrektur der Kamera macht keine Probleme mehr
-\end_layout
-
-\begin_layout Itemize
-Fast kein Rauschen vorhanden
-\end_layout
-
-\begin_layout Subparagraph
-Nachteile
-\end_layout
-
-\begin_layout Itemize
-Es müssen doppelt so viele Bilder projiziert werden, wie genutzt werden
- können
-\end_layout
-
-\begin_layout Itemize
-Aufwändige Bildkonstruktion
-\end_layout
-
-\begin_layout Subparagraph
-Fazit
-\end_layout
-
-\begin_layout Standard
-Aufgrund der hohen stabilität verwenden wir dieses Verfahren.
- Wir sind zudem nicht so stark auf Performance angewisesen.
+Zu jedem Bild, das angezeigt werden soll, werden zwei Bilder generiert,
+ deren Differenzbild genau dem gesuchten Bild entspricht.
+ Diese Teilbilder müssen eine identische Helligkeitsverteilung aufweisen.
+ Das verdoppelt zwar die Kalibrationszeit dadurch, dass die Zahl der anzuzeigend
+en Bilder verdoppelt wird.
+ Dafür erhalten wir sehr gute Differenzbilder, deren Kanten sehr genau sind.
+ Wir haben uns für diesen Ansatzt entschieden, da man sehr gute Resulate
+ erhält und die Kalibrationszeit immer noch im Rahmen liegt und von den
+ Nutzern sicherlich akzeptiert werden wird.
 \end_layout
 
 \begin_layout Paragraph
-Bestehende Bibliotheken
+Externe Bibliotheken
 \end_layout
 
 \begin_layout Standard
-Es gibt die Möglichkeit, eine Kamerakalibration mit vollständiger Transformation
-smatrix (11 Freiheitsgrade) mit OpenCV vollautomatisch vornehmen zu lassen.
- Diese Funktionalität konnte mit OpenCV nicht erfolgreich getestet werden.
- Aufgrund dessen wurde schliesslich vollständig auf OpenCV verzichtet.
+OpenCv bietet die Möglichkeit, anhand verschiedener Aufnahmen eines Referenzbild
+es einen ganzen Dreidimensionalen Raum zu rekonstruhieren.
+ Dafür wird für jede erkannte Ebene eine Transformationsmatrix erstellt,
+ die anschliesend kombiniert werden und eine Rücktransformation auf den
+ Raum erlauben.
+ Da wir jedoch nur auf eine einzelne Ebene abbilden können, hätten wir diesen
+ Algorithmus stark anpassen müssen.
+ Dies war uns jedoch aufgrund der enormen Komplexität dieses Codes nicht
+ möglich.
+ In einem weiten versuch haben wir mit verschieden Testbildern versucht,
+ einzelne Transformationsmatrizen zu erhalten.
+ OpenCv hat jedoch zu keinem einzigen Testbild ein Resultat geliefert, obwohl
+ wir die spezifizierten Refernzbilder verwendet haben.
+ Zudem liefert OpenCv keine Fehlerbeschreibungen, was uns Anpassungen erlaubt
+ hätte.
+ Ein weiterer Nachteil besteht darin, dass das komplette 600 MB grosse Framework
+ mitgeliefert werden müsste, auch wenn man nur einen Teil davon verwendet.
 \end_layout
 
 \begin_layout Subsubsection
@@ -1370,53 +1118,56 @@ Linear
 \begin_layout Standard
 Der lineare Ansatz berücksichtigt weder perspektivische Verzerrung noch
  Linseneffekte.
- Es wird angenommen, dass die zwei vertikalen Seiten des projizierten Beamerbild
-er im Kamerabild annähernd parallel sind.
- Für die Abbildung der X-Koordinaten wird eine Gerade in Abhängigkeit von
- Y von links nach rechts durch das verzerrte Beamerbild gelegt.
+ Es wird davon ausgegangen, dass die Verhältnisse der Punkt zu den Ränden
+ in beiden Abbildungen identisch sind.
+ Wenn keine perspektivische Verzerrung vorhanden ist, funktionier dieses
+ Verfahren korrekt.
+ Sonst werden keine Anforderungen an das Bild gestellt.
+ Das heisst, dass die Genauigkeit dieses Verfahrens abhängig von der Distanz
+ zwischen der Linse des Beamers und der Kamera ist.
+ Wenn diese nebeneinanderstehen funktioniert dieses Verfahren sehr gut.
+ Bei diesem Verfahren werden nur die Eckpunkte für die Berechnung benötigt.
+ Da dieses Verfahren nur in eine Richtung funktioniert, müssen einmalig
+ alle möglichen Werte Berechnet werden, dafür sind nacher keine Berechnungen
+ mehr nötig, ein einfacher Lookup reicht dafür.
 \end_layout
 
 \begin_layout Standard
-TODO: Mathematisch mit Grafiken die Abbildung in beide Richtungen erklären!!!
-\end_layout
-
-\begin_layout Subparagraph
-Vorteile
-\end_layout
-
-\begin_layout Itemize
-Berechnung ist relativ schnell
-\end_layout
-
-\begin_layout Itemize
-Keine Knicke
-\end_layout
-
-\begin_layout Itemize
-Eckpunkte reichen
-\end_layout
-
-\begin_layout Subparagraph
-Nachteile
-\end_layout
-
-\begin_layout Itemize
-Vorberechnung nötig
-\end_layout
-
-\begin_layout Itemize
-Starke Abweichungen aufgrund der perspektifischen Verzerrung
-\end_layout
-
-\begin_layout Subparagraph
-Fazit
+Da dieses Verfahren nur 
 \end_layout
 
 \begin_layout Standard
-Dieser Ansatzt war gut für einen schnellen Test.
- Wenn keine Perspektivische Verzerrung vorhanden ist, funktioniert er relativ
- gut.
- Das ist jedoch nicht Realtitätsnah.
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Diagramme/Lineare Interpolation.emf
+	lyxscale 30
+	width 100col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Lineare Interpolation
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Paragraph
@@ -1424,44 +1175,21 @@ Baryzentrische Koordinaten
 \end_layout
 
 \begin_layout Standard
-Normale Baryzentrische Koordinaten in Dreiecken
-\end_layout
-
-\begin_layout Subparagraph*
-Vorteile
-\end_layout
-
-\begin_layout Itemize
-Erhöhte Genauigkeit mit mehr Refernzpunkten
-\end_layout
-
-\begin_layout Itemize
-Relativ einfacher Algorithmus
-\end_layout
-
-\begin_layout Subparagraph
-Nachteile
-\end_layout
-
-\begin_layout Itemize
-Gewisse Ungenauigkeiten
-\end_layout
-
-\begin_layout Itemize
-Hoher Rechenaufwand
-\end_layout
-
-\begin_layout Itemize
-Gewichtung ist nur schwer realisierbar
-\end_layout
-
-\begin_layout Subparagraph
-Fazit
-\end_layout
-
-\begin_layout Standard
-Dieses Verfahren funktioniert zwar, hat jedoch zu wenig Verbesserungspotenzial
- und ist abhängig von einer sehr stabilen Konfiguration.
+Hierbei werden die Baryzentrischen Koordinaten aus verschiedenen Dreiecken
+ berechnet, zurückgerechnet und anschliessend alle Resultate gemittelt.
+ Dadurch erhält man eine Genauigkeit, die proportional zur Anzahl Refernzpunkte
+ steigt.
+ Zuden ist der Algorithmus relativ einfach verständlich und gut testbar.
+ Diese Berechnung brücksichtigt allerdings nicht, dass die Abbildung nicht
+ Wikeltreu ist, was zu Fehlern führt und zu ungenauigkeiten fürht.
+ Für die Mittelung ist leider nur eine begrenzte Gewichtung möglich, da
+ keine Abstandsfunktion definiert ist.
+ Durch übergänge und die mangelnde Gewichtung erhält man an den Übergängen
+ unter Umständen Knicke in geraden Linien, was der4 Benutzer als störend
+ empfindet.
+ Wenn viele Dreiecke verwendet werden, führt dies zu einer besseren Korrektur
+ von lokalen Ungenauigkeiten und etwas sanfteren Übergängen, allerdings
+ wird dadurch auch der Rechenaufwand erhöht.
 \end_layout
 
 \begin_layout Paragraph
@@ -2195,43 +1923,17 @@ Baryzentrische Vierecke mit Korrekturfaktor
 \end_layout
 
 \begin_layout Standard
-Dieses Verfahren berücksichtigt zusätzlich noch den Faktor, dass die Rechtecke
- weder Winkel- noch Flächentreu sind, wovon die Barizentrischen Dreiecke
- ausgehen aber bei uns nicht der Fall ist.
-\end_layout
-
-\begin_layout Subparagraph
-Vorteile
-\end_layout
-
-\begin_layout Itemize
-Genauere Interpolation
-\end_layout
-
-\begin_layout Itemize
-Gewichtung ist möglich
-\end_layout
-
-\begin_layout Subparagraph
-Nachteile
-\end_layout
-
-\begin_layout Itemize
-Setzt eine Ordnung der Referenzpunkte voraus
-\end_layout
-
-\begin_layout Itemize
-Komplizierterer Algorithmus
-\end_layout
-
-\begin_layout Subparagraph
-Fazit
-\end_layout
-
-\begin_layout Standard
-Dieser Algorithmus sollte relativ gut funktionieren, wenn man entsprechende
- Referenzpunkte hat.
- Er kann Knicke komplett eliminieren.
+Durch eine eigene erweiterung der baryzentrischen Koordinaten können wir
+ berücksichtigen, dass die Rechtecke nicht winkeltreu sind.
+ Dies geschieht durch einen vierten Punkt der ebenfalls berücksichtigt wird.
+ Dies führt zu einer viel genaueren Interpolation.
+ Der Algorithmus benötigt jedich eine strukturierte Ordnung der Referenzpunkte,
+ was ihn geringfügig konplizierter macht.
+ Allerdings ist durch die ordnung auch eine Gewichtung möglich.
+ Dieser Algorithmus führt zu einem guten Resultat, allerdings stellt er
+ hohe Anforderung an die Referenzpunkte.
+ Diese Ansprüche können allerdings mithilfe des K-Means Clusterings erfüllt
+ werden.
 \end_layout
 
 \begin_layout Subsubsection
@@ -2815,69 +2517,19 @@ OpenCV
 \begin_layout Standard
 OpenCV ist ein riesiges Produkt, das alle Möglichkeiten zur Bildanalyse
  bietet.
- Es gibt einen wrapper für C#, jedoch hat sich auch dieser in unseren Versuchen
- als nicht besonders Einfach in der Benutzung herausgestellt.
- 
-\end_layout
-
-\begin_layout Subparagraph
-Vorteile
-\end_layout
-
-\begin_layout Itemize
-Unglaublich breite Einsatztmöglichkeiten
-\end_layout
-
-\begin_layout Itemize
-Bietet native Unterstützung um eine Kamera zu kalibrieren.
-\end_layout
-
-\begin_layout Itemize
-Grosse Community
-\end_layout
-
-\begin_layout Itemize
-Sehr performant
-\end_layout
-
-\begin_layout Subparagraph
-Nachteile
-\end_layout
-
-\begin_layout Itemize
-Nutzung unter C# ist kompliziert
-\end_layout
-
-\begin_layout Itemize
-Miserable Dokumentation
-\end_layout
-
-\begin_layout Itemize
-Für eine Verwendung Out-of-the-Box müssen ca.
- 600MB zusätzliche libraries eingebunden werden, selbst wenn diese nicht
- benutzt werden.
-\end_layout
-
-\begin_layout Itemize
-Aufwand für Einarbeitung ist sehr gross
-\end_layout
-
-\begin_layout Itemize
-Algorithmen lassen sich nur geringfügig beeinflussen.
-\end_layout
-
-\begin_layout Itemize
-Es ist unklar, wie die Algorithmen genau funktionieren und eine Codeanalyse
- ist unglaublich Zeitaufwändig.
-\end_layout
-
-\begin_layout Subparagraph
-Fazit
-\end_layout
-
-\begin_layout Standard
-Für unseren Prototypen ist OpenCV viel zu aufwändig und benötigt zu viel
- Aufwand um das Framework zu verstehen und korrekt zu nutzen.
+ Es gibt einen Wrapper für C#, jedoch hat sich auch dieser in unseren Versuchen
+ als nicht besonders einfach in der Benutzung herausgestellt.
+ Die Dokumentation ist sehr spärlich gehalten und erleichtert die Benutztung
+ nicht.
+ Mit der grossen Community sollte es allerdings möglich sein Antworten zu
+ erhalten.
+ Möglichkeiten, den Code zu analysieren hat man leider aufgrund dessen Komplexit
+ät nicht und es gibt keine Möglichkeiten, die Algorithmen auf eigene Bedürfnisse
+ anzupassen.
+ Ein weiterer Nachteil ist, dass man zur Nutzung das ganze Framework einbinden
+ muss, was über 600 MB gross ist.
+ Da der Aufwand zur Einarbeitung für uns zu hoch war, haben wir uns gegen
+ OpenCv entschieden.
 \end_layout
 
 \begin_layout Paragraph
@@ -2887,58 +2539,15 @@ AForge
 \begin_layout Standard
 AForge bietet eine stabile Blob-Detektion, die zuverlässig funktioniert
  und Attribute zur Analyse und Fehlerdetektion bieten.
- Zudem funktieoniert das Anwenden von Filtern auf Bilder sehr zuverlässig
+ Zudem funktioniert das Anwenden von Filtern auf Bilder sehr zuverlässig
  und intuitiv.
-\end_layout
-
-\begin_layout Subparagraph
-Vorteile
-\end_layout
-
-\begin_layout Itemize
-Es stehen viele Filter zur Verfügung
-\end_layout
-
-\begin_layout Itemize
-Blobs werden genau erkannt.
-\end_layout
-
-\begin_layout Itemize
-Die Berechnungen sind genügend performant.
-\end_layout
-
-\begin_layout Itemize
-Die Dokumentation ist sehr gut.
-\end_layout
-
-\begin_layout Itemize
-Der Code ist einfach zu verstehen.
-\end_layout
-
-\begin_layout Subparagraph
-Nachteile
-\end_layout
-
-\begin_layout Itemize
-Die Performance ist etwas schlechter als OpenCV
-\end_layout
-
-\begin_layout Itemize
-Der Code enhält noch kleine Bugs
-\end_layout
-
-\begin_layout Itemize
-Der Entwickler kümmert sich nicht gut um das Projekt.
-\end_layout
-
-\begin_layout Subparagraph
-Fazit
-\end_layout
-
-\begin_layout Standard
-Für einen Prototypen ist die Nutztung von AForge ideal aufgrund der kurzen
- Einarbeitungszeit.
- Für ein Release sollt dies Entscheidung allerdings nochmals überdenkt werden.
+ Die berechnungen sind etwas weniger optimiert als bei OpenCv, allerdings
+ reicht die Performance für uns aus.
+ Der Code enthält leider immer noch einige Bugs, die jedoch aufgrund der
+ guten Verständlichkeit selber behoben werden können.
+ Der Entwickler kümmert sich nämlich nicht besonders aktiv um sein Projekt.
+ Für einen Prototypen ist die Nutzung ideal, da er einfach zu benutzen und
+ gut dokumentiert ist.
 \end_layout
 
 \begin_layout Subsection
