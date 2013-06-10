@@ -2245,8 +2245,11 @@ status open
 
 \begin_layout Plain Layout
 Der interessierte Leser möge folgenden Artikel über die benötigten Transformatio
-nsmatrizen konsultieren: http://de.wikipedia.org/wiki/Homogene_Koordinaten#Wichtig
-e_elementare_homogene_Transformationsmatrizen
+nsmatrizen konsultieren: http://de.wikipedia.org/wiki/Homogene_Koordinaten
+\end_layout
+
+\begin_layout Plain Layout
+#Wichtige_elementare_homogene_Transformationsmatrizen
 \end_layout
 
 \end_inset
@@ -2676,6 +2679,19 @@ Auf dem Differenzbild (rechts) ist der Laserpointer Punkt viel besser sichtbar
 
 \begin_layout Section
 Umsetzung
+\end_layout
+
+\begin_layout Standard
+Im diesem Artikel wird beschrieben, welche Verfahren zur Umsetzung der oben
+ beschriebenen Analysen verwendet wurden.
+ Zuerst wird auf technische Details wie den Aufbau des Programmes und verwendete
+ Biliotheken eingegangen.
+ Danach wird erläutert wie die oben beschriebenen Kalibrierungsverfahren
+ eingesetzt wurde und wie das Finden eines Stiftes im Softwareprototyp von
+ statten geht.
+ Die Umsetzung der Punktabbildung von Kamera zu Beamer wurde gänzlich ausgelasse
+n, da die oben beschriebene Theorie zum Integral-Ansatz genau nach Modell
+ eingesetzt werden konnte.
 \end_layout
 
 \begin_layout Subsection
