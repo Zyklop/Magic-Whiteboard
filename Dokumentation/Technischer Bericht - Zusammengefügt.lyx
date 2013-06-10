@@ -867,20 +867,277 @@ Das im Kamerabild gefundene und auf die Beamerauflösung rücktransformierte
 
 \end_layout
 
-\begin_layout Subsection
-Generell: Erkennen von Vierecken
+\begin_layout Paragraph
+Projizieren und Messen
 \end_layout
 
 \begin_layout Standard
-Tauschen mit mit Bilddetekionsalgorithmen!
+Die Lichtverhältnisse sind entscheidend für eine erfolgreiche Messungen.
+ Für die Kalibrierung projizierte Referenzbilder haben Einfluss auf den
+ automatischen Weissabgleich der Kamera.
+ Grosse Helligkeitswerte im projizierten Bild verursachen schnelles Abdunkeln
+ des Kamerabildes, tiefe Helligkeitswerte das Gegenteil.
+ Es kann nicht genau vorausgesagt werden, wie die Kamera auf Helligkeitsuntersch
+iede reagiert.
+ In jedem Fall hat dies Einfluss auf in der Kalibrierung verwendete Differenzbil
+der.
+ Der hier beschriebene Effekt kann minimiert werden, wenn nur Bilder mit
+ im Mittel ähnlichen Helligkeitswerten verwendet werden.
+ Die schlussendlich eingesetzte Lösung verwendet zwei Schachbrettmuster,
+ deren Durchschnittshelligkeiten beinahe gleich sind.
+ Die Kamera passt den Weissabgleich kaum an.
+ Dies wird unter 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Schachbrett-Differenz"
+
+\end_inset
+
+ genauer beschrieben.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Bilder/Calibration/WhitebalanceFail/frame1.jpg
+	lyxscale 20
+	width 50col%
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename Bilder/Calibration/WhitebalanceFail/frame2.jpg
+	lyxscale 20
+	width 50col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Zwei schlecht gewählte Referenzbilder.
+ Sie haben zu grosse Helligkeitsunterschiede.
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:diff-fail-pictures"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Bilder/Calibration/WhitebalanceFail/diff.jpg
+	lyxscale 40
+	width 100col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Das aus Abb.
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:diff-fail-pictures"
+
+\end_inset
+
+ resultierende Differenzbild ist für die Leinwanddetektion kaum brauchbar.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Erkennen von Vierecken
+\end_layout
+
+\begin_layout Standard
+TODO Einleitender Text: Wieso Wie etc.gross und klein
 \end_layout
 
 \begin_layout Subsubsection
-Eckpunkte erkennen
+Differenzbildansatz
 \end_layout
 
 \begin_layout Standard
-Mit diesem Verfahren werden lediglich die Ecken des Bildschirms erkannt.
+TODO: was sind Differenzbilder etc...
+\end_layout
+
+\begin_layout Paragraph
+Selbstimplementierte Eckdetektion mit Differenzbildern
+\end_layout
+
+\begin_layout Standard
+Hierbei werden auf Dizzerenzbildern entlang von Scanlinien Eckpunkte gesucht
+ und so Rechtecke gefunden.
+ Dieses Verfahren kann auch auf Farbkanäle erweitert werden.
+ Dieses Verfahren funktioniert relativ gut auf Billdern mit konstanter Belichtun
+gskorrektur und stark unterschiedlichen Helligkeitsverteilungen.
+ Diese zwei Faktoren sind in unserer Problemstellung nicht gegeben, was
+ die Erkennung erschwert.
+ Zudem müssen gewisse Parameter angepasst werden, wenn sich die Raumhelligkeit
+ oder die Kamera zu stark unterscheidet.
+ Das ist nicht realistisch.
+ Eine Weiterentwicklung dieses Lösung haben wir verworfen aufgrund des Verhältni
+sses von Aufwand und Ertrag.
+\end_layout
+
+\begin_layout Paragraph
+Einfacher Differenzbildansatz
+\end_layout
+
+\begin_layout Standard
+Bei diesen Verfahren wird ein universeller Differenzbild-Hintergrund verwendet.
+ Damit kann der statische Hintergrund des Bildes gut entfernt werden und
+ es muss nur ein zusätzliches Bild projiziert werden.
+ Somit wird nur wenig zusätzliche Zeit für die Kalibration benötigt.
+ Dieser Ansatzt hat dafür Probleme, wenn die Kamera die Belichtungskorrektur
+ ändert.
+ Dies kommt leider sehr häufig vor, wenn sich die Projektion ändert.
+ Da dies genau unser Kalibrationsansatz ist, können wir leider auch diese
+ Lösung nicht verwenden.
+\end_layout
+
+\begin_layout Paragraph
+Individuelle Differenzbilder
+\end_layout
+
+\begin_layout Standard
+Zu jedem Bild, das angezeigt werden soll, werden zwei Bilder generiert,
+ deren Differenzbild genau dem gesuchten Bild entspricht.
+ Diese Teilbilder müssen eine identische Helligkeitsverteilung aufweisen.
+ Das verdoppelt zwar die Kalibrationszeit dadurch, dass die Zahl der anzuzeigend
+en Bilder verdoppelt wird.
+ Dafür erhalten wir sehr gute Differenzbilder, deren Kanten sehr genau sind.
+ Wir haben uns für diesen Ansatzt entschieden, da man sehr gute Resulate
+ erhält und die Kalibrationszeit immer noch im Rahmen liegt und von den
+ Nutzern sicherlich akzeptiert werden wird.
+\end_layout
+
+\begin_layout Subsubsection
+Histogramm-Analyse
+\end_layout
+
+\begin_layout Standard
+Hierbei werden keine Differenzbilder verwendet sondern mit den Aktuellen
+ Kamerabildern gearbeitet.
+ Darauf analysieren wir die Durchschnittlich Helligkeitsverteilung und die
+ Standartabweichung.
+ Alles was heller ist, akzeptieren wir.Dadurch müssen bei der Kalibration
+ keine zusätzlichen Bilder angezeigt werden.
+ Analysen haben jedoch gezeigt, dass der Helligkeitsunterschied zwischen
+ verschiedenen Bildteilen (z.B: obere und untere Bildhälfte) viel grösser
+ ist als der Projektionsrand.
+ Daraus ist die Idee entstanden, das Bild aufzuteilen für die Analyse:
+\end_layout
+
+\begin_layout Paragraph
+Erweiterung: Histogramm-Analyse auf Bildausschnitten
+\end_layout
+
+\begin_layout Standard
+Hierbei wird das Bild am Anfang in kleine Ausschnitte aufgeteilt und anschliesse
+nd das obige Verfahren angewandt.
+ So können wir den Hauptnachteil des obigen Verfahrens eliminieren.
+ Die Resultate sind relativ gut, mit dem Nachteil, dass wir keine klaren
+ Kanten erhalten, wie dies bei Differenzbildern der Fall ist.
+ EIne weitere Konsequenz sind uneinheitliche Übergänge an den Bildausschnitten,
+ die jedoch für unsere Eckdetektion keine Rolle spielen.
+ Dieses Verfahren funktioniert ziemlich gut, aber die Einschränkung der
+ ungenauen Kanten stört uns relativ stark, da wir von diesen abhängig sind.
+\end_layout
+
+\begin_layout Subsection
+Kalibrierung: Referenzpunkte
+\end_layout
+
+\begin_layout Standard
+Der Beginn der Kalibrierung bildet das Finden von Referenzpunkten.
+ Diese Punkte bilden die Orientierung für darauf aufbauende Abbildungen.
+ Je nach Güte der Abbildung sind mehr oder weniger gemessene Referenzpunkte
+ nötig.
+ Die Abbildung vom Kamerabild zum ursprünglich projizierten Beamerbild ist
+ eine Transformation 
+\begin_inset Formula $\left(x_{k},y_{k}\right)\rightarrow\left(x_{b},y_{b}\right)$
+\end_inset
+
+ und lässt sich durch eine Transformationsmatrix mit 11 Freiheitsgraden
+ korrekt beschreiben
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+3 Translation, 3 Rotation, 2 Kameranullpunkt, 1 Brennweite, 2 Bildskalierung
+ 
+\end_layout
+
+\end_inset
+
+.
+ Falls die Brennweite ausser Acht gelassen und mit einer bekannten Bildskalierun
+g gearbeitet wird, hat die Transformation lediglich 8 Freiheitsgrade, welche
+ durch 4 Messpunkte gebunden werden können.
+ Unsere Implementationen der Abbildungsberechnungen verlassen sich jeweils
+ auf die vier gemessenen Eckpunkte der Projektion und lassen somit Linseneffekte
+ ausser Acht.
+ Messungen haben ergeben, dass auftretende Ungenauigkeiten regelmässig sind
+ und sich grösstenteils auf die horizontale Achse beschränken.
+ Durch eine einfache Korrekturfunktion lassen sich sichtbare Effekte vermeiden.
+ 4 Referenzpunkte reichen also für das zu entwickelnde Präsentationssystem.
+\end_layout
+
+\begin_layout Standard
+TODO: folgende Verfahren wurden in dieser Arbeit betrachtet...
+\end_layout
+
+\begin_layout Subsubsection
+Erkennen der Bildschirmgrenze
+\end_layout
+
+\begin_layout Standard
+Mit dem nachfolgend beschriebenen Verfahren werden lediglich die Ecken des
+ Bildschirms erkannt.
  Dafür gibt es mehrere Verfahren, die im nächsten Punkt evaluiert werden.
  Anhand dieser vier Punkte können schon viele verschiede Berechnungen gemacht
  werden und auch die perspektivische Verzerrung kann schon korrigiert werden.
@@ -894,6 +1151,16 @@ nt.
  Fehlertoleranz sehr zufrieden waren.
  Zudem hatten wir zu wenig Zeit, ein Verfahren zu implementieren, das zusätzlich
 e Refernzpunkte gut ausgenutzt hätte.
+\end_layout
+
+\begin_layout Subsubsection
+Ordnung kleiner Vierecke
+\end_layout
+
+\begin_layout Standard
+Todo...
+ Schachbrettmuster auf Differenzbilder UNGLEICH Schachbrettmuster für Vorbeugung
+ Weissabgleich
 \end_layout
 
 \begin_layout Paragraph
@@ -937,7 +1204,7 @@ Hierbei werden die Rechtecke anhand einer Interpolation zu den Eckpunkten
 ungen kommen.
 \end_layout
 
-\begin_layout Paragraph
+\begin_layout Subsubsection
 K-Means Clustering
 \end_layout
 
@@ -954,136 +1221,13 @@ Hiermit werden auf dem Bildschirm immer feiner aufgeteilte Cluster erstellt.
 en, die dazu führen, dass die Kalibhration nicht immer klappt.
 \end_layout
 
-\begin_layout Subsection
-Kalibrierung: Referenzpunkte
-\end_layout
-
-\begin_layout Standard
-Der Beginn der Kalibrierung bildet das Finden von Referenzpunkten.
- Diese Punkte bilden die Orientierung für darauf aufbauende Abbildungen.
- Je nach Güte der Abbildung sind mehr oder weniger gemessene Referenzpunkte
- nötig.
- Die Abbildung vom Kamerabild zum ursprünglich projizierten Beamerbild ist
- eine Transformation 
-\begin_inset Formula $\left(x_{k},y_{k}\right)\rightarrow\left(x_{b},y_{b}\right)$
-\end_inset
-
- und lässt sich durch eine Transformationsmatrix mit 11 Freiheitsgraden
- korrekt beschreiben
-\begin_inset Foot
-status open
-
-\begin_layout Plain Layout
-3 Translation, 3 Rotation, 2 Kameranullpunkt, 1 Brennweite, 2 Bildskalierung
- 
-\end_layout
-
-\end_inset
-
-.
- Falls die Brennweite ausser Acht gelassen und mit einer bekannten Bildskalierun
-g gearbeitet wird, hat die Transformation lediglich 8 Freiheitsgrade, welche
- durch 4 Messpunkte gebunden werden können.
- Unsere Implementationen der Abbildungsberechnungen verlassen sich jeweils
- auf die vier gemessenen Eckpunkte der Projektion und lassen somit Linseneffekte
- ausser Acht.
- Messungen haben ergeben, dass auftretende Ungenauigkeiten regelmässig sind
- und sich grösstenteils auf die horizontale Achse beschränken.
- Durch eine einfache Korrekturfunktion lassen sich sichtbare Effekte vermeiden.
- 4 Referenzpunkte reichen also für das zu entwickelnde Präsentationssystem.
-\end_layout
-
-\begin_layout Paragraph
-Selbstimplementierte Eckdetektion mit Differenzbildern
-\end_layout
-
-\begin_layout Standard
-Hierbei werden auf Dizzerenzbildern entlang von Scanlinien Eckpunkte gesucht
- und so Rechtecke gefunden.
- Dieses Verfahren kann auch auf Farbkanäle erweitert werden.
- Dieses Verfahren funktioniert relativ gut auf Billdern mit konstanter Belichtun
-gskorrektur und stark unterschiedlichen Helligkeitsverteilungen.
- Diese zwei Faktoren sind in unserer Problemstellung nicht gegeben, was
- die Erkennung erschwert.
- Zudem müssen gewisse Parameter angepasst werden, wenn sich die Raumhelligkeit
- oder die Kamera zu stark unterscheidet.
- Das ist nicht realistisch.
- Eine Weiterentwicklung dieses Lösung haben wir verworfen aufgrund des Verhältni
-sses von Aufwand und Ertrag.
-\end_layout
-
 \begin_layout Subsubsection
-Einfacher Differenzbildansatz
+OpenCV
 \end_layout
 
 \begin_layout Standard
-Bei diesen Verfahren wird ein universeller Differenzbild-Hintergrund verwendet.
- Damit kann der statische Hintergrund des Bildes gut entfernt werden und
- es muss nur ein zusätzliches Bild projiziert werden.
- Somit wird nur wenig zusätzliche Zeit für die Kalibration benötigt.
- Dieser Ansatzt hat dafür Probleme, wenn die Kamera die Belichtungskorrektur
- ändert.
- Dies kommt leider sehr häufig vor, wenn sich die Projektion ändert.
- Da dies genau unser Kalibrationsansatz ist, können wir leider auch diese
- Lösung nicht verwenden.
-\end_layout
-
-\begin_layout Subsubsection
-Histogramm-Analyse
-\end_layout
-
-\begin_layout Standard
-Hierbei werden keine Differenzbilder verwendet sondern mit den Aktuellen
- Kamerabildern gearbeitet.
- Darauf analysieren wir die Durchschnittlich Helligkeitsverteilung und die
- Standartabweichung.
- Alles was heller ist, akzeptieren wir.Dadurch müssen bei der Kalibration
- keine zusätzlichen Bilder angezeigt werden.
- Analysen haben jedoch gezeigt, dass der Helligkeitsunterschied zwischen
- verschiedenen Bildteilen (z.B: obere und untere Bildhälfte) viel grösser
- ist als der Projektionsrand.
- Daraus ist die Idee entstanden, das Bild aufzuteilen für die Analyse:
-\end_layout
-
-\begin_layout Subsubsection
-Histogramm-Analyse auf Bildausschnitten
-\end_layout
-
-\begin_layout Standard
-Hierbei wird das Bild am Anfang in kleine Ausschnitte aufgeteilt und anschliesse
-nd das obige Verfahren angewandt.
- So können wir den Hauptnachteil des obigen Verfahrens eliminieren.
- Die Resultate sind relativ gut, mit dem Nachteil, dass wir keine klaren
- Kanten erhalten, wie dies bei Differenzbildern der Fall ist.
- EIne weitere Konsequenz sind uneinheitliche Übergänge an den Bildausschnitten,
- die jedoch für unsere Eckdetektion keine Rolle spielen.
- Dieses Verfahren funktioniert ziemlich gut, aber die Einschränkung der
- ungenauen Kanten stört uns relativ stark, da wir von diesen abhängig sind.
-\end_layout
-
-\begin_layout Paragraph
-Individuelle Differenzbilder
-\end_layout
-
-\begin_layout Standard
-Zu jedem Bild, das angezeigt werden soll, werden zwei Bilder generiert,
- deren Differenzbild genau dem gesuchten Bild entspricht.
- Diese Teilbilder müssen eine identische Helligkeitsverteilung aufweisen.
- Das verdoppelt zwar die Kalibrationszeit dadurch, dass die Zahl der anzuzeigend
-en Bilder verdoppelt wird.
- Dafür erhalten wir sehr gute Differenzbilder, deren Kanten sehr genau sind.
- Wir haben uns für diesen Ansatzt entschieden, da man sehr gute Resulate
- erhält und die Kalibrationszeit immer noch im Rahmen liegt und von den
- Nutzern sicherlich akzeptiert werden wird.
-\end_layout
-
-\begin_layout Paragraph
-Externe Bibliotheken
-\end_layout
-
-\begin_layout Standard
-OpenCv bietet die Möglichkeit, anhand verschiedener Aufnahmen eines Referenzbild
-es einen ganzen Dreidimensionalen Raum zu rekonstruhieren.
+OpenCV bietet die Möglichkeit, anhand verschiedener Aufnahmen eines Referenzbild
+es einen ganzen Dreidimensionalen Raum zu rekonstruieren.
  Dafür wird für jede erkannte Ebene eine Transformationsmatrix erstellt,
  die anschliesend kombiniert werden und eine Rücktransformation auf den
  Raum erlauben.
@@ -1093,9 +1237,9 @@ es einen ganzen Dreidimensionalen Raum zu rekonstruhieren.
  möglich.
  In einem weiten versuch haben wir mit verschieden Testbildern versucht,
  einzelne Transformationsmatrizen zu erhalten.
- OpenCv hat jedoch zu keinem einzigen Testbild ein Resultat geliefert, obwohl
+ OpenCV hat jedoch zu keinem einzigen Testbild ein Resultat geliefert, obwohl
  wir die spezifizierten Refernzbilder verwendet haben.
- Zudem liefert OpenCv keine Fehlerbeschreibungen, was uns Anpassungen erlaubt
+ Zudem liefert OpenCV keine Fehlerbeschreibungen, was uns Anpassungen erlaubt
  hätte.
  Ein weiterer Nachteil besteht darin, dass das komplette 600 MB grosse Framework
  mitgeliefert werden müsste, auch wenn man nur einen Teil davon verwendet.
@@ -1179,7 +1323,7 @@ Lineare Interpolation
 
 \end_layout
 
-\begin_layout Paragraph
+\begin_layout Subsubsection
 Baryzentrische Koordinaten
 \end_layout
 
@@ -1239,8 +1383,8 @@ Fehler bei nich winkeltreuen Abbildungen
 
 \end_layout
 
-\begin_layout Subsubsection
-Baryzentrische Vierecke mit Korrekturfaktor
+\begin_layout Paragraph
+Optimierung: Baryzentrische Vierecke
 \end_layout
 
 \begin_layout Standard
@@ -1255,6 +1399,10 @@ Durch eine eigene erweiterung der baryzentrischen Koordinaten können wir
  hohe Anforderung an die Referenzpunkte.
  Diese Ansprüche können allerdings mithilfe des K-Means Clusterings erfüllt
  werden.
+\end_layout
+
+\begin_layout Standard
+TODO: Formel + Umkehrung mit Determinante...
 \end_layout
 
 \begin_layout Subsubsection
@@ -1282,7 +1430,7 @@ status open
 \begin_inset Graphics
 	filename Diagramme/Mathematik/2d-ansatz-lochkamera.emf
 	lyxscale 20
-	width 85col%
+	width 70col%
 
 \end_inset
 
@@ -2001,133 +2149,15 @@ e_elementare_homogene_Transformationsmatrizen
 .
 \end_layout
 
-\begin_layout Subsection
-Kalibrierung: Projizieren und Messen
+\begin_layout Paragraph
+Externe Bibliotheken
 \end_layout
 
 \begin_layout Standard
-Die Lichtverhältnisse sind entscheidend für eine erfolgreiche Messungen.
- Für die Kalibrierung projizierte Referenzbilder haben Einfluss auf den
- automatischen Weissabgleich der Kamera.
- Grosse Helligkeitswerte im projizierten Bild verursachen schnelles Abdunkeln
- des Kamerabildes, tiefe Helligkeitswerte das Gegenteil.
- Es kann nicht genau vorausgesagt werden, wie die Kamera auf Helligkeitsuntersch
-iede reagiert.
- In jedem Fall hat dies Einfluss auf in der Kalibrierung verwendete Differenzbil
-der.
- Der hier beschriebene Effekt kann minimiert werden, wenn nur Bilder mit
- im Mittel ähnlichen Helligkeitswerten verwendet werden.
- Die schlussendlich eingesetzte Lösung verwendet zwei Schachbrettmuster,
- deren Durchschnittshelligkeiten beinahe gleich sind.
- Die Kamera passt den Weissabgleich kaum an.
- Dies wird unter 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sub:Schachbrett-Differenz"
-
-\end_inset
-
- genauer beschrieben.
-\end_layout
-
-\begin_layout Standard
-\begin_inset Float figure
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
-\begin_inset Graphics
-	filename Bilder/Calibration/WhitebalanceFail/frame1.jpg
-	lyxscale 20
-	width 50col%
-
-\end_inset
-
-
-\begin_inset Graphics
-	filename Bilder/Calibration/WhitebalanceFail/frame2.jpg
-	lyxscale 20
-	width 50col%
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Caption
-
-\begin_layout Plain Layout
-Zwei schlecht gewählte Referenzbilder.
- Sie haben zu grosse Helligkeitsunterschiede.
-\begin_inset CommandInset label
-LatexCommand label
-name "fig:diff-fail-pictures"
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset Float figure
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
-\begin_inset Graphics
-	filename Bilder/Calibration/WhitebalanceFail/diff.jpg
-	lyxscale 40
-	width 100col%
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Caption
-
-\begin_layout Plain Layout
-Das aus Abb.
- 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "fig:diff-fail-pictures"
-
-\end_inset
-
- resultierende Differenzbild ist für die Leinwanddetektion kaum brauchbar.
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-
-
+Es gibt die Möglichkeit, eine Kamerakalibration mit vollständiger Transformation
+smatrix (11 Freiheitsgrade) mit OpenCV vollautomatisch vornehmen zu lassen.
+ Diese Funktionalität konnte mit OpenCV nicht erfolgreich getestet werden.Aufgrun
+d dessen wurde schliesslich vollständig auf OpenCV verzichtet.
 \end_layout
 
 \begin_layout Subsection
@@ -2153,7 +2183,7 @@ en zu lösen sind.
  werden, wenn bekannt ist, wie er sich zeitlich bewegt.
 \end_layout
 
-\begin_layout Paragraph
+\begin_layout Subsubsection
 Präsenz durch Helligkeit
 \end_layout
 
@@ -2203,7 +2233,7 @@ Fast Pattern Recognition Using Gradient-Descent Search in an Image Pyramid
  Infrarot) als Stift verwendet werden.
 \end_layout
 
-\begin_layout Paragraph
+\begin_layout Subsubsection
 Präsenz durch Kardinalität
 \end_layout
 
@@ -2236,8 +2266,8 @@ tswert überschritten wird.
  erkannt) nicht zu hoch und die Framerate nicht zu tief ist.
 \end_layout
 
-\begin_layout Paragraph*
-Position durch Mittelwert oder Schwerpunkt
+\begin_layout Subsubsection
+Position durch Schwerpunkt
 \end_layout
 
 \begin_layout Standard
@@ -2398,8 +2428,8 @@ Per Grenzwert wird der Lichtpunkt in das Zentrum eines Vierecks gelegt.
 
 \end_layout
 
-\begin_layout Paragraph*
-Gezieltes Suchen
+\begin_layout Subsubsection
+Performance durch gezieltes Suchen
 \end_layout
 
 \begin_layout Standard
@@ -2469,7 +2499,7 @@ Dies würde den kontextabhängigen Algorithmus per se unbrauchbar machen.
 .
 \end_layout
 
-\begin_layout Paragraph*
+\begin_layout Subsubsection
 Stabilität durch Differenzbilder
 \end_layout
 
@@ -3558,9 +3588,10 @@ sideways false
 status open
 
 \begin_layout Plain Layout
+\align center
 \begin_inset Graphics
 	filename Bilder/PenTracking/Interpolation/interpolation-random.png
-	width 100col%
+	width 70col%
 
 \end_inset
 
@@ -3593,9 +3624,10 @@ sideways false
 status open
 
 \begin_layout Plain Layout
+\align center
 \begin_inset Graphics
 	filename Bilder/PenTracking/Interpolation/interpolation-smoothed.png
-	width 100col%
+	width 70col%
 
 \end_inset
 
@@ -3626,9 +3658,10 @@ sideways false
 status open
 
 \begin_layout Plain Layout
+\align center
 \begin_inset Graphics
 	filename Bilder/PenTracking/Interpolation/interpolation-curves.png
-	width 100col%
+	width 70col%
 
 \end_inset
 
@@ -4040,10 +4073,6 @@ Pen Tracking
 
 \begin_layout Standard
 MultiPen für Multitouch?
-\end_layout
-
-\begin_layout Subsection
-Handdetektion
 \end_layout
 
 \begin_layout Subsection
@@ -4762,10 +4791,11 @@ sideways false
 status open
 
 \begin_layout Plain Layout
+\align center
 \begin_inset Graphics
 	filename Diagramme/Lochkamera.emf
 	lyxscale 30
-	width 50col%
+	width 70col%
 
 \end_inset
 
@@ -6933,8 +6963,8 @@ Es ist schwierig zu sagen, ob es sinnvoll ist, Touch auf der Leinwand weiter
  werden kann, ob die Person die Leinwand angetippt hat.
  Das oben beschriebene Vorgehen für die Schattenanalyse befasst sich lediglich
  mit den Daten, welche in dieser Arbeit aufgenommen wurde.
- Es müsste systematische untersucht werden, ob die dies für jeden Fall zuverläss
-ig gelöst werden könnte.
+ Es müsste systematischer untersucht werden, ob die dies für jeden Fall
+ zuverlässig gelöst werden könnte.
 \end_layout
 
 \end_body
