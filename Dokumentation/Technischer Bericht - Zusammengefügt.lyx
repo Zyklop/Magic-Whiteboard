@@ -2263,8 +2263,11 @@ status open
 
 \begin_layout Plain Layout
 Der interessierte Leser möge folgenden Artikel über die benötigten Transformatio
-nsmatrizen konsultieren: http://de.wikipedia.org/wiki/Homogene_Koordinaten#Wichtig
-e_elementare_homogene_Transformationsmatrizen
+nsmatrizen konsultieren: http://de.wikipedia.org/wiki/Homogene_Koordinaten
+\end_layout
+
+\begin_layout Plain Layout
+#Wichtige_elementare_homogene_Transformationsmatrizen
 \end_layout
 
 \end_inset
@@ -2694,6 +2697,19 @@ Auf dem Differenzbild (rechts) ist der Laserpointer Punkt viel besser sichtbar
 
 \begin_layout Section
 Umsetzung
+\end_layout
+
+\begin_layout Standard
+Im diesem Artikel wird beschrieben, welche Verfahren zur Umsetzung der oben
+ beschriebenen Analysen verwendet wurden.
+ Zuerst wird auf technische Details wie den Aufbau des Programmes und verwendete
+ Biliotheken eingegangen.
+ Danach wird erläutert wie die oben beschriebenen Kalibrierungsverfahren
+ eingesetzt wurde und wie das Finden eines Stiftes im Softwareprototyp von
+ statten geht.
+ Die Umsetzung der Punktabbildung von Kamera zu Beamer wurde gänzlich ausgelasse
+n, da die oben beschriebene Theorie zum Integral-Ansatz genau nach Modell
+ eingesetzt werden konnte.
 \end_layout
 
 \begin_layout Subsection
@@ -3830,6 +3846,7 @@ sideways false
 status open
 
 \begin_layout Plain Layout
+\align center
 \begin_inset Graphics
 	filename Bilder/PenTracking/LightPoints/timed-position/frames1.png
 
@@ -3898,6 +3915,7 @@ sideways false
 status open
 
 \begin_layout Plain Layout
+\align center
 \begin_inset Graphics
 	filename Bilder/PenTracking/LightPoints/two-blobs-overlay/diff1.png
 
@@ -3984,22 +4002,47 @@ Einschränkungen
 \end_layout
 
 \begin_layout Standard
-- Das Licht hat eine wichtige Rolle gespielt.
-\begin_inset Newline newline
+Die Lichtverhältnisse spielen eine wichtige Rolle.
+ Bei jedem Setup müssen die Konfigurationsparameter wieder individuell angepasst
+ werden - momentan manuell in einem Treiberdialog von DirectShow.
+ Zudem ergeben starke Reflexionen Artefakte im Input, die den Tracking-Algorithm
+en stören.
+ Gerade in der Phase zwischen Kamerabalibrierung und Reduktion des automatischen
+ Weissabgleichs gibt es momentan noch viele Fehlerkennungen.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Bilder/PenTracking/falsepositive.jpg
+	lyxscale 20
+	width 100col%
+
 \end_inset
 
-- Es wurde eine einfache Laptopkamera eines T430s verwendet (640x480px à
- 40ms).
-\begin_inset Newline newline
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Fehlerkennungen bei hellen Reflexionen nach dem Kalibrierungsvorgang
+\end_layout
+
 \end_inset
 
-- Der Weissabgleich ist lästig.
-\begin_inset Newline newline
+
+\end_layout
+
 \end_inset
 
-- Die Einstellungen zum Weissabgleich können unter Windows nur per DirectShow
- Menu eingestellt werden.
- 
+
 \end_layout
 
 \begin_layout Subsubsection
@@ -4068,41 +4111,292 @@ Erkenntnisse
 \end_layout
 
 \begin_layout Subsubsection*
-Kamera
+Kalibrierung
 \end_layout
 
 \begin_layout Standard
-Wir müssen die Kamera noch mit einem eigenen Fenster konfigurieren.
- Das ist nicht ideal, aber immerhin können wir gewisse Werte einstellen.
-\end_layout
-
-\begin_layout Subsubsection*
-Kalibration
-\end_layout
-
-\begin_layout Standard
-Wir haben gesehen, dass man auch anhand von vier Referenzpunkten sehr genau
- interpolieren kann.
- Es gibt Möglichkeiten, um mehr Referenzpunkte zu erhalten, diese sind aber
- meist relativ kompliziert und Zeitintensiv.
- Wenn man eine stabile und sichere Kalibration möchte, sollte man sich auf
- die Eckpunkte beschränken.
-\end_layout
-
-\begin_layout Subsubsection*
-Kalibration
-\end_layout
-
-\begin_layout Subsubsection*
-Emulation
+Die Kalibrierung geht ziemlich schnell vonstatten.
+ Es wird ein Button gedrückt, dann werden zwei oder drei Bilder angezeigt
+ und schliesslich kann das PenTracking und die Mausemulation aktiviert werden.
+ Momentan läuft die Konfiguration der Kamera noch über einen vordefinierten
+ Treiber-Dialog ab.
+ Dies ist störend und sollte bei einem Produkt irgendwie umgangen werden.
 \end_layout
 
 \begin_layout Standard
-Unser Prototyp funktioniert sehr genau und ist sehr Fehlertolerant.
- Durch die Mittelung von Uneren Ergebnissen der Interpolation erhalten wir
- sehr gute Ergebnisse, die sehr feine Zeichnungen ermöglichen.
- Zudem gibt es durch die Mittelung keine Sprünge der Linien da solche Pixelgenau
- gezeichnet werden können.
+Die Kalibrierung funktioniert gut bei allen in einem Präsentationsraum üblichen
+ Helligkeitswerten und sogar bei unüblichen Abfilmungswinkel (siehe Abb.
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:schwieriger-abfilmwinkel"
+
+\end_inset
+
+).
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Bilder/PenTracking/Genauigkeit/Genauigkeit-3.5m-55grad-source.png
+	lyxscale 50
+	width 100col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Bei einem zu grossen Winkel (hier 55°) wird die Kalibrierung schwieriger
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:schwieriger-abfilmwinkel"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection*
+Mapping
+\end_layout
+
+\begin_layout Standard
+Das Abbilden von Kamerapunkten auf Beamerpunkte geht mit dem Integralansatz
+ sehr gut wenn Kamera und Beamer gerade vor der Leinwand stehen.
+ Mit zunehmender Schräge wird die Genauigkeit schlechter.
+ Aus Abb.
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:messung-praxis-0grad"
+
+\end_inset
+
+ ist ersichtlich, dass dieser Ansatz durch die pragmatische Korrekturfunktion
+ mehr Abweichung erzeugt als nötig.
+ Dies liegt in erster Linie daran, dass diese quadratische Ausgleichsfunktion
+ in der Praxis die Länge der seitlichen Bildlinien 
+\begin_inset Formula $a$
+\end_inset
+
+ und 
+\begin_inset Formula $b$
+\end_inset
+
+ benutzt anstatt wie in der Theorie beschrieben einen gemessenen Mittelpunkt
+ des Bildes.
+ Der Parameter 
+\begin_inset Formula $h$
+\end_inset
+
+ der Gleichung 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:pragmatische-korrekturfunktion"
+
+\end_inset
+
+ wird im Programmcode durch 
+\begin_inset Formula $h=\left(\frac{a}{b}-1\right)\frac{1}{10}$
+\end_inset
+
+ umgesetzt.
+ In Abb.
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:messung-praxis-30grad"
+
+\end_inset
+
+ ist dargestellt, wie gut die Korrekturfunktion bei einem Winkel von 30
+ Grad greift.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename Statistiken/Genauigkeit/foundpoints-integral-bary-30grad.emf
+	lyxscale 20
+	width 85col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Baryzentrisch geglätteter Integralansatz: Ausrichtung 0 Grad
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:messung-praxis-0grad"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename Statistiken/Genauigkeit/foundpoints-integral-bary-0grad.emf
+	lyxscale 20
+	width 85col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Baryzentrisch geglätteter Integralansatz: Ausrichtung 30 Grad
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:messung-praxis-30grad"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Generell nicht untersucht wurde, wie sehr sich der Benutzer bewusst ist,
+ dass das Lämpchen zur Kamera zeigen muss.
+ Die Schräge der Lampe muss der Schräge des Laptops angepasst werden.
+ Nur so zeigt die Verlängerung der Lampe in Richtung Leinwand auch auf den
+ Punkt, der getroffen werden soll.
+ Ab einem Winkel von 45 Grad wird dieser Effekt so stark, dass kaum mehr
+ an die gewünschte Position gezeichnet werden kann.
+\end_layout
+
+\begin_layout Subsubsection*
+Mausemulation
+\end_layout
+
+\begin_layout Standard
+Der in dieser Arbeit entwickelte Prototyp emuliert eine Maus vollständig.
+ Beim Klicken wurde auf eine Interpolation verzichtet.
+ Falls geklickt und gezogen wird, greift eine Interpolation mit einer Mittelwert
+bildung über die letzten 5 Werte.
+ Bei Klicken und Halten wird ein Rechtsklick ausgefüht.
+ So kann das ganze Betriebsystem bedient und pixelgenau gezeichnet werden.
+ In Abb.
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:whiteboard-in-aktion"
+
+\end_inset
+
+ wird Microsoft PowerPoint 2010 mit einer LED-Lampe gesteuert.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Subsubsection*
+\begin_inset Graphics
+	filename Bilder/Setup/IMGP0387.JPG
+	lyxscale 10
+	width 100col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Das Whiteboard in Aktion
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:whiteboard-in-aktion"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -4117,17 +4411,24 @@ Ausblick
 \end_layout
 
 \begin_layout Subsection
-Kamera
+Kamera & Stift
 \end_layout
 
 \begin_layout Standard
-Hier besteht noch viel Verbesserungspotenzial.
- Die Konfiguration müsste irgendwie Automatisiert werden.
- Zudem wäre eine Nutzung von Infrarot-Signalen sehr nützlich.
+Die in dieser Arbeit verwendete Kamera hatte eine kleine Auflösung und einen
+ störenden automatischen Weissabgleich.
+ Durch Nutzung einer besseren Kamera könnte sowohl die Genauigkeit des Resultate
+s als auch die Stabilität des Inputs verbessert werden.
+ Im Weiteren wäre es nützlich, wenn die Aufnahmeeigenschaften der Kamera
+ per Software automatisch gesteuert werden könnten.
 \end_layout
 
 \begin_layout Standard
-Auswahl???
+Die Diversität der in handelsüblich verfügbaren Laptops integrierten Kameras
+ könnte umgangen werden, wenn eine eigene Kamera mitgeliefert würde.
+ Eine Infrarotkamera (mit Infrarot-Stift) wäre dafür von Vorteil.
+ Die vorliegenden Algorithmen funktionieren ohne Weiteres auch auf einem
+ Infrarotbild - wahrscheinlich zuverlässiger.
 \end_layout
 
 \begin_layout Subsection
@@ -4137,8 +4438,8 @@ Kalibrierung
 \begin_layout Standard
 Hier gibt es zwei Ansätzte, die weiterverfolgt werden können um mehr Referenzpun
 kte zu erhalten.
- Diese knn man nutzen um allfälliger Korrekturfaktoren einzuführen und die
- Genuigkeit zu verbessern.
+ Diese kann man nutzen um allfälliger Korrekturfaktoren einzuführen und
+ die Genuigkeit zu verbessern.
 \end_layout
 
 \begin_layout Standard
@@ -4154,7 +4455,8 @@ Kamera mit Infrarot-Kanal
 \end_layout
 
 \begin_layout Standard
-Hierbei haben wir natürlich stark erweiterte Möglichkeiten
+Bei der Nutzung von Infrarotbildern eröffnen sich stark erweiterte Möglichkeiten
+:
 \end_layout
 
 \begin_layout Itemize
@@ -4183,14 +4485,6 @@ Das kann sehr viel Verbesserungen bringen, erübrigt eine Kalibration der
  Durch diese Anpassung wird die Nutzerfreundlichkeit sehr stark verbessert.
  Dieser Schritt ist nötig, um dieses Produkt verschiedenen Kundensegmenten
  anzubieten, da eis die Benutzung ungemein vereinfacht.
-\end_layout
-
-\begin_layout Subsection
-Pen Tracking
-\end_layout
-
-\begin_layout Standard
-MultiPen für Multitouch?
 \end_layout
 
 \begin_layout Subsection
