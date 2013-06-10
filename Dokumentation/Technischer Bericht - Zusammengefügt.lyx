@@ -1146,7 +1146,8 @@ g gearbeitet wird, hat die Transformation lediglich 8 Freiheitsgrade, welche
 \end_layout
 
 \begin_layout Standard
-TODO: folgende Verfahren wurden in dieser Arbeit betrachtet...
+Bei dieser Arbeit wurden folgende Möglichkeiten, Referenzpunkte zu erhalten
+ evaluiert und getestet:
 \end_layout
 
 \begin_layout Subsubsection
@@ -1176,9 +1177,19 @@ Ordnung kleiner Vierecke
 \end_layout
 
 \begin_layout Standard
-Todo...
- Schachbrettmuster auf Differenzbilder UNGLEICH Schachbrettmuster für Vorbeugung
- Weissabgleich
+In den folgenden Algorithmen werden mehrfarbige Schachbrettmuster analysiert
+ dies hat den Vorteil, dass man die Farbkanäle trennen kann, und so ein
+ Gitter mit Quadraten erhält, die nue einen direkten Nachbar haben.
+ Dieser Ansatz ist Anhang bei 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Farbmuster"
+
+\end_inset
+
+ noch genauer beschrieben.
+ Dises Verfahren hat keine gemeinsamkeiten mit dem Schachmuster für die
+ Bildschirmdetektion.
 \end_layout
 
 \begin_layout Paragraph
@@ -4872,6 +4883,13 @@ status open
 
 \begin_layout Plain Layout
 Farbmuster
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Farbmuster"
+
+\end_inset
+
+
 \end_layout
 
 \end_inset
