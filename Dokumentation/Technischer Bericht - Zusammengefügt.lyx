@@ -1470,6 +1470,39 @@ Durch eine eigene erweiterung der baryzentrischen Koordinaten können wir
 TODO: Formel + Umkehrung mit Determinante...
 \end_layout
 
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+result=reference.TopLeft*(1-x)*(1-y)+reference.BottomLeft*y*(1-x)+reference.TopRight*(1-y)*x+reference.BottomRight*x*y;
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+Solve[Det[{(1-x)*{LUx,LUy}+x*{RUx,RUy}-{px,py},(1-x)*{LLx,LLy}+x*{RLx,RLy}-{px,py}}]==0,x]
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+Solve[Det[{(1-y){LUx,LUy}+y*{RUx,RUy}-{px,py},(1-y)*{LLx,LLy}+y*{RLx,RLy}-{px,py}}]==0,y]
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
 \begin_layout Subsubsection
 Zweidimensional per Integration
 \end_layout
@@ -1643,6 +1676,13 @@ reference "eq:xb-aus-xk-quadratisch"
 
  (blau): In der Mitte weicht die perspektivische Verzerung in X-Richtung
  mehr vom linearen Ansatz (violett) ab als am Rand.
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:vergleich-persp-verzerr-linquad"
+
+\end_inset
+
+
 \end_layout
 
 \end_inset
@@ -2944,7 +2984,7 @@ Kalibrierung
 \end_layout
 
 \begin_layout Standard
-Die Grundüberlegung jedes Ansatzes der Kalibration ist derselbe: Im ersten
+Die Grundüberlegung jedes Ansatzes der Kalibrierung ist derselbe: Im ersten
  Schritt werden die Ecken des Bildschirms gefunden, in den weiteren Schritten
  werden zusätzliche Daten gesammelt um die Interpolation zu verbessern.
  
@@ -3088,8 +3128,8 @@ Nach jedem Zeichnen wird 100 ms gewartet bevor die Semaphore freigegeben
  
 \end_layout
 
-\begin_layout Subsection
-Umsetzung: Schachbrett-Differenzbilder
+\begin_layout Subsubsection
+Schachbrett-Differenzbilder
 \begin_inset CommandInset label
 LatexCommand label
 name "sub:Schachbrett-Differenz"
@@ -3921,15 +3961,6 @@ tellt werden, dass der Kamerainput nicht verrauscht ist.
 g sparen.
 \end_layout
 
-\begin_layout Paragraph
-Eigenschaften eines Lichtpunktes
-\end_layout
-
-\begin_layout Standard
-Ein von einem Stift erzeugter Lichtpunkt hat diverse Eigenschaften.
- Im Folgenden werden diese genauer ausgeführt.
-\end_layout
-
 \begin_layout Subsubsection
 Einschränkungen
 \end_layout
@@ -4038,6 +4069,10 @@ Wir haben gesehen, dass man auch anhand von vier Referenzpunkten sehr genau
  meist relativ kompliziert und Zeitintensiv.
  Wenn man eine stabile und sichere Kalibration möchte, sollte man sich auf
  die Eckpunkte beschränken.
+\end_layout
+
+\begin_layout Subsubsection*
+Kalibration
 \end_layout
 
 \begin_layout Subsubsection*
@@ -5202,6 +5237,168 @@ Berechnung der linearen Interpolation
 
 \end_inset
 
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Paragraph
+Genauigkeit
+\end_layout
+
+\begin_layout Standard
+Der lineare Ansatz wurde getestet und seine Genauigkeit gemessen.
+ Dazu wurde ein Grid mit 
+\begin_inset Formula $\frac{1}{8}$
+\end_inset
+
+ Unterteilungen auf die Leinwand projiziert.
+ Danach wurden die Positionen am Rand und in der Mitte der X-Achse und der
+ Y-Achse entlang mit der LED-Lampe beleuchtet.
+ In Abb.
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:messung-linearer-ansatz-0grad"
+
+\end_inset
+
+ ist sichtbar, dass der lineare Ansatz ziemlich gut funktioniert, wenn Beamer
+ und Laptop mit 0 Grad zueinander ausgerichtet sind.
+ In Abb.
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:messung-linearer-ansatz-30grad"
+
+\end_inset
+
+ wurde der Winkel zwischen Beamer und Laptop auf 30 Grad erhöht.
+ Hier macht sich die perspektivische Verzerrung in X-Richtung bemerkbar.
+ Strecken werden zu lang abgebildet
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+Interessant ist, dass die oben in Abb.
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:vergleich-persp-verzerr-linquad"
+
+\end_inset
+
+ festgestellte Abweichung vom linearen Ansatz in dieser Messung sichtbar
+ gut ist.
+\end_layout
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+Die Umsetzung des Ansatzes bildet alle Punkte ausserhalb der Projektion
+ auf den Punkt 
+\begin_inset Formula $\left(0,0\right)$
+\end_inset
+
+ ab.
+ Da alle am Rand unten gemessenen Punkte ein bisschen ausserhalb liegen,
+ sind sie in den Messabbildungen nur als Häufung um 
+\begin_inset Formula $\left(0,0\right)$
+\end_inset
+
+ sichtbar.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename Statistiken/Genauigkeit/foundpoints-linear-0grad.emf
+	lyxscale 20
+	width 85col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Ausrichtung Beamer-Laptop: 0 Grad
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:messung-linearer-ansatz-0grad"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename Statistiken/Genauigkeit/foundpoints-linear-30grad.emf
+	lyxscale 20
+	width 85col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Ausrichtung Beamer-Laptop: 30 Grad
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:messung-linearer-ansatz-30grad"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
 
 \end_layout
 
@@ -6436,10 +6633,6 @@ Durch eine entsprechende Gewichtung kann man zu dem die Knicke so interpolieren,
  des Rechtecks bestimmen können.
  Diese korrigieren jedoch die perspektivische Verzerrung nicht.
  Diesen Faktor können jedoch mit einem feineren Raster kompensieren.
-\end_layout
-
-\begin_layout Subsection
-Exkurs: Bewegter Lichtpunkt
 \end_layout
 
 \begin_layout Subsection
