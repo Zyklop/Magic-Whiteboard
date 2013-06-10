@@ -1277,7 +1277,7 @@ Der lineare Ansatz berücksichtigt weder perspektivische Verzerrung noch
  Linseneffekte.
  Es wird davon ausgegangen, dass die Verhältnisse der Punkt zu den Ränden
  in beiden Abbildungen identisch sind.
- Wenn keine perspektivische Verzerrung vorhanden ist, funktionier dieses
+ Wenn keine perspektivische Verzerrung vorhanden ist, funktioniert dieses
  Verfahren korrekt.
  Sonst werden keine Anforderungen an das Bild gestellt.
  Das heisst, dass die Genauigkeit dieses Verfahrens abhängig von der Distanz
@@ -1311,6 +1311,71 @@ status open
 
 \begin_layout Plain Layout
 Lineare Interpolation
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Paragraph
+Problem
+\end_layout
+
+\begin_layout Standard
+Der lineare Ansatz wird mathematisch durch eine Lochkamera und den Strahlensatz
+ beschrieben.
+ Der Strahlensatz funktioniert nur, wenn Kamerabild und Leinwand zueinander
+ parallel sind.
+ Einem üblichen Setup von Beamer und Laptop ist dies nicht der Fall.
+ In Abb.
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:linear-lochkamera"
+
+\end_inset
+
+ dies ersichtlich.
+ Falls Beamer und Kamera nah beieinander stehen, könnte die Genauigkeit
+ des linearen Ansatzes reichen.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename Diagramme/Lochkamera.emf
+	lyxscale 20
+	width 70col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Lochkameramodell - Leinwand und Kamerabild sind nicht parallel.
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:linear-lochkamera"
+
+\end_inset
+
+
 \end_layout
 
 \end_inset
@@ -4195,7 +4260,7 @@ status open
 \begin_inset Caption
 
 \begin_layout Plain Layout
-Sacnlinien
+Scanlinien
 \end_layout
 
 \end_inset
@@ -4767,60 +4832,6 @@ Vereinzelt kommt es mit dem linearen Ansatz zu Fehlerkennungen, die als
  gültig erkannt werden.
  Dies resultiert in schwerwiegenden Fehlern bei kommenden Schritten und
  kann nicht detektiert werden.
-\end_layout
-
-\begin_layout Subsubsection
-Strahlensatz
-\end_layout
-
-\begin_layout Standard
-Es wird ein physikalisches Modell mit einer Lochkamera erstellt.
- Durch Anwendung des Strahlensatzes kann ein mapping erstellt werden.
- 
-\end_layout
-
-\begin_layout Standard
-Eine zusätzliche Voraussetzung dafür ist dafür ist, dass die Projektion
- ein rechtwinkliges Dreieck ist.
- Das heisst, dass die Trapezkorrektur des Beamers immer zwingend ausgeführt
- werden muss.
- 
-\begin_inset Float figure
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
-\align center
-\begin_inset Graphics
-	filename Diagramme/Lochkamera.emf
-	lyxscale 30
-	width 70col%
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Caption
-
-\begin_layout Plain Layout
-Lochkamera Modell
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-
-
 \end_layout
 
 \begin_layout Subsubsection
