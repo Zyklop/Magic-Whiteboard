@@ -33,7 +33,7 @@ namespace HSR.PresWriter.Gui
         {
             InitializeComponent();
             Left = (SystemParameters.VirtualScreenWidth - 800)/2;
-            Top = SystemParameters.VirtualScreenHeight - 180;
+            Top = SystemParameters.VirtualScreenHeight - 200;
             Topmost = true;
             AllowsTransparency = true;
             Background = new SolidColorBrush(Color.FromArgb(64,0,0,0));

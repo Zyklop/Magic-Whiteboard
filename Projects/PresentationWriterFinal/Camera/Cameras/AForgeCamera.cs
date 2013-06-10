@@ -20,33 +20,56 @@ namespace HSR.PresWriter.DataSources.Cameras
         private Bitmap _lastBitmap;
         private readonly Mirror _filter = new Mirror( false, true );
 
+        /// <summary>
+        /// Check, if the Camera is enabled
+        /// </summary>
         public bool IsRunning { get; protected set; }
 
+        /// <summary>
+        /// Enable the mirroring of the camera image
+        /// </summary>
         public bool IsMirrored { get; set; }
 
         public event EventHandler<FrameReadyEventArgs> FrameReady;
 
+        /// <summary>
+        /// Use the first camera 
+        /// </summary>
         public AForgeCamera()
         {
             _videoCaptureDevices = new FilterInfoCollection(FilterCategory.VideoInputDevice);
             _finalVideo = new VideoCaptureDevice(_videoCaptureDevices[0].MonikerString);
         }
 
+        /// <summary>
+        /// Get a List of all connected cameras
+        /// </summary>
+        /// <returns>Dictionary with Moniker-String as key and the name as value</returns>
         public static Dictionary<string, string> GetCameras()
         {
             return new FilterInfoCollection(FilterCategory.VideoInputDevice).Cast<FilterInfo>().ToDictionary(fi => fi.MonikerString, fi => fi.Name);
         }
 
+        /// <summary>
+        /// Create a specified camera
+        /// </summary>
+        /// <param name="monikerString"></param>
         public AForgeCamera(string monikerString)
         {
             _finalVideo = new VideoCaptureDevice(monikerString);
         }
 
+        /// <summary>
+        /// Show camera properities
+        /// </summary>
         public void ShowConfigurationDialog()
         {
             _finalVideo.DisplayPropertyPage(new IntPtr(0));
         }
 
+        /// <summary>
+        /// Start capturing images
+        /// </summary>
         public void Start()
         {
             _finalVideo.Start();
@@ -54,6 +77,9 @@ namespace HSR.PresWriter.DataSources.Cameras
             IsRunning = true;
         }
 
+        /// <summary>
+        /// Stop the capture
+        /// </summary>
         public void Stop()
         {
             _finalVideo.NewFrame -= finalVideo_NewFrame;
@@ -61,6 +87,10 @@ namespace HSR.PresWriter.DataSources.Cameras
             _finalVideo.SignalToStop();
         }
 
+        /// <summary>
+        /// Get the last Image
+        /// </summary>
+        /// <returns>The last VideoFrame or null if no frame is avaliable</returns>
         public VideoFrame GetLastFrame()
         {
             if (_lastBitmap != null)
@@ -85,6 +115,9 @@ namespace HSR.PresWriter.DataSources.Cameras
             }
         }
 
+        /// <summary>
+        /// Dispose the camera object
+        /// </summary>
         public void Dispose()
         {
             Stop();

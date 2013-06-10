@@ -11,6 +11,9 @@ namespace HSR.PresWriter.InputEmulation
         int BorderWidth { get; set; }
         int AverageCount { get; set; }
 
+        /// <summary>
+        /// No recent contact has been detected
+        /// </summary>
         void NoData();
 
         /// <summary>
@@ -19,6 +22,9 @@ namespace HSR.PresWriter.InputEmulation
         /// <param name="p"></param>
         void NewPoint(System.Drawing.Point p);
 
+        /// <summary>
+        /// Menu has been toggled
+        /// </summary>
         event EventHandler ShowMenu;
 
     }

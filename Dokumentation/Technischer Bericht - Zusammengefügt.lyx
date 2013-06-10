@@ -993,7 +993,21 @@ Erkennen von Vierecken
 \end_layout
 
 \begin_layout Standard
-TODO Einleitender Text: Wieso Wie etc.gross und klein
+Im folgenden Abschnitt wird beschrieben wie projizierte Rechtecke auf dem
+ Kamerabild wiedererkannt werden können.
+ Die Grösse ist sehr unterschiedlich, je nach Verfahren von der ganzen Bildschir
+mgösse bis zu wenigen Pixeln auf dem Kamerabild.
+ Die Hauptziele dieses Verfahrens sind einerseits Korrektheit als auch Genauigke
+it, wobei verschiedene Interpolationsverfahren auvh andere Ansprüche haben.
+ Die Korrektheit beinhaltet, dass alle Rechtecke erkannt werden und gleichzeitig
+ das Rauschen auf ein Mass gesenkt wird, sodass mit Filtern nach Grösse
+ und Helligkeitswerte, dass diese klar unterschieden werden können.
+ Zudem darf ein Rechteck keinenfalls so aufgeteilt werden, dass es doppelt
+ erkannt wird.
+ Die Korrektheit ist in diesem Fall die Genauigkeit der Kanten an den Ecken.
+ Diese sind relativ wichtig für die genaue Erkennung der Eckpunkte.
+ Wenn die Kanten an den Ecken nur leicht abgerundetsind, kann das den resultiere
+nden Eckpunkt relativ stark beiunflussen.
 \end_layout
 
 \begin_layout Subsubsection
@@ -1001,7 +1015,11 @@ Differenzbildansatz
 \end_layout
 
 \begin_layout Standard
-TODO: was sind Differenzbilder etc...
+Bei einem Differnzbild werden auf zwei Bildern auf jedem Pixel die Differnz
+ gebildet.
+ Somit entsteht ein Bild auf dem alle statischen Regionen entfernt wurden.
+ Das ist zum Beisiel der Hintergrund eines Bildes.
+ Damit werden nur Regionen berücksichtigt, die sich geändert haben.
 \end_layout
 
 \begin_layout Paragraph

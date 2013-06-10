@@ -9,21 +9,28 @@
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <ComboBox Name="CameraBox" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
-        <Button Content="Show Camera Config" HorizontalAlignment="Stretch" VerticalAlignment="Center" Click="ShowConfig" Grid.Row="1"/>
-        <ToggleButton Name="MirrorBtn" Content="Mirror Camera" Click="MirrorCam" HorizontalAlignment="Stretch" VerticalAlignment="Center" Grid.Row="2"/>
-        <Button Content="Start Calibration" Click="StartCalib" HorizontalAlignment="Stretch" VerticalAlignment="Center" Grid.Column="1"/>
-        <ToggleButton Name="EmuBtn"  Content="Start Input Emulation" Click="StartEmu" HorizontalAlignment="Stretch" VerticalAlignment="Center" IsEnabled="False" Grid.Column="2"/>
-        <StackPanel Grid.Row="1" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center">
+        <TextBlock Text="1." Foreground="White"/>
+        <TextBlock Text="2." Foreground="White" Grid.Column="1"/>
+        <TextBlock Text="3." Foreground="White" Grid.Column="2"/>
+        <TextBlock Text="4." Foreground="White" Grid.Column="3"/>
+        <ComboBox Name="CameraBox" HorizontalAlignment="Stretch" VerticalAlignment="Top" Grid.Row="1"/>
+        <Button Content="Show Camera Config" HorizontalAlignment="Stretch" VerticalAlignment="Center" Click="ShowConfig" Grid.Row="2"/>
+        <ToggleButton Name="MirrorBtn" Content="Mirror Camera" Click="MirrorCam" HorizontalAlignment="Stretch" VerticalAlignment="Center" Grid.Row="3"/>
+        <Button Content="Start Calibration" Click="StartCalib" HorizontalAlignment="Stretch" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1"/>
+        <Button Content="Show Camera Config" HorizontalAlignment="Stretch" VerticalAlignment="Top" Click="ShowConfig" Grid.Row="1" Grid.Column="2"/>
+        <ToggleButton Name="EmuBtn"  Content="Start Input Emulation" Click="StartEmu" HorizontalAlignment="Stretch" VerticalAlignment="Top" IsEnabled="False" Grid.Column="3" Grid.Row="1"/>
+        <StackPanel Grid.Row="2" Grid.Column="3" HorizontalAlignment="Center" VerticalAlignment="Center">
             <TextBlock Text="Position of the Pen:"/>
             <TextBlock Name="PosTxt"/>
         </StackPanel>
-        <Image Name="CameraImage" MouseUp="ShowImage" MaxHeight="200" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.RowSpan="3" Grid.Column="3"/>
+        <Image Name="CameraImage" MouseUp="ShowImage" MaxHeight="200" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.RowSpan="4" Grid.Column="4"/>
     </Grid>
 </Window>

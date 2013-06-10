@@ -91,17 +91,6 @@ namespace HSR.PresWriter.PenTracking
         }
 
         /// <summary>
-        /// Start the Calibration again
-        /// </summary>
-        public void ReCalibrate()
-        {
-            // TODO not working, why?
-            _penTracker.Stop();
-            _calibrator.Calibrate();
-            Console.WriteLine("Recalibrating");
-        }
-
-        /// <summary>
         /// Mapping the point
         /// </summary>
         /// <param name="sender"></param>

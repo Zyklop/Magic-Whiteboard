@@ -22,6 +22,8 @@ namespace HSR.PresWriter.ImageVisualizer
         {
             if (Dispatcher.Thread.GetApartmentState() != ApartmentState.STA)
             {
+                //started from a non-sta context
+                // very slow, when called from a sta context
                 var t = new Thread(() =>
                     {
                         if (Dispatcher.CheckAccess())
@@ -51,6 +53,7 @@ namespace HSR.PresWriter.ImageVisualizer
             }
             else
             {
+                // Thread already has the sta-Attribute, this is much faster
                 if (Dispatcher.CheckAccess())
                     MainGrid.Children.Add(new Rectangle
                     {

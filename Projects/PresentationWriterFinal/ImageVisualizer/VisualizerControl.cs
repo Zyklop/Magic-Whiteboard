@@ -14,11 +14,18 @@ namespace HSR.PresWriter.ImageVisualizer
         private readonly Thread _t;
         private Application _app;
 
+        /// <summary>
+        /// Return the actual visualizer
+        /// </summary>
+        /// <returns></returns>
         public static VisualizerControl GetVisualizer()
         {
             return _singleton ?? (_singleton = new VisualizerControl());
         }
 
+        /// <summary>
+        /// Create a WPF Application if needed
+        /// </summary>
         protected VisualizerControl()
         {
             if (Application.Current == null)
@@ -44,6 +51,9 @@ namespace HSR.PresWriter.ImageVisualizer
             }
         }
 
+        /// <summary>
+        /// Set the transparency
+        /// </summary>
         public bool Transparent { get { return _cw.Transparent; } set { _cw.Transparent = value; } }
 
         public void AddRect(Point topLeft, Point bottomRight, System.Drawing.Color fromRgb)
@@ -51,21 +61,38 @@ namespace HSR.PresWriter.ImageVisualizer
             _cw.AddRect(topLeft.X, topLeft.Y, bottomRight.X - topLeft.X, bottomRight.Y - topLeft.Y, Color.FromRgb(fromRgb.R,fromRgb.G,fromRgb.B));
         }
 
+        /// <summary>
+        /// remove all content
+        /// </summary>
         public void Clear()
         {
             _cw.Clear();
         }
 
+        /// <summary>
+        /// Reender new Content under WinGorms
+        /// </summary>
         public void Draw()
         {
             //not needed
         }
 
+        /// <summary>
+        /// Draw a filled rectangle
+        /// </summary>
+        /// <param name="topLeft"></param>
+        /// <param name="bottomRight"></param>
+        /// <param name="width"></param>
+        /// <param name="height"></param>
+        /// <param name="color"></param>
         public void AddRect(int topLeft, int bottomRight, int width, int height, System.Drawing.Color color)
         {
             _cw.AddRect(topLeft, bottomRight, width, height, Color.FromRgb(color.R, color.G, color.B));
         }
 
+        /// <summary>
+        /// Hide the Window
+        /// </summary>
         public void Close()
         {
             if (_cw.Dispatcher.CheckAccess())
@@ -74,6 +101,9 @@ namespace HSR.PresWriter.ImageVisualizer
                 _cw.Dispatcher.BeginInvoke(new Action(() => _cw.Hide()));
         }
 
+        /// <summary>
+        /// Show the window
+        /// </summary>
         public void Show()
         {
             if(_cw.Dispatcher.CheckAccess())
@@ -82,8 +112,14 @@ namespace HSR.PresWriter.ImageVisualizer
                 _cw.Dispatcher.BeginInvoke(new Action(()=> _cw.Show()));
         }
 
+        /// <summary>
+        /// Screen width
+        /// </summary>
         public int Width { get { return (int) _cw.ActualWidth; } }
 
+        /// <summary>
+        /// Screen Height
+        /// </summary>
         public int Height { get { return (int) _cw.ActualHeight; } }
     }
 }

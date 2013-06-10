@@ -32,8 +32,6 @@ namespace HSR.PresWriter.PenTracking
             // fill all points in a random cluster, just for the initialisation
             clusters[0].Points.AddRange(allpoints);
             // they get distributed correctly in the loop
-            //changed = Assign(clusters);
-            //UpdateCentroids(clusters);
             for (int ct = 0; changed && ct < maxIterations; ct++)
             {
                 changed = Assign(clusters);

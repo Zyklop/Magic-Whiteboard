@@ -42,7 +42,10 @@ namespace HSR.PresWriter.Visualizer
         /// </summary>
         void Show();
 
-
+        /// <summary>
+        /// Draw new content
+        /// <remarks>Only required under WinForms</remarks>
+        /// </summary>
         void Draw();
 
         /// <summary>
