@@ -1150,21 +1150,32 @@ Der lineare Ansatz berücksichtigt weder perspektivische Verzerrung noch
 wide false
 sideways false
 status open
+
 \begin_layout Plain Layout
 \begin_inset Graphics
 	filename Diagramme/Lineare Interpolation.emf
 	lyxscale 30
 	width 100col%
+
 \end_inset
+
+
+\end_layout
 
 \begin_layout Plain Layout
 \begin_inset Caption
+
 \begin_layout Plain Layout
 Lineare Interpolation
 \end_layout
+
 \end_inset
+
+
 \end_layout
+
 \end_inset
+
 
 \end_layout
 
@@ -1188,6 +1199,62 @@ Hierbei werden die Baryzentrischen Koordinaten aus verschiedenen Dreiecken
  Wenn viele Dreiecke verwendet werden, führt dies zu einer besseren Korrektur
  von lokalen Ungenauigkeiten und etwas sanfteren Übergängen, allerdings
  wird dadurch auch der Rechenaufwand erhöht.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Diagramme/ProblemBaryzentrisch.emf
+	lyxscale 30
+	width 100col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Fehler bei nich winkeltreuen Abbildungen
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Baryzentrische Vierecke mit Korrekturfaktor
+\end_layout
+
+\begin_layout Standard
+Durch eine eigene erweiterung der baryzentrischen Koordinaten können wir
+ berücksichtigen, dass die Rechtecke nicht winkeltreu sind.
+ Dies geschieht durch einen vierten Punkt der ebenfalls berücksichtigt wird.
+ Dies führt zu einer viel genaueren Interpolation.
+ Der Algorithmus benötigt jedich eine strukturierte Ordnung der Referenzpunkte,
+ was ihn geringfügig konplizierter macht.
+ Allerdings ist durch die ordnung auch eine Gewichtung möglich.
+ Dieser Algorithmus führt zu einem guten Resultat, allerdings stellt er
+ hohe Anforderung an die Referenzpunkte.
+ Diese Ansprüche können allerdings mithilfe des K-Means Clusterings erfüllt
+ werden.
 \end_layout
 
 \begin_layout Subsubsection
@@ -1932,24 +1999,6 @@ e_elementare_homogene_Transformationsmatrizen
 \end_inset
 
 .
-\end_layout
-
-\begin_layout Subsubsection
-Baryzentrische Vierecke mit Korrekturfaktor
-\end_layout
-
-\begin_layout Standard
-Durch eine eigene erweiterung der baryzentrischen Koordinaten können wir
- berücksichtigen, dass die Rechtecke nicht winkeltreu sind.
- Dies geschieht durch einen vierten Punkt der ebenfalls berücksichtigt wird.
- Dies führt zu einer viel genaueren Interpolation.
- Der Algorithmus benötigt jedich eine strukturierte Ordnung der Referenzpunkte,
- was ihn geringfügig konplizierter macht.
- Allerdings ist durch die ordnung auch eine Gewichtung möglich.
- Dieser Algorithmus führt zu einem guten Resultat, allerdings stellt er
- hohe Anforderung an die Referenzpunkte.
- Diese Ansprüche können allerdings mithilfe des K-Means Clusterings erfüllt
- werden.
 \end_layout
 
 \begin_layout Subsection
