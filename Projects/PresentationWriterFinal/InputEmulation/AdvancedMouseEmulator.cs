@@ -32,6 +32,7 @@ namespace HSR.PresWriter.InputEmulation
             KeyboardReleaseTimeout = 500;
             Radius = 5;
             BorderWidth = 200;
+            AverageCount = 6;
         }
 
         public int RightClickTimeOut { get; set; }
@@ -101,11 +102,12 @@ namespace HSR.PresWriter.InputEmulation
                     _lastKeyPressed = CurrentMillis.Millis;
                 }
             }
-            else if (p.Y > _screenHeight && p.Y < _screenHeight + BorderWidth)
+            else if (p.Y > (_screenHeight + 30) && CurrentMillis.Millis - _lastKeyPressed > KeyboardReleaseTimeout) //&& p.Y < (_screenHeight + BorderWidth + 30) 
             {
                 // under the screen
                 if (ShowMenu != null)
                     ShowMenu(this, null);
+                _lastKeyPressed = CurrentMillis.Millis;
             }
             else if (p.Y < 0 && p.Y > -1 * BorderWidth)
             {
@@ -159,8 +161,6 @@ namespace HSR.PresWriter.InputEmulation
                         _leftCicked = true;
                     }
                 }
-                Debug.WriteLine("Wait time: " + (CurrentMillis.Millis - _startTime) + (_waiting ? "Waiting, " : "") +
-                                (_leftCicked ? "left down, " : "leftUp, ") + (_rightCicked ? "right down" : "rightUp, "));
                 _lastContact = CurrentMillis.Millis;
                 _lastPosition = p;
             }

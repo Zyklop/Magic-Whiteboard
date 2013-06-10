@@ -32,8 +32,8 @@ namespace HSR.PresWriter.Gui
         public MainWindow()
         {
             InitializeComponent();
-            Left = (SystemParameters.FullPrimaryScreenWidth - 800)/2;
-            Top = SystemParameters.FullPrimaryScreenHeight - 180;
+            Left = (SystemParameters.VirtualScreenWidth - 800)/2;
+            Top = SystemParameters.VirtualScreenHeight - 180;
             Topmost = true;
             AllowsTransparency = true;
             Background = new SolidColorBrush(Color.FromArgb(64,0,0,0));
@@ -120,13 +120,25 @@ namespace HSR.PresWriter.Gui
 
         private void PenChanged(object sender, PenTracking.Events.PenPositionEventArgs e)
         {
-            PosTxt.Text = e.Frame.Point.ToString();
             if (_emulating)
             {
-                if(e.Frame == null)
+                if (e == null || e.Frame == null)
                     _emulator.NoData();
                 else
+                {
                     _emulator.NewPoint(e.Frame.Point);
+                    if (Dispatcher.CheckAccess())
+                        PosTxt.Text = e.Frame.Point.ToString();
+                    else
+                        Dispatcher.Invoke(() => PosTxt.Text = e.Frame.Point.ToString());
+                }
+            }
+            else if (!(e == null || e.Frame == null))
+            {
+                if (Dispatcher.CheckAccess())
+                    PosTxt.Text = e.Frame.Point.ToString();
+                else
+                    Dispatcher.Invoke(() => PosTxt.Text = e.Frame.Point.ToString());
             }
         }
 
@@ -141,8 +153,8 @@ namespace HSR.PresWriter.Gui
         private void StartEmu(object sender, RoutedEventArgs e)
         {
             if (_emulator == null)
-                _emulator = AdvancedInputEmulatorFactory.GetInputEmulator((int) SystemParameters.FullPrimaryScreenWidth,
-                                                                          (int) SystemParameters.FullPrimaryScreenHeight);
+                _emulator = AdvancedInputEmulatorFactory.GetInputEmulator((int) SystemParameters.VirtualScreenWidth,
+                                                                          (int) SystemParameters.VirtualScreenHeight);
             _emulating = EmuBtn.IsChecked.Value;
             if (EmuBtn.IsChecked.Value)
                 _emulator.ShowMenu += ToggleMenu;
@@ -153,9 +165,16 @@ namespace HSR.PresWriter.Gui
         private void ToggleMenu(object sender, EventArgs e)
         {
             if (_shown)
-                Hide();
+                if (Dispatcher.CheckAccess())
+                    Hide();
+                else
+                    Dispatcher.Invoke(() => Hide());
             else
-                Show();
+
+                if (Dispatcher.CheckAccess())
+                    Show();
+                else
+                    Dispatcher.Invoke(() => Show());
             _shown = !_shown;
         }
 
