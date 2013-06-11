@@ -1180,10 +1180,6 @@ name "sub:Kalibrierung:-Referenzpunkte"
 \end_layout
 
 \begin_layout Standard
-Todo: umplatzieren
-\end_layout
-
-\begin_layout Standard
 Der Beginn der Kalibrierung bildet das Finden von Referenzpunkten.
  Diese Punkte bilden die Orientierung für darauf aufbauende Abbildungen.
  Je nach Güte der Abbildung sind mehr oder weniger gemessene Referenzpunkte
@@ -1216,11 +1212,15 @@ g gearbeitet wird, hat die Transformation lediglich 8 Freiheitsgrade, welche
  und sich grösstenteils auf die horizontale Achse beschränken.
  Durch eine einfache Korrekturfunktion lassen sich sichtbare Effekte vermeiden.
  4 Referenzpunkte reichen also für das zu entwickelnde Präsentationssystem.
+ 
 \end_layout
 
 \begin_layout Standard
-Bei dieser Arbeit wurden folgende Möglichkeiten, Referenzpunkte zu erhalten
- evaluiert und getestet:
+TODO: Bei dieser Arbeit wurden folgende Möglichkeiten, Referenzpunkte zu
+ erhalten evaluiert und getestet: Mehr Punkte mehr Interpolation.
+ Trapezkorrektur (Algorithmus Beamer).
+ Durch Interpolation werden alle ausser Acht gelassenen Verzerrungen und
+ Fehler annähernd ausgeglichen.
 \end_layout
 
 \begin_layout Subsubsection
