@@ -4772,8 +4772,17 @@ Die Diversität der in handelsüblich verfügbaren Laptops integrierten Kameras
  Eine Infrarotkamera (mit Infrarot-Stift) wäre dafür von Vorteil.
  Die vorliegenden Algorithmen funktionieren ohne Weiteres auch auf einem
  Infrarotbild - wahrscheinlich zuverlässiger.
- Zudem ist eine Innfrarotkamera weniger anfällig auf Störeinflüsse und die
- manuelle konfiguration durch den Benutzer entfällt ebenfalls.
+ Zudem ist eine Infrarotkamera weniger anfällig auf Störeinflüsse.
+ Die manuelle Konfiguration durch den Benutzer entfällt dann ebenfalls.
+\end_layout
+
+\begin_layout Standard
+Weiter optimieren liesse sich die Lichtverteilung des Stiftes.
+ Sie ist momentan ziemlich ungleich verteilt.
+ Für bessere Resultate würde ein Stift entwickelt, der in alle Richtungen
+ die identische Lichmenge abgibt.
+ So ist es nicht mehr von Belang, wie der Benutzter den Stift hält und neuen
+ Benutzern wird die Bedienung erleichtert.
 \end_layout
 
 \begin_layout Subsection
@@ -4781,38 +4790,40 @@ Kalibrierung
 \end_layout
 
 \begin_layout Standard
-Hier gibt es zwei Ansätze, die weiterverfolgt werden können um mehr Referenzpunk
-te zu erhalten.
- Diese kann man nutzen um allfälliger Korrekturfaktoren einzuführen und
- die sehr gute Genuigkeit weiter zu verbessern.
- Mit einer Kamera, welche gut kalibriert werden kann, oder einer Infrarotkamera
- mit Farbkanälen für sichtbares Licht, kann man die Kalibration während
- dem Betrieb laufend überwachen und so ein verrücken der Kamera detektieren
- und eine Nachkalibration starten oder Korrekturfaktoren In-Time anpassen.
- Weiter kann nachgeprüft werden, ob die Position des Pens der erwarteten
- Position entspricht.
- Dafür sind nur geringfügige Anpassungen an unsem Code nötig, jedoch wird
- die Nutzerfreundlichkeit verbessert und die Kalibrationszeit verkürzt.
+Für die Kamerakalibrierung gibt es zwei Ansätze, die weiterverfolgt werden
+ können um mehr Referenzpunkte zu erhalten.
+ Beide können benutzt werden um allfällige Korrekturfaktoren einzuführen
+ und die sehr gute Genuigkeit noch weiter zu verbessern.
+ Mit einer Kamera, welche automatisch kalibriert werden kann oder einer
+ Infrarotkamera mit Farbkanälen für sichtbares Licht könnte die Kalibrierung
+ während dem Betrieb laufend überwacht und so ein verrücken der Kamera detektier
+t werden.
+ Eine komplette oder teilweise
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+Lediglich Anpassung von betroffenen Korrekturfaktoren
+\end_layout
+
+\end_inset
+
+ Nachkalibrierung könnte dann in-time gestartet werden.
+ Zur Optimierung des Kalibrierungsvorganges gehört auch der Umgang mit Fehlerken
+nungen des Pen Tracking.
+ Momentan gibt es viele falsch gefundene Stiftfunde direkt nach der Kalibrierung.
+ Wenige Anpassungen im Code würden so die Nutzerfreundlichkeit verbessern
+ und die Kalibrierungszeit verkürzen.
 \end_layout
 
 \begin_layout Standard
-Ein anderer Ansatz wäre, dass man die Kalibration nicht mehr automatisch
- durchführt, sondern durch den Benutzer machen lässt.
- Das ist aufwändiger für diesen, andernseits kann man so noch Störfaktoren
- korrigieren, die vom Stift und dem Winkel, mit dem dieser gehalten wird,
- entstehen.
- Dieser Schritt erübrigt umstellungen an der Kamera.
-\end_layout
-
-\begin_layout Paragraph
-Pen
-\end_layout
-
-\begin_layout Standard
-Mit einer besseren Lichtquelle im Pen, die in alle Richtungen die identische
- Lichtmenge abgiebt, ist es nicht mehr von Belang, wie der Benutzter den
- Stift hält.
- Dies erleichtert neuen Benutzern die Bedienung.
+Ein Ansatz, der nicht weiter untersucht wurde, ist, dass der Benutzer die
+ Kalibrierung komplett selbst vornimmt.
+ Dies ist am Vorbild von Palm- oder Casio-Touchpads orientiert.
+ Der Benutzer tippt vorgegebene Position am Bildschirm (hier Leinwand) an
+ und gibt so dem Kalibrierungssystem den benötigten Referenzinput.
+ Der Hauptvorteil wäre die dadurch entfallende Kamerakalibrierung die in
+ dieser Arbeit ziemlich aufwändig gestaltet ist.
 \end_layout
 
 \begin_layout Subsection
@@ -4820,14 +4831,15 @@ Input Emulation
 \end_layout
 
 \begin_layout Standard
-Wenn weiterhin der ganze PC damit bedient werden soll, ist die injection
- in den Maustreiber die einzige gangbare Möglichkeit.
+Wenn weiterhin ein Betriebsystem mit dem hier entwickelten Präsentationsystem
+ bedient werden soll, ist die Injection von Punktpositionen in den Maustreiber
+ die einzige gangbare Möglichkeit.
  Dabei sollte aber darauf geachtet werden, dass relative Mausbewegungen
  gesendet werden, da es sonst mit gewissen Programmen, die Mausinputs auf
- einem sehr tiefen Level verarbeiten, zu Komplikationen kommen wird.
+ einem sehr tiefen Level verarbeiten, zu Komplikationen kommen kann.
  Dies erfordert jedoch die Möglichkeit, die am PC eingestellte Mausbeschleunigun
-g auslesen zu können und Positionen verifizieren zu können, was nur mit
- geringem Aufwand erreicht werden kann.
+g auslesen und Positionen verifizieren zu können, was nur mit grösserem
+ Aufwand erreicht werden kann.
 \end_layout
 
 \begin_layout Paragraph
@@ -4835,29 +4847,27 @@ Touch
 \end_layout
 
 \begin_layout Standard
-Mit der Touch-Emulation unter Windows 8 unterstützen wir schon alle implementier
-ten Touch-Gesten.
- In Kombination mit einem Pentracker, der mehrere Pens detektieren kann,
+Mit der Touch-Emulation unter Windows 8 unterstützt die in dieser Arbeit
+ entwickelte Software alle von Microsoft implementierten Touch-Gesten.
+ In Kombination mit einem Pen Tracker, der mehrere Pens detektieren kann,
  wären auch Multitouch-Gesten möglich.
- Somit könnten theoretisch mehrere Personen gleichzeitig den PC bedienen.
- Diese Funktionalität sollte jedoch unter anderen Betriebssystemen nachgebildet
- werden, damit man zumindest eine ähnliche Funktionalität unter älteren
- Systemen gewährleistet werden kann.
- Diese Kompatibilität ist aber sicher mit einem grösseren Aufwand verbunden.
+ Somit könnten theoretisch mehrere Personen gleichzeitig einen PC bedienen.
+ Das Nachbilden dieser Funktionalität unter anderen Betriebsystemen wäre
+ zwar nicht trivial, aber aus Kompatibilitätsgründen wünschenswert.
 \end_layout
 
 \begin_layout Subsection
-Pen-Tracking
+Pen Tracking
 \end_layout
 
 \begin_layout Standard
 Durch analysieren mehrerer Blobs und verfolgen dieser, könnte eine Multitouch-Fu
 nktionalität nachgebildet werden.
  Da mit einer besseren Kamera die Erkennung verbessert werden kann, wird
- das System noch Fehlertoleranter, und Useraktionen können noch besser detektier
-t werden und die bereits kleine Verzögerung könnte noch verbessert werden.
- Damit ist es möglich, eine kürzere Reaktionszeit als mit der bewährten
- Wacom
+ das System noch fehlertoleranter, und Benutzeraktionen können noch besser
+ detektiert werden.
+ Die jetzt schon gute Reaktionszeit würde besser und es wäre möglich, eine
+ kürzere Reaktionszeit als mit der schon etwas älteren Wacom-Technologie
 \begin_inset Foot
 status open
 
@@ -4877,13 +4887,17 @@ http://www.wacom.com/en
 
 \end_inset
 
--Technologie zu erhalten.
- Durch Nutztung von Infrarot könnte bereits während der Kalibration mit
- dem tracking begonnen werden.
+ zu erhalten.
+ Durch Nutztung von Infrarot könnte bereits während der Kalibrierung mit
+ dem Tracking begonnen werden.
 \end_layout
 
 \begin_layout Subsubsection
 Handdetektion
+\end_layout
+
+\begin_layout Standard
+TODO
 \end_layout
 
 \begin_layout Standard
