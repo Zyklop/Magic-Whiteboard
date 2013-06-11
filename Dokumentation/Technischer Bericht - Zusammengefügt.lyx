@@ -4762,8 +4762,28 @@ Die in dieser Arbeit verwendete Kamera hatte eine kleine Auflösung und einen
  störenden automatischen Weissabgleich.
  Durch Nutzung einer besseren Kamera könnte sowohl die Genauigkeit des Resultate
 s als auch die Stabilität des Inputs verbessert werden.
- Im Weiteren wäre es nützlich, wenn die Aufnahmeeigenschaften der Kamera
- per Software automatisch gesteuert werden könnten.
+ Es wäre damit möglich, die schon etwas ältere Wacom-Technologie
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+\begin_inset Flex URL
+status open
+
+\begin_layout Plain Layout
+
+http://www.wacom.com/en
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+ sowohl in Genauigkeit als auch in Reaktionszeit zu übertreffen.
+ 
 \end_layout
 
 \begin_layout Standard
@@ -4773,7 +4793,9 @@ Die Diversität der in handelsüblich verfügbaren Laptops integrierten Kameras
  Die vorliegenden Algorithmen funktionieren ohne Weiteres auch auf einem
  Infrarotbild - wahrscheinlich zuverlässiger.
  Zudem ist eine Infrarotkamera weniger anfällig auf Störeinflüsse.
- Die manuelle Konfiguration durch den Benutzer entfällt dann ebenfalls.
+ Im Weiteren wäre es nützlich, wenn die Aufnahmeeigenschaften einer eigenen
+ Kamera per Software automatisch gesteuert werden könnten.
+ 
 \end_layout
 
 \begin_layout Standard
@@ -4854,50 +4876,31 @@ Mit der Touch-Emulation unter Windows 8 unterstützt die in dieser Arbeit
  Somit könnten theoretisch mehrere Personen gleichzeitig einen PC bedienen.
  Das Nachbilden dieser Funktionalität unter anderen Betriebsystemen wäre
  zwar nicht trivial, aber aus Kompatibilitätsgründen wünschenswert.
+ Was ebenfalls in Richtung Touch noch interessant zu untersuchen wäre, ist
+ die Unterstützung für Multitouch.
+ Es wäre vermutlich mit vertretbarem Aufwand zu realisieren, dass mehrere
+ Stifte auf dem Kamerabild simultan erkennt werden können.
+ Die native Unterstützung für Multitouch fehlt jedoch den meisten Betriebsysteme
+n noch.
+ Dies würde die Umsetzung erschweren.
 \end_layout
 
-\begin_layout Subsection
-Pen Tracking
-\end_layout
-
-\begin_layout Standard
-Durch analysieren mehrerer Blobs und verfolgen dieser, könnte eine Multitouch-Fu
-nktionalität nachgebildet werden.
- Da mit einer besseren Kamera die Erkennung verbessert werden kann, wird
- das System noch fehlertoleranter, und Benutzeraktionen können noch besser
- detektiert werden.
- Die jetzt schon gute Reaktionszeit würde besser und es wäre möglich, eine
- kürzere Reaktionszeit als mit der schon etwas älteren Wacom-Technologie
-\begin_inset Foot
-status open
-
-\begin_layout Plain Layout
-\begin_inset Flex URL
-status open
-
-\begin_layout Plain Layout
-
-http://www.wacom.com/en
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
- zu erhalten.
- Durch Nutztung von Infrarot könnte bereits während der Kalibrierung mit
- dem Tracking begonnen werden.
-\end_layout
-
-\begin_layout Subsubsection
+\begin_layout Paragraph
 Handdetektion
 \end_layout
 
 \begin_layout Standard
-TODO
+In Richtung Touch geht auch die Vision, dass heutzutage moderne Systeme
+ per Handgesten zu bedienen seien.
+ In Anhang 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:touch-umsetzung"
+
+\end_inset
+
+ wird diskutiert, wie dies angegangen werden könnte.
+ Dabei wird vorallem auf die noch offenen Probleme eingegangen.
 \end_layout
 
 \begin_layout Standard
@@ -7268,6 +7271,13 @@ Benötigter Aufwand für baryzentrische Berechnung
 
 \begin_layout Subsection
 Versuche zur Umsetzung von Touch
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:touch-umsetzung"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
