@@ -1111,6 +1111,10 @@ Kalibrierung: Referenzpunkte
 \end_layout
 
 \begin_layout Standard
+Todo: umplatzieren
+\end_layout
+
+\begin_layout Standard
 Der Beginn der Kalibrierung bildet das Finden von Referenzpunkten.
  Diese Punkte bilden die Orientierung für darauf aufbauende Abbildungen.
  Je nach Güte der Abbildung sind mehr oder weniger gemessene Referenzpunkte
@@ -1460,7 +1464,7 @@ status open
 \begin_inset Caption
 
 \begin_layout Plain Layout
-Fehler bei nich winkeltreuen Abbildungen
+Fehler bei nicht winkeltreuen Abbildungen
 \end_layout
 
 \end_inset
@@ -1496,40 +1500,99 @@ Durch eine eigene erweiterung der baryzentrischen Koordinaten können wir
 \end_layout
 
 \begin_layout Standard
-TODO: Formel + Umkehrung mit Determinante...
+\begin_inset Float algorithm
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+Wir führen zu den bestehenden Gleichungen der Baryzentrischen Dreiekskoordinaten
+ noch eine vierte Gleichung hinzu.
+ Diese hat das Ziel, nahe Eckpunkte stärker zu gewichten.
+ 
 \end_layout
 
-\begin_layout Standard
-\begin_inset Formula 
-\begin{equation}
-result=reference.TopLeft*(1-x)*(1-y)+reference.BottomLeft*y*(1-x)+reference.TopRight*(1-y)*x+reference.BottomRight*x*y;
-\end{equation}
+\begin_layout Plain Layout
+TL := Obere linke Ecke, TR := obere rechte Ecke, BL := untere linke Ecke,
+ BR := untere rechte Ecke
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Formula $P_{X},P_{Y}$
+\end_inset
+
+ : zu bestimmender Punkt 
+\begin_inset Formula $T_{X},T_{Y}$
+\end_inset
+
+: Provisorisches Resultat
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Formula $T=TL*(1-P_{x})*(1-P_{Y})+BL*P_{Y}*(1-P_{X})+TR*(1-P_{Y})*P_{X}+BR*P_{X}*P_{Y}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+Dies ist jedoch erst ein Zwischenresultat, das eine Transformation vom Beamer
+ zum Kamerabild ermöglicht.
+ Um die Berechnung in Richtung Kamerabild → Beamer durchführen zu können,
+ müssen wir als weiteren Zwischenschritt die Determinante konstruieren:
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Formula $Det\begin{bmatrix}(1-X)*TL+X*TR-P & (1-X)*BL+X*BR-P\\
+(1-Y)*TL+Y*TR-P & (1-Y)*BL+Y*BR-P
+\end{bmatrix}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+Daraus resultieren zwei Gleichungen.
+ Diese können an den Nullstellen nach X und Y aufgelöst werden:
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Formula $Solve(Det\begin{bmatrix}(1-X)*TL+X*TR-P & (1-X)*BL+X*BR-P\\
+(1-Y)*TL+Y*TR-P & (1-Y)*BL+Y*BR-P
+\end{bmatrix}=0,\{x,y\})$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+Daraus erhält man Gleichungen, anhand derer man die Beamerkoordinaten aus
+ Kamerakoordinaten berechnen kann.
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Erweiterte baryzentrische Koordinaten
+\begin_inset CommandInset label
+LatexCommand label
+name "alg:Erweiterte-baryzentrische-Koordi"
 
 \end_inset
 
 
 \end_layout
 
-\begin_layout Standard
-\begin_inset Formula 
-\begin{equation}
-Solve[Det[{(1-x)*{LUx,LUy}+x*{RUx,RUy}-{px,py},(1-x)*{LLx,LLy}+x*{RLx,RLy}-{px,py}}]==0,x]
-\end{equation}
-
 \end_inset
 
 
 \end_layout
 
-\begin_layout Standard
-\begin_inset Formula 
-\begin{equation}
-Solve[Det[{(1-y){LUx,LUy}+y*{RUx,RUy}-{px,py},(1-y)*{LLx,LLy}+y*{RLx,RLy}-{px,py}}]==0,y]
-\end{equation}
-
 \end_inset
 
-
+ Diese Gleichungen funktionieren auch inder näheren Umgebung des Vierecks
+ noch.
 \end_layout
 
 \begin_layout Subsubsection
@@ -2190,12 +2253,16 @@ name "fig:messung-projektion-mit-bary"
 \end_layout
 
 \begin_layout Standard
-Die baryzentrische Vierecks-Korrektur bildet die gemessenen Eckpunkte der
- 
-\end_layout
+Die baryzentrische Vierecks-Korrektur gewichtet die Eckpunkte anhand der
+ Position.
+ Die genau Berechnung ist unter 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "alg:Erweiterte-baryzentrische-Koordi"
 
-\begin_layout Standard
-TODO: genauer beschreiben.
+\end_inset
+
+ beschrieben.
 \end_layout
 
 \begin_layout Paragraph
