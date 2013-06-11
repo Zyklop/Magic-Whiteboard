@@ -3018,6 +3018,19 @@ Domain
 \end_layout
 
 \begin_layout Standard
+Es wurde darauf geachtet, dass alle Komponenten der Software möglichst gut
+ austauschbar und erweiterbar sind.
+ So werden die zwei Interfaces IPictureProvider und IVisualizer benutzt
+ um eine beliebige Schnittstelle von aussen (Input) und nach aussen (Output)
+ zu implementieren.
+ Ein PictureProvider ist ein beliebiges Device, welches Bilder liefert.
+ Dies kann zum Beispiel eine Videokamera oder ein Dateisystemordner sein.
+ Ein Visualizer stellt Bilder dar.
+ Wo und wie diese Darstellung stattfindet ist für Parsing- und Kalibrierungsalgo
+rithmen nicht von Belang - auch nicht wo die Bilder herkommen.
+\end_layout
+
+\begin_layout Standard
 \begin_inset Float figure
 wide false
 sideways false
@@ -3025,7 +3038,7 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
-	filename Diagramme/Domain.emf
+	filename Diagramme/Software/PresWriterPackages.emf
 	lyxscale 20
 	width 100col%
 
@@ -3074,7 +3087,7 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
-	filename Diagramme/SSD.emf
+	filename Diagramme/Software/SSD.emf
 	lyxscale 30
 	width 100col%
 
@@ -3087,7 +3100,7 @@ status open
 \begin_inset Caption
 
 \begin_layout Plain Layout
-SSD
+Standardsequenz: Kalibrieren und Punkte auf Kamerabild finden
 \end_layout
 
 \end_inset
@@ -3109,7 +3122,7 @@ Textuelle Ablaufbeschreibung:
 \end_layout
 
 \begin_layout Standard
-Diese Beschreibung beschreibt den gleichen ABlauf, der auch im Sequenzdiagramm
+Diese Beschreibung beschreibt den gleichen Ablauf, der auch im Sequenzdiagramm
  beschreiben ist.
  Das Programm entspricht dem GUI, das vom Nutzer bedient wird.
 \end_layout
