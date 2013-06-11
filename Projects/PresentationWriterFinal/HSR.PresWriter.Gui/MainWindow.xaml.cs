@@ -179,5 +179,12 @@ namespace HSR.PresWriter.Gui
         }
 
         public event EventHandler<FrameReadyEventArgs> NewGridFrame;
+
+        private void ExitAll(object sender, RoutedEventArgs e)
+        {
+            if(_camera != null)
+                _camera.Dispose();
+            Application.Current.Shutdown();
+        }
     }
 }
