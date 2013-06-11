@@ -5,6 +5,7 @@ using HSR.PresWriter.Extensions;
 
 namespace HSR.PresWriter.PenTracking.Mappers
 {
+    // the code of in this class is partly copied from AForge HomogenTransformation
     public class VerticalHomogenTransformationPointMapper : AbstractPointMapper
     {
         private SortedDictionary<float, SortedDictionary<float, Point>> _mapping;
