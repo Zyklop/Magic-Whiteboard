@@ -1678,9 +1678,10 @@ Dies ist jedoch erst ein Zwischenresultat, das eine Transformation vom Beamer
 \end_layout
 
 \begin_layout Plain Layout
-\begin_inset Formula $Det\begin{bmatrix}(1-X)*TL+X*TR-P & (1-X)*BL+X*BR-P\\
+\begin_inset Formula $Det\left[\begin{array}{cc}
+(1-X)*TL+X*TR-P & (1-X)*BL+X*BR-P\\
 (1-Y)*TL+Y*TR-P & (1-Y)*BL+Y*BR-P
-\end{bmatrix}$
+\end{array}\right]$
 \end_inset
 
 
@@ -1692,9 +1693,10 @@ Daraus resultieren zwei Gleichungen.
 \end_layout
 
 \begin_layout Plain Layout
-\begin_inset Formula $Solve(Det\begin{bmatrix}(1-X)*TL+X*TR-P & (1-X)*BL+X*BR-P\\
+\begin_inset Formula $Solve\left(Det\left[\begin{array}{cc}
+(1-X)*TL+X*TR-P & (1-X)*BL+X*BR-P\\
 (1-Y)*TL+Y*TR-P & (1-Y)*BL+Y*BR-P
-\end{bmatrix}=0,\{x,y\})$
+\end{array}\right]=0,\{x,y\}\right)$
 \end_inset
 
 
@@ -4280,6 +4282,12 @@ Die Lichtverhältnisse spielen eine wichtige Rolle.
 en stören.
  Gerade in der Phase zwischen Kamerabalibrierung und Reduktion des automatischen
  Weissabgleichs gibt es momentan noch viele Fehlerkennungen.
+ Dieses Problem wurde reduziert indem die Grösse des für einen Stift gültigen
+ Blob eingeschränkt wurde.
+ Die verbleibenden Fehlerkennungen könnten über Heuristiken eliminiert werden.
+ So könnte gemessen werden, wie oft ein gefundener Stift in welcher Zeit
+ im Bild umherspringt.
+ Dafür existiert momentan noch keine Schranke.
 \end_layout
 
 \begin_layout Standard
@@ -4321,24 +4329,76 @@ Wahl des Stiftes
 \end_layout
 
 \begin_layout Standard
-Leuchtwerkzeug über optisches Licht für Proof Of Concept.
- Wahrscheinlich würde in einem Produkt Infrarot-Technologie eingesetzt.
+Die Software 
+\begin_inset Quotes gld
+\end_inset
+
+Presentation Writer
+\begin_inset Quotes grd
+\end_inset
+
+ ist schon imstande Laserpointer zu tracken.
+ Da dies jedoch nur mit sehr genauer Anpassung der Konfiguration an die
+ Helligkeitsbedingungen im Präsentationsraum geht, wurde schlussendlich
+ eine LED verwendet.
+ Es gibt noch diverse Alternativen, die stattdessen als Stift in Frage kämen.
+ Der vielversprechendste ist eine Infrarotlampe.
+ Sie könnte über einen 
+\begin_inset Formula $\frac{\lambda}{4}$
+\end_inset
+
+-Passfilter vor der normalen Kamera oder direkt über ein Infrarotkamera
+ getrackt werden.
+ Eine Option wäre auch ein Bandpassfilter für eine optische Laserfrequenz.
+ Dann könnten herkömmliche Laserpointer (mit der richtigen Farbfrequenz)
+ für die Präsentation verwendet werden.
+ Lediglich die Filterfolie müsste dann zur 
+\begin_inset Quotes gld
+\end_inset
+
+Presentation Writer
+\begin_inset Quotes grd
+\end_inset
+
+-Software mitgeliefert werden.
 \end_layout
 
-\begin_layout Itemize
-Glühbirne
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Bilder/PenTracking/Helium_neon_laser_spectrum.svg
+	lyxscale 15
+	width 70col%
+
+\end_inset
+
+
 \end_layout
 
-\begin_layout Itemize
-LED
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Spektrum eines Helium Neon Lasers.
 \end_layout
 
-\begin_layout Itemize
-Laser Pointer, Frequenzband
+\end_inset
+
+
 \end_layout
 
-\begin_layout Itemize
-Infrarot Lambsa 1/4 Pass-Filter
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsection
