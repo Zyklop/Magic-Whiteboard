@@ -990,6 +990,13 @@ reference "fig:diff-fail-pictures"
 
 \begin_layout Subsection
 Erkennen von Vierecken
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Erkennen-von-Vierecken"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -1024,11 +1031,26 @@ Bei einem Differnzbild werden auf zwei Bildern auf jedem Pixel die Differnz
 
 \begin_layout Paragraph
 Selbstimplementierte Eckdetektion mit Differenzbildern
+\begin_inset CommandInset label
+LatexCommand label
+name "par:Analyse-Eigenbau"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-Hierbei werden auf Dizzerenzbildern entlang von Scanlinien Eckpunkte gesucht
+Hierbei werden auf Differenzbildern entlang von Scanlinien Eckpunkte gesucht
  und so Rechtecke gefunden.
+ Der detailierte Ablauf dieses Verfahrens ist im Anhang im Kapitel: 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Anhang-Eigenbau"
+
+\end_inset
+
+ genau beschrieben.
  Dieses Verfahren kann auch auf Farbkanäle erweitert werden.
  Dieses Verfahren funktioniert relativ gut auf Billdern mit konstanter Belichtun
 gskorrektur und stark unterschiedlichen Helligkeitsverteilungen.
@@ -1192,7 +1214,7 @@ reference "fig:Farbmuster"
 \end_inset
 
  noch genauer beschrieben.
- Dises Verfahren hat keine gemeinsamkeiten mit dem Schachmuster für die
+ Dises Verfahren hat keine Gemeinsamkeiten mit dem Schachmuster für die
  Bildschirmdetektion.
 \end_layout
 
@@ -3060,9 +3082,44 @@ Sämtliche Interaktionen müssen über den Dispatcher geschehen.
  Andernfalls wird sofort eine Exception geworfen.
  Dadurch kann die Concurrency vom aufrufenden Code wieder Sequenziell abgearbeit
 et werden, wie es für ein GUI nötig ist.
- Eine Lösung zu entwickeln, die komplett Concurrency-Safe ist ziemlich aufwändig
- und zeitintensiv.
+ Diese Implementation ist zudem Abhängig vom Kontext, aus dem sie gestartet
+ wurde.
+ Hier sind drei Hauptfälle möglich, die beschrieben werden:
+\end_layout
+
+\begin_layout Enumerate
+Wenn die Hauptapplikation von WPF gestartet wird, ist bereits ein WPF-Applikatio
+nsobjekt vorhanden.
+ Gemäss Spezifikation darf in diesem Fall kein weiteres erstellt werden.
+ Dafür haben alle Threads im Thread-Pool schon das STA-Attribut gesetzt.
  
+\end_layout
+
+\begin_layout Enumerate
+Die Hauptapplikation wird von Win-Forms gestartet: Hierbei ist kein WPF-Applikat
+ionsobjekt vorhanden und muss zwingend erstellt werden, damit ein Fenster
+ angezeigt werden kann.
+ Ein Teil der Threads hat u.
+ U.
+ das STA-Attribut.
+ Für Threads aus anderen Thread-Pools müssen die Interaktionen in einen
+ Thread ausgelagert werden, bei dem dieses Attribut gesetzt ist.
+\end_layout
+
+\begin_layout Enumerate
+Starten aus einer Konsolenapplikation: Hier ist kein WPF-Applikationsobjekt
+ vorhanden und muss ebenfalls erstellt werden.
+ Da kein Thread das STA-Attribut gesetzt hat, müssen zwingend alle Interaktionen
+ in einem neuen Thread abgearbeitet werden, bei dem dieses Attribut gesetzt
+ ist.
+ Dies ist nötig, da zur Laufzeit keine Thread-Attribute geändert werden
+ können.
+\end_layout
+
+\begin_layout Standard
+Da bei gewissen Fällen viele zusätzliche Threads erstellt werden müssen
+ ist diese Lösung mit einem gewissen Overhead verbunden, der aus der reinen
+ Applikationssicht nicht nötig wäre.
 \end_layout
 
 \begin_layout Paragraph
@@ -3096,14 +3153,14 @@ Kalibrierung
 \end_layout
 
 \begin_layout Standard
+TODO: wihin damit? Hier sicher nicht.
+\end_layout
+
+\begin_layout Standard
 Die Grundüberlegung jedes Ansatzes der Kalibrierung ist derselbe: Im ersten
  Schritt werden die Ecken des Bildschirms gefunden, in den weiteren Schritten
  werden zusätzliche Daten gesammelt um die Interpolation zu verbessern.
  
-\end_layout
-
-\begin_layout Standard
-TODO: Übergang zu Erkenntnissen in der folgenden Liste:
 \end_layout
 
 \begin_layout Enumerate
@@ -3143,7 +3200,7 @@ Von gewissen Webcams wird das Bild gespiegelt zurückgegeben, von anderen
 \begin_layout Enumerate
 Bis die Bilder der Kamera dem entsprechen, was man erwarten würde, muss
  man ca.
- 100ms warten.
+ 500ms warten.
  Diese Dauer ist zudem vom gewählten Visualisierer abhängig.
 \begin_inset Newline newline
 \end_inset
@@ -4624,14 +4681,44 @@ Anhang
 Kalibrierung: Bilderkennung
 \end_layout
 
+\begin_layout Standard
+In diesem Kapitel werden die Ansätzte zur Bildererkennung, die unter 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Erkennen-von-Vierecken"
+
+\end_inset
+
+ evaluiert wurden, genauer beschrieben.
+ Die Beschreibungen entsprechen jeweils unseren Testimplementiereungen davon.
+ Diese sind im Sandbox-Projekt zu finden.
+ Dies sind aber alles Ansätze, die im finalen Prototypen nicht mehr vorhanden
+ sind und sind deshalb nicht fertig ausgearbeitet und nicht gut dokumentiert.
+\end_layout
+
 \begin_layout Subsubsection
 Selber programmierte Eckdetecktion mit Differenzbildern und zufällig verteilten
  Rechtecken.
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Anhang-Eigenbau"
+
+\end_inset
+
  
 \end_layout
 
 \begin_layout Standard
-Hierbei werden kein zusätzlichen Libraries verwendet.
+In diesem Unterkapitel wird der Ansatz beschrieben, der unter 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "par:Analyse-Eigenbau"
+
+\end_inset
+
+ evaluiert wurde.
+ Deshabl wird hier nicht mehr auf die Analyse eingegangen.
+ Bei diesem Ansatz werden keine zusätzlichen Libraries verwendet.
  Da die Bitmaps sehr inperformant sind verwenden wir zudem eine eigene Bitmapkla
 sse, welche die Bitmaps zu Bytearrays umwandelt.
  Damit können nur Metrizenberechnungen und Analysen durchgeführt werden.
@@ -4639,6 +4726,11 @@ sse, welche die Bitmaps zu Bytearrays umwandelt.
 
 \begin_layout Subparagraph
 Ablauf
+\end_layout
+
+\begin_layout Standard
+Der genaue Ablauf der Testimplementation wird im folgenden Schritt für Schritt
+ beschrieben.
 \end_layout
 
 \begin_layout Enumerate
