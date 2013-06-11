@@ -1019,6 +1019,13 @@ nden Eckpunkt relativ stark beiunflussen.
 
 \begin_layout Subsubsection
 Differenzbildansatz
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Analyse-Differenzbild"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -1065,6 +1072,13 @@ sses von Aufwand und Ertrag.
 
 \begin_layout Paragraph
 Einfacher Differenzbildansatz
+\begin_inset CommandInset label
+LatexCommand label
+name "par:Analyse-Einfacher-Differenzbildansatz"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -1077,10 +1091,25 @@ Bei diesen Verfahren wird ein universeller Differenzbild-Hintergrund verwendet.
  Dies kommt leider sehr häufig vor, wenn sich die Projektion ändert.
  Da dies genau unser Kalibrationsansatz ist, können wir leider auch diese
  Lösung nicht verwenden.
+ Der genaue Ablauf dieses Verfahrens ist unter 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Anhang-Einfacher-Differenzbild-Kalibrat"
+
+\end_inset
+
+ beschrieben.
 \end_layout
 
 \begin_layout Paragraph
 Individuelle Differenzbilder
+\begin_inset CommandInset label
+LatexCommand label
+name "par:Individuelle-Differenzbilder"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -1097,6 +1126,13 @@ en Bilder verdoppelt wird.
 
 \begin_layout Subsubsection
 Histogramm-Analyse
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Histogramm-Analyse"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -1104,8 +1140,9 @@ Hierbei werden keine Differenzbilder verwendet sondern mit den Aktuellen
  Kamerabildern gearbeitet.
  Darauf analysieren wir die Durchschnittlich Helligkeitsverteilung und die
  Standartabweichung.
- Alles was heller ist, akzeptieren wir.Dadurch müssen bei der Kalibration
- keine zusätzlichen Bilder angezeigt werden.
+ Alles was heller ist, akzeptieren wir.
+ Dadurch müssen bei der Kalibration keine zusätzlichen Bilder angezeigt
+ werden.
  Analysen haben jedoch gezeigt, dass der Helligkeitsunterschied zwischen
  verschiedenen Bildteilen (z.B: obere und untere Bildhälfte) viel grösser
  ist als der Projektionsrand.
@@ -1113,7 +1150,7 @@ Hierbei werden keine Differenzbilder verwendet sondern mit den Aktuellen
 \end_layout
 
 \begin_layout Paragraph
-Erweiterung: Histogramm-Analyse auf Bildausschnitten
+Optimierung: Histogramm-Analyse auf Bildausschnitten
 \end_layout
 
 \begin_layout Standard
@@ -1122,14 +1159,24 @@ nd das obige Verfahren angewandt.
  So können wir den Hauptnachteil des obigen Verfahrens eliminieren.
  Die Resultate sind relativ gut, mit dem Nachteil, dass wir keine klaren
  Kanten erhalten, wie dies bei Differenzbildern der Fall ist.
- EIne weitere Konsequenz sind uneinheitliche Übergänge an den Bildausschnitten,
+ Eine weitere Konsequenz sind uneinheitliche Übergänge an den Bildausschnitten,
  die jedoch für unsere Eckdetektion keine Rolle spielen.
+ Das Rauschen, das mit diesem Verfahren relativ stark ist, befindet sich
+ zum grösten Teil ausserhalb der Leinwand und kann so gut herausgefiltert
+ werden.
  Dieses Verfahren funktioniert ziemlich gut, aber die Einschränkung der
  ungenauen Kanten stört uns relativ stark, da wir von diesen abhängig sind.
 \end_layout
 
 \begin_layout Subsection
 Kalibrierung: Referenzpunkte
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Kalibrierung:-Referenzpunkte"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -2979,6 +3026,16 @@ SSD
 
 \end_layout
 
+\begin_layout Paragraph
+Textuelle Ablaufbeschreibung:
+\end_layout
+
+\begin_layout Standard
+Diese Beschreibung beschreibt den gleichen ABlauf, der auch im Sequenzdiagramm
+ beschreiben ist.
+ Das Programm entspricht dem GUI, das vom Nutzer bedient wird.
+\end_layout
+
 \begin_layout Enumerate
 Verbindung mit der Kamera 
 \end_layout
@@ -3014,14 +3071,14 @@ Die Kalibration kann nun automatisch oder nach einer Interaktion des Benutzers
 
 \begin_layout Enumerate
 Die Details über den Ablauf des Kalibrationsvorgang sind im Abschnitt Kalibratio
-n aufgeführt.
+n aufgeführt TODO: wo?, welches bei jedem Algorithmus Individuell abläuft.
  
 \end_layout
 
 \begin_layout Enumerate
 Kalibration wird erfolgreich abgeschlossen und das Pentracking gestartet.
  Die Details über den Ablauf des Trackings sind im Abschnitt Pen-Tracking
- aufgeführt.
+ aufgeführt TODO: wo?.
  
 \end_layout
 
@@ -3071,6 +3128,13 @@ Wenn ein GUI gestartet wird, öffnet es sich sofort.
 
 \begin_layout Subsubsection
 Umsetzungen
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Visualisier"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Paragraph
@@ -3407,6 +3471,12 @@ Erkennung des Bildschirms
 \end_inset
 
 
+\end_layout
+
+\begin_layout Enumerate
+Durch die Bedingung, dass alle Bildschirmecken mindestens 5 Pixel Abstand
+ zu jedem Rand haben müssen, können wir zudem sehr viele Fehlerkennungen
+ herausfiltern.
 \end_layout
 
 \begin_layout Subsection
@@ -4694,6 +4764,15 @@ reference "sub:Erkennen-von-Vierecken"
  Diese sind im Sandbox-Projekt zu finden.
  Dies sind aber alles Ansätze, die im finalen Prototypen nicht mehr vorhanden
  sind und sind deshalb nicht fertig ausgearbeitet und nicht gut dokumentiert.
+ Es wird davon ausgegangen, dass wir eine Möglichkeit haben, Rechtecke pixelgena
+u auf den Bildschirm zu zeichenen, was unter 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Visualisier"
+
+\end_inset
+
+ beschrieben ist.
 \end_layout
 
 \begin_layout Subsubsection
@@ -4740,7 +4819,24 @@ Der Bildschirm wird Schwarz gemacht.
 \end_layout
 
 \begin_layout Enumerate
-Der Bildschirm wird weiss gemacht und das Differenzbild gemacht.
+Der Bildschirm wird weiss gemacht und das Differenzbild
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+Beschreibung eines Differenzbildes: siehe 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Analyse-Differenzbild"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+ gemacht.
  Mit 4 Scanlinien werden von jeder Ecke ausgehend unter 45° ein Punkt gesucht,
  dessen Nachbarn in Richtung der gegenüberliegenden Ecke Liegen eine bestimmte
  Deckung besitzen.
@@ -4801,14 +4897,47 @@ Diese wird in den kommenden Lösungen immer eingesetzt.
  Die verschiedenen Kalibratoren die Im Code existieren sind keine 1 zu 1
  Umsetzungen der hier beschriebenen Ansätze, sondern Kombinationen davon.
  Der Code von verworfenen Umsetzungen wurde in anderen Umsetzungen teilweise
- Übernommen und aktualisiert.
- Diese Aktualisierungen wurden nicht Nachgepflegt aus dem Grund, dass ich
- diese Lösungen nicht als sinnvoll für ein Weiterverfolgen erachte.
- 
+ übernommen und aktualisiert.
+ Diese Aktualisierungen wurden nicht nachgepflegt aus dem Grund, dass diese
+ Lösungen nicht als sinnvoll für ein Weiterverfolgen erachtet wurden.
+\end_layout
+
+\begin_layout Paragraph
+Gesuchtes Muster
+\end_layout
+
+\begin_layout Standard
+Die folgenden Ansätze bilden ein mehrfarbiges Schachbrettmuster ab, das
+ nach Farbkanälen aufgeschlüsselt werden kann und somit anhand deren Ecken
+ der Rechtecke viele Referenzpunkte liefert.
 \end_layout
 
 \begin_layout Subsubsection
 Einfacher Differenzbild-Kalibrator
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Anhang-Einfacher-Differenzbild-Kalibrat"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Der Ablauf des unter 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "par:Analyse-Einfacher-Differenzbildansatz"
+
+\end_inset
+
+ analysierten Ansatzes.
+ In der Implementation wird AForge verwendet, jedoch kann dieser Ansatz
+ mit jedem Framework implementiert werden.
+\end_layout
+
+\begin_layout Paragraph
+Ablauf
 \end_layout
 
 \begin_layout Enumerate
@@ -4818,13 +4947,30 @@ Als erstes Bild wird der Bildschirm schwarz gefärbt.
 
 \begin_layout Enumerate
 Der Bildschirm wird komplett weiss gefärbt.
- Auf dem Differenzbild wird der grösste Blob gesucht.
+ Auf dem Differenzbild
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+Beschreibung eines Differenzbildes: siehe 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Analyse-Differenzbild"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+ wird der grösste Blob gesucht.
  Das sind dann die Ecken des Bildschirms.
  
 \end_layout
 
 \begin_layout Enumerate
-Es werden Grüne und blaue Quadrate jeweils versetzt auf den Bildschirm projizier
+Es werden grüne und blaue Quadrate jeweils versetzt auf den Bildschirm projizier
 t, die bei jedem Frame leicht verschoben werden um mehr Referenzpunkte zu
  bekommen.
  Die Erkennung des roten Farbkanals ist am schlechtesten, deshalb verwenden
@@ -4877,23 +5023,19 @@ Schachbrettmuster über zwei Farbkanäle
 
 \begin_layout Enumerate
 Diese werden auf dem Differenzbild gesucht.
- Deren Zuordnung wird in einem Folgenden Abschnitt auf Seite ??? behandelt.
- 
-\end_layout
+ Deren Zuordnung unter 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Kalibrierung:-Referenzpunkte"
 
-\begin_layout Standard
-Probleme: 
-\end_layout
+\end_inset
 
-\begin_layout Itemize
-Durch die Belichtungskorrektur der Kamera wird ein universeller Hintergrund
- für ein Differenzbild verunmöglicht.
- Es gibt zu viele Fehlerkennungen auf dem Bild.
+ evaluiert.
  
 \end_layout
 
 \begin_layout Subsubsection
-Histogramm-analyse 
+Histogramm-analyse
 \end_layout
 
 \begin_layout Standard
@@ -4902,17 +5044,14 @@ Hierbei werden keine Differenzbilder gebildet, sondern Helligkeitswerte
  (Projektionen) gefunden werden.
  Die restlichen Bildinformationen werden entfernt um eine Blob-Erkennung
  zu ermöglichen.
- 
-\end_layout
+ Dieser Algorithmus enthält bereits die im Analyseteil 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Histogramm-Analyse"
 
-\begin_layout Standard
-Durch unterschiedliche Lichtverhältnisse in Bildbereichen ist dieser Ansatz
- anfällig auf Störungen.
- Die Lösung für dieses Problem ist ein aufteilen des Bildes.
- Dabei wird das Bild in verschiedene Regionen aufgeteilt, wo die Helligkeitswert
-e weniger stark verteilt sind.
- Anschliesend werden die Flächen wieder zu einem Bild zusammengesetzt.
- 
+\end_inset
+
+ erwähnte Optimierung, da er andernfalls ziemlig unbrauchbar ist.
 \end_layout
 
 \begin_layout Paragraph
@@ -4921,40 +5060,17 @@ Ablauf
 
 \begin_layout Enumerate
 Es wird eine weisse Fläche projiziert.
- Das Bild wird in 2x2 Teile aufgeteilt und der grösste Blob gesucht.
+ Das Bild wird in 2x2 Teile aufgeteilt und nach dem zusammensetzten der
+ grösste Blob gesucht.
  Das führt zu den Eckepunkten.
  
 \end_layout
 
 \begin_layout Enumerate
 Es werden die grünen und blauen Quadrate aus dem Vorherigen Verfahren projiziert.
- Das Bild wird in 4 x 4 Teile aufgeteilt und der blaue oder grüne Farbkanal
- separat analysiert.
- In den zwei resultierenden Bildern werden Blobs erkannt und analysiert.
- 
-\end_layout
-
-\begin_layout Paragraph
-Erkenntnisse
-\end_layout
-
-\begin_layout Itemize
-Die Erkennung der Blobs klappt relativ gut, jedoch sind die Kanten relativ
- unscharf was für eine genaue Erkennung ein Nachteil ist.
- 
-\end_layout
-
-\begin_layout Itemize
-Die automatische Belichtungskorrektur ist kein Problem mehr.
- 
-\end_layout
-
-\begin_layout Itemize
-An den Kanten bei denen das Bild aufgeteilt wurde entstehen häufig Einschnitte
- oder sonstige Ungenauigkeiten.
- Diese sind keine grossen Probleme für den Blob-Detector, jedoch sind sie
- eine weitere Quelle für Ungenauigkeiten.
- Durch eine Filterung nach Grösse erhält man ein gutes Resultat.
+ Das Bild wird in 4 x 4, oder mehr Teile aufgeteilt und der blaue oder grüne
+ Farbkanal separat analysiert.
+ In den zwei zusammengesetzten Bildern werden Blobs erkannt und analysiert.
  
 \begin_inset Float figure
 wide false
@@ -4992,9 +5108,35 @@ Erkannte grüne Quadrate
 Erweitertes Differenzbild
 \end_layout
 
+\begin_layout Standard
+Dieses Verfahren projiziert pro gesuchtem Bild zwei Bilder, deren Differenz
+ das gesuchte Bild liefert und jeweils eine identische Helligkeitsverteilung
+ zueinander haben.
+ Die Analyse wurde unter 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "par:Individuelle-Differenzbilder"
+
+\end_inset
+
+ beschrieben.
+ Der unter 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Schachbrett-Differenz"
+
+\end_inset
+
+ beschriebene Ansatz ist ebenso eine Anwendung dieses Verfahrens.
+\end_layout
+
+\begin_layout Paragraph
+Ablauf
+\end_layout
+
 \begin_layout Enumerate
-Anschliessend werden jeweils zwei Bilder projiziert, deren Differenz genau
- das bekannte Blau-Grüne Muster ergibt.
+Es werden jeweils zwei Bilder projiziert, deren Differenz genau das bekannte
+ blau-grüne Muster ergibt.
  Bild So können die Recktecke auf dem Bild ganz scharf und klar erkannt
  werden und identifiziert werden.
  Durch das Bilden eines weiteren Differenzbildes mit den beiden erwünschten
@@ -5061,8 +5203,6 @@ name "fig:Farbmuster"
 Störungen wie sie hier in der oberen linken Ecke Vorhanden sind können entfernt
  werden, dadurch, dass sie nicht innerhalb der erkannten Bildschirmecken
  liegen.
- Die Grundkalibration ist durchch die Bedingung, dass alle Bildschirmecken
- mindestens 5 Pixel Abstand zu jedem Rand haben müssen.
 \end_layout
 
 \begin_layout Subsection
