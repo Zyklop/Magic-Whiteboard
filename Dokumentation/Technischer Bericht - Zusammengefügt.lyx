@@ -3196,47 +3196,44 @@ name "fig:standardsequenz"
 \end_layout
 
 \begin_layout Subsection
-Visualisierung 
+Visualisierung
 \end_layout
 
 \begin_layout Standard
-Ein erstes Problem bot sich uns, als wir versuchten, aus einer Library auf
- den Bildschirm zu zeichnen.
- Das wiederspricht eigentlich allen Architekturmodellen, jedoch ist es bei
- unserer Lösung nötig für die Kalibration.
+Für die Kalibrierung ist es notwendig, dass Messmuster auf den Bildschirm
+ gezeichnet und mit dem Beamer projiziert werden können.
+ In dieser Software wird dies über einen sogenannten Visualisierer realisiert.
+ Seine konkrete Implementation ist jeweils seht stark vom verwendeten Betriebsys
+tem und dessen Anzeigekonzept abhängig.
+ Es ist für die Portabilität sehr wichtig, dass die restliche Software unabhängi
+g von der Anzeigemethode ist.
+ Dies war zum Teil nicht ganz einfach umzusetzen.
+ So ist z.B.
+ nicht klar in welcher Umgebung die PenTracking-Library verwendet wird.
+ Dies betrifft das Thread-Scheduling und die daraus entstehenden Zeitabstände
+ für Kalibrierung und PenTracking.
+ Mechanismen wie das Sicherstellen, dass Referenzbilder für die Kalibrierung
+ auch wirklich von der Kamera abgefilmt wurden, sind in diesem Prototypen
+ zurückgestellt worden und müssten noch beschrieben werden.
+\end_layout
+
+\begin_layout Standard
+Ebenfalls für die Visualisierung wichtig ist, dass jeweils ein eigenes vom
+ restlichen Programm unabhängiges GUI gestartet werden muss.
+ Die Verwendung eines Visualisierers soll nicht an das Anzeigekonzept des
+ Hauptprogrammes gebunden sein.
+ So soll es möglich sein, in einer WPF Applikation einen WinForms-Visualisierer
+ einzusetzen und umgekehrt.
+ Dies führt aber zu Problemen, wie dass jedes GUI in einem eigenen Thread
+ mit ThreadSTA-Attribut laufen muss, oder dass der Garbage Collector den
+ zusätzlichen GUI Thread abräumt, obwohl er in Zukunkt noch vom Visualisierer
+ verwendet werden müsste.
  
 \end_layout
 
-\begin_layout Subsubsection
-Probleme
-\end_layout
-
-\begin_layout Itemize
-Wir wissen nicht, in welcher Umgebung (Anzahl Treads) unsere Library läuft.
- Gewisse Kameras erzeugen zudem verschiede Threads in denen die Frames übergeben
- werden.
- 
-\end_layout
-
-\begin_layout Itemize
-Jedes GUI muss in einem eigenen Thread laufen das ein spezielles ThreadSTA-Attri
-but hat.
- 
-\end_layout
-
-\begin_layout Itemize
-Der Garbage-Collector räumt den GUI-Thread ab, selbst wenn er in Zukunft
- noch verwendet werden müsste.
- 
-\end_layout
-
-\begin_layout Itemize
-Wenn ein GUI gestartet wird, öffnet es sich sofort.
- Das ist in unseren Fall nicht erwünscht.
- Ein Hide, das gerade nach dem Start aufgerufen wird, hat keine Wirkung.
- Es muss erst der komplette Start und die Darstellung des GUIs(ca.
- 10ms) abgewartet werden, bis es versteckt werden kann.
- 
+\begin_layout Standard
+Im Folgenden wird konkret auf die Vor- und Nachteile der Verwendung von
+ Windows Presentation Foundation (WPF) und WinForms eingegangen.
 \end_layout
 
 \begin_layout Subsubsection
@@ -3255,13 +3252,14 @@ WPF
 \end_layout
 
 \begin_layout Standard
-Sämtliche Interaktionen müssen über den Dispatcher geschehen.
+Sämtliche Interaktionen mit dem GUI müssen über einen Dispatcher geschehen.
  Andernfalls wird sofort eine Exception geworfen.
- Dadurch kann die Concurrency vom aufrufenden Code wieder Sequenziell abgearbeit
-et werden, wie es für ein GUI nötig ist.
- Diese Implementation ist zudem Abhängig vom Kontext, aus dem sie gestartet
- wurde.
- Hier sind drei Hauptfälle möglich, die beschrieben werden:
+ Dadurch ist es möglich, dass parallele Vorgänge im aufrufenden Code sequentiell
+ abgearbeitet werden.
+ Dies ist unerwünscht aber für GUI-Interaktionen nötig.
+ Das Verhalten des WPF-Visualisierers ist abhängig vom Kontext, aus welchem
+ er gestartet wurde.
+ Hierbei wurden folgende drei Hauptfälle abgedeckt:
 \end_layout
 
 \begin_layout Enumerate
@@ -3280,23 +3278,23 @@ ionsobjekt vorhanden und muss zwingend erstellt werden, damit ein Fenster
  U.
  das STA-Attribut.
  Für Threads aus anderen Thread-Pools müssen die Interaktionen in einen
- Thread ausgelagert werden, bei dem dieses Attribut gesetzt ist.
+ Thread ausgelagert werden bei welchem dieses Attribut gesetzt ist.
 \end_layout
 
 \begin_layout Enumerate
-Starten aus einer Konsolenapplikation: Hier ist kein WPF-Applikationsobjekt
- vorhanden und muss ebenfalls erstellt werden.
+Beim Starten aus einer Konsolenapplikation ist kein WPF-Applikationsobjekt
+ vorhanden und muss erstellt werden.
  Da kein Thread das STA-Attribut gesetzt hat, müssen zwingend alle Interaktionen
- in einem neuen Thread abgearbeitet werden, bei dem dieses Attribut gesetzt
+ in einem neuen Thread abgearbeitet werden bei welchem dieses Attribut gesetzt
  ist.
  Dies ist nötig, da zur Laufzeit keine Thread-Attribute geändert werden
  können.
 \end_layout
 
 \begin_layout Standard
-Da bei gewissen Fällen viele zusätzliche Threads erstellt werden müssen
- ist diese Lösung mit einem gewissen Overhead verbunden, der aus der reinen
- Applikationssicht nicht nötig wäre.
+Da so bei gewissen Fällen viele zusätzliche Threads erstellt werden müssen
+ ist Implementation eines WPF-Visualisierers mit einem gewissen Overhead
+ verbunden, der aus der reinen Applikationssicht nicht nötig wäre.
 \end_layout
 
 \begin_layout Paragraph
@@ -3304,10 +3302,13 @@ WinForms
 \end_layout
 
 \begin_layout Standard
-Mit dem AllowUnsafeThreadExecution Attribut kann die ganze Thread-security
- abgeschaltet werden.
- Dafür müssen alle Grafikelemente vor dem Bearbeiten gelockt werden und
- der aufrufende Code ist verantwortlich dafür, dass die Aufrufreihenfolge
+Mit dem 
+\shape italic
+AllowUnsafeThreadExecution
+\shape default
+ Attribut kann die ganze Thread-security abgeschaltet werden.
+ Dafür müssen alle Grafikelemente vor dem Bearbeiten gelockt werden.
+ Der aufrufende Code ist verantwortlich dafür, dass die Aufrufreihenfolge
  und der Ablauf stimmt.
  Durch Double-Buffering kann die Performance erhöht werden, wenn mehrere
  Objekte gezeichnet werden.
@@ -3638,41 +3639,23 @@ status open
 \begin_inset Graphics
 	filename Bilder/PenTracking/RedDot ohne Weissabgleich/laser-standalone.png
 	lyxscale 50
-	width 100col%
+	width 49.25col%
+	BoundingBox 200bp 100bp 450bp 300bp
+	clip
 
 \end_inset
 
 
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Caption
-
-\begin_layout Plain Layout
-Der Laserpointer ist gut sichtbar
-\end_layout
-
+\begin_inset space \enskip{}
 \end_inset
 
 
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset Float figure
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
 \begin_inset Graphics
 	filename Bilder/PenTracking/RedDot ohne Weissabgleich/laser-rauschen.png
 	lyxscale 50
-	width 100col%
+	width 49.25col%
+	BoundingBox 200bp 100bp 450bp 300bp
+	clip
 
 \end_inset
 
@@ -3683,7 +3666,23 @@ status open
 \begin_inset Caption
 
 \begin_layout Plain Layout
-Der Laserpointer ist im Rauschen kaum sichtbar
+1)
+\begin_inset space ~
+\end_inset
+
+Frame 
+\begin_inset Formula $x$
+\end_inset
+
+: Der Laserpoint ist gut sichbar, 2)
+\begin_inset space ~
+\end_inset
+
+Frame 
+\begin_inset Formula $x+c$
+\end_inset
+
+: Der Laserpointer ist kaum sichtbar
 \end_layout
 
 \end_inset
@@ -3716,41 +3715,23 @@ status open
 \begin_inset Graphics
 	filename Bilder/PenTracking/RedDot ohne Weissabgleich/laser-diff.png
 	lyxscale 50
-	width 100col%
+	width 49.25col%
+	BoundingBox 200bp 100bp 450bp 300bp
+	clip
 
 \end_inset
 
 
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Caption
-
-\begin_layout Plain Layout
-Differenzbild zweier Frames mit Laserpunkten
-\end_layout
-
+\begin_inset space \enskip{}
 \end_inset
 
 
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset Float figure
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
 \begin_inset Graphics
 	filename Bilder/PenTracking/RedDot ohne Weissabgleich/laser-diffgray.png
 	lyxscale 50
-	width 100col%
+	width 49.25col%
+	BoundingBox 200bp 100bp 450bp 300bp
+	clip
 
 \end_inset
 
@@ -3761,8 +3742,8 @@ status open
 \begin_inset Caption
 
 \begin_layout Plain Layout
-Nachdem die Rotanteile zu Graustufen übersetzt wurden, sieht man die gesuchten
- Laserpunkte besser.
+1) Differenzbild zweier Frames mit Laserpunkten 2) Nachdem die Rotanteile
+ zu Graustufen übersetzt wurden, sieht man die gesuchten Laserpunkte besser.
 \end_layout
 
 \end_inset
@@ -3782,10 +3763,13 @@ sideways false
 status open
 
 \begin_layout Plain Layout
+\align center
 \begin_inset Graphics
 	filename Bilder/PenTracking/RedDot ohne Weissabgleich/laser-diffthreshold.png
 	lyxscale 50
-	width 100col%
+	width 49.25col%
+	BoundingBox 200bp 100bp 450bp 300bp
+	clip
 
 \end_inset
 
@@ -3853,6 +3837,7 @@ sideways false
 status open
 
 \begin_layout Plain Layout
+\align center
 \begin_inset Graphics
 	filename Bilder/PenTracking/LightPoints/one-or-two-blobs/frame1.png
 
@@ -3894,6 +3879,7 @@ sideways false
 status open
 
 \begin_layout Plain Layout
+\align center
 \begin_inset Graphics
 	filename Bilder/PenTracking/LightPoints/one-blob/frame1.png
 
@@ -3948,6 +3934,7 @@ sideways false
 status open
 
 \begin_layout Plain Layout
+\align center
 \begin_inset Graphics
 	filename Bilder/PenTracking/LightPoints/two-blobs/frame1.png
 
@@ -4304,6 +4291,13 @@ Falls schon Punkte gefunden wurden, wird zuerst nur ein Bildausschnitt um
 tellt werden, dass der Kamerainput nicht verrauscht ist.
  Dann kann die Punkterkennung ohne Differenzbilder ablaufen und so Rechenleistun
 g sparen.
+\end_layout
+
+\begin_layout Standard
+Als weitere Laufzeitoptimierung wird immer nur ein neuer Thread für den
+ Bildverarbeitungsprozess gestartet, wenn kein anderer mehr läuft.
+ Dies reduziert zwar die Erkennungsrate auf langsameren Systemen, hat aber
+ den Vorteil, dass sich keine Frames aufstauen.
 \end_layout
 
 \begin_layout Subsubsection
