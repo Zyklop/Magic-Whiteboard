@@ -488,17 +488,20 @@ reference "fig:leinwand-verzerrungen"
 Die linke Abbildung zeigt den angenäherten Normalfall: Beamerbild und Laptopkame
 ra liegen auf zwei parallelen Ebenen.
  Es wird nur in X-Richtung verzerrt.
+ Das Bild ist weder Winkel- noch Flächentreu.
 \end_layout
 
 \begin_layout Itemize
 In der Mitte ist der Optimalfall dargestellt: Die Kamera sieht direkt von
  vorne auf das Beamerbild, d.h.
- die perspektivische Verzerrung ist minimal
+ die perspektivische Verzerrung ist minimal.
+ Das Bild ist Winkel- und Flächentreu.
 \end_layout
 
 \begin_layout Itemize
 Rechts ist das Bild in alle Richtungen verzerrt und stellt somit die grössten
  Anforderungen an die Kalibrierung.
+ Hierbei ist weder Winkeltreue noch Fläche gegeben.
 \end_layout
 
 \begin_layout Standard
@@ -3334,10 +3337,6 @@ name "sub:ablauf-kalibrierung"
 \end_layout
 
 \begin_layout Standard
-TODO: wihin damit? Hier sicher nicht.
-\end_layout
-
-\begin_layout Standard
 Die Grundüberlegung jedes Ansatzes der Kalibrierung ist derselbe: Im ersten
  Schritt werden die Ecken des Bildschirms gefunden, in den weiteren Schritten
  werden zusätzliche Daten gesammelt um die Interpolation zu verbessern.
@@ -3347,20 +3346,6 @@ Die Grundüberlegung jedes Ansatzes der Kalibrierung ist derselbe: Im ersten
 \begin_layout Enumerate
 Als erster Schritt ist es nötig, dass ein Frame einzulesen, um die Auflösung
  der Kamera zu erhalten.
- 
-\end_layout
-
-\begin_layout Enumerate
-Das erhaltene Bild ist weder Flächen- noch Winkeltreu.
- 
-\end_layout
-
-\begin_layout Enumerate
-Die Belichtungskorrektur der Kamera ist sehr gefährlich, um ein sinnvolles
- Differenzbild zu erhalten, muss darauf geachtet werden, dass auf beiden
- Bildern die gleiche Helligkeitsverteilung herrscht.
- Dies Verunmöglicht, ein universelles Bild zu speichern, mit dem man den
- Hintergrund entfernen könnte.
  
 \end_layout
 
@@ -3430,11 +3415,6 @@ Verzögerung der Darstellung
 \end_layout
 
 \begin_layout Enumerate
-Die Linse der Kamera kann für eine zusätzliche Verzerrung sorgen.
- 
-\end_layout
-
-\begin_layout Enumerate
 Berechnungen mit C# Bitmaps sind extrem inperformant.
  
 \end_layout
@@ -3456,7 +3436,7 @@ chen.
 \begin_layout Enumerate
 Wenn ein Teil der Anzeige durch ein anderes Fenster oder einem Objekt verdeckt
  wird, ist das unmöglich automatisch zu detektieren.
- Daher muss die Erkennung noch durch den Nutzer verifiziert werden.
+ Daher sollte die Erkennung noch durch den Nutzer verifiziert werden.
  
 \end_layout
 
