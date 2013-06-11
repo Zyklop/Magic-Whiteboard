@@ -3306,24 +3306,14 @@ Mit dem
 \shape italic
 AllowUnsafeThreadExecution
 \shape default
- Attribut kann die ganze Thread-security abgeschaltet werden.
+ Attribut kann die ganze Thread-Security abgeschaltet werden.
  Dafür müssen alle Grafikelemente vor dem Bearbeiten gelockt werden.
  Der aufrufende Code ist verantwortlich dafür, dass die Aufrufreihenfolge
  und der Ablauf stimmt.
  Durch Double-Buffering kann die Performance erhöht werden, wenn mehrere
  Objekte gezeichnet werden.
- Es ist uns klar, dass diese Umsetzung diverse Architekturprinzipien und
- Guidelines verletzt.
- 
-\end_layout
-
-\begin_layout Standard
-
-\series bold
-In einem finalen Release darf diese Umsetzung nicht verwendet werden.
-
-\series default
- 
+ Diese Art mit dem GUI zu interagieren widerspricht gängigen Architekturprinzipi
+en und sollte nicht in produktivem Code verwendet werden.
 \end_layout
 
 \begin_layout Subsection
@@ -3341,30 +3331,26 @@ name "sub:ablauf-kalibrierung"
 Die Grundüberlegung jedes Ansatzes der Kalibrierung ist derselbe: Im ersten
  Schritt werden die Ecken des Bildschirms gefunden, in den weiteren Schritten
  werden zusätzliche Daten gesammelt um die Interpolation zu verbessern.
- 
+ Im Folgenden wi
 \end_layout
 
-\begin_layout Enumerate
-Als erster Schritt ist es nötig, dass ein Frame einzulesen, um die Auflösung
- der Kamera zu erhalten.
- 
+\begin_layout Itemize
+Als erster Schritt ist es nötig ein Frame von der Kamera zu bekommen, um
+ die Auflösung der Kamera auszulesen.
 \end_layout
 
-\begin_layout Enumerate
-Die Belichtungskorrektur benötigt ca.
- 1-2 Frames, bis sie reagiert.
- Aus Performance-Gründen lässt sich das leider nicht zu unserem Vorteil
- nutzen.
- 
+\begin_layout Itemize
+Die automatische Belichtungskorrektur der hier verwendeten Kamera benötigt
+ ca.
+ 1-2 Frames bis das Bild angeglichen ist.
 \end_layout
 
-\begin_layout Enumerate
+\begin_layout Itemize
 Von gewissen Webcams wird das Bild gespiegelt zurückgegeben, von anderen
  nicht.
- 
 \end_layout
 
-\begin_layout Enumerate
+\begin_layout Itemize
 Bis die Bilder der Kamera dem entsprechen, was man erwarten würde, muss
  man ca.
  500ms warten.
@@ -3415,48 +3401,38 @@ Verzögerung der Darstellung
 
 \end_layout
 
-\begin_layout Enumerate
+\begin_layout Itemize
 Berechnungen mit C# Bitmaps sind extrem inperformant.
- 
 \end_layout
 
-\begin_layout Enumerate
+\begin_layout Itemize
 Eine sequentielle Bearbeitung der Daten führt dazu, dass man mit veralteten
  (und somit falschen) Daten arbeitet.
- 
 \end_layout
 
-\begin_layout Enumerate
+\begin_layout Itemize
 Eine parallele Bearbeitung der führt meistens zum unkontrollierten Spawnen
  von Tasks, die das System verlangsamen und schliesslich ein Ablaufen verunmögli
 chen.
  Falls das Auftritt, hat man ebenfalls Probleme mit alten Daten.
- 
 \end_layout
 
-\begin_layout Enumerate
+\begin_layout Itemize
 Wenn ein Teil der Anzeige durch ein anderes Fenster oder einem Objekt verdeckt
  wird, ist das unmöglich automatisch zu detektieren.
  Daher sollte die Erkennung noch durch den Nutzer verifiziert werden.
- 
-\end_layout
-
-\begin_layout Paragraph
-Allgemeine Massnahmen
 \end_layout
 
 \begin_layout Itemize
 Der Ablauf wird von einer Semaphore geschützt.
  Wenn kein Lock akquiriert werden kann, wird das ankommende Bild verworfen
  und nicht behandelt.
- 
 \end_layout
 
 \begin_layout Itemize
 Nach jedem Zeichnen wird 100 ms gewartet bevor die Semaphore freigegeben
  wird, damit sichergegangen werden kann, dass das erwartete Bild von der
  Kamera ankommt.
- 
 \end_layout
 
 \begin_layout Subsubsection
