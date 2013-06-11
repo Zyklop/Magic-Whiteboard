@@ -4796,6 +4796,8 @@ Die Diversität der in handelsüblich verfügbaren Laptops integrierten Kameras
  Eine Infrarotkamera (mit Infrarot-Stift) wäre dafür von Vorteil.
  Die vorliegenden Algorithmen funktionieren ohne Weiteres auch auf einem
  Infrarotbild - wahrscheinlich zuverlässiger.
+ Zudem ist eine Innfrarotkamera weniger anfällig auf Störeinflüsse und die
+ manuelle konfiguration durch den Benutzer entfällt ebenfalls.
 \end_layout
 
 \begin_layout Subsection
@@ -4803,55 +4805,38 @@ Kalibrierung
 \end_layout
 
 \begin_layout Standard
-Hier gibt es zwei Ansätzte, die weiterverfolgt werden können um mehr Referenzpun
-kte zu erhalten.
+Hier gibt es zwei Ansätze, die weiterverfolgt werden können um mehr Referenzpunk
+te zu erhalten.
  Diese kann man nutzen um allfälliger Korrekturfaktoren einzuführen und
- die Genuigkeit zu verbessern.
+ die sehr gute Genuigkeit weiter zu verbessern.
+ Mit einer Kamera, welche gut kalibriert werden kann, oder einer Infrarotkamera
+ mit Farbkanälen für sichtbares Licht, kann man die Kalibration während
+ dem Betrieb laufend überwachen und so ein verrücken der Kamera detektieren
+ und eine Nachkalibration starten oder Korrekturfaktoren In-Time anpassen.
+ Weiter kann nachgeprüft werden, ob die Position des Pens der erwarteten
+ Position entspricht.
+ Dafür sind nur geringfügige Anpassungen an unsem Code nötig, jedoch wird
+ die Nutzerfreundlichkeit verbessert und die Kalibrationszeit verkürzt.
 \end_layout
 
 \begin_layout Standard
 Ein anderer Ansatz wäre, dass man die Kalibration nicht mehr automatisch
- durchführt, sondern durch den Nutzer machen lässt.
+ durchführt, sondern durch den Benutzer machen lässt.
  Das ist aufwändiger für diesen, andernseits kann man so noch Störfaktoren
  korrigieren, die vom Stift und dem Winkel, mit dem dieser gehalten wird,
- korrigiert werden.
+ entstehen.
+ Dieser Schritt erübrigt umstellungen an der Kamera.
 \end_layout
 
 \begin_layout Paragraph
-Kamera mit Infrarot-Kanal
+Pen
 \end_layout
 
 \begin_layout Standard
-Bei der Nutzung von Infrarotbildern eröffnen sich stark erweiterte Möglichkeiten
-:
-\end_layout
-
-\begin_layout Itemize
-Überprüfen, ob die Kalibration immer noch stimmt, während dem laufenden
- Betrieb
-\end_layout
-
-\begin_layout Itemize
-In-Time anpassen der Korrekturfaktoren
-\end_layout
-
-\begin_layout Itemize
-Verifizieren, ob sich der Pen dort befindet, wo er erwartet wird und allenfalls
- korrigieren.
-\end_layout
-
-\begin_layout Itemize
-Nachkalibration auslösen, wenn die Webcam oder der Beamer bewegt wird.
-\end_layout
-
-\begin_layout Standard
-Das kann sehr viel Verbesserungen bringen, erübrigt eine Kalibration der
- Kamera und verkürzt die Kalibrationszeit.
- Dies wird zusätzlichen Aufwand bedeuten, jedoch sollte sich das eigentlich
- gut in unsere Ansätze integrieren lassen.
- Durch diese Anpassung wird die Nutzerfreundlichkeit sehr stark verbessert.
- Dieser Schritt ist nötig, um dieses Produkt verschiedenen Kundensegmenten
- anzubieten, da eis die Benutzung ungemein vereinfacht.
+Mit einer besseren Lichtquelle im Pen, die in alle Richtungen die identische
+ Lichtmenge abgiebt, ist es nicht mehr von Belang, wie der Benutzter den
+ Stift hält.
+ Dies erleichtert neuen Benutzern die Bedienung.
 \end_layout
 
 \begin_layout Subsection
@@ -4863,9 +4848,10 @@ Wenn weiterhin der ganze PC damit bedient werden soll, ist die injection
  in den Maustreiber die einzige gangbare Möglichkeit.
  Dabei sollte aber darauf geachtet werden, dass relative Mausbewegungen
  gesendet werden, da es sonst mit gewissen Programmen, die Mausinputs auf
- einem sehr tiefen Level verarbeiten, zu komplikationen kommen wird.
+ einem sehr tiefen Level verarbeiten, zu Komplikationen kommen wird.
  Dies erfordert jedoch die Möglichkeit, die am PC eingestellte Mausbeschleunigun
-g auslesen zu können und Positionen verifizieren zu können.
+g auslesen zu können und Positionen verifizieren zu können, was nur mit
+ geringem Aufwand erreicht werden kann.
 \end_layout
 
 \begin_layout Paragraph
@@ -4875,27 +4861,53 @@ Touch
 \begin_layout Standard
 Mit der Touch-Emulation unter Windows 8 unterstützen wir schon alle implementier
 ten Touch-Gesten.
- In kombination mit einem Pentracker, der mehrer Pens detektieren kann,
+ In Kombination mit einem Pentracker, der mehrere Pens detektieren kann,
  wären auch Multitouch-Gesten möglich.
-\end_layout
-
-\begin_layout Standard
-Diese Funktionalität sollte jedoch unter anderen Betriebssystemen nachgebildet
+ Somit könnten theoretisch mehrere Personen gleichzeitig den PC bedienen.
+ Diese Funktionalität sollte jedoch unter anderen Betriebssystemen nachgebildet
  werden, damit man zumindest eine ähnliche Funktionalität unter älteren
  Systemen gewährleistet werden kann.
+ Diese Kompatibilität ist aber sicher mit einem grösseren Aufwand verbunden.
 \end_layout
 
-\begin_layout Paragraph
-API
+\begin_layout Subsection
+Pen-Tracking
 \end_layout
 
 \begin_layout Standard
-Eine weitere Möglichkeit ist, eine API bereitzuistellen, die von anderen
- Softwareherstellern verwendet werden kann, und so unser Produkt in ihre
- Software einbinden können.
- Das kann auch zusätzlich zur Mausemulation gemacht werden.
- Dies wird zwar für unsere Software nicht unbedingt benötigt und ich erachte
- diesen Schritt im Moment als unnötig.
+Durch analysieren mehrerer Blobs und verfolgen dieser, könnte eine Multitouch-Fu
+nktionalität nachgebildet werden.
+ Da mit einer besseren Kamera die Erkennung verbessert werden kann, wird
+ das System noch Fehlertoleranter, und Useraktionen können noch besser detektier
+t werden und die bereits kleine Verzögerung könnte noch verbessert werden.
+ Damit ist es möglich, eine kürzere Reaktionszeit als mit der bewährten
+ Wacom
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+\begin_inset Flex URL
+status open
+
+\begin_layout Plain Layout
+
+http://www.wacom.com/en
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+-Technologie zu erhalten.
+ Durch Nutztung von Infrarot könnte bereits während der Kalibration mit
+ dem tracking begonnen werden.
+\end_layout
+
+\begin_layout Subsubsection
+Handdetektion
 \end_layout
 
 \begin_layout Standard
