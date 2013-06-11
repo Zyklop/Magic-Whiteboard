@@ -1270,12 +1270,19 @@ Rekursives traversieren von Vierecken
 \end_layout
 
 \begin_layout Standard
-Auf einem mehrfarbigen Schachbrettmuster werden Quadrate erkannt mit einem
- weiter unten genannten Verfahren.
+Auf einem mehrfarbigen Schachbrettmuster werden Quadrate erkannt.
  Danach können alle Quadrate rekursiv iteriert werden.
  Die Itaration erhält die Struktur eines Baumes.
  Das Verfahren ist in der Theorie sehr stabil und und kann sehr weit angepasst
  werden.
+ Der genaue Ablauf dieses Verfahrens ist im Anhang 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Anhang-Rekursiv"
+
+\end_inset
+
+ beschrieben.
  Bei fehlenden Erkennungen kann der Algortihmus sogar um eine Lücke herumgehen.
  Bei Versuchen haben wir jedoch gesehen,dass dieses Verfahren sehr Fehleranfälli
 g ist.
@@ -1294,9 +1301,26 @@ Nutzung der Interpolation
 \begin_layout Standard
 Hierbei werden die Rechtecke anhand einer Interpolation zu den Eckpunkten
  zugeordnet.
- Dieses Verfahren ist sehr einfach und es können Fehler mit einer Abweichung
- einer halben Seitenlänge eines Rechteks korrigiert werden und zusätzlich
- eine ganze Seitenlänge detektiert werden.
+ Dieses Verfahren ist sehr einfach
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+Detailierte Beschreibung im Anhang unter 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Anhang-Nutzung-der-Interpolation"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+ und es können Fehler mit einer Abweichung einer halben Seitenlänge eines
+ Rechteks korrigiert werden und zusätzlich eine ganze Seitenlänge detektiert
+ werden.
  Zudem ist dieser Algorithmus sehr performant.
  Er ist allerdings auch auch von einem guten Interpolationsverfahren abhängig,
  was wiederum Referenzpunkte erübrigt.
@@ -1314,6 +1338,14 @@ K-Means Clustering
 Hiermit werden auf dem Bildschirm immer feiner aufgeteilte Cluster erstellt.
  Dieses Verfahren bietet gute Möglichkeiten zur Fehlerdetektion und liefert
  gute Ergebnisse.
+ Bilder und eine detailierte Beschreibung ist im Anhang 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Anhang-K-Means-Cluster"
+
+\end_inset
+
+.
  Mit der Fehlerdetektion kann man alle üblichen Fehlerkennungen ausschliessen.
  Allerdings ist es ziemlich intolerant gegenüber Fehlerkennungen und stellt
  ziemlich hohe anforderungen an das Kamerabild.
@@ -1349,6 +1381,13 @@ es einen ganzen Dreidimensionalen Raum zu rekonstruieren.
 
 \begin_layout Subsection
 Kalibrierung: Abbildung & Interpolation
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Analyse-Mapping"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -1389,6 +1428,14 @@ Der lineare Ansatz berücksichtigt weder perspektivische Verzerrung noch
  Da dieses Verfahren nur in eine Richtung funktioniert, müssen einmalig
  alle möglichen Werte Berechnet werden, dafür sind nacher keine Berechnungen
  mehr nötig, ein einfacher Lookup reicht dafür.
+ Die komplette Formel finden sie im Anhang 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Anhang-Lineare-Interpolation"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Standard
@@ -1495,8 +1542,27 @@ Baryzentrische Koordinaten
 \end_layout
 
 \begin_layout Standard
-Hierbei werden die Baryzentrischen Koordinaten aus verschiedenen Dreiecken
- berechnet, zurückgerechnet und anschliessend alle Resultate gemittelt.
+Hierbei werden die Baryzentrischen Koordinaten
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+Baryzentrische Koordinaten sind unter 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Anhang-Baryzentrische-Koordinaten"
+
+\end_inset
+
+ kurz erklärt.
+ Ausführliche Literatur zu diesem Thema findet man im Internet oder in einer
+ mathematischen Bibliothek
+\end_layout
+
+\end_inset
+
+ aus verschiedenen Dreiecken berechnet, zurückgerechnet und anschliessend
+ alle Resultate gemittelt.
  Dadurch erhält man eine Genauigkeit, die proportional zur Anzahl Refernzpunkte
  steigt.
  Zuden ist der Algorithmus relativ einfach verständlich und gut testbar.
@@ -5212,15 +5278,13 @@ Kalibrierung: Zuordnung von Punkten
 \begin_layout Standard
 Vom AForge BlobCounter erhalten wir genau alle Blobs die auf dem Kamerabild
  gefunden wurden.
- 
-\end_layout
-
-\begin_layout Standard
-Diese Daten beinhalten: Schwerpunkt, Umfassungsrechteck, Fläche, Breite,
+ Diese Daten beinhalten: Schwerpunkt, Umfassungsrechteck, Fläche, Breite,
  Höhe.
+ Diese Detektion könnte aber auch mit einem belibigen anderen Framework
+ durchgeführt werden, das uns diese Daten liefert.
  Eine Zuordnung zu machen, welcher Blob zu welchen pojizietem Quadrat gehört.
  Durch eine Filterung mit einer vordefinierten minimalen und maximalen Höhe/Brei
-te können wir die Blobs filtern und rauschen entfernen.
+te können wir die Blobs filtern und Rauschen entfernen.
  Da wir die Ecken des Bildschirms mit Sicherheit kennen, können wir anhand
  des konstruierten Vierecks bestimmen ob ein Blob innerhalb der Projektion
  liegt und andernfalls entfernen.
@@ -5241,18 +5305,34 @@ Mögliche Ansätze
 \end_layout
 
 \begin_layout Subsubsection
-Rekursiv: 
+Rekursiv
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Anhang-Rekursiv"
+
+\end_inset
+
+ 
 \end_layout
 
 \begin_layout Standard
 Hierbei nehmen wir an, dass die Nachbarn eines Blobs eindeutig bestimmt
  werden können.
- Dies ist möglich anhand der Distanz.
+ Dies ist möglich Anhand der Distanz bereitet aber Probleme, wenn gewisse
+ Blobs fehlen, da sie nicht erkannt wurden.
+ Folglich wird dann ein anderer Blob als Nachbar detektiert, der eignetlich
+ keiner ist.
  
 \end_layout
 
 \begin_layout Paragraph
 Ablauf
+\end_layout
+
+\begin_layout Standard
+Hier wird der Grundalgorithmus beschrieben.
+ Im Analyseteil wird noch auf die Verbesserungen eingegangen, die weiter
+ unten erwähnt sind.
 \end_layout
 
 \begin_layout Enumerate
@@ -5318,42 +5398,6 @@ Vorgehen Rekursion
 \end_layout
 
 \begin_layout Paragraph
-Erkenntnisse
-\end_layout
-
-\begin_layout Itemize
-Dieser Algorithmus funktioniert perfekt unter synthetischen Umständen, d.h.
- mit generierten Bildern.
- 
-\end_layout
-
-\begin_layout Itemize
-Aufgrund des iterativen Vorgehens sollte dieser Algorithmus in der Lage
- sein, um Bereiche, in denen keine Blobs gefunden wurden, herumzugehen.
- 
-\end_layout
-
-\begin_layout Itemize
-Wenn ein Quadrat nicht erkannt wurde, wird meist die Diagonale als nächster
- Nachbar gefunden, das für die folgende Erkennung schwerwiegende Folgen
- hat.
- 
-\end_layout
-
-\begin_layout Itemize
-Häufig werden nicht alle Blobs erreicht.
- Somit werden nicht alle Blobs zugeordnet und Informationen verloren.
- 
-\end_layout
-
-\begin_layout Itemize
-Falsch zugeordnete Blobs können unmöglich identifiziert werden.
- Eine solche hat jedoch für die nachfolgende Interpolation schwerwiegende
- Folgen indem sie in einem Bildbereich das mapping komplett zerstört.
- 
-\end_layout
-
-\begin_layout Paragraph
 Verbesserungen
 \end_layout
 
@@ -5395,38 +5439,28 @@ Es werden nicht mehr die nächsten Nachbarn gesucht, sondern es wird analysiert,
  
 \end_layout
 
-\begin_layout Paragraph
-Weitere Erkenntnisse
-\end_layout
-
-\begin_layout Itemize
-Die Ergebnisse sind nur wenig besser geworden und genügen den Anforderungen
- noch nicht.
- 
-\end_layout
-
-\begin_layout Itemize
-Die Fehlerkennungen sind auf folgenden Bildern ähnlich, somit bringt die
- Verifikation praktisch nichts.
- 
-\end_layout
-
-\begin_layout Itemize
-Das Debugging, das schon vorher aufwendig und mühsam zurückzuverfolgen war,
- ist jetzt praktisch unmöglich.
- Man kann nicht mehr herausfinden woher gewisse Werte kommen oder den Ablauf
- rekonstruieren.
- 
-\end_layout
-
 \begin_layout Subsubsection
-Nutzung der Interpolation 
+Nutzung der Interpolation
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Anhang-Nutzung-der-Interpolation"
+
+\end_inset
+
+ 
 \end_layout
 
 \begin_layout Standard
 Hierbei wird ausgenutzt, dass man anhand der Interpolation mit den Eckpunkten
  die Bildschirmkoordinaten ungefähr voraussagen kann.
- Es gibt dazu mehrere Möglichkeiten, die im Abschnitt ??? beschrieben werden.
+ Es gibt dazu mehrere Möglichkeiten, die im Abschnitt 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Analyse-Mapping"
+
+\end_inset
+
+evaluiert wurden.
  
 \end_layout
 
@@ -5447,63 +5481,30 @@ n.
  
 \end_layout
 
-\begin_layout Paragraph
-Erkenntnisse
-\end_layout
-
-\begin_layout Itemize
-Mit dieser Methode können Abweichungen von +- einem Quadrat erkannt werden.
- 
-\end_layout
-
-\begin_layout Itemize
-Es gibt praktisch keine Fehlerkennungen.
- 
-\end_layout
-
-\begin_layout Itemize
-Durch vergrössern der Quadrate kann die Erkennung verbessert werden.
- 
-\end_layout
-
-\begin_layout Itemize
-Dieses Verfahren ist viel performanter als andere.
- 
-\end_layout
-
-\begin_layout Itemize
-Dieses Verfahren ist von einer guten Interpolation abhängig.
- 
-\end_layout
-
-\begin_layout Itemize
-Wenn dieses jedoch gut ist, erübrigen sich weitere Kalibrationsschritte.
- 
-\end_layout
-
-\begin_layout Itemize
-Mit einem linearen Ansatz werden nur ein kleiner Teil der Blobs korrekt
- erkannt, die meisten bleiben ungültig.
-\end_layout
-
-\begin_layout Itemize
-Durch Vergrösserung der Quadrate wird die Menge der nutzbaren Daten ebenfalls
- verkleinert.
-\end_layout
-
-\begin_layout Itemize
-Vereinzelt kommt es mit dem linearen Ansatz zu Fehlerkennungen, die als
- gültig erkannt werden.
- Dies resultiert in schwerwiegenden Fehlern bei kommenden Schritten und
- kann nicht detektiert werden.
-\end_layout
-
 \begin_layout Subsubsection
-K-Means Cluster-zuordnung mit steigender Genauigkeit
+K-Means Cluster-Zuordnung mit steigender Genauigkeit
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Anhang-K-Means-Cluster"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Hier wird kein mehrfarbiges Schachbrettmuster projiziert, sondern nur diejenigen
+ Rechtecke, welche im aktuellen Schritt für die Analyse benötigt werden.
 \end_layout
 
 \begin_layout Paragraph
 Ablauf
+\end_layout
+
+\begin_layout Standard
+Dieses Verfahren ist ein mehrstufiges Verfahren, das abhängig von der Erkennung
+ des letzten Schrittes ist.
+ Dies führt zu einer geringeren Fehlertoleranz.
 \end_layout
 
 \begin_layout Enumerate
@@ -5525,6 +5526,11 @@ Die erkannten Punkte werden mit K-Means zu den erwarteten Werten zugeordnet.
 Aus dem Ergebnis resultieren weitere Rechtecke, auf denen das Verfahren
  wieder angewandt werden kann.
  
+\end_layout
+
+\begin_layout Standard
+In der folgenden Abbildung sind die zwei ersten Schritte abgebildet, danach
+ wird das Verfahren auf die erkannten Teilausschnitte wieder angewandt.
 \end_layout
 
 \begin_layout Standard
@@ -5565,110 +5571,6 @@ Ablauf K-Means
 
 \end_layout
 
-\begin_layout Paragraph
-Erkenntnisse 
-\end_layout
-
-\begin_layout Itemize
-Es ist schwierig die Punkte an den Rändern zu visualisieren und zu erkennen.
- Der Grund dafür liegt darin, dass man nicht über die Kanten des Beamers
- hinaus projizieren kann.
- Die Lösung dafür haben wir erreicht durch Analyse der Kanten der Blobs
- an den Rändern.
- 
-\end_layout
-
-\begin_layout Itemize
-Ein fehlender Punkt könnte aus den anderen interpoliert werden.
- 
-\end_layout
-
-\begin_layout Itemize
-Die Blobs müssen relativ klein projiziert werden, dass die folgenden Schritte
- funktionieren.
- Das erfordert eine genauere Erkennung.
- 
-\end_layout
-
-\begin_layout Itemize
-Fehlerkennungen führen dazu, dass die weiteren Schritte fehlschlagen werden.
- Das ermöglicht eine gute Fehlererkennung.
- 
-\end_layout
-
-\begin_layout Itemize
-Es gibt praktisch keine Fehlerkennungen.
- Stattdessen wird die Erkennung komplett fehlschlagen, auf was besser reagiert
- werden kann.
- 
-\end_layout
-
-\begin_layout Subsubsection
-Open CV Kamerakalibration
-\end_layout
-
-\begin_layout Standard
-Das OpenCV Framework bietet die Möglichkeit, Webcambilder zu analysieren
- und Schachbrettmuster zu erkennen.
- Anhand von denen wird zu jedem erkannten Muster eine Transformationsmatrix
- erstellt.
- Mit mehreren Erkennungen kann so ein Teil des Bildraums dreidimensional
- erkannt werden.
- 
-\end_layout
-
-\begin_layout Paragraph
-Anwendung
-\end_layout
-
-\begin_layout Itemize
-Anhand der verschiedenen erkannten Ebenen lassen sich 3d Transformationen
- durchzuführen.
- 
-\end_layout
-
-\begin_layout Itemize
-Die Erkennung klappt nur selten, das ist aber nicht störend, da auch dann
- noch genügend Ebenen vorhanden sind.
- 
-\end_layout
-
-\begin_layout Itemize
-Die Erkennung lässt sich anhand der Parameter nur wenig beeinflussen.
- 
-\end_layout
-
-\begin_layout Paragraph
-Erkenntnisse
-\end_layout
-
-\begin_layout Itemize
-Die Erkennung hat in meinem Fall nie gekappt.
- 
-\end_layout
-
-\begin_layout Itemize
-Wir brauchen keine 3d Rekonstruktion, nur eine Ebene.
- Dabei nützt uns dieser Algorithmus nur wenig.
- 
-\end_layout
-
-\begin_layout Itemize
-Das Framework ist sehr schlecht dokumentiert.
- 
-\end_layout
-
-\begin_layout Itemize
-Ein umschreiben des Codes auf unsere Anwendung ist viel zu aufwändig aufgrund
- der Komplexität.
- 
-\end_layout
-
-\begin_layout Itemize
-Es gibt abgesehen von offiziellen Codesample praktisch keine Einsatzmöglickeiten.
- 
-\end_layout
-
 \begin_layout Subsection
 Interpolation
 \end_layout
@@ -5684,6 +5586,13 @@ s angewandt, um die Genauigkeit zu überprüfen.
 
 \begin_layout Subsubsection
 Lineare Interpolation
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Anhang-Lineare-Interpolation"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -6038,6 +5947,13 @@ name "fig:messung-linearer-ansatz-30grad"
 
 \begin_layout Subsubsection
 Baryzentrische Koordinaten
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Anhang-Baryzentrische-Koordinaten"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Paragraph
@@ -7238,30 +7154,6 @@ Benötigter Aufwand für baryzentrische Berechnung
 \end_inset
 
 
-\end_layout
-
-\begin_layout Paragraph
-Ausblick: Interpolation anhand Vierecken 
-\end_layout
-
-\begin_layout Standard
-Durch eine bestimmte Erweiterung der Baryzentrischen Koordinaten auf Vierecke,
- welche den Fakt berücksichtigen, dass die Vierecke nicht winkeltreu sind,
- können wir zudem die Verzerrung an den Übergängen korrigieren.
- 
-\end_layout
-
-\begin_layout Standard
-Formel 
-\end_layout
-
-\begin_layout Standard
-Durch eine entsprechende Gewichtung kann man zu dem die Knicke so interpolieren,
- dass Knicke an den Kanten geglättet werden.
- Das ist gegeben durch die Möglichkeit, dass wir auch Punkte ausserhalb
- des Rechtecks bestimmen können.
- Diese korrigieren jedoch die perspektivische Verzerrung nicht.
- Diesen Faktor können jedoch mit einem feineren Raster kompensieren.
 \end_layout
 
 \begin_layout Subsection
