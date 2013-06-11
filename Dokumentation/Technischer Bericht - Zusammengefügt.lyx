@@ -118,6 +118,35 @@ Presentation Writer
 \end_layout
 
 \begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+thispagestyle{empty} 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section*
+\begin_inset Newpage newpage
+\end_inset
+
+Danksagungen
+\end_layout
+
+\begin_layout Standard
+Die Autoren möchten sich bei Oliver Augenstein für die kompetente und wohlwollen
+de Betreuung bedanken.
+ Weiteren Dank geht an Benjamin Hug für seine kritischen Kommentare.
+\end_layout
+
+\begin_layout Standard
 \begin_inset Newpage newpage
 \end_inset
 
@@ -1625,13 +1654,13 @@ Optimierung: Baryzentrische Vierecke
 \end_layout
 
 \begin_layout Standard
-Durch eine eigene erweiterung der baryzentrischen Koordinaten können wir
- berücksichtigen, dass die Rechtecke nicht winkeltreu sind.
- Dies geschieht durch einen vierten Punkt der ebenfalls berücksichtigt wird.
+Durch eine eigene Erweiterung der baryzentrischen Koordinaten konnte berücksicht
+igt werden, dass Vierecke nicht winkeltreu sind.
+ Dies geschieht durch einen vierten Punkt im Koordinatensystem.
  Dies führt zu einer viel genaueren Interpolation.
- Der Algorithmus benötigt jedich eine strukturierte Ordnung der Referenzpunkte,
+ Der Algorithmus benötigt jedoch eine strukturierte Ordnung der Referenzpunkte,
  was ihn geringfügig konplizierter macht.
- Allerdings ist durch die ordnung auch eine Gewichtung möglich.
+ Allerdings ist durch die Ordnung auch eine Gewichtung möglich.
  Dieser Algorithmus führt zu einem guten Resultat, allerdings stellt er
  hohe Anforderung an die Referenzpunkte.
  Diese Ansprüche können allerdings mithilfe des K-Means Clusterings erfüllt
@@ -1645,10 +1674,9 @@ sideways false
 status open
 
 \begin_layout Plain Layout
-Wir führen zu den bestehenden Gleichungen der Baryzentrischen Dreiekskoordinaten
- noch eine vierte Gleichung hinzu.
+Es wurde zu den bestehenden Gleichungen der Baryzentrischen Dreiekskoordinaten
+ noch eine vierte Gleichung hinzugefügt.
  Diese hat das Ziel, nahe Eckpunkte stärker zu gewichten.
- 
 \end_layout
 
 \begin_layout Plain Layout
@@ -1675,17 +1703,21 @@ TL := Obere linke Ecke, TR := obere rechte Ecke, BL := untere linke Ecke,
 \end_layout
 
 \begin_layout Plain Layout
-Dies ist jedoch erst ein Zwischenresultat, das eine Transformation vom Beamer
- zum Kamerabild ermöglicht.
+Dies ist jedoch erst ein Zwischenresultat, welches eine Transformation vom
+ Beamer zum Kamerabild ermöglicht.
  Um die Berechnung in Richtung Kamerabild → Beamer durchführen zu können,
- müssen wir als weiteren Zwischenschritt die Determinante konstruieren:
+ muss als weiterer Zwischenschritt die Determinante konstruiert werden:
 \end_layout
 
 \begin_layout Plain Layout
-\begin_inset Formula $Det\left[\begin{array}{cc}
+\begin_inset Formula 
+\begin{equation}
+Det\left[\begin{array}{cc}
 (1-X)*TL+X*TR-P & (1-X)*BL+X*BR-P\\
 (1-Y)*TL+Y*TR-P & (1-Y)*BL+Y*BR-P
-\end{array}\right]$
+\end{array}\right]
+\end{equation}
+
 \end_inset
 
 
@@ -1697,18 +1729,22 @@ Daraus resultieren zwei Gleichungen.
 \end_layout
 
 \begin_layout Plain Layout
-\begin_inset Formula $Solve\left(Det\left[\begin{array}{cc}
+\begin_inset Formula 
+\begin{equation}
+Solve\left(Det\left[\begin{array}{cc}
 (1-X)*TL+X*TR-P & (1-X)*BL+X*BR-P\\
 (1-Y)*TL+Y*TR-P & (1-Y)*BL+Y*BR-P
-\end{array}\right]=0,\{x,y\}\right)$
+\end{array}\right]=0,\{x,y\}\right)
+\end{equation}
+
 \end_inset
 
 
 \end_layout
 
 \begin_layout Plain Layout
-Daraus erhält man Gleichungen, anhand derer man die Beamerkoordinaten aus
- Kamerakoordinaten berechnen kann.
+Daraus resultieren Gleichungen, anhand derer die Beamerkoordinaten aus Kamerakoo
+rdinaten berechnet werden können.
 \end_layout
 
 \begin_layout Plain Layout
@@ -1732,8 +1768,8 @@ name "alg:Erweiterte-baryzentrische-Koordi"
 
 \end_inset
 
- Diese Gleichungen funktionieren auch inder näheren Umgebung des Vierecks
- noch.
+ Diese Gleichungen funktionieren auch ind er näheren Umgebung ausserhalb
+ des Vierecks noch.
 \end_layout
 
 \begin_layout Subsubsection
@@ -4927,12 +4963,12 @@ reference "sub:Erkennen-von-Vierecken"
 \end_inset
 
  evaluiert wurden, genauer beschrieben.
- Die Beschreibungen entsprechen jeweils unseren Testimplementiereungen davon.
+ Die Beschreibungen entsprechen jeweils den Testimplementiereungen davon.
  Diese sind im Sandbox-Projekt zu finden.
- Dies sind aber alles Ansätze, die im finalen Prototypen nicht mehr vorhanden
- sind und sind deshalb nicht fertig ausgearbeitet und nicht gut dokumentiert.
- Es wird davon ausgegangen, dass wir eine Möglichkeit haben, Rechtecke pixelgena
-u auf den Bildschirm zu zeichenen, was unter 
+ Dies sind alles Ansätze, die im finalen Prototypen nicht mehr vorhanden
+ und deshalb nicht fertig ausgearbeitet und nicht gut dokumentiert sind.
+ Im folgenden Text wird davon ausgegangen, dass es eine Möglichkeit gibt,
+ Rechtecke pixelgenau auf den Bildschirm zu zeichenen, was unter 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sub:Visualisier"
@@ -4949,14 +4985,14 @@ Allgemeiner Ablauf
 \begin_layout Standard
 Die Grundüberlegung jedes Ansatzes der Kalibrierung ist derselbe: Im ersten
  Schritt werden die Ecken des Bildschirms gefunden, in den weiteren Schritten
- werden zusätzliche Daten gesammelt um die Interpolation zu verbessern.
+ werden zusätzliche Daten gesammelt die Grundlage für eine immer bessere
+ Interpolation bilden zu können.
  Dafür können die im folgenden beschriebenen Ansätze beinahe beliebig kombiniert
  werden.
 \end_layout
 
 \begin_layout Subsubsection
-Selber programmierte Eckdetecktion mit Differenzbildern und zufällig verteilten
- Rechtecken.
+Eckdetecktion mit Differenzbildern und zufällig verteilten Rechtecken.
 \begin_inset CommandInset label
 LatexCommand label
 name "sub:Anhang-Eigenbau"
@@ -4975,11 +5011,12 @@ reference "par:Analyse-Eigenbau"
 \end_inset
 
  evaluiert wurde.
- Deshabl wird hier nicht mehr auf die Analyse eingegangen.
+ Deshalb wird hier nicht mehr auf die Analyse eingegangen.
  Bei diesem Ansatz werden keine zusätzlichen Libraries verwendet.
- Da die Bitmaps sehr inperformant sind verwenden wir zudem eine eigene Bitmapkla
-sse, welche die Bitmaps zu Bytearrays umwandelt.
- Damit können nur Metrizenberechnungen und Analysen durchgeführt werden.
+ Da die zu verwendenden Bitmapoperationen nativ (C#) sehr inperformant sind
+ wurde eine eigene Bitmapklasse verwendet, welche die Bitmaps zu Bytearrays
+ umwandelt.
+ Damit können nur Matrizenberechnungen und -Analysen durchgeführt werden.
 \end_layout
 
 \begin_layout Subparagraph
@@ -4987,7 +5024,7 @@ Ablauf
 \end_layout
 
 \begin_layout Standard
-Der genaue Ablauf der Testimplementation wird im folgenden Schritt für Schritt
+Der genaue Ablauf der Testimplementation wird im Folgenden Schritt für Schritt
  beschrieben.
 \end_layout
 
@@ -5025,9 +5062,9 @@ reference "sub:Analyse-Differenzbild"
 
 \begin_layout Enumerate
 Es werden 3 Rechtecke mit zufälligen Eckpunkten gezeichnet und die Eckpunkte
- gespeichert, eins pro Farbkanal.
- Auf dem Differenzbild zum Ersten werden mit dem geleichen Verfahren zu
- jedem Farbkanal die Ecken gesucht.
+ gespeichert, je eines pro Farbkanal.
+ Auf dem Differenzbild zum Ersten werden mit dem gleichen Verfahren zu jedem
+ Farbkanal die Ecken gesucht.
  
 \end_layout
 
@@ -5070,14 +5107,15 @@ Verwendung des AForge-Blob-Detctors
 \end_layout
 
 \begin_layout Standard
-Diese wird in den kommenden Lösungen immer eingesetzt.
- Ich werde bei jeder Lösung nur auf geänderte und wichtige Aspekte erwähnen.
- Funktionierende Teile wurden jeweils übernommen.
- Die verschiedenen Kalibratoren die Im Code existieren sind keine 1 zu 1
- Umsetzungen der hier beschriebenen Ansätze, sondern Kombinationen davon.
+Das nun beschriebene Verfahren wird in den folgend beschriebenen Lösungen
+ immer eingesetzt.
+ Dabei werden bei jeder Lösung nur geänderte und wichtige Aspekte erwähnt.
+ Funktionierende Teile wurden jeweils in die Hauptlösung übernommen.
+ Die verschiedenen Kalibrierer die Im Code existieren sind keine 1:1 Umsetzungen
+ der hier beschriebenen Ansätze, sondern Kombinationen davon.
  Der Code von verworfenen Umsetzungen wurde in anderen Umsetzungen teilweise
  übernommen und aktualisiert.
- Diese Aktualisierungen wurden nicht nachgepflegt aus dem Grund, dass diese
+ Diese Aktualisierungen wurden nicht nachgepflegt aus dem Grund, da diese
  Lösungen nicht als sinnvoll für ein Weiterverfolgen erachtet wurden.
 \end_layout
 
@@ -5092,7 +5130,7 @@ Die folgenden Ansätze bilden ein mehrfarbiges Schachbrettmuster ab, das
 \end_layout
 
 \begin_layout Subsubsection
-Einfacher Differenzbild-Kalibrator
+Einfacher Differenzbild-Calibrator
 \begin_inset CommandInset label
 LatexCommand label
 name "sub:Anhang-Einfacher-Differenzbild-Kalibrat"
@@ -5103,14 +5141,14 @@ name "sub:Anhang-Einfacher-Differenzbild-Kalibrat"
 \end_layout
 
 \begin_layout Standard
-Der Ablauf des unter 
+Folgend wird der Ablauf des unter 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "par:Analyse-Einfacher-Differenzbildansatz"
 
 \end_inset
 
- analysierten Ansatzes.
+ analysierten Ansatzes erläutert.
  In der Implementation wird AForge verwendet, jedoch kann dieser Ansatz
  mit jedem Framework implementiert werden.
 \end_layout
@@ -5152,10 +5190,11 @@ reference "sub:Analyse-Differenzbild"
 Es werden grüne und blaue Quadrate jeweils versetzt auf den Bildschirm projizier
 t, die bei jedem Frame leicht verschoben werden um mehr Referenzpunkte zu
  bekommen.
- Die Erkennung des roten Farbkanals ist am schlechtesten, deshalb verwenden
- wir blau und grün.
+ Die Erkennung des roten Farbkanals ist am schlechtesten, deshalb wird blau
+ und grün verwendet.
  Zwei Farben sind ausreichend, wenn sie mit einem Feld Abstand projiziert
- werden, dass es keine Nachbarschaftskonflikte gibt.
+ werden.
+ So gibt es keine Nachbarschaftskonflikte.
  
 \begin_inset Float figure
 wide false
@@ -5201,7 +5240,7 @@ Schachbrettmuster über zwei Farbkanäle
 \end_layout
 
 \begin_layout Enumerate
-Diese werden auf dem Differenzbild gesucht.
+TODO: welche? :: Diese werden auf dem Differenzbild gesucht.
  Deren Zuordnung unter 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -5218,9 +5257,9 @@ Histogramm-analyse
 \end_layout
 
 \begin_layout Standard
-Hierbei werden keine Differenzbilder gebildet, sondern Helligkeitswerte
- des Bildes analysiert und so können überdurchschnittlich helle Flächen
- (Projektionen) gefunden werden.
+Im folgend Beschriebenen Verfahren werden keine Differenzbilder gebildet,
+ sondern Helligkeitswerte des Bildes analysiert.
+ So können überdurchschnittlich helle Flächen (Projektionen) gefunden werden.
  Die restlichen Bildinformationen werden entfernt um eine Blob-Erkennung
  zu ermöglichen.
  Dieser Algorithmus enthält bereits die im Analyseteil 
@@ -5709,7 +5748,7 @@ name "sub:Anhang-Lineare-Interpolation"
 \end_layout
 
 \begin_layout Standard
-Skizze 
+TODO: Skizze 
 \end_layout
 
 \begin_layout Standard
@@ -7810,6 +7849,14 @@ Es ist schwierig zu sagen, ob es sinnvoll ist, Touch auf der Leinwand weiter
  mit den Daten, welche in dieser Arbeit aufgenommen wurde.
  Es müsste systematischer untersucht werden, ob die dies für jeden Fall
  zuverlässig gelöst werden könnte.
+\end_layout
+
+\begin_layout Subsection
+Quellenverzeichnis
+\end_layout
+
+\begin_layout Standard
+TODO: blabliblablub
 \end_layout
 
 \end_body
