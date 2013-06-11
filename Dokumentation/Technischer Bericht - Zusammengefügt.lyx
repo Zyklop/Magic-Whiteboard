@@ -1125,6 +1125,7 @@ en Bilder verdoppelt wird.
  Wir haben uns für diesen Ansatzt entschieden, da man sehr gute Resulate
  erhält und die Kalibrationszeit immer noch im Rahmen liegt und von den
  Nutzern sicherlich akzeptiert werden wird.
+ Man erhält dadurch weniger Daten, dafür ist deren Qualität dafür umso besser.
 \end_layout
 
 \begin_layout Subsubsection
@@ -3328,133 +3329,10 @@ name "sub:ablauf-kalibrierung"
 \end_layout
 
 \begin_layout Standard
-Die Grundüberlegung jedes Ansatzes der Kalibrierung ist derselbe: Im ersten
- Schritt werden die Ecken des Bildschirms gefunden, in den weiteren Schritten
- werden zusätzliche Daten gesammelt um die Interpolation zu verbessern.
- Im Folgenden wi
-\end_layout
-
-\begin_layout Itemize
-Als erster Schritt ist es nötig ein Frame von der Kamera zu bekommen, um
- die Auflösung der Kamera auszulesen.
-\end_layout
-
-\begin_layout Itemize
-Die automatische Belichtungskorrektur der hier verwendeten Kamera benötigt
- ca.
- 1-2 Frames bis das Bild angeglichen ist.
-\end_layout
-
-\begin_layout Itemize
-Von gewissen Webcams wird das Bild gespiegelt zurückgegeben, von anderen
- nicht.
-\end_layout
-
-\begin_layout Itemize
-Bis die Bilder der Kamera dem entsprechen, was man erwarten würde, muss
- man ca.
- 500ms warten.
- Diese Dauer ist zudem vom gewählten Visualisierer abhängig.
-\begin_inset Newline newline
-\end_inset
-
-
-\begin_inset Float figure
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
-\begin_inset Graphics
-	filename Bilder/Calibration/Verzögerung1.png
-	width 100col%
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Graphics
-	filename Bilder/Calibration/Verzögerung2.png
-	width 100col%
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Caption
-
-\begin_layout Plain Layout
-Verzögerung der Darstellung
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Itemize
-Berechnungen mit C# Bitmaps sind extrem inperformant.
-\end_layout
-
-\begin_layout Itemize
-Eine sequentielle Bearbeitung der Daten führt dazu, dass man mit veralteten
- (und somit falschen) Daten arbeitet.
-\end_layout
-
-\begin_layout Itemize
-Eine parallele Bearbeitung der führt meistens zum unkontrollierten Spawnen
- von Tasks, die das System verlangsamen und schliesslich ein Ablaufen verunmögli
-chen.
- Falls das Auftritt, hat man ebenfalls Probleme mit alten Daten.
-\end_layout
-
-\begin_layout Itemize
-Wenn ein Teil der Anzeige durch ein anderes Fenster oder einem Objekt verdeckt
- wird, ist das unmöglich automatisch zu detektieren.
- Daher sollte die Erkennung noch durch den Nutzer verifiziert werden.
-\end_layout
-
-\begin_layout Itemize
-Der Ablauf wird von einer Semaphore geschützt.
- Wenn kein Lock akquiriert werden kann, wird das ankommende Bild verworfen
- und nicht behandelt.
-\end_layout
-
-\begin_layout Itemize
-Nach jedem Zeichnen wird 100 ms gewartet bevor die Semaphore freigegeben
- wird, damit sichergegangen werden kann, dass das erwartete Bild von der
- Kamera ankommt.
-\end_layout
-
-\begin_layout Subsubsection
-Schachbrett-Differenzbilder
-\begin_inset CommandInset label
-LatexCommand label
-name "sub:Schachbrett-Differenz"
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-Um Differenzbilder nutzen zu können, aber sich nicht durch die Belichtungskorrek
-tur beeinflussen zu lassen, muss darauf geachtet werden, dass jedes projizierte
- Bild eine identische Helligkeitsverteilung zum Referenzbild besitzt.
- Das bedeutet, dass für jedes Bild, das man analysieren möchte, zwei Bilder
- Projiziert werden müssen.
- Da diese Art der Erkennung viel genauer ist, nehmen wir diesen Overhead
- in Kauf und verzichten allenfalls auf ein paar Referenzbilder.
- „Lieber wenig gute Daten, als viel schlechte“ 
+Für die Kalibration wird in dieser Umsetzung der Ansatz mit den individuellen
+ Differenzbildern verwendet.
+ Wir detektieren damit nur die Ecken des Bildschirms, welche für unseren
+ gewählten Interpolationsansatz reichen.
 \end_layout
 
 \begin_layout Paragraph
@@ -3462,14 +3340,16 @@ Ablauf
 \end_layout
 
 \begin_layout Enumerate
-Es wird ein Schachbrett mit 
+Im ersten Bild der Kamera wird die Auflösung erkannt.
+ Damit lassen sich nun gewisse Komponenten initialisiert werden.
+ Zudem wird ein Schachbrett mit 
 \begin_inset Formula $n\times m$
 \end_inset
 
  Quadraten projiziert.
  Das Verhältnis von n zu m sollte dem Bildschirmverhältnis entsprechen und
  die Quadrate sollten noch gut auf dem Kamerabild sichtbar sein (15-30 Pixel
- Seitenlänge) 
+ Seitenlänge) Diese Werte können aber problemlos statisch hinterlegt werden.
 \end_layout
 
 \begin_layout Enumerate
@@ -3551,6 +3431,132 @@ Erkennung des Bildschirms
 Durch die Bedingung, dass alle Bildschirmecken mindestens 5 Pixel Abstand
  zu jedem Rand haben müssen, können wir zudem sehr viele Fehlerkennungen
  herausfiltern.
+\end_layout
+
+\begin_layout Paragraph
+Einschränkungen
+\end_layout
+
+\begin_layout Standard
+Damot die Kalibration erfolgreich abgeschlossen werden kann, müssen folgende
+ technische Limitationen eingehalten werden: Die Belichtungskorrektur reagiert
+ erst etwa ein bis zwei Frames später.
+ Das muss beachtet werden, kann aber nicht ausgenutzt werden, da die Darstellung
+ länger dauert.
+ Bis das Bild genau so dargestellt ist auf der Projektion, muss eine gewisse
+ Zeit gewartet werden.
+ Diese Umsetztung wartet 500ms, damit die Darstellung sicherlich gewährleistet
+ ist.
+ 
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Bilder/Calibration/Verzögerung1.png
+	width 100col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Bilder/Calibration/Verzögerung2.png
+	width 100col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Verzögerung der Darstellung
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+Diese Zeitdauer ist jedoch vom gewählten Visualisierer abhängig.
+ Gewisse Webcams geben das Biöd gespiegelt zurück.
+ dafür muss dem User die Möglichkeit gegeben werden, das Bild zurückzuspiegeln.
+ Da Bitmaps in C# sehr inperformant sind, müssen diese am Anfang mit Hilfe
+ von Lock-Bits ausgelesen werden und in eine performantere Datenstruktur
+ überführt werden, wie z.B.
+ Bytearrays.
+ Falls sie nochmals benötigt werden, kann man fiese mit dem gleichen Verfahren
+ zurückschreiben.
+ Da dieser Ablauf nicht erkennen kann, wenn ein Teil der Prohektion verdeckt
+ sein sollte, wird das Resultat dem Benutzer visualisiert, sodass er allenfalls
+ die Kalibration nochmals starten könnte.
+\end_layout
+
+\begin_layout Paragraph
+Parallelität
+\end_layout
+
+\begin_layout Standard
+Die Bilder von der Kamera kommen immer in gleichen Abstand von der Kamera,
+ die in einem eigenen Thread abläuft.
+ Unsere Bildverarbeitung benötigt jedoch unterschidlich lange.Dies kann zu
+ grossen Problemen führen:
+\end_layout
+
+\begin_layout Itemize
+Eine sequentielle Bearbeitung der Daten führt dazu, dass man mit veralteten
+ (und somit falschen) Daten arbeitet.
+\end_layout
+
+\begin_layout Itemize
+Eine parallele Bearbeitung der führt meistens zum unkontrollierten Spawnen
+ von Tasks, die das System verlangsamen und schliesslich ein Ablaufen verunmögli
+chen.
+ Falls das Auftritt, hat man im besten Fall Probleme mit alten Daten, im
+ Worst-Case reagiert das System nicht mehr.
+\end_layout
+
+\begin_layout Standard
+Deshalb haben wurde entschieden, einen Supervisor einzusetzen, der die Arbeit
+ überwacht.
+ Dieser entscheidet bei jedem ankommenden Bild, ib ein Worker aus dem Pool
+ frei ist.
+ Da sich die Kalibrierung nicht kalibrieren lässt, ist in diesem Pool jedoch
+ nur ein Worker vorhanden.
+ Falls er keinen freien Worker findet, verwirft er das Bild.
+ Somit ist sichergestellt dass alle Threads aktuelle Daten erhalten und
+ das System nicht überlastet werden kann.
+\end_layout
+
+\begin_layout Subsubsection
+Schachbrett-Differenzbilder
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Schachbrett-Differenz"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Um Differenzbilder nutzen zu können, aber sich nicht durch die Belichtungskorrek
+tur beeinflussen zu lassen, muss darauf geachtet werden, dass jedes projizierte
+ Bild eine identische Helligkeitsverteilung zum Referenzbild besitzt.
+ Das bedeutet, dass für jedes Bild, das man analysieren möchte, zwei Bilder
+ projiziert werden müssen.
+ Da diese Art der Erkennung viel genauer ist, nehmen wir diesen Overhead
+ in Kauf und verzichten allenfalls auf ein paar Referenzbilder.
+ „Lieber wenig gute Daten, als viel schlechte“ 
 \end_layout
 
 \begin_layout Subsection
@@ -4917,6 +4923,18 @@ reference "sub:Visualisier"
 \end_inset
 
  beschrieben ist.
+\end_layout
+
+\begin_layout Paragraph
+Allgemeiner Ablauf
+\end_layout
+
+\begin_layout Standard
+Die Grundüberlegung jedes Ansatzes der Kalibrierung ist derselbe: Im ersten
+ Schritt werden die Ecken des Bildschirms gefunden, in den weiteren Schritten
+ werden zusätzliche Daten gesammelt um die Interpolation zu verbessern.
+ Dafür können die im folgenden beschriebenen Ansätze beinahe beliebig kombiniert
+ werden.
 \end_layout
 
 \begin_layout Subsubsection
