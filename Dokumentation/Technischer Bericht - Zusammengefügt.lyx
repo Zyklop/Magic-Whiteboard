@@ -2920,8 +2920,8 @@ Im diesem Artikel wird beschrieben, welche Verfahren zur Umsetzung der oben
  Zuerst wird auf technische Details wie den Aufbau des Programmes und verwendete
  Biliotheken eingegangen.
  Danach wird erläutert wie die oben beschriebenen Kalibrierungsverfahren
- eingesetzt wurde und wie das Finden eines Stiftes im Softwareprototyp von
- statten geht.
+ eingesetzt wurde und wie das Finden eines Stiftes im Softwareprototyp vonstatte
+n geht.
  Die Umsetzung der Punktabbildung von Kamera zu Beamer wurde gänzlich ausgelasse
 n, da die oben beschriebene Theorie zum Integral-Ansatz genau nach Modell
  eingesetzt werden konnte.
@@ -2936,14 +2936,18 @@ Programmiersprache
 \end_layout
 
 \begin_layout Standard
-Wir haben uns für die Programmiersprache C# entschieden, da uns diese besser
- liegt (TODO schnellere Entwicklungszeit...).
- Zudem war es einfacher auf Systemfunktionen wie z.B.
- Direct Show und Mausemulation zuzugreifen.
- In Java wäre das nicht möglich gewesen.
- Mit C++ hätten wir bei der Bildbearbeitung etwas weniger Performance benötigt,
- dafür hätten wir mehr Einarbeitungszeit benötigt.
- Aus unserer Sicht haben wir uns richtig entschieden.
+Für die Entwicklung der Software wurde die Programmiersprache C# eingesetzt.
+ Dies wurde aufgrund der Erfahrung entschieden, dass das .NET-Framework sehr
+ pragmatische Ansätze vertritt.
+ Jene beschleunigen die Entwicklungszeit und ermöglichen das Nutzen von
+ Systemfunktionen wie einer Mausemulation in einfacher Weise.
+ In Java wäre das nicht so einfach möglich gewesen.
+ C++ hätte die Einbindung von OpenCV zwar erleichtert, aber wesentlich mehr
+ Zeit für das Erarbeiten einfachster Konzepte benötigt.
+ Die getroffene Entscheidung für C# ist auch hinsichtlich der Portabilität
+ des Codes interessant.
+ Mit Mono steht auch für Linux eine Ausführungsplattform für die hier entwickelt
+e Software zur Verfügung.
 \end_layout
 
 \begin_layout Subsubsection
@@ -2951,12 +2955,17 @@ Framework
 \end_layout
 
 \begin_layout Standard
-Beim grafischen Framework haben wir uns für AForge entschieden, da es nativ
- in C# geschrieben ist und gut dokumentiert ist.
- Im Gegensatz dazu hätten wir mit OpenCV etwas besser optimierte Algorithmen
- gehabt.
- Da wir nur einen Prototypen produzieren, ist Performance für uns nicht
- besonders wichtig, was unsere Wahl ebenfalls beeinflusst hat.
+Beim Framework für die Bildverarbeitungsroutinen wurde AForge eingesetzt.
+ Es ist ein relativ neues Projekt, welches nativ in C# geschrieben und sehr
+ gut dokumentiert ist.
+ Wie OpenCV ist auch AForge OpenSource.
+ Da die Schnelligkeit des Entwicklungsvorgangs im Vordergund stand, wurde
+ bewusst auf OpenCV verzichtet.
+ Es wurde in Kauf genommen, dass die mit AForge zur Verfügung stehenden
+ Algorithmen nicht gleich vielfältig und nicht gleich performant sind.
+ Da lediglich ein Prototyp mit den oben beschriebenen Algorithmen umgesetzt
+ wurde, scheint dies akzeptabel.
+ Für ein Produkt würde wahrscheinlich doch OpenCV benutzt.
 \end_layout
 
 \begin_layout Paragraph
@@ -2966,19 +2975,21 @@ OpenCV
 \begin_layout Standard
 OpenCV ist ein riesiges Produkt, das alle Möglichkeiten zur Bildanalyse
  bietet.
- Es gibt einen Wrapper für C#, jedoch hat sich auch dieser in unseren Versuchen
- als nicht besonders einfach in der Benutzung herausgestellt.
- Die Dokumentation ist sehr spärlich gehalten und erleichtert die Benutztung
- nicht.
- Mit der grossen Community sollte es allerdings möglich sein Antworten zu
- erhalten.
- Möglichkeiten, den Code zu analysieren hat man leider aufgrund dessen Komplexit
-ät nicht und es gibt keine Möglichkeiten, die Algorithmen auf eigene Bedürfnisse
- anzupassen.
+ Es gibt einen Wrapper für C#, jedoch hat sich dieser in Versuchen als nicht
+ besonders einfach in der Benutzung herausgestellt.
+ Die Dokumentation ist sehr spärlich gehalten.
+ Nicht zu unterschätzen ist die grosse Community, die oft weiterhelfen kann.
+ 
+\end_layout
+
+\begin_layout Standard
+Der Quellcode ist auf Leistung optimiert und aufgrund dessen wenig verständlich
+ und das Anpassen an eigene Bedürfnisse schwierig.
  Ein weiterer Nachteil ist, dass man zur Nutzung das ganze Framework einbinden
- muss, was über 600 MB gross ist.
- Da der Aufwand zur Einarbeitung für uns zu hoch war, haben wir uns gegen
- OpenCv entschieden.
+ muss, was ca.
+ 600 MB gross ist.
+ Da der Aufwand zur Einarbeitung für zu gross erschient, wurde OpenCV nur
+ kurz angetestet und nicht für den Prototyp verwendet.
 \end_layout
 
 \begin_layout Paragraph
@@ -2986,17 +2997,16 @@ AForge
 \end_layout
 
 \begin_layout Standard
-AForge bietet eine stabile Blob-Detektion, die zuverlässig funktioniert
- und Attribute zur Analyse und Fehlerdetektion bieten.
- Zudem funktioniert das Anwenden von Filtern auf Bilder sehr zuverlässig
- und intuitiv.
- Die berechnungen sind etwas weniger optimiert als bei OpenCv, allerdings
- reicht die Performance für uns aus.
+AForge funktioniert weniger mathematisch als OpenCV.
+ Der pragmatische und einfache Ansatz steht hier vor der akademischen und
+ schnellen Lösung.
+ AForge bietet leicht benutzbare Filter und eine stabile Blob-Detektion.
+ Die Konfiguration der verwendeten Module ist einfach gehalten und intuitiv.
+ Performance und Möglichkeiten sind begrenzt.
+ Für einen Prototypen ist die Nutzung von AForge jedoch ideal, da es einfach
+ zu benutzen und gut dokumentiert ist.
  Der Code enthält leider immer noch einige Bugs, die jedoch aufgrund der
  guten Verständlichkeit selber behoben werden können.
- Der Entwickler kümmert sich nämlich nicht besonders aktiv um sein Projekt.
- Für einen Prototypen ist die Nutzung ideal, da er einfach zu benutzen und
- gut dokumentiert ist.
 \end_layout
 
 \begin_layout Subsection
