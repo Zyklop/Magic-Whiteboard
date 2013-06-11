@@ -3051,7 +3051,7 @@ status open
 \begin_inset Caption
 
 \begin_layout Plain Layout
-Das Domain Modell berücksichtigt modulare Erweiterungen.
+Die Organisation der Klassen berücksichtigt modulare Erweiterungen.
 \end_layout
 
 \end_inset
@@ -3069,14 +3069,86 @@ Hauptsequenz
 \end_layout
 
 \begin_layout Standard
-Unser Hauptprojekt wird eine ausführbare Datei, die alle unsere Subprojekte
- zusammenbringt.
+Der Ablauf des Programmes orientiert sich stark am C# Eventmodell.
+ Dabei benachrichtigen sich Komponenten gegenseitig über ihren aktuellen
+ Status oder über Berechnungsresultate.
+ In dieser Software werden Schnittstellen zwischen Input, Berechnung und
+ Output immer über Events abgebildet.
+ Dies hat den Vorteil, dass das GoF-Pattern Information Expert gut eingehalten
+ werden kann.
+ In Abb.
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:standardsequenz"
+
+\end_inset
+
+ wird die Kette der Informationsflüsse und Hierarchien als Sequenzdiagramm
+ dargestellt.
+ Dabei entspricht die Applikation der Hauptapplikation, welche dem Benutzer
+ ein GUI bereitstellt und Zugriff auf Kamera und Visualisierung hat.
+ Der Folgende Standardablauf wird zum besseren Verständnis der Funktionsweise
+ der Software beschrieben:
+\end_layout
+
+\begin_layout Enumerate
+Zuerst wählt der Benutzer im GUI die Kamera
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+Der Nutzer kriegt eine Auswahl aller gefundenen Kameras und entscheidet
+ sich für eine.
  
 \end_layout
 
-\begin_layout Standard
-\noindent
-Grobablauf unseres Programms: 
+\begin_layout Enumerate
+Anhand der Auswahl wird die Kamera angelegt und gestartet.
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+Das Programm sucht einen passenden Visualisierer (WPF, WinForms, Dateisystemabla
+ge, etc.) und legt diesen an.
+ 
+\end_layout
+
+\begin_layout Enumerate
+Ein DataParser wird angelegt.
+ 
+\end_layout
+
+\begin_layout Enumerate
+Die Kalibrierung kann nun automatisch oder nach einer Interaktion des Benutzers
+ gestartet werden.
+\end_layout
+
+\begin_layout Enumerate
+Die Kalibrierung läuft durch und projiziert Messbilder über den Beamer an
+ die Leinwand.
+ Details dazu sind in Abschnitt 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:ablauf-kalibrierung"
+
+\end_inset
+
+ genauer erläutert.
+\end_layout
+
+\begin_layout Enumerate
+Falls die Kalibrierung erfolgreich abgeschlossen wird, startet das Pen Tracking.
+ Wenn ein Stift auf dem Inputbild gefunden wird, wird das an die Hauptapplikatio
+n per Event zurückgemeldet.
+ Details über das Finden eines Stiftes finden sich unter Abschnitt 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:umsetzung-stifterkennung"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Standard
@@ -3101,7 +3173,9 @@ status open
 
 \begin_layout Plain Layout
 Standardsequenz: Kalibrieren und Punkte auf Kamerabild finden
-\end_layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:standardsequenz"
 
 \end_inset
 
@@ -3111,66 +3185,11 @@ Standardsequenz: Kalibrieren und Punkte auf Kamerabild finden
 \end_inset
 
 
-\begin_inset Newpage pagebreak
+\end_layout
+
 \end_inset
 
 
-\end_layout
-
-\begin_layout Paragraph
-Textuelle Ablaufbeschreibung:
-\end_layout
-
-\begin_layout Standard
-Diese Beschreibung beschreibt den gleichen Ablauf, der auch im Sequenzdiagramm
- beschreiben ist.
- Das Programm entspricht dem GUI, das vom Nutzer bedient wird.
-\end_layout
-
-\begin_layout Enumerate
-Verbindung mit der Kamera 
-\end_layout
-
-\begin_deeper
-\begin_layout Enumerate
-Der Nutzer kriegt eine Auswahl aller gefundenen Kameras und entscheidet
- sich für eine.
- 
-\end_layout
-
-\begin_layout Enumerate
-Anhand der Auswahl wird die Kamera angelegt und gestartet.
- 
-\end_layout
-
-\end_deeper
-\begin_layout Enumerate
-Das Programm sucht einen passenden Visualisierer und legt diesen an.
- 
-\end_layout
-
-\begin_layout Enumerate
-Ein DataParser wird angelegt.
- 
-\end_layout
-
-\begin_layout Enumerate
-Die Kalibration kann nun automatisch oder nach einer Interaktion des Benutzers
- gestartet werden.
- 
-\end_layout
-
-\begin_layout Enumerate
-Die Details über den Ablauf des Kalibrationsvorgang sind im Abschnitt Kalibratio
-n aufgeführt TODO: wo?, welches bei jedem Algorithmus Individuell abläuft.
- 
-\end_layout
-
-\begin_layout Enumerate
-Kalibration wird erfolgreich abgeschlossen und das Pentracking gestartet.
- Die Details über den Ablauf des Trackings sind im Abschnitt Pen-Tracking
- aufgeführt TODO: wo?.
- 
 \end_layout
 
 \begin_layout Subsection
@@ -3305,6 +3324,13 @@ In einem finalen Release darf diese Umsetzung nicht verwendet werden.
 
 \begin_layout Subsection
 Kalibrierung
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:ablauf-kalibrierung"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -3572,6 +3598,13 @@ Durch die Bedingung, dass alle Bildschirmecken mindestens 5 Pixel Abstand
 
 \begin_layout Subsection
 Stifterkennung
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:umsetzung-stifterkennung"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsubsection
