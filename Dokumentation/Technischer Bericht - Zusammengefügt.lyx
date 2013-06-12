@@ -101,7 +101,7 @@ Renato Bosshart, Josua Schmid
 \end_layout
 
 \begin_layout Publishers
-\begin_inset VSpace 7em
+\begin_inset VSpace 6em
 \end_inset
 
 
@@ -129,6 +129,43 @@ Institut für Software
 \end_inset
 
 Oliver Augenstein
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset VSpace bigskip
+\end_inset
+
+
+\size normal
+Experte: 
+\size large
+
+\begin_inset Newline newline
+\end_inset
+
+Dr.
+ Peter Rost, NEC Labs Europe
+\size small
+
+\begin_inset Newline newline
+\end_inset
+
+
+\size default
+
+\begin_inset VSpace smallskip
+\end_inset
+
+
+\size small
+Gegenleser: 
+\size large
+
+\begin_inset Newline newline
+\end_inset
+
+Hansjörg Huser
 \end_layout
 
 \begin_layout Standard
@@ -161,7 +198,7 @@ Danksagungen
 \begin_layout Standard
 Die Autoren möchten sich bei Oliver Augenstein für die kompetente und wohlwollen
 de Betreuung bedanken.
- Weiteren Dank geht an Benjamin Hug, Stefan Kienzel, Edith Schmid und Pascal
+ Weiterer Dank geht an Benjamin Hug, Stefan Kienzel, Edith Schmid und Pascal
  Spörri für ihre kritischen Kommentare.
 \end_layout
 
@@ -224,7 +261,8 @@ Die in dieser Arbeit entworfenen und in einem Prototyp eingesetzten Algorithmen
  Die Person kann ihren eigenen Laptop dafür verwenden.
  Der Laptop wird am lokal vorhandenen Beamer angeschlossen.
  Nach einer kurzen Kalibrierung kann die Person die Präsentation starten.
- Dabei schreibt sie falls gewünscht mit einem virtuellen Stift an die Leinwand.
+ Dabei schreibt sie, falls gewünscht, mit einem virtuellen Stift an die
+ Leinwand.
  Das Geschriebene wird aufgezeichnet und wieder auf das Beamerbild projiziert.
 \end_layout
 
@@ -240,9 +278,10 @@ In einem normalen Sitzungszimmer soll ein Vortrag gehalten werden können.
  Der Stift soll günstig sein.
  Der Aufbau unterliegt zu definierenden Beschränkungen wie Winkel und Raumbeleuc
 htung.
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Standard
+
 \begin_inset Float figure
 wide false
 sideways false
@@ -250,8 +289,8 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
-	filename Bilder/Aufbau/rendered-perspective.png
-	lyxscale 20
+	filename Bilder/Aufbau/rendered-perspective.jpg
+	lyxscale 40
 	width 100col%
 
 \end_inset
@@ -268,6 +307,10 @@ Beispiel eines Aufbaus in der Perspektive
 
 \end_inset
 
+
+\end_layout
+
+\begin_layout Plain Layout
 
 \end_layout
 
@@ -360,8 +403,8 @@ ers gefunden und erkannt werden können.
  Grundsätzlich sind sie physischer und physikalischer Art.
  Im Folgenden werden die Probleme kurz diskutiert um zu zeigen, welche Themengeb
 iete überhaupt einer detaillierten Analyse bedürfen.
- Für einen besseren Überblick wird zum Teil kurz angeschnitten wie das jeweilige
- Problem gelöst werden soll.
+ Für einen besseren Überblick wird zum Teil kurz angeschnitten, wie das
+ jeweilige Problem gelöst werden soll.
 \end_layout
 
 \begin_layout Subsubsection
@@ -372,10 +415,10 @@ Aufnahmegerät
 Das in dieser Arbeit verwendete Aufnahmegerät ist eine integrierte Laptopkamera
  eines Thinkpad T430s mit einer Auflösung von 640x480 Pixel und 30 Bildern
  pro Sekunde.
- Sie übertreibt es völlig mit der automatischen Belichtungskorrektur, hat
- aber einen in den Treiber integrierten Konfigurationsdialog, mit welchem
- sich das Problem manuell minimieren lässt.
- Allgemein formuliert ist an der verwendeten Kamera die Bildauflösung weniger
+ Es traten technische Probleme mit der automatischen Belichtungskorrektur
+ auf, welche sich durch einen im Treiber integrierten Konfigurationsdialog
+ manuell minimieren lassen.
+ Allgemein formuliert ist die Bildauflösung der verwendeten Kamera weniger
  wichtig als eine korrekte Belichtung.
  Das liegt daran, dass die präsentierende Person immer in Bewegung ist,
  mal mehr beleuchtet, mal weniger, und somit ein irritierendes Ungleichgewicht
@@ -393,13 +436,13 @@ Beispiel:
 
 \begin_layout Standard
 Abbildung 2 zeigt eine Beamerprojektion einer weissen Fläche.
- Der Raum ist wenig abgedunkelt, damit die Kamera welche die Aufnahme gemacht
+ Der Raum ist wenig abgedunkelt, damit die Kamera, welche die Aufnahme gemacht
  hat, eine weniger starke automatischen Belichtungskorrektur vornimmt.
  Nichtsdestotrotz beträgt die Anzahl völlig weisser Pixel in diesem Bild
  mehr als 11'000.
  Das macht es unmöglich, optisch einen hellen Punkt (Stift) zu finden.
- Eine stärker abgedunkelte Umgebung erhöht den Kontrast und somit auch das
- Problem.
+ Eine stärker abgedunkelte Umgebung erhöht den Kontrast und verstärkt somit
+ auch das Problem.
 \end_layout
 
 \begin_layout Standard
@@ -423,7 +466,7 @@ status open
 \begin_inset Caption
 
 \begin_layout Plain Layout
-Überbelichtetes Kamerabild
+überbelichtetes Kamerabild
 \end_layout
 
 \end_inset
@@ -452,11 +495,13 @@ in dieser Arbeit geschieht dies manuell über ein DirectShow Konfiguraitonsdialo
 
 \end_inset
 
-, erfordert aber einiges an Arbeit (bei Windows schwierig, bei Linux einfacher).
- Die verwendeten Geräte müssten genau bekannt sein, um ihre Treiber konfiguriere
-n zu können.
- Wahrscheinlich stellt dieser Aufwand ein Hindernis dar, welches man eher
- durch Mitliefern einer eigenen Infrarot-Kamera lösen würde.
+, was aber sehr kompliziert und zeitintensiv ist.
+ Zudem ist dieser Prozess bei Windows-Betriebssystemen deutlich aufwändiger
+ als bei Linux.
+ Die verwendeten Geräte müssten genau bekannt sein, damit sich ihre Treiber
+ konfigurieren zu lassen.
+ Wahrscheinlich stellt dieser Aufwand ein Hindernis dar.
+ Dies würde eher durch Mitliefern einer eigenen Infrarot-Kamera überwunden.
  Das hätte den Vorteil, dass sowohl Präsentator als auch Zuschauer nicht
  von sichtbarem Licht abgelenkt würden.
  In dieser Arbeit wird der Einfachheit halber lediglich auf das Finden einer
@@ -470,9 +515,9 @@ Präsentationsgerät
 \end_layout
 
 \begin_layout Standard
-Ein weniger wichtige Rolle als die Kamera spielt der Beamer.
- Weder die Auflösung, noch die Bildwiederholrate spielen eine nennenswerte
- Rolle für die Qualität des Präsentationssystem.
+Ein weniger wichtige Rolle als die Kamera spielt das Präsentationsgerät.
+ Weder die Auflösung noch die Bildwiederholrate sind für die Qualität des
+ Präsentationssystems von nennenswerter Bedeutung.
  Die Helligkeitseinstellung ist jedoch wichtig.
  Der in dieser Arbeit verwendete Beamer beleuchtet die Leinwand sehr stark
  und verstärkt dadurch das Problem der automatischen Belichtungskorrektur
@@ -483,7 +528,7 @@ Ein weniger wichtige Rolle als die Kamera spielt der Beamer.
 \begin_inset Quotes gld
 \end_inset
 
-üblich für eine Präsentation
+für eine üblich Präsentation
 \begin_inset Quotes grd
 \end_inset
 
@@ -625,7 +670,7 @@ Rechts ist das Bild in alle Richtungen verzerrt und stellt somit die grössten
 \begin_layout Standard
 Die Kalibrierung kann die perspektivische Verzerrung nur begrenzt ausgleichen.
  Deshalb kann die Position eines Stiftes nicht immer gut oder in allen Bereichen
- der Leinwand gleich gut erfolgen.
+ der Leinwand gleich präzise gefunden werden.
  Zur Vereinfachung des zu lösenden Problems wird im Folgenden jeweils angenommen
 , dass die perspektivische Verzerrung lediglich auf der Horizontalen (X-Achse)
  der aufgenommenen Bilder verläuft (linke Abbildung).
@@ -634,6 +679,22 @@ Die Kalibrierung kann die perspektivische Verzerrung nur begrenzt ausgleichen.
  werden kann.
  Die Dokumentation der Messresultate wird weiter unten für jedes wichtige
  Verfahren erbracht.
+ Die für die Umsetzung relevanten sind in den Abb.
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:kamera-messung-berechnung"
+
+\end_inset
+
+ und 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:beamer-rueckrechnung-quadratisch"
+
+\end_inset
+
+ dargestellt.
 \end_layout
 
 \begin_layout Subsubsection
@@ -659,8 +720,8 @@ Bildverarbeitung braucht in der Regel viel Rechenleistung.
  Die in dieser Arbeit entwickelte Software berücksichtigt dies, indem zum
  Teil Kompromisse eingegangen werden um den Leistungsanforderungen gerecht
  zu werden.
- Um eine reibungslose Erkennung zu gewährleisten, sollten 2GHz Doppelkernprozess
-oren oder ähnlich verwendet werden.
+ Um eine reibungslose Erkennung zu gewährleisten, sollten 2 GHz Doppelkernprozes
+soren oder ähnliche verwendet werden.
 \end_layout
 
 \begin_layout Subsubsection
@@ -691,7 +752,7 @@ status open
 
 \begin_layout Plain Layout
 Gute Präsentationsweise - Die zeigende Hand ist von Laptopkamera (links
- unten) und Publikum aus (rechts unten) sichtbar.
+ unten) und Publikum (rechts unten) aus sichtbar.
 \end_layout
 
 \end_inset
@@ -709,8 +770,8 @@ Da der Stift immer von der Laptopkamera gesehen werden muss, ist es am Präsenta
 or, die richtige Haltung beim Schreiben anzunehmen.
  Eine gute Art zu präsentieren ist, wenn das Publikum sieht, wo der Präsentator
  hinzeigt.
- Dies hat den Vorteil hat, dass auch die Laptopkamera sieht, wo auf die
- Leinwand geschrieben werden soll.
+ Dies hat den Vorteil, dass auch die Laptopkamera sieht, wo auf die Leinwand
+ geschrieben werden soll.
  Falls sich der Präsentator zwischen Kamera und Leinwand stellt, kann nicht
  mehr geschrieben werden.
  Da in diesem Fall meist auch das Publikum nichts mehr sieht, wird diese
@@ -736,8 +797,8 @@ Presentation Writer
  auf die Genauigkeit des Resultates.
  Eine erfolgreiche Kalibrierung der Kamera, gute Einstellungen der Bildfilter
  und genügend gute Abbildungsalgorithmen mit Interpolation machen dies möglich.
- Optimierungen wie eine hochauflösende Kamera würden noch genauere und bessere
- Resultate liefern.
+ Optimierungen, wie eine hochauflösende Kamera, würden noch genauere und
+ bessere Resultate liefern.
  Aus Zeitgründen wurde in der Software zum Teil auf Optimierungen verzichtet.
  Jene die erschlossen wurden, sind jedoch in der schriftlichen Arbeit jeweils
  kurz erwähnt.
@@ -745,15 +806,15 @@ Presentation Writer
 
 \begin_layout Standard
 Im Folgenden dieser Arbeit wird genauer darauf eingegangen, wie alle diese
- Zwischenschritte vom Kamerabild bis zum gezeichneten Bildpunkt auf dem
+ Zwischenschritte, vom Kamerabild bis zum gezeichneten Bildpunkt, auf dem
  Beamer analysiert und gelöst wurden.
- Zum einen werden Ideen zum Finden eines Stiftes in einem Kamerabild diskutiert
+ Zum einen werden Ideen zum Finden eines Stiftes in einem Kamerabild diskutiert,
  zum anderen werden verschiedene Ansätze erarbeitet, die eine näherungsweise
  korrekte Abbildung von Kamera- zu Beamerkoordinaten ermöglichen.
  Im Anhang werden erweiterte oder fehlgeschlagene Ideen genauer erläutert.
- Zudem wird dort auch die Vision vom virtuellen Touchpanel ausgearbeitet,
- eine Idee, die eventuell auch mit einer optischen Kamera, aber ohne Stift
- lösbar ist.
+ Zudem wird dort auch die Vision vom virtuellen Touchpanel ausgearbeitet.
+ Das ist eine Idee, die eventuell auch mit einer optischen Kamera, aber
+ ohne Stift lösbar ist.
 \end_layout
 
 \begin_layout Standard
@@ -874,7 +935,7 @@ te Beamerbild abgebildet werden.
 \end_inset
 
 .
- Die X-Koordinate läuft im Bild von Links nach rechts.
+ Die X-Koordinate läuft im Bild von links nach rechts.
  Die Y-Koordinate läuft von oben nach unten.
 \end_layout
 
@@ -999,7 +1060,7 @@ Projizieren und Messen
 \end_layout
 
 \begin_layout Standard
-Die Lichtverhältnisse sind entscheidend für eine erfolgreiche Messungen.
+Die Lichtverhältnisse sind entscheidend für erfolgreiche Messungen.
  Für die Kalibrierung projizierte Referenzbilder haben Einfluss auf die
  automatische Belichtungskorrektur der Kamera.
  Grosse Helligkeitswerte im projizierten Bild verursachen schnelles Abdunkeln
@@ -1131,21 +1192,22 @@ name "sub:Erkennen-von-Vierecken"
 \end_layout
 
 \begin_layout Standard
-Im folgenden Abschnitt wird beschrieben wie projizierte Rechtecke auf dem
+Im folgenden Abschnitt wird beschrieben, wie projizierte Rechtecke auf dem
  Kamerabild wiedererkannt werden können.
- Die Grösse ist sehr unterschiedlich, je nach Verfahren von der ganzen Bildschir
-mgrösse bis zu wenigen Pixeln auf dem Kamerabild.
- Die Hauptziele dieses Verfahrens sind einerseits Korrektheit als auch Genauigke
-it, wobei verschiedene Interpolationsverfahren auch andere Ansprüche haben.
+ Die Grösse ist sehr unterschiedlich.
+ Je nach Verfahren beträgt der Unterschied die ganze Bildschirmgrösse oder
+ nur wenige Pixel auf dem Kamerabild.
+ Die Hauptziele dieses Verfahrens sind sowohl Korrektheit als auch Genauigkeit,
+ wobei verschiedene Interpolationsverfahren auch andere Ansprüche haben.
  Die Korrektheit beinhaltet, dass alle Rechtecke erkannt werden und gleichzeitig
- das Rauschen auf ein Mass gesenkt wird, sodass mit Filtern nach Grösse
- und Helligkeitswerte, dass diese klar unterschieden werden können.
+ das Rauschen auf ein Mass gesenkt wird, damit diese mit Grösse- und Helligkeits
+filter klar unterschieden werden können.
  Zudem darf ein Rechteck keinesfalls so aufgeteilt werden, dass es doppelt
  erkannt wird.
  Die Korrektheit ist in diesem Fall die Genauigkeit der Kanten an den Ecken.
  Diese sind relativ wichtig für die genaue Erkennung der Eckpunkte.
- Wenn die Kanten an den Ecken nur leicht abgerundet sind, kann das den resultier
-enden Eckpunkt relativ stark beeinflussen.
+ Wenn die Kanten an den Ecken nur leicht abgerundet sind, kann das einen
+ resultierenden Eckpunkt relativ stark beeinflussen.
 \end_layout
 
 \begin_layout Subsubsection
@@ -1164,8 +1226,8 @@ Bei einem Differenzbild wird auf zwei Bildern für jeden Pixel die Differenz
  gebildet.
  Somit entsteht ein Bild auf dem alle statischen Regionen entfernt sind.
  Dazu gehört zum Beispiel der Hintergrund eines Bildes.
- Es ist eine Region, die sich auf zwei Bilder nicht ändert und darum verschwinde
-t.
+ Er ist eine Region, die sich auf zwei Bildern nicht ändert und darum verschwind
+et.
 \end_layout
 
 \begin_layout Paragraph
@@ -1193,8 +1255,8 @@ reference "sub:Anhang-Eigenbau"
  Dieses Verfahren kann auch auf Farbkanäle erweitert werden.
  Es funktioniert relativ gut auf Bildern mit konstanter Belichtungskorrektur
  und stark unterschiedlichen Helligkeitsverteilungen.
- Diese zwei Faktoren sind in der Problemstellung dieser Arbeit nicht positiv
- zu beantworten.
+ Diese zwei Faktoren sind in der Problemstellung dieser Arbeit jedoch nicht
+ positiv zu beantworten.
  Deshalb wurde eine Weiterentwicklung dieser Lösung verworfen.
 \end_layout
 
@@ -1210,7 +1272,8 @@ name "par:Analyse-Einfacher-Differenzbildansatz"
 \end_layout
 
 \begin_layout Standard
-Bei diesen Verfahren wird ein universeller Differenzbild-Hintergrund verwendet.
+Bei den nun folgenden Verfahren wird ein universeller Differenzbild-Hintergrund
+ verwendet.
  Damit kann der statische Hintergrund des Bildes gut entfernt werden und
  es muss nur ein zusätzliches Bild projiziert werden.
  Somit wird nur wenig zusätzliche Zeit für die Kalibrierung benötigt.
@@ -1220,7 +1283,7 @@ Bei diesen Verfahren wird ein universeller Differenzbild-Hintergrund verwendet.
  selbst ändert.
  Da die Änderung der Folie der Sinn jeder Präsentationssoftware ist, wurde
  dieser Ansatz verworfen.
- Der genaue Ablauf des Verfahrens ist im Anhang 
+ Der genaue Ablauf des Verfahrens ist im Anhang im Kapitel 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sub:Anhang-Einfacher-Differenzbild-Kalibrat"
@@ -1243,23 +1306,16 @@ name "par:Individuelle-Differenzbilder"
 
 \begin_layout Standard
 Zu jedem Referenzbild, das mit der Kamera gemessen werden soll, werden zwei
- Bilder generiert, deren Differenzbild genau dem gesuchten Bild entspricht.
+ Bilder generiert, deren Differenzbild genau einem gesuchten Musterbild
+ entspricht.
  Diese Teilbilder müssen eine ähnliche Helligkeitsverteilung aufweisen.
  Das verdoppelt die Kalibrierungszeit dadurch, dass die Zahl der anzuzeigenden
  Bilder verdoppelt wird.
- Das Resultat davon sind sehr gute Differenzbilder, deren Kanten sehr genau
- sind.
+ Es resultieren sehr gute Differenzbilder mit genauen Kanten.
  Die Kalibrierungszeit liegt dabei immer noch im Rahmen des zumutbaren.
- Es entspricht insofern der Philosophie 
-\begin_inset Quotes gld
-\end_inset
-
-Qualität vor Quantität
-\begin_inset Quotes grd
-\end_inset
-
- als dass eventuell zusätzlich noch nutzbare Information auf das Wesentliche
- reduziert wird.
+ Das Verfahren entspricht trotzdem den von uns gestellten Anforderungen,
+ da eventuell zusätzlich noch nutzbare Information auf das Wesentliche reduziert
+ wird.
 \end_layout
 
 \begin_layout Subsubsection
@@ -1276,10 +1332,10 @@ name "sub:Histogramm-Analyse"
 \begin_layout Standard
 Bei der Histogramm-Analyse werden keine Differenzbilder verwendet.
  Stattdessen wird mit den aktuellen Kamerabildern gearbeitet.
- Darauf wird die durchschnittliche Helligkeitsverteilung und die Standartabweich
+ Darauf wird die durchschnittliche Helligkeitsverteilung und die Standardabweich
 ung analysiert.
- Alles was heller ist wird akzeptiert.
- Dadurch müssen bei der Kalibration keine zusätzlichen Bilder angezeigt
+ Alles was heller ist, wird akzeptiert.
+ Dadurch müssen bei der Kalibrierung keine zusätzlichen Bilder angezeigt
  werden.
  Analysen haben jedoch gezeigt, dass der Helligkeitsunterschied zwischen
  verschiedenen Bildteilen (z.B.
@@ -1320,8 +1376,8 @@ name "sub:Kalibrierung:-Referenzpunkte"
 \begin_layout Standard
 Der Beginn der Kalibrierung bildet das Finden von Referenzpunkten.
  Diese Punkte bilden die Orientierung für darauf aufbauende Abbildungen.
- Je nach Güte der Abbildung sind mehr oder weniger gemessene Referenzpunkte
- nötig.
+ Je nach Genauigkeit der Abbildung sind mehr oder weniger gemessene Referenzpunk
+te nötig.
  Die Abbildung vom Kamerabild zum ursprünglich projizierten Beamerbild ist
  eine Transformation 
 \begin_inset Formula $\left(x_{k},y_{k}\right)\rightarrow\left(x_{b},y_{b}\right)$
@@ -1350,8 +1406,8 @@ key "Literatur/ieee_Calibration.pdf"
 \end_inset
 
  beschrieben.
- Fällt einem Zuschauer nicht auf, ist aber für die folgenden Algorithmen
- ziemlich wichtig.
+ Die Trapezkorrektur des Beamers fällt einem Zuschauer nicht auf, ist aber
+ für die folgenden Algorithmen ziemlich wichtig.
  Falls zusätzlich noch die Brennweite der Kamera
 \begin_inset Foot
 status open
@@ -1365,14 +1421,13 @@ Diese resultiert in einer Linsenverzerrung
  ausser Acht gelassen und mit einer bekannten Bildskalierung gearbeitet
  wird, hat die Transformation lediglich 8 Freiheitsgrade, welche durch 4
  Messpunkte gebunden werden können.
- Die lineare und die Implementationen mit Integralansatz benötigen nur die
- vier gemessenen Eckpunkte der Projektion und lassen somit Linsen und andere
- Effekte ausser Acht.
+ Die Implementationen des linearen- und des Integralansatzes benötigen nur
+ die vier gemessenen Eckpunkte der Projektion und lassen somit Linsen und
+ andere Effekte ausser Acht.
  Messungen haben ergeben, dass auftretende Ungenauigkeiten regelmässig sind
  und sich grösstenteils auf die horizontale Achse beschränken.
  Durch eine einfache Korrekturfunktion lassen sich gewisse Effekte vermindern,
- sodass ein gutes Resultat erreicht werden kann eine weitere Verbesserung
- bringt eine Mittlung der Resultate.
+ dass ein gutes Resultat erreicht werden kann.
 \end_layout
 
 \begin_layout Standard
@@ -1382,9 +1437,10 @@ Bei dieser Arbeit wurden folgende Möglichkeiten, Referenzpunkte zu erhalten,
  Die Ansprüche an die Verfahren sind relativ hoch, da ein einzelner falsch
  zugeordneter Referenzpunkt die Interpolation auf einer grossen Fläche stark
  beeinträchtigen oder verunmöglichen kann.
- Dafür ist die Quantität nicht besonders wichtig.
- Wenn einzelne Punkte fehlen, beeinträchtigt das die Qualität der Interpolation,
- was aber nur geringe Auswirkungen hat, die kaum bemerkbar sind.
+ Dafür ist die Quantität nicht besonders wichtig sobald die für das Verfahren
+ minimal erforderliche Anzahl korrekt zugeordet wurde.
+ Wenn dann einzelne Punkte fehlen, beeinträchtigt das die Qualität der Interpola
+tion, was aber nur geringe Auswirkungen hat, die kaum bemerkbar sind.
 \end_layout
 
 \begin_layout Subsubsection
@@ -1394,16 +1450,16 @@ Dies Erkennen der Bildschirmgrenze
 \begin_layout Standard
 Mit dem nachfolgend beschriebenen Verfahren werden lediglich die Ecken des
  Bildschirms erkannt.
- Dafür gibt es mehrere Verfahren, die im nächsten Punkt evaluiert werden.
- Anhand dieser vier Punkte kann die perspektivische Verzerrung schon korrigiert
+ Dafür gibt es mehrere Varianten, die im nächsten Abschnitt evaluiert werden.
+ Anhand von vier Eckpunkten kann die perspektivische Verzerrung schon korrigiert
  werden.
  Aufgrund der Einfachheit, ist dieses Verfahren sehr stabil und fehlertolerant.
  Ein weiterer Vorteil besteht darin, dass der Benutzter selber verifizieren
  kann, anhand des Kamerabildes, ob die Ecken richtig erkannt wurden.
  Ein Nachteil dieses Verfahrens besteht darin, dass es keine zusätzlichen
  Referenzpunkte gibt, um die Erkennung zu verbessern.
- Dieses Verfahren wurde im Prototyp eingesetzt, da es gute Genauigkeit und
- Fehlertoleranz mitbringt.
+ Es wurde jedoch trotzdem im Prototyp eingesetzt, da es gute Genauigkeit
+ und Fehlertoleranz mitbringt.
 \end_layout
 
 \begin_layout Subsubsection
@@ -1414,7 +1470,7 @@ Ordnung kleiner Vierecke
 In den folgenden Algorithmen werden mehrfarbige Schachbrettmuster analysiert.
  Dies hat den Vorteil, dass die Farbkanäle getrennt sind, und so ein Gitter
  mit Quadraten resultiert, die nur einen direkten Nachbarn haben.
- Dieser Ansatz ist im Anhang bei 
+ Dieser Ansatz ist im Anhang bei Kapitel 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "fig:Farbmuster"
@@ -1422,8 +1478,9 @@ reference "fig:Farbmuster"
 \end_inset
 
  noch genauer beschrieben.
- Dieses Verfahren hat keine Gemeinsamkeiten mit dem Schachbrettmuster für
- die Bildschirmdetektion.
+ Die folgend beschriebenen Varianten können generell für das Finden von
+ Vierecken verwendet werden und haben keinen direkten Zusammenhang mit der
+ Bildschirmdetektion per Schachbrettmuster.
 \end_layout
 
 \begin_layout Paragraph
@@ -1432,9 +1489,9 @@ Rekursives Traversieren von Vierecken
 
 \begin_layout Standard
 Auf einem mehrfarbigen Schachbrettmuster werden Quadrate erkannt.
- Danach können alle Quadrate rekursiv iteriert werden.
- Die Iteration erhält die Struktur eines Baumes.
- Das Verfahren ist in der Theorie sehr stabil und und kann sehr weit angepasst
+ Alle Quadrate werden vom Rand her durch rekursive Iteration erkannt.
+ Die Iteration hat die Struktur eines Baumes.
+ Das Verfahren ist in der Theorie sehr stabil und kann sehr fein angepasst
  werden.
  Der genaue Ablauf dieses Verfahrens ist im Anhang 
 \begin_inset CommandInset ref
@@ -1445,17 +1502,18 @@ reference "sub:Anhang-Rekursiv"
 
  beschrieben.
  Bei fehlenden Erkennungen kann der Algorithmus sogar um eine Lücke herumgehen.
- Bei Versuchen haben wurde jedoch festgestellt, dass dieses Verfahren sehr
- fehleranfällig ist.
+ Bei Versuchen wurde jedoch festgestellt, dass dieses Verfahren sehr fehleranfäl
+lig ist.
  Es sind nur 90% Korrektheit möglich.
  Verbesserungen lassen sich zwar umsetzten, jedoch führen diese zu einer
- stark erhöhten Komplexität und tragen nur sehr wenig zur Verbesserung bei.
+ stark erhöhten Komplexität und tragen nur sehr wenig zu einer Verbesserung
+ bei.
  Weitere Probleme bereiten diesem Algorithmus nicht erkannte Quadrate, da
  dann die Diagonale als direkter Nachbar erkannt wird, was verheerende Folgen
  hat.
  Zudem ist keine Fehlerdetektion möglich weil eine falsche Annahme getroffen
- wird, die später weder korrigiert noch detektiert werden kann, da die weitere
- Detektion von dieser abhängt.
+ wird, die später weder korrigiert noch detektiert werden kann, da jede
+ weitere Detektion von ihr abhängt.
 \end_layout
 
 \begin_layout Paragraph
@@ -1488,10 +1546,10 @@ reference "sub:Anhang-Nutzung-der-Interpolation"
  Er ist allerdings auch auch von einem guten Interpolationsverfahren abhängig,
  was wiederum Referenzpunkte erübrigt, da diese nicht mehr benötigt werden.
  Dieser Algorithmus kann durch eine Vergrösserung der Rechtecke stabilisiert
- werden, da die Flächen vergrössert werden , was wiederum zu einer geringeren
+ werden, da die Flächen vergrössert werden, was wiederum zu einer geringeren
  Fehlerwahrscheinlichkeit führt.
  Dies resultiert aber wiederum in weniger Referenzpunkten, da weniger angezeigt
- werden kann.
+ werden können.
  Mit einem schlechten Interpolationsverfahren kann es zu gravierenden Fehlerkenn
 ungen kommen.
 \end_layout
@@ -1504,14 +1562,15 @@ K-Means Clustering
 Hiermit werden auf dem Bildschirm immer feiner aufgeteilte Cluster erstellt.
  Dieses Verfahren bietet gute Möglichkeiten zur Fehlerdetektion und liefert
  gute Ergebnisse.
- Bilder und eine detaillierte Beschreibung ist im Anhang 
+ Bilder und eine detaillierte Beschreibung ist im Anhang unter Kapitel 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sub:Anhang-K-Means-Cluster"
 
 \end_inset
 
- und ein gutes Paper dazu ist z.B.
+ zu finden.
+ Die Autoren empfehlen dazu das Paper 
 \begin_inset CommandInset citation
 LatexCommand cite
 key "Literatur/ConstrainedKmeans.pdf"
@@ -1519,17 +1578,17 @@ key "Literatur/ConstrainedKmeans.pdf"
 \end_inset
 
 .
- Mit der Fehlerdetektion können alle üblichen Fehlerkennungen ausgeschlossen
+ Mit der Fehlerdetektion können alle üblichen Fehlkennungen ausgeschlossen
  werden.
- Allerdings ist es ziemlich intolerant gegenüber Fehlerkennungen wie z.B.
- Rauschen oder fehlende Erkennungen und stellt ziemlich hohe Anforderungen
- an das Kamerabild.
+ Allerdings ist sie ziemlich intolerant gegenüber Fehlerkennungen wie z.B.
+ Rauschen oder fehlende Quadrate.
+ Zudem stellt sie ziemlich hohe Anforderungen an das Kamerabild.
  Wenn das Bild auch nach mehreren Versuchen nicht korrekt erkannt werden
- kann, scheitert die Kalibration.
+ kann, scheitert die Kalibrierung.
  Danach müsste der Benutzer die Beleuchtung ändern oder seine Webcam umpositioni
 eren.
- Mit gewissen Webcams könnte eine Kalibration sogar unmöglich sein, wenn
- deren Bild den Ansprüchen nicht genügt.
+ Nicht alle Webcams liefern Bilder, die auch bei Optimalbedingungen den
+ Qualitätsansprüchen dieses Ansatzes genügen.
  Ebenso ist die Anzahl der nutzbaren Referenzpunkte von der Kameraauflösung
  abhängig.
  Dieses Verfahren ist sehr genau und stabil, jedoch stellt es erhöhte Anforderun
@@ -1548,8 +1607,8 @@ es einen ganzen dreidimensionalen Raum zu rekonstruieren.
  Rücktransformation auf den Raum erlaubt.
  Da Abbildungen sich in dieser Arbeit jeweils auf eine einzelne Ebene beziehen,
  hätte der OpenCV-Algorithmus stark angepasst werden müssen.
- Dies war uns jedoch aufgrund der enormen Komplexität dieses Codes nicht
- einfach möglich.
+ Dies war jedoch aufgrund der enormen Komplexität dieses Codes nicht einfach
+ möglich.
  In einem weiteren Versuch wurde mit verschieden Testbildern versucht, einzelne
  Transformationsmatrizen zu erhalten.
  OpenCV hat jedoch zu keinem einzigen Testbild ein Resultat geliefert, obwohl
@@ -1557,7 +1616,7 @@ es einen ganzen dreidimensionalen Raum zu rekonstruieren.
  Zudem liefert OpenCV keine Fehlerbeschreibungen, die auf die Möglichkeit
  von Anpassungen hingewiesen hätten.
  Ein weiterer Nachteil besteht darin, dass das komplette 600 MB grosse Framework
- mitgeliefert werden müsste, auch wenn nur einen Teil davon verwendet wird.
+ mitgeliefert werden müsste, auch wenn nur ein Teil davon verwendet wird.
 \end_layout
 
 \begin_layout Subsection
@@ -1597,11 +1656,10 @@ Linear
 \begin_layout Standard
 Der lineare Ansatz berücksichtigt weder perspektivische Verzerrung noch
  Linseneffekte.
- Es wird davon ausgegangen, dass die Verhältnisse der Punkt zu den Rändern
+ Es wird davon ausgegangen, dass die Verhältnisse der Punkte zu den Rändern
  in beiden Abbildungen identisch sind.
  Wenn keine perspektivische Verzerrung vorhanden ist, funktioniert dieses
  Verfahren korrekt.
- Sonst werden keine Anforderungen an das Bild gestellt.
  Das heisst, dass die Genauigkeit dieses Verfahrens abhängig von der Distanz
  zwischen der Linse des Beamers und der Kamera ist.
  Wenn diese nebeneinanderstehen funktioniert dieses Verfahren sehr gut.
@@ -1609,7 +1667,7 @@ Der lineare Ansatz berücksichtigt weder perspektivische Verzerrung noch
  Da dieses Verfahren nur in eine Richtung funktioniert, müssen einmalig
  alle möglichen Werte berechnet werden, dafür sind nachher keine Berechnungen
  mehr nötig, ein einfacher Lookup reicht dafür.
- Die komplette Formel finden sie im Anhang 
+ Die komplette Formel befindet sich im Anhang unter Kapitel 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sub:Anhang-Lineare-Interpolation"
@@ -1662,7 +1720,7 @@ Der lineare Ansatz wird mathematisch durch eine Lochkamera und den Strahlensatz
  beschrieben.
  Der Strahlensatz funktioniert nur, wenn Kamerabild und Leinwand zueinander
  parallel sind.
- Einem üblichen Setup von Beamer und Laptop ist dies nicht der Fall.
+ In einem üblichen Setup von Beamer und Laptop ist dies nicht der Fall.
  In Abb.
  
 \begin_inset CommandInset ref
@@ -1672,8 +1730,17 @@ reference "fig:linear-lochkamera"
 \end_inset
 
  dies ersichtlich.
- Falls Beamer und Kamera nah beieinander stehen, könnte die Genauigkeit
- des linearen Ansatzes reichen.
+ Die Messung dazu befindet sich im Anhang in Abb.
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:messung-linearer-ansatz-0grad"
+
+\end_inset
+
+.
+ Sie zeigt, dass der lineare Ansatz sehr gute Resultate liefert, wenn Beamer
+ und Kamera nahe beieinander stehen.
 \end_layout
 
 \begin_layout Standard
@@ -1723,7 +1790,7 @@ Baryzentrische Koordinaten
 \end_layout
 
 \begin_layout Standard
-Hierbei werden die Baryzentrischen Koordinaten
+Hierbei werden die baryzentrischen Koordinaten
 \begin_inset Foot
 status open
 
@@ -1737,7 +1804,7 @@ reference "sub:Anhang-Baryzentrische-Koordinaten"
 
  kurz erklärt.
  Ausführliche Literatur zu diesem Thema findet man im Internet oder in einem
- der Papers: 
+ der Paper: 
 \begin_inset CommandInset citation
 LatexCommand cite
 key "Literatur/Barycentric.pdf,Literatur/general_barycentric_resampeling.pdf,Literatur/Hormann.pdf,Literatur/RiffelmacherSlides.pdf,Literatur/WaScHiDe2007_ACM.pdf"
@@ -1753,13 +1820,14 @@ key "Literatur/Barycentric.pdf,Literatur/general_barycentric_resampeling.pdf,Lit
  alle Resultate gemittelt.
  Dadurch erhält man eine Genauigkeit, die proportional zur Anzahl Referenzpunkte
  steigt.
- Luden ist der Algorithmus relativ einfach verständlich und gut testbar.
- Diese Berechnung berücksichtigt allerdings nicht, dass die Abbildung nicht
- Winkeltreu ist, was zu Fehlern führt und zu Ungenauigkeiten führt.
- Für die Mittlung ist leider nur eine begrenzte Gewichtung möglich, da keine
- Abstandsfunktion definiert ist.
+ Zudem ist der Algorithmus relativ einfach verständlich und gut testbar.
+ Die Berechnung mit baryzentrischen Koordinaten berücksichtigt allerdings
+ nicht, dass die Abbildung nicht Winkeltreu ist, was zu Fehlern und Ungenauigkei
+ten führt.
+ Für die Mittelung ist leider nur eine begrenzte Gewichtung möglich, da
+ keine Abstandsfunktion definiert ist.
  Durch Übergänge und die mangelnde Gewichtung erhält man an den Übergängen
- unter Umständen Knicke in geraden Linien, was der4 Benutzer als störend
+ unter Umständen Knicke in geraden Linien, was der Benutzer als störend
  empfindet.
  Wenn viele Dreiecke verwendet werden, führt dies zu einer besseren Korrektur
  von lokalen Ungenauigkeiten und etwas sanfteren Übergängen, allerdings
@@ -1818,8 +1886,8 @@ Optimierung: Baryzentrische Vierecke
 \begin_layout Standard
 Durch eine eigene Erweiterung der baryzentrischen Koordinaten konnte berücksicht
 igt werden, dass Vierecke nicht winkeltreu sind.
- Dies geschieht durch einen vierten Punkt im Koordinatensystem.
- Dies führt zu einer viel genaueren Interpolation.
+ Dies geschieht durch einen vierten Punkt im Koordinatensystem und führt
+ zu einer viel genaueren Interpolation.
  Der Algorithmus benötigt jedoch eine strukturierte Ordnung der Referenzpunkte,
  was ihn geringfügig komplizierter macht.
  Allerdings ist durch die Ordnung auch eine Gewichtung möglich.
@@ -1842,6 +1910,13 @@ Es wurde zu den bestehenden Gleichungen der baryzentrischen Dreieckskoordinaten
 \end_layout
 
 \begin_layout Plain Layout
+\begin_inset VSpace medskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
 \begin_inset Box Frameless
 position "t"
 hor_pos "c"
@@ -1856,51 +1931,50 @@ height_special "totalheight"
 status open
 
 \begin_layout Plain Layout
-TL 
-\begin_inset Formula $:=$
+\begin_inset Formula $P_{TL}:=$
 \end_inset
 
- Obere linke Ecke
+ obere linke Ecke
 \begin_inset Newline newline
 \end_inset
 
-TR 
-\begin_inset Formula $:=$
+
+\begin_inset Formula $P_{TR}:=$
 \end_inset
 
  obere rechte Ecke
 \begin_inset Newline newline
 \end_inset
 
-BL 
-\begin_inset Formula $:=$
+
+\begin_inset Formula $P_{BL}:=$
 \end_inset
 
  untere linke Ecke
 \begin_inset Newline newline
 \end_inset
 
-BR 
-\begin_inset Formula $:=$
+
+\begin_inset Formula $P_{BR}:=$
 \end_inset
 
-untere rechte Ecke
+ untere rechte Ecke
 \begin_inset Newline newline
 \end_inset
 
 
-\begin_inset Formula $P_{X},P_{Y}$
+\begin_inset Formula $P:=\left(P_{X},P_{Y}\right)$
 \end_inset
 
- : zu bestimmender Punkt
+: zu transformierender Punkt
 \begin_inset Newline newline
 \end_inset
 
 
-\begin_inset Formula $T_{X},T_{Y}$
+\begin_inset Formula $T:=\left(T_{X},T_{Y}\right)$
 \end_inset
 
-: Provisorisches Resultat
+: transformierter Punkt
 \end_layout
 
 \end_inset
@@ -1911,7 +1985,7 @@ untere rechte Ecke
 \begin_layout Plain Layout
 \begin_inset Formula 
 \begin{equation}
-T=TL*(1-P_{x})*(1-P_{Y})+BL*P_{Y}*(1-P_{X})+TR*(1-P_{Y})*P_{X}+BR*P_{X}*P_{Y}
+T=P_{TL}(1-P_{x})(1-P_{Y})+P_{BL}P_{Y}(1-P_{X})+P_{TR}(1-P_{Y})P_{X}+P_{BR}P_{X}P_{Y}
 \end{equation}
 
 \end_inset
@@ -1933,8 +2007,8 @@ Diese Gleichung formuliert eine Transformation vom Beamer zum Kamerabild.
 \begin_inset Formula 
 \begin{equation}
 Det\left[\begin{array}{cc}
-(1-X)*TL+X*TR-P & (1-X)*BL+X*BR-P\\
-(1-Y)*TL+Y*TR-P & (1-Y)*BL+Y*BR-P
+(1-x)P_{TL}+xP_{TR}-P & (1-x)P_{BL}+xP-P\\
+(1-y)P_{TL}+yP_{TR}-P & (1-y)P_{BL}+yP_{BR}-P
 \end{array}\right]\label{eq:bary-detgleichung}
 \end{equation}
 
@@ -1945,13 +2019,21 @@ Det\left[\begin{array}{cc}
 
 \begin_layout Plain Layout
 Daraus resultieren zwei Gleichungen.
- Diese können an den Nullstellen nach X und Y aufgelöst werden:
+ Diese können an den Nullstellen nach 
+\begin_inset Formula $x$
+\end_inset
+
+ und 
+\begin_inset Formula $y$
+\end_inset
+
+ aufgelöst werden:
 \end_layout
 
 \begin_layout Plain Layout
 \begin_inset Formula 
 \begin{equation}
-Solve\left(Formel\:(\ref{eq:bary-detgleichung})=0,\{x,y\}\right)
+Solve\left(Formel\:(\ref{eq:bary-detgleichung})=0,\left\{ x,y\right\} \right)
 \end{equation}
 
 \end_inset
@@ -1960,11 +2042,11 @@ Solve\left(Formel\:(\ref{eq:bary-detgleichung})=0,\{x,y\}\right)
 \end_layout
 
 \begin_layout Plain Layout
-Daraus resultieren Gleichungen, anhand derer die Beamerkoordinaten aus Kamerakoo
-rdinaten berechnet werden können.
- Es ist zu beachten, dass diese Berechnung lediglich eine geometrisch gleichmäss
-ige Verzerrung ausgleicht.
- Perspektivische Verzerrungen bleiben dadurch immernoch bestehen.
+Aus dem Resultat können die Beamerkoordinaten aus Kamerakoordinaten berechnet
+ werden.
+ Aufgrund der Länge der resultierenden Gleichung wird hier nicht weiter
+ auf das Auflösen der Gleichung eingegangen.
+ 
 \end_layout
 
 \begin_layout Plain Layout
@@ -1988,8 +2070,19 @@ name "alg:Erweiterte-baryzentrische-Koordi"
 
 \end_inset
 
- Diese Gleichungen funktionieren auch in der näheren Umgebung ausserhalb
- des Vierecks noch.
+
+\end_layout
+
+\begin_layout Paragraph
+Bemerkung
+\end_layout
+
+\begin_layout Standard
+Es ist zu beachten, dass dieser Algorithmus lediglich eine geometrisch gleichmäs
+sige Verzerrung ausgleicht.
+ Perspektivische Verzerrungen bleiben bestehen.
+ Zudem funktioniert er auch in der näheren Umgebung ausserhalb des Vierecks
+ noch.
 \end_layout
 
 \begin_layout Subsubsection
@@ -2004,9 +2097,6 @@ Der schlussendlich in der Software verwendete Ansatz zur Punktabbildung
  Die mathematische Umkehrung wird erst nach der nun folgenden Herleitung
  gemacht.
  
-\end_layout
-
-\begin_layout Standard
 \begin_inset Float figure
 wide false
 sideways false
@@ -2115,14 +2205,14 @@ Beamer
 \begin_inset Formula $x_{b}$
 \end_inset
 
- ab und ist durch das Lösen der quadratischen Gleichung 
+ ab und ist durch das Lösen der quadratischen Gleichung (
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "eq:xk-aus-xb-quadratisch"
 
 \end_inset
 
- herleitbar.
+) herleitbar.
 \end_layout
 
 \begin_layout Standard
@@ -2157,14 +2247,14 @@ status open
 \begin_inset Caption
 
 \begin_layout Plain Layout
-Graph der Gleichung 
+Graph der Gleichung (
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "eq:xb-aus-xk-quadratisch"
 
 \end_inset
 
- für 
+) für 
 \begin_inset Formula $a=2$
 \end_inset
 
@@ -2212,7 +2302,7 @@ Zu beachten gilt, dass der Ursprung des verzerrten Beamerbildes nicht unbedingt
  Es wird jeweils nur der Offset zum Kamerabildanfang verwendet.
  Dies hat zur Folge, dass resultierende X-Koordinaten gleichmässig zu lang
  oder zu kurz sind (je nach Abbildungsrichtung).
- Damit nicht der Schnittpunkt der zwei Ebenen (Kamera und Beamer) berechnet
+ Damit der Schnittpunkt der zwei Ebenen (Kamera und Beamer) nicht berechnet
  werden muss, wird in dieser Arbeit jeweils die berechnete X-Strecke auf
  die berechnete Maximalstrecke gegenüber der gemessenen Maximalstrecke normiert
  (Stauchung 
@@ -2251,27 +2341,27 @@ Für die Abbildung der Y-Koordinaten wird ein von X abhängiger linearer Ansatz
 \end_inset
 
  durchlaufen.
- Die Gleichung 
+ Die Gleichung (
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "eq:yk-aus-yb-linear"
 
 \end_inset
 
- beschreibt die Abbildung 
+) beschreibt die Abbildung (
 \shape italic
 Beamer
 \begin_inset Formula $\rightarrow$
 \end_inset
 
-Kamera.
- 
+Kamera
 \shape default
-Dabei beschreibt 
+).
+ Dabei ist 
 \begin_inset Formula $y_{k0}$
 \end_inset
 
- den vertikalen Offset zwischen linker und rechter Bildlinie.
+ der vertikale Offset zwischen linker und rechter Bildlinie.
 \end_layout
 
 \begin_layout Standard
@@ -2302,14 +2392,14 @@ Beamer
 \begin_inset Formula $y_{b}$
 \end_inset
 
- ab und ist mit Gleichung 
+ ab und ist mit Gleichung (
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "eq:yb-aus-yk-linear"
 
 \end_inset
 
- beschrieben.
+) beschrieben.
  Steigung und Offset der Geraden wird dabei durch 
 \begin_inset Formula $x_{b}$
 \end_inset
