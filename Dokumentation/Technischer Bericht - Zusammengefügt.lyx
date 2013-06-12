@@ -1244,26 +1244,44 @@ status open
 
 \end_inset
 
-.
- Falls die Brennweite ausser Acht gelassen und mit einer bekannten Bildskalierun
-g gearbeitet wird, hat die Transformation lediglich 8 Freiheitsgrade, welche
- durch 4 Messpunkte gebunden werden können.
- Unsere Implementationen der Abbildungsberechnungen verlassen sich jeweils
- auf die vier gemessenen Eckpunkte der Projektion und lassen somit Linseneffekte
- ausser Acht.
+, wenn man Faktoren wie den Algorithmus des Beamers für die Trapezkorrektur
+ und dessen Linsenverzerrung ausser Acht lässt und annimmt, dass der Beamer
+ das Bild korrekt projiziert, was nicht immer der Fall ist.
+ Dies Fällt einem Zuschauer nicht auf, ist aber für die folgenden Algorithmen
+ ziemlich wichtig.
+ Falls zusätzlich noch die Brennweite der Kamera
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+Diese resultiert in einer Linsenverzerrung
+\end_layout
+
+\end_inset
+
+ ausser Acht gelassen und mit einer bekannten Bildskalierung gearbeitet
+ wird, hat die Transformation lediglich 8 Freiheitsgrade, welche durch 4
+ Messpunkte gebunden werden können.
+ Die lineare und die Implementationen mit Integralansatz benötigen nur die
+ vier gemessenen Eckpunkte der Projektion und lassen somit Linsen und andere
+ Effekte ausser Acht.
  Messungen haben ergeben, dass auftretende Ungenauigkeiten regelmässig sind
  und sich grösstenteils auf die horizontale Achse beschränken.
- Durch eine einfache Korrekturfunktion lassen sich sichtbare Effekte vermeiden.
- 4 Referenzpunkte reichen also für das zu entwickelnde Präsentationssystem.
- 
+ Durch eine einfache Korrekturfunktion lassen sich gewisse Effekte vermindern,
+ sodass ein gutes Resultat erreicht werden kann eine weitere Verbesserung
+ bringt eine Mittlung der Resultate.
 \end_layout
 
 \begin_layout Standard
-TODO: Bei dieser Arbeit wurden folgende Möglichkeiten, Referenzpunkte zu
- erhalten evaluiert und getestet: Mehr Punkte mehr Interpolation.
- Trapezkorrektur (Algorithmus Beamer).
- Durch Interpolation werden alle ausser Acht gelassenen Verzerrungen und
- Fehler annähernd ausgeglichen.
+Bei dieser Arbeit wurden folgende Möglichkeiten, Referenzpunkte zu erhalten,
+ evaluiert und getestet.
+ Dabei ist die Zahl der erhaltenen Referenzpunkte sehr unterschiedlich.
+ Die Ansprüche an die Verfahren sind relativ hoch, da ein einzelner falsch
+ zugeordneter Referenzpunkt die Interpolation auf einer grossen Fläche stark
+ beeinträchtigen oder verunmöglichen kann.
+ Dafür ist die Quantität nicht besonders wichtig.
+ Wenn einzelne Punkte fehlen, beeinträchtigt das die Qualität der Interpolation,
+ was aber nur geringe Auswirkungen hat, die kaum bemerkbar sind.
 \end_layout
 
 \begin_layout Subsubsection
@@ -1276,15 +1294,13 @@ Mit dem nachfolgend beschriebenen Verfahren werden lediglich die Ecken des
  Dafür gibt es mehrere Verfahren, die im nächsten Punkt evaluiert werden.
  Anhand dieser vier Punkte kann die perspektivische Verzerrung schon korrigiert
  werden.
- Aufgrund der Einfachheit, ist dieses Verfahren sehr stabil aund fehlertolerant.
+ Aufgrund der Einfachheit, ist dieses Verfahren sehr stabil und fehlertolerant.
  Ein weiterer Vorteil besteht darin, dass der Benutzter selber verifizieren
  kann, anhand des Kamerabildes, ob die Ecken richtig erkannt wurden.
  Ein Nachteil dieses Verfahrens besteht darin, dass es keine zusätzlichen
  Referenzpunkte gibt, um die Erkennung zu verbessern.
- Dieses Verfahren wurde im Protoryp eingesetzt, da es gute Genauigkeit und
+ Dieses Verfahren wurde im Prototyp eingesetzt, da es gute Genauigkeit und
  Fehlertoleranz mitbringt.
- Weitere Refernzpunkte auszunutzen wäre denkbar.
- TODO: gibt es nun mehr Referenzpunkte oder nicht?
 \end_layout
 
 \begin_layout Subsubsection
@@ -1325,17 +1341,18 @@ reference "sub:Anhang-Rekursiv"
 \end_inset
 
  beschrieben.
- Bei fehlenden Erkennungen kann der Algortihmus sogar um eine Lücke herumgehen.
+ Bei fehlenden Erkennungen kann der Algorithmus sogar um eine Lücke herumgehen.
  Bei Versuchen haben wurde jedoch festgestellt, dass dieses Verfahren sehr
  fehleranfällig ist.
  Es sind nur 90% Korrektheit möglich.
  Verbesserungen lassen sich zwar umsetzten, jedoch führen diese zu einer
  stark erhöhten Komplexität und tragen nur sehr wenig zur Verbesserung bei.
  Weitere Probleme bereiten diesem Algorithmus nicht erkannte Quadrate, da
- dann die Diagolale als direkter Nachbar erkannt wird, was verheerende Folgen
+ dann die Diagonale als direkter Nachbar erkannt wird, was verheerende Folgen
  hat.
- Zudem ist keine Fehlerdetektion möglich.
- TODO: wieso ist keine Fehlerdetektion möglich?
+ Zudem ist keine Fehlerdetektion möglich weil eine falsche Annahme getroffen
+ wird, die später weder korrigiert noch detektiert werden kann, da die weitere
+ Detektion von dieser abhängt.
 \end_layout
 
 \begin_layout Paragraph
@@ -1350,7 +1367,7 @@ Hierbei werden die Rechtecke anhand einer Interpolation zu den Eckpunkten
 status open
 
 \begin_layout Plain Layout
-Detailierte Beschreibung im Anhang unter 
+Detaillierte Beschreibung im Anhang unter 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sub:Anhang-Nutzung-der-Interpolation"
@@ -1366,13 +1383,14 @@ reference "sub:Anhang-Nutzung-der-Interpolation"
  Rechtecks korrigiert und zusätzlich eine ganze Seitenlänge detektiert werden.
  Zudem ist dieser Algorithmus sehr performant.
  Er ist allerdings auch auch von einem guten Interpolationsverfahren abhängig,
- was wiederum Referenzpunkte erübrigt.
+ was wiederum Referenzpunkte erübrigt, da diese nicht mehr benötigt werden.
  Dieser Algorithmus kann durch eine Vergrösserung der Rechtecke stabilisiert
- werden, was wiederum zu weniger Referenzpunkten führt.
+ werden, da die Flächen vergrössert werden , was wiederum zu einer geringeren
+ Fehlerwahrscheinlichkeit führt.
+ Dies resultiert aber wiederum in weniger Referenzpunkten, da weniger angezeigt
+ werden kann.
  Mit einem schlechten Interpolationsverfahren kann es zu gravierenden Fehlerkenn
 ungen kommen.
- TODO: Wieso referenzpunkte erübrigt? wieso durch Vergrösserung der rechtecke
- stabilisiert?
 \end_layout
 
 \begin_layout Subsubsection
@@ -1383,7 +1401,7 @@ K-Means Clustering
 Hiermit werden auf dem Bildschirm immer feiner aufgeteilte Cluster erstellt.
  Dieses Verfahren bietet gute Möglichkeiten zur Fehlerdetektion und liefert
  gute Ergebnisse.
- Bilder und eine detailierte Beschreibung ist im Anhang 
+ Bilder und eine detaillierte Beschreibung ist im Anhang 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sub:Anhang-K-Means-Cluster"
@@ -1393,13 +1411,19 @@ reference "sub:Anhang-K-Means-Cluster"
 .
  Mit der Fehlerdetektion können alle üblichen Fehlerkennungen ausgeschlossen
  werden.
- Allerdings ist es ziemlich intolerant gegenüber Fehlerkennungen und stellt
- ziemlich hohe Anforderungen an das Kamerabild.
+ Allerdings ist es ziemlich intolerant gegenüber Fehlerkennungen wie z.B.
+ Rauschen oder fehlende Erkennungen und stellt ziemlich hohe Anforderungen
+ an das Kamerabild.
+ Wenn das Bild auch nach mehreren Versuchen nicht korrekt erkannt werden
+ kann, scheitert die Kalibration.
+ Danach müsste der Benutzer die Beleuchtung ändern oder seine Webcam umpositioni
+eren.
+ Mit gewissen Webcams könnte eine Kalibration sogar unmöglich sein, wenn
+ deren Bild den Ansprüchen nicht genügt.
  Ebenso ist die Anzahl der nutzbaren Referenzpunkte von der Kameraauflösung
  abhängig.
- Dieses Verfahren ist sehr genau und stabil, jdoch stellt es erhöhte Anforderung
-en, die dazu führen, dass die Kalibhration nicht immer klappt.
- TODO: Widersprüchlich: kann es jetzt Fehler erkennen oder nicht?!
+ Dieses Verfahren ist sehr genau und stabil, jedoch stellt es erhöhte Anforderun
+gen, die dazu führen, dass die Kalibrierung nicht immer klappt.
 \end_layout
 
 \begin_layout Subsubsection
@@ -1410,7 +1434,7 @@ OpenCV
 OpenCV bietet die Möglichkeit, anhand verschiedener Aufnahmen eines Referenzbild
 es einen ganzen dreidimensionalen Raum zu rekonstruieren.
  Dafür wird für jede erkannte Ebene eine Transformationsmatrix erstellt.
- Jene werden anschliessend so kombiniert dass die resultierende Martix eine
+ Jene werden anschliessend so kombiniert dass die resultierende Matrix eine
  Rücktransformation auf den Raum erlaubt.
  Da Abbildungen sich in dieser Arbeit jeweils auf eine einzelne Ebene beziehen,
  hätte der OpenCV-Algorithmus stark angepasst werden müssen.
@@ -1463,7 +1487,7 @@ Linear
 \begin_layout Standard
 Der lineare Ansatz berücksichtigt weder perspektivische Verzerrung noch
  Linseneffekte.
- Es wird davon ausgegangen, dass die Verhältnisse der Punkt zu den Ränden
+ Es wird davon ausgegangen, dass die Verhältnisse der Punkt zu den Rändern
  in beiden Abbildungen identisch sind.
  Wenn keine perspektivische Verzerrung vorhanden ist, funktioniert dieses
  Verfahren korrekt.
@@ -1473,7 +1497,7 @@ Der lineare Ansatz berücksichtigt weder perspektivische Verzerrung noch
  Wenn diese nebeneinanderstehen funktioniert dieses Verfahren sehr gut.
  Bei diesem Verfahren werden nur die Eckpunkte für die Berechnung benötigt.
  Da dieses Verfahren nur in eine Richtung funktioniert, müssen einmalig
- alle möglichen Werte Berechnet werden, dafür sind nacher keine Berechnungen
+ alle möglichen Werte Berechnet werden, dafür sind naher keine Berechnungen
  mehr nötig, ein einfacher Lookup reicht dafür.
  Die komplette Formel finden sie im Anhang 
 \begin_inset CommandInset ref
@@ -1610,14 +1634,14 @@ reference "sub:Anhang-Baryzentrische-Koordinaten"
 
  aus verschiedenen Dreiecken berechnet, zurückgerechnet und anschliessend
  alle Resultate gemittelt.
- Dadurch erhält man eine Genauigkeit, die proportional zur Anzahl Refernzpunkte
+ Dadurch erhält man eine Genauigkeit, die proportional zur Anzahl Referenzpunkte
  steigt.
- Zuden ist der Algorithmus relativ einfach verständlich und gut testbar.
- Diese Berechnung brücksichtigt allerdings nicht, dass die Abbildung nicht
- Wikeltreu ist, was zu Fehlern führt und zu ungenauigkeiten fürht.
- Für die Mittelung ist leider nur eine begrenzte Gewichtung möglich, da
- keine Abstandsfunktion definiert ist.
- Durch übergänge und die mangelnde Gewichtung erhält man an den Übergängen
+ Luden ist der Algorithmus relativ einfach verständlich und gut testbar.
+ Diese Berechnung berücksichtigt allerdings nicht, dass die Abbildung nicht
+ Winkeltreu ist, was zu Fehlern führt und zu Ungenauigkeiten führt.
+ Für die Mittlung ist leider nur eine begrenzte Gewichtung möglich, da keine
+ Abstandsfunktion definiert ist.
+ Durch Übergänge und die mangelnde Gewichtung erhält man an den Übergängen
  unter Umständen Knicke in geraden Linien, was der4 Benutzer als störend
  empfindet.
  Wenn viele Dreiecke verwendet werden, führt dies zu einer besseren Korrektur
@@ -1680,7 +1704,7 @@ igt werden, dass Vierecke nicht winkeltreu sind.
  Dies geschieht durch einen vierten Punkt im Koordinatensystem.
  Dies führt zu einer viel genaueren Interpolation.
  Der Algorithmus benötigt jedoch eine strukturierte Ordnung der Referenzpunkte,
- was ihn geringfügig konplizierter macht.
+ was ihn geringfügig komplizierter macht.
  Allerdings ist durch die Ordnung auch eine Gewichtung möglich.
  Dieser Algorithmus führt zu einem guten Resultat, allerdings stellt er
  hohe Anforderung an die Referenzpunkte.
@@ -1695,7 +1719,7 @@ sideways false
 status open
 
 \begin_layout Plain Layout
-Es wurde zu den bestehenden Gleichungen der Baryzentrischen Dreiekskoordinaten
+Es wurde zu den bestehenden Gleichungen der Baryzentrischen Dreieckskoordinaten
  noch eine vierte Gleichung hinzugefügt.
  Diese hat das Ziel, nahe Eckpunkte stärker zu gewichten.
 \end_layout
@@ -1789,7 +1813,7 @@ name "alg:Erweiterte-baryzentrische-Koordi"
 
 \end_inset
 
- Diese Gleichungen funktionieren auch ind er näheren Umgebung ausserhalb
+ Diese Gleichungen funktionieren auch in der näheren Umgebung ausserhalb
  des Vierecks noch.
 \end_layout
 
@@ -1871,8 +1895,8 @@ Kamera
 .
  Über die X-Koordinaten des Beamerbildes kann nun ein Integral definiert
  werden, welches diese Abbildung von links nach recht durchläuft und all
- diese Streckungen/Stauchungen indefinitdesimal aufsummiert bis zur Beamerpositi
-on 
+ diese Streckungen/Stauchungen infinitesimal aufsummiert bis zur Beamerposition
+ 
 \begin_inset Formula $x_{b}$
 \end_inset
 
@@ -1964,7 +1988,7 @@ reference "eq:xb-aus-xk-quadratisch"
 \begin_inset Formula $b=1$
 \end_inset
 
- (blau): In der Mitte weicht die perspektivische Verzerung in X-Richtung
+ (blau): In der Mitte weicht die perspektivische Verzerrung in X-Richtung
  mehr vom linearen Ansatz (violett) ab als am Rand.
 \begin_inset CommandInset label
 LatexCommand label
@@ -2159,7 +2183,7 @@ reference "eq:yk-aus-yb-linear"
 \begin_inset Formula $y_{k}$
 \end_inset
 
- ist der Pixelwert ind Y-Richtung auf dem Kamerabild.
+ ist der Pixelwert ind TODO: ? Y-Richtung auf dem Kamerabild.
 \end_layout
 
 \end_inset
@@ -2273,7 +2297,7 @@ reference "fig:beamer-rueckrechnung-quadratisch"
 
 \end_inset
 
- zeigt die Rückberechnung der agebildeten auf die abzubildenden Koordinaten.
+ zeigt die Rückberechnung der abgebildeten auf die abzubildenden Koordinaten.
  Im Weiteren ist anzumerken, dass als linke und rechte Bildlinien jeweils
  genau senkrecht verlaufende gemittelte Geraden verwendet wurden.
 \end_layout
@@ -2299,7 +2323,7 @@ status open
 \begin_inset Caption
 
 \begin_layout Plain Layout
-Die gemessenen Punkte weichen von den geschätzen (berechneten) ab.
+Die gemessenen Punkte weichen von den geschätzten (berechneten) ab.
  
 \begin_inset CommandInset label
 LatexCommand label
@@ -2470,8 +2494,8 @@ Pragmatische Korrektur
 \begin_layout Standard
 Tests in der Praxis haben ergeben, dass nicht nur die perspektivische Verzerrung
  eine Rolle spielt.
- Vorallem wenn der Winkel zwischen Kamera und Beamer vergrössert wird, sind
- systematisch stärkere Abweichungen sichtbar.
+ Vor allem wenn der Winkel zwischen Kamera und Beamer vergrössert wird,
+ sind systematisch stärkere Abweichungen sichtbar.
  Linseneffekte und Trapezkorrektur des Beamers wurden in dieser Arbeit nicht
  weiter modelliert.
  Stattdessen wird für alle zusätzlichen Abweichungen eine quadratische Korrektur
@@ -2539,11 +2563,19 @@ status open
 
 \begin_layout Plain Layout
 Der interessierte Leser möge folgenden Artikel über die benötigten Transformatio
-nsmatrizen konsultieren: http://de.wikipedia.org/wiki/Homogene_Koordinaten
-\end_layout
+nsmatrizen konsultieren: 
+\begin_inset Flex URL
+status collapsed
 
 \begin_layout Plain Layout
-#Wichtige_elementare_homogene_Transformationsmatrizen
+
+http://de.wikipedia.org/wiki/Homogene_Koordinaten#Wichtige_elementare_homogene_Tra
+nsformationsmatrizen
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \end_inset
@@ -2556,8 +2588,8 @@ Externe Bibliotheken
 \end_layout
 
 \begin_layout Standard
-Es gibt die Möglichkeit, eine Kamerakalibration mit vollständiger Transformation
-smatrix (11 Freiheitsgrade) mit OpenCV vollautomatisch vornehmen zu lassen.
+Es gibt die Möglichkeit, eine Kamerakalibrierung mit vollständiger Transformatio
+nsmatrix (11 Freiheitsgrade) mit OpenCV vollautomatisch vornehmen zu lassen.
  Diese Funktionalität konnte mit OpenCV nicht erfolgreich getestet werden.Aufgrun
 d dessen wurde schliesslich vollständig auf OpenCV verzichtet.
 \end_layout
@@ -2577,7 +2609,7 @@ en zu lösen sind.
  Es ist teilweise nicht unbedingt notwendig zu wissen, wo der Stift auf
  dem Bild ist.
  Falls es einfach ist, die Präsenz des Stiftes festzustellen, nicht aber
- die Position, kann erstere Information verwendet werden um komplizerte
+ die Position, kann erstere Information verwendet werden um komplizierte
  und rechenintensive Schritte erst anzustossen wenn nötig.
  Neben den verschiedenen vorzunehmenden Schritten, ist auch Kontextwissen
  wichtig.
@@ -2609,7 +2641,7 @@ Die Diskrete Fourier-Transformation erhält die Eigenschaften Verschiebung
 status open
 
 \begin_layout Plain Layout
-James MacLean in 
+TODO: Zitat James MacLean in 
 \begin_inset Quotes gld
 \end_inset
 
@@ -2872,7 +2904,7 @@ Asymptotisch wird angenommen, dass das Kamerabild quadratisch ist.
  Im Fall, dass entweder keine oder keine brauchbaren Kontextinformationen
  vorhanden sind, kann die Suche auf ein grösseres oder das ganze Suchfenster
  ausgeweitet werden.
- Dies erhöht die Worstcase Laufzeit auf 
+ Dies erhöht die Worst-Case Laufzeit auf 
 \begin_inset Formula $O\left(c\left(\frac{n}{x}\right)^{2}+c\left(y\frac{n}{x}\right)^{2}\right)$
 \end_inset
 
@@ -2977,8 +3009,8 @@ Umsetzung
 \begin_layout Standard
 Im diesem Artikel wird beschrieben, welche Verfahren zur Umsetzung der oben
  beschriebenen Analysen verwendet wurden.
- Zuerst wird auf technische Details wie den Aufbau des Programmes und verwendete
- Biliotheken eingegangen.
+ Zuerst wird auf technische Details wie den Aufbau des Programms und verwendete
+ Bibliotheken eingegangen.
  Danach wird erläutert wie die oben beschriebenen Kalibrierungsverfahren
  eingesetzt wurde und wie das Finden eines Stiftes im Softwareprototyp vonstatte
 n geht.
@@ -3019,7 +3051,7 @@ Beim Framework für die Bildverarbeitungsroutinen wurde AForge eingesetzt.
  Es ist ein relativ neues Projekt, welches nativ in C# geschrieben und sehr
  gut dokumentiert ist.
  Wie OpenCV ist auch AForge OpenSource.
- Da die Schnelligkeit des Entwicklungsvorgangs im Vordergund stand, wurde
+ Da die Schnelligkeit des Entwicklungsvorgangs im Vordergrund stand, wurde
  bewusst auf OpenCV verzichtet.
  Es wurde in Kauf genommen, dass die mit AForge zur Verfügung stehenden
  Algorithmen nicht gleich vielfältig und nicht gleich performant sind.
@@ -3143,7 +3175,7 @@ Hauptsequenz
 \end_layout
 
 \begin_layout Standard
-Der Ablauf des Programmes orientiert sich stark am C# Eventmodell.
+Der Ablauf des Programms orientiert sich stark am C# Eventmodell.
  Dabei benachrichtigen sich Komponenten gegenseitig über ihren aktuellen
  Status oder über Berechnungsresultate.
  In dieser Software werden Schnittstellen zwischen Input, Berechnung und
@@ -3274,8 +3306,8 @@ Visualisierung
 Für die Kalibrierung ist es notwendig, dass Messmuster auf den Bildschirm
  gezeichnet und mit dem Beamer projiziert werden können.
  In dieser Software wird dies über einen sogenannten Visualisierer realisiert.
- Seine konkrete Implementation ist jeweils seht stark vom verwendeten Betriebsys
-tem und dessen Anzeigekonzept abhängig.
+ Seine konkrete Implementation ist jeweils seht stark vom verwendeten Betriebssy
+stem und dessen Anzeigekonzept abhängig.
  Es ist für die Portabilität sehr wichtig, dass die restliche Software unabhängi
 g von der Anzeigemethode ist.
  Dies war zum Teil nicht ganz einfach umzusetzen.
@@ -3292,12 +3324,12 @@ g von der Anzeigemethode ist.
 Ebenfalls für die Visualisierung wichtig ist, dass jeweils ein eigenes vom
  restlichen Programm unabhängiges GUI gestartet werden muss.
  Die Verwendung eines Visualisierers soll nicht an das Anzeigekonzept des
- Hauptprogrammes gebunden sein.
+ Hauptprogramms gebunden sein.
  So soll es möglich sein, in einer WPF Applikation einen WinForms-Visualisierer
  einzusetzen und umgekehrt.
  Dies führt aber zu Problemen, wie dass jedes GUI in einem eigenen Thread
  mit ThreadSTA-Attribut laufen muss, oder dass der Garbage Collector den
- zusätzlichen GUI Thread abräumt, obwohl er in Zukunkt noch vom Visualisierer
+ zusätzlichen GUI Thread abräumt, obwohl er in Zukunft noch vom Visualisierer
  verwendet werden müsste.
  
 \end_layout
@@ -3342,8 +3374,8 @@ nsobjekt vorhanden.
 \end_layout
 
 \begin_layout Enumerate
-Die Hauptapplikation wird von Win-Forms gestartet: Hierbei ist kein WPF-Applikat
-ionsobjekt vorhanden und muss zwingend erstellt werden, damit ein Fenster
+Die Hauptapplikation wird von WinForms gestartet: Hierbei ist kein WPF-Applikati
+onsobjekt vorhanden und muss zwingend erstellt werden, damit ein Fenster
  angezeigt werden kann.
  Ein Teil der Threads hat u.
  U.
@@ -3433,9 +3465,9 @@ Im ersten Bild der Kamera wird die Auflösung erkannt.
 \begin_layout Enumerate
 Das Schachbrett wird erneut projiziert, diesmal mit invertierten Farben.
  Auf dem Differenzbild sollte jetzt die Leinwand klar zu erkennen sein.
- Da an den Kanten der Quadrate Lücken resultieren (diejenigen Pixelreihen,
- die von der Kamera auf beiden Bildern als beleuchtet erkannt hat), müssen
- diese z.B.
+ Da an den Kanten der Quadrate Lücken auf dem Differenzbild resultieren
+ (diejenigen Pixelreihen, die von der Kamera auf beiden Bildern als beleuchtet
+ erkannt hat), müssen diese z.B.
  mit einem Gaussfilter mit einer kleinen Kernel-Size eliminiert werden,
  da es sonst bei der Bloberkennung zu Fehlerkennungen kommt.
  Jetzt können die Ecken des Bildschirms sehr genau erkannt werden.
@@ -3651,7 +3683,7 @@ tur beeinflussen zu lassen, muss darauf geachtet werden, dass jedes projizierte
  Bild eine identische Helligkeitsverteilung zum Referenzbild besitzt.
  Das bedeutet, dass für jedes Bild, das analysiert werden soll, zwei Bilder
  projiziert werden müssen.
- Da diese Art der Erkennung viel genauer ist und nur ein Referenzbild benütigt
+ Da diese Art der Erkennung viel genauer ist und nur ein Referenzbild benötigt
  wird, kann dieser Overhead sicher in Kauf genommen werden.
 \end_layout
 
@@ -4063,7 +4095,7 @@ Es wurden mehr als zwei Blobs gefunden:
 \begin_inset Newline newline
 \end_inset
 
-TOO: Umformulieren, z.B.
+TODO: Umformulieren, z.B.
  
 \begin_inset Quotes gld
 \end_inset
