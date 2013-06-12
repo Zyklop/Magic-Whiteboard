@@ -108,23 +108,6 @@ status open
 
 \end_layout
 
-\begin_layout Abstract
-Es wird eine neue digitale Whiteboard-Technologie beschrieben.
- Während herkömmliche digitale Whiteboards viel Geld kosten, verspricht
- das in dieser Arbeit entwickelte System eine günstige Alternative.
- Es wird gezeigt, dass Standardhardware und einfache Algorithmen mit der
- Genauigkeit von herkömmlichen Produkten konkurrenzieren können.
- Mit einem selbst entwickelten günstigen Stift emuliert die Software 
-\begin_inset Quotes gld
-\end_inset
-
-Presentation Writer
-\begin_inset Quotes grd
-\end_inset
-
- Mausklicks auf einer normalen Beamerleinwand - und das auf 4 Pixel genau.
-\end_layout
-
 \begin_layout Standard
 \begin_inset ERT
 status open
@@ -151,7 +134,36 @@ Danksagungen
 \begin_layout Standard
 Die Autoren möchten sich bei Oliver Augenstein für die kompetente und wohlwollen
 de Betreuung bedanken.
- Weiteren Dank geht an Benjamin Hug für seine kritischen Kommentare.
+ Weiteren Dank geht an Benjamin Hug und Stefan Kienzel für ihre kritischen
+ Kommentare.
+\end_layout
+
+\begin_layout Section*
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section*
+Abstract
+\end_layout
+
+\begin_layout Standard
+Es wird eine neue digitale Whiteboard-Technologie beschrieben.
+ Während herkömmliche digitale Whiteboards viel Geld kosten, verspricht
+ das in dieser Arbeit entwickelte System eine günstige Alternative.
+ Es wird gezeigt, dass Standardhardware und einfache Algorithmen mit der
+ Genauigkeit von herkömmlichen Produkten konkurrenzieren können.
+ Mit einem selbst entwickelten günstigen Stift emuliert die Software 
+\begin_inset Quotes gld
+\end_inset
+
+Presentation Writer
+\begin_inset Quotes grd
+\end_inset
+
+ Mausklicks auf einer normalen Beamerleinwand - und das auf 4 Pixel genau.
 \end_layout
 
 \begin_layout Standard
@@ -1246,8 +1258,8 @@ Der Beginn der Kalibrierung bildet das Finden von Referenzpunkten.
 status open
 
 \begin_layout Plain Layout
-3 Translation, 3 Rotation, 2 Kameranullpunkt, 1 Brennweite, 2 Bildskalierung
- 
+3 für die Translation, 3 für die Rotation, 2 für den Kameranullpunkt, 1
+ für die Brennweite, 2 für die Bildskalierung 
 \end_layout
 
 \end_inset
@@ -4888,8 +4900,8 @@ status open
 
 \begin_layout Subsubsection*
 \begin_inset Graphics
-	filename Bilder/Setup/IMGP0387.JPG
-	lyxscale 10
+	filename Bilder/Setup/demo-arch.jpg
+	lyxscale 30
 	width 100col%
 
 \end_inset
@@ -7785,7 +7797,7 @@ Hand und Finger finden
 \end_layout
 
 \begin_layout Standard
-Die Hand einer Person zu finden mit wenig Aufwand gut zu beschreiben.
+Die Hand einer Person zu finden ist mit wenig Aufwand gut zu beschreiben.
  Über den unteren Rand des Kamerabildes wird die im Bild stehende Person
  mittels Differenzbilder gefunden.
  Die Position und das Ausmass des Körpers der Person ist mit wenig Spiel
@@ -7808,67 +7820,189 @@ sideways false
 status open
 
 \begin_layout Plain Layout
+\begin_inset Tabular
+<lyxtabular version="3" rows="6" columns="2">
+<features tabularvalignment="middle">
+<column alignment="left" valignment="top" width="0">
+<column alignment="left" valignment="top" width="0pt">
+<row>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
 \begin_inset Graphics
 	filename Bilder/Handtracking/PersonPosition/pos-base.png
 	lyxscale 20
-	width 49.25col%
+	width 48col%
 
-\end_inset
-
-
-\begin_inset space \enskip{}
-\end_inset
-
-
-\begin_inset Graphics
-	filename Bilder/Handtracking/PersonPosition/pos-frame.png
-	lyxscale 20
-	width 49.25col%
-
-\end_inset
-
-
-\begin_inset VSpace 0.5em
 \end_inset
 
 
 \end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Bilder/Handtracking/PersonPosition/pos-frame.png
+	lyxscale 20
+	width 48col%
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1)
+\begin_inset space ~
+\end_inset
+
+Basisbild
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+2)
+\begin_inset space ~
+\end_inset
+
+Frame
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row topspace="0.5em">
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
 
 \begin_layout Plain Layout
 \begin_inset Graphics
 	filename Bilder/Handtracking/PersonPosition/pos-diff.png
 	lyxscale 20
-	width 49.25col%
+	width 48col%
 
 \end_inset
 
 
-\begin_inset space \enskip{}
+\end_layout
+
 \end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
 
-
+\begin_layout Plain Layout
 \begin_inset Graphics
 	filename Bilder/Handtracking/PersonPosition/pos-median.png
 	lyxscale 20
-	width 49.25col%
+	width 48col%
 
 \end_inset
 
 
 \end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
 
 \begin_layout Plain Layout
-\begin_inset VSpace 0.5em
+3)
+\begin_inset space ~
 \end_inset
 
-
+Differenz
 \end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+4)
+\begin_inset space ~
+\end_inset
+
+entrauschtes Differenzbild
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row topspace="0.5em">
+<cell multicolumn="1" alignment="left" valignment="top" usebox="none">
+\begin_inset Text
 
 \begin_layout Plain Layout
 \begin_inset Graphics
 	filename Bilder/Handtracking/PersonPosition/pos-final.png
-	lyxscale 20
-	width 100col%
+	lyxscale 50
+	width 99col%
+	BoundingBox 0bp 0bp 576bp 350bp
+	clip
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell multicolumn="2" alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell multicolumn="1" alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+5)
+\begin_inset space ~
+\end_inset
+
+Personenposition
+\end_layout
+
+\end_inset
+</cell>
+<cell multicolumn="2" alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
 
 \end_inset
 
@@ -7879,27 +8013,7 @@ status open
 \begin_inset Caption
 
 \begin_layout Plain Layout
-1)
-\begin_inset space ~
-\end_inset
-
-Basisbild, 2)
-\begin_inset space ~
-\end_inset
-
-Frame, 3)
-\begin_inset space ~
-\end_inset
-
-Differenz, 4)
-\begin_inset space ~
-\end_inset
-
-entrauschtes Differenzbild, 5)
-\begin_inset space ~
-\end_inset
-
-Personenposition
+Vorgehen zum Finden einer Hand
 \begin_inset CommandInset label
 LatexCommand label
 name "fig:PersonPosition"
