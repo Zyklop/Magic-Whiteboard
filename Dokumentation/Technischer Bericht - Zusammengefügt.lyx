@@ -141,8 +141,8 @@ Danksagungen
 \end_layout
 
 \begin_layout Standard
-Die Autoren möchten sich bei Oliver Augenstein für die kompetente und wohlwollen
-de Betreuung bedanken.
+Die Autoren möchten sich bei Oliver Augenstein für die kompetente und TODO:
+ hilfreiche?wohlwollende Betreuung bedanken.
  Weiteren Dank geht an Benjamin Hug für seine kritischen Kommentare.
 \end_layout
 
@@ -178,7 +178,7 @@ Die in dieser Arbeit entworfenen und in einem Prototyp eingesetzten Algorithmen
  Der Laptop wird am lokal vorhandenen Beamer angeschlossen.
  Nach einer kurzen Kalibrierung kann die Person die Präsentation starten.
  Dabei schreibt sie falls gewünscht mit einem virtuellen Stift an die Leinwand.
- Das geschriebene wird aufgezeichnet und wieder auf das Beamerbild projiziert.
+ Das Geschriebene wird aufgezeichnet und wieder auf das Beamerbild projiziert.
 \end_layout
 
 \begin_layout Paragraph
@@ -303,9 +303,9 @@ Aufnahmegerät
 Das in dieser Arbeit verwendete Aufnahmegerät ist eine integrierte Laptopkamera
  eines Thinkpad T430s mit einer Auflösung von 640x480 Pixel à 30 Bilder
  pro Sekunde.
- Sie übertreibt es völlig mit dem automatischen Weissabgleich, hat aber
- einen in den Treiber integrierten Konfigurationsdialog, mit welchem sich
- das Problem manuell minimieren lässt.
+ Sie übertreibt es völlig mit dem automatischen Weissabgleich TODO: Belichtungsk
+orrektur, hat aber einen in den Treiber integrierten Konfigurationsdialog,
+ mit welchem sich das Problem manuell minimieren lässt.
  Allgemein formuliert ist an der verwendeten Kamera die Bildauflösung weniger
  wichtig als eine korrekte Belichtung.
  Das liegt daran, dass die präsentierende Person immer in Bewegung ist,
@@ -372,7 +372,7 @@ Fazit:
 \end_layout
 
 \begin_layout Standard
-Der automatische Weissabgleich kann über den Hardwaretreiber abgestellt
+Der automatische Weissabgleich TODO kann über den Hardwaretreiber abgestellt
  werden, erfordert aber einiges an Arbeit (bei Windows schwierig, bei Linux
  einfacher).
  Die verwendeten Geräte müssten genau bekannt sein, um ihre Treiber konfiguriere
@@ -397,8 +397,8 @@ Ein weniger wichtige Rolle als die Kamera spielt der Beamer.
  Rolle für die Qualität des Präsentationssystem.
  Die Helligkeitseinstellung ist jedoch wichtig.
  Der in dieser Arbeit verwendete Beamer beleuchtet die Leinwand sehr stark
- und verstärkt dadurch das Problem des automatischen Weissabgleiches der
- Kamera.
+ und verstärkt dadurch das Problem des automatischen TODO Weissabgleiches
+ der Kamera.
  Zur Minimierung des Problems wurde die Helligkeit auf ein schwächeres Niveau
  reduziert.
  Es wurde darauf geachtet, dass die Einstellung als 
@@ -640,7 +640,7 @@ Presentation Writer
 
  kann gewinnbringend für Vorträge eingesetzt werden.
  Die tiefe Auflösung der Kamera von 640x480 Pixel und die schlechten Lichteigens
-chaften haben wenig Einfluss auf die Güte des Resultates.
+chaften haben wenig Einfluss auf die Güte TODO des Resultates.
  Eine erfolgreiche Kalibrierung der Kamera, gute Einstellungen der Bildfilter
  und genügend gute Abbildungsalgorithmen mit Interpolation machen dies möglich.
  Optimierungen wie eine hochauflösende Kamera würden noch genauere und bessere
@@ -906,7 +906,7 @@ Projizieren und Messen
 \begin_layout Standard
 Die Lichtverhältnisse sind entscheidend für eine erfolgreiche Messungen.
  Für die Kalibrierung projizierte Referenzbilder haben Einfluss auf den
- automatischen Weissabgleich der Kamera.
+ automatischen Weissabgleich TODO der Kamera.
  Grosse Helligkeitswerte im projizierten Bild verursachen schnelles Abdunkeln
  des Kamerabildes, tiefe Helligkeitswerte das Gegenteil.
  Es kann nicht genau vorausgesagt werden, wie die Kamera auf Helligkeitsuntersch
@@ -915,9 +915,9 @@ iede reagiert.
 der.
  Der hier beschriebene Effekt kann minimiert werden, wenn nur Bilder mit
  im Mittel ähnlichen Helligkeitswerten verwendet werden.
- Die schlussendlich eingesetzte Lösung verwendet zwei Schachbrettmuster,
- deren Durchschnittshelligkeiten beinahe gleich sind.
- Die Kamera passt den Weissabgleich kaum an.
+ Die schlussendlich eingesetzte Lösung verwendet zwei Muster, deren Durchschnitt
+shelligkeiten beinahe gleich sind.
+ Die Kamera passt den Weissabgleich TODO kaum an.
  Dies wird unter 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -1069,7 +1069,7 @@ Bei einem Differenzbild wird auf zwei Bildern für jeden Pixel die Differenz
  gebildet.
  Somit entsteht ein Bild auf dem alle statischen Regionen entfernt sind.
  Dazu gehört zum Beispiel der Hintergrund eines Bildes.
- Er ist eine Region, die sich auf zwei Bilder nicht ändert und darum verschwinde
+ Es ist eine Region, die sich auf zwei Bilder nicht ändert und darum verschwinde
 t.
 \end_layout
 
@@ -1497,7 +1497,7 @@ Der lineare Ansatz berücksichtigt weder perspektivische Verzerrung noch
  Wenn diese nebeneinanderstehen funktioniert dieses Verfahren sehr gut.
  Bei diesem Verfahren werden nur die Eckpunkte für die Berechnung benötigt.
  Da dieses Verfahren nur in eine Richtung funktioniert, müssen einmalig
- alle möglichen Werte Berechnet werden, dafür sind naher keine Berechnungen
+ alle möglichen Werte berechnet werden, dafür sind nachher keine Berechnungen
  mehr nötig, ein einfacher Lookup reicht dafür.
  Die komplette Formel finden sie im Anhang 
 \begin_inset CommandInset ref
@@ -1895,8 +1895,8 @@ Kamera
 .
  Über die X-Koordinaten des Beamerbildes kann nun ein Integral definiert
  werden, welches diese Abbildung von links nach recht durchläuft und all
- diese Streckungen/Stauchungen infinitesimal aufsummiert bis zur Beamerposition
- 
+ diese Streckungen/Stauchungen infinitesimal TODO: erklähren/referenz? aufsummie
+rt bis zur Beamerposition 
 \begin_inset Formula $x_{b}$
 \end_inset
 
@@ -2028,7 +2028,7 @@ Zu beachten gilt, dass der Ursprung des verzerrten Beamerbildes nicht unbedingt
  Es wird jeweils nur der Offset zum Kamerabildanfang verwendet.
  Dies hat zur Folge, dass resultierende X-Koordinaten gleichmässig zu lang
  oder zu kurz sind (je nach Abbildungsrichtung).
- Damit nicht der Schnittpunkt der zwei Ebenen Kamera und Beamer berechnet
+ Damit nicht der Schnittpunkt der zwei Ebenen (Kamera und Beamer) berechnet
  werden muss, wird in dieser Arbeit jeweils die berechnete X-Strecke auf
  die berechnete Maximalstrecke gegenüber der gemessenen Maximalstrecke normiert
  (Stauchung 
@@ -2641,7 +2641,14 @@ Die Diskrete Fourier-Transformation erhält die Eigenschaften Verschiebung
 status open
 
 \begin_layout Plain Layout
-TODO: Zitat James MacLean in 
+TODO: 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Literatur/CorelationCoefficient.pdf"
+
+\end_inset
+
+ Zitat James MacLean in 
 \begin_inset Quotes gld
 \end_inset
 
@@ -3032,7 +3039,8 @@ Für die Entwicklung der Software wurde die Programmiersprache C# eingesetzt.
  Dies wurde aufgrund der Erfahrung entschieden, dass das .NET-Framework sehr
  pragmatische Ansätze vertritt.
  Jene beschleunigen die Entwicklungszeit und ermöglichen das Nutzen von
- Systemfunktionen wie einer Mausemulation in einfacher Weise.
+ Systemfunktionen wie einer Mausemulation oder Webcam-Nutzung in einfacher
+ Weise.
  In Java wäre das nicht so einfach möglich gewesen.
  C++ hätte die Einbindung von OpenCV zwar erleichtert, aber wesentlich mehr
  Zeit für das Erarbeiten einfachster Konzepte benötigt.
@@ -3513,6 +3521,11 @@ status open
 \end_inset
 
 
+\end_layout
+
+\begin_layout Plain Layout
+Die Unterschiedlichen Helligkeitswerte sind das Resultat der Belichtungskorrektu
+r.
 \end_layout
 
 \begin_layout Plain Layout
@@ -4551,14 +4564,11 @@ status open
 
 \begin_layout Plain Layout
 Spektrum eines Helium Neon Lasers.
+ TODO: +Glühlampe
 \end_layout
 
 \end_inset
 
-
-\end_layout
-
-\begin_layout Plain Layout
 
 \end_layout
 
@@ -4591,14 +4601,14 @@ Gemäss Aufgabenstellung war lediglich eine PowerPoint-Integration gefordert.
 \end_layout
 
 \begin_layout Standard
-Um den Mausinput zu glätten, wurde jeweils über die letzten 6 gefundenen
+Um den Mausinput zu glätten, wurde jeweils über die letzten sechs gefundenen
  Stiftpositionen gemittelt.
  So kann ein grosser Teil des niederfrequenten Rauschens (max.
  4 Pixel um die durchschnittliche Bildschirmposition) beseitigt werden.
  Die resultierende Genauigkeit wirkt dadurch höher als die im Kamerabild
  gemessene.
  Ein Verzögerung durch die Mittelwertbildung wird für den User erst ab einer
- Mittlung über 15 Punkte bemerkbar.
+ Mittlung über fünfzehn Punkte bemerkbar.
 \end_layout
 
 \begin_layout Subsection
@@ -4920,7 +4930,7 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset Flex URL
-status open
+status collapsed
 
 \begin_layout Plain Layout
 
@@ -5749,6 +5759,10 @@ Vorgehen beim rekursiven Ansatz
 Verbesserungen
 \end_layout
 
+\begin_layout Standard
+TODO: umschreiben nötig?
+\end_layout
+
 \begin_layout Itemize
 Es wird nicht nur eine erwartete Position gespeichert, sondern mehrere.
  
@@ -5947,7 +5961,8 @@ name "sub:Anhang-Lineare-Interpolation"
 \end_layout
 
 \begin_layout Standard
-TODO: Skizze zum Strahlensatz Nicht hier.
+TODO: Skizze zum Strahlensatz.
+ Gehört nicht hierhin.
 \end_layout
 
 \begin_layout Standard
@@ -8053,7 +8068,7 @@ Da nun der Arm gefunden ist, könnte in diesem eingeschränkten Bereich ein
  werden.
  Die Information ob eine Geste wie Touch durchgeführt wurde, kann aus der
  streifenweisen Schattenanalyse geholt werden.
- Ist der Schatten in der richtigen Intensität am Richtigen Ort, so fand
+ Ist der Schatten in der richtigen Intensität am richtigen Ort, so fand
  ein Touch statt, sonst nicht.
  Einfach dürfte dieses Vorgehen jedoch nicht sein.
  Es gibt zu viele Arten, wie die Schattenverteilung sein könnte.
