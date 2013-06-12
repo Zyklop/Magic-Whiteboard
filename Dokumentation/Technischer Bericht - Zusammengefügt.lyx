@@ -303,9 +303,9 @@ Aufnahmegerät
 Das in dieser Arbeit verwendete Aufnahmegerät ist eine integrierte Laptopkamera
  eines Thinkpad T430s mit einer Auflösung von 640x480 Pixel à 30 Bilder
  pro Sekunde.
- Sie übertreibt es völlig mit dem automatischen Weissabgleich TODO: Belichtungsk
-orrektur, hat aber einen in den Treiber integrierten Konfigurationsdialog,
- mit welchem sich das Problem manuell minimieren lässt.
+ Sie übertreibt es völlig mit der automatischen Belichtungskorrektur, hat
+ aber einen in den Treiber integrierten Konfigurationsdialog, mit welchem
+ sich das Problem manuell minimieren lässt.
  Allgemein formuliert ist an der verwendeten Kamera die Bildauflösung weniger
  wichtig als eine korrekte Belichtung.
  Das liegt daran, dass die präsentierende Person immer in Bewegung ist,
@@ -325,7 +325,7 @@ Beispiel:
 \begin_layout Standard
 Abbildung 2 zeigt eine Beamerprojektion einer weissen Fläche.
  Der Raum ist wenig abgedunkelt, damit die Kamera welche die Aufnahme gemacht
- hat, einen weniger starken automatischen Weissabgleich vornimmt.
+ hat, eine weniger starke automatischen Belichtungskorrektur vornimmt.
  Nichtsdestotrotz beträgt die Anzahl völlig weisser Pixel in diesem Bild
  mehr als 11'000.
  Das macht es unmöglich, optisch einen hellen Punkt (Stift) zu finden.
@@ -372,7 +372,7 @@ Fazit:
 \end_layout
 
 \begin_layout Standard
-Der automatische Weissabgleich TODO kann über den Hardwaretreiber abgestellt
+Die automatische Belichtungskorrektur kann über den Hardwaretreiber abgestellt
  werden, erfordert aber einiges an Arbeit (bei Windows schwierig, bei Linux
  einfacher).
  Die verwendeten Geräte müssten genau bekannt sein, um ihre Treiber konfiguriere
@@ -397,7 +397,7 @@ Ein weniger wichtige Rolle als die Kamera spielt der Beamer.
  Rolle für die Qualität des Präsentationssystem.
  Die Helligkeitseinstellung ist jedoch wichtig.
  Der in dieser Arbeit verwendete Beamer beleuchtet die Leinwand sehr stark
- und verstärkt dadurch das Problem des automatischen TODO Weissabgleiches
+ und verstärkt dadurch das Problem der automatischen Belichtungskorrektur
  der Kamera.
  Zur Minimierung des Problems wurde die Helligkeit auf ein schwächeres Niveau
  reduziert.
@@ -905,8 +905,8 @@ Projizieren und Messen
 
 \begin_layout Standard
 Die Lichtverhältnisse sind entscheidend für eine erfolgreiche Messungen.
- Für die Kalibrierung projizierte Referenzbilder haben Einfluss auf den
- automatischen Weissabgleich TODO der Kamera.
+ Für die Kalibrierung projizierte Referenzbilder haben Einfluss auf die
+ automatische Belichtungskorrektur der Kamera.
  Grosse Helligkeitswerte im projizierten Bild verursachen schnelles Abdunkeln
  des Kamerabildes, tiefe Helligkeitswerte das Gegenteil.
  Es kann nicht genau vorausgesagt werden, wie die Kamera auf Helligkeitsuntersch
@@ -917,7 +917,7 @@ der.
  im Mittel ähnlichen Helligkeitswerten verwendet werden.
  Die schlussendlich eingesetzte Lösung verwendet zwei Muster, deren Durchschnitt
 shelligkeiten beinahe gleich sind.
- Die Kamera passt den Weissabgleich TODO kaum an.
+ Die Kamera passt die Belichtungskorrektur kaum an.
  Dies wird unter 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -3751,8 +3751,8 @@ Beispiel
 \end_layout
 
 \begin_layout Standard
-Im folgenden Beispiel wurde der automatische Weissabgleich der Kamera auf
- Rot konzentriert und die Überbeleuchtung drastisch reduziert.
+Im folgenden Beispiel wurde die automatische Belichtungskorrektur der Kamera
+ auf Rot konzentriert und die Überbeleuchtung drastisch reduziert.
  Resultierend sieht man die hellsten Punkte auf dem Beamerbild.
  Der alleinstehende Punkt im ersten Bild ist ein Laserpointer-Punkt.
  Im zweiten Bild befindet er sich im verrauschten Bereich.
@@ -4459,8 +4459,8 @@ Die Lichtverhältnisse spielen eine wichtige Rolle.
  werden - momentan manuell in einem Treiberdialog von DirectShow.
  Zudem ergeben starke Reflexionen Artefakte im Input, die den Tracking-Algorithm
 en stören.
- Gerade in der Phase zwischen Kamerakalibrierung und Reduktion des automatischen
- Weissabgleichs gibt es momentan noch viele Fehlerkennungen.
+ Gerade in der Phase zwischen Kamerakalibrierung und Reduktion der automatischen
+ Belichtungskorrektur gibt es momentan noch viele Fehlerkennungen.
  Dieses Problem wurde reduziert indem die Grösse des für einen Stift gültigen
  Blob eingeschränkt wurde.
  Die verbleibenden Fehlerkennungen könnten über Heuristiken eliminiert werden.
@@ -4920,8 +4920,8 @@ Kamera & Stift
 \end_layout
 
 \begin_layout Standard
-Die in dieser Arbeit verwendete Kamera hatte eine kleine Auflösung und einen
- störenden automatischen Weissabgleich.
+Die in dieser Arbeit verwendete Kamera hatte eine kleine Auflösung und eine
+ störende automatische Belichtungskorrektur.
  Durch Nutzung einer besseren Kamera könnte sowohl die Genauigkeit des Resultate
 s als auch die Stabilität des Inputs verbessert werden.
  Es wäre damit möglich, die schon etwas ältere Wacom-Technologie
