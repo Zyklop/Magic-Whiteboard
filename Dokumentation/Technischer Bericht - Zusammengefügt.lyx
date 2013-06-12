@@ -141,8 +141,8 @@ Danksagungen
 \end_layout
 
 \begin_layout Standard
-Die Autoren möchten sich bei Oliver Augenstein für die kompetente und TODO:
- hilfreiche?wohlwollende Betreuung bedanken.
+Die Autoren möchten sich bei Oliver Augenstein für die kompetente und wohlwollen
+de Betreuung bedanken.
  Weiteren Dank geht an Benjamin Hug für seine kritischen Kommentare.
 \end_layout
 
@@ -640,7 +640,7 @@ Presentation Writer
 
  kann gewinnbringend für Vorträge eingesetzt werden.
  Die tiefe Auflösung der Kamera von 640x480 Pixel und die schlechten Lichteigens
-chaften haben wenig Einfluss auf die Güte TODO des Resultates.
+chaften haben wenig Einfluss auf die Genauigkeit des Resultates.
  Eine erfolgreiche Kalibrierung der Kamera, gute Einstellungen der Bildfilter
  und genügend gute Abbildungsalgorithmen mit Interpolation machen dies möglich.
  Optimierungen wie eine hochauflösende Kamera würden noch genauere und bessere
@@ -1895,8 +1895,17 @@ Kamera
 .
  Über die X-Koordinaten des Beamerbildes kann nun ein Integral definiert
  werden, welches diese Abbildung von links nach recht durchläuft und all
- diese Streckungen/Stauchungen infinitesimal TODO: erklähren/referenz? aufsummie
-rt bis zur Beamerposition 
+ diese Streckungen/Stauchungen infinitesimal
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+in unendlich kleinen Schritten
+\end_layout
+
+\end_inset
+
+ aufsummiert bis zur Beamerposition 
 \begin_inset Formula $x_{b}$
 \end_inset
 
@@ -2183,7 +2192,7 @@ reference "eq:yk-aus-yb-linear"
 \begin_inset Formula $y_{k}$
 \end_inset
 
- ist der Pixelwert ind TODO: ? Y-Richtung auf dem Kamerabild.
+ ist der Pixelwert in Y-Richtung auf dem Kamerabild.
 \end_layout
 
 \end_inset
@@ -2641,19 +2650,10 @@ Die Diskrete Fourier-Transformation erhält die Eigenschaften Verschiebung
 status open
 
 \begin_layout Plain Layout
-TODO: 
 \begin_inset CommandInset citation
 LatexCommand cite
 key "Literatur/CorelationCoefficient.pdf"
 
-\end_inset
-
- Zitat James MacLean in 
-\begin_inset Quotes gld
-\end_inset
-
-Fast Pattern Recognition Using Gradient-Descent Search in an Image Pyramid
-\begin_inset Quotes grd
 \end_inset
 
 
@@ -3473,13 +3473,21 @@ Im ersten Bild der Kamera wird die Auflösung erkannt.
 \begin_layout Enumerate
 Das Schachbrett wird erneut projiziert, diesmal mit invertierten Farben.
  Auf dem Differenzbild sollte jetzt die Leinwand klar zu erkennen sein.
- Da an den Kanten der Quadrate Lücken auf dem Differenzbild resultieren
- (diejenigen Pixelreihen, die von der Kamera auf beiden Bildern als beleuchtet
- erkannt hat), müssen diese z.B.
+ Da an den Kanten der Quadrate dünne schwarze Pixelreihen
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+Das sind diejenigen Pixelreihen, die von der Kamera auf beiden Bildern als
+ beleuchtet erkannt wurden.
+\end_layout
+
+\end_inset
+
+ auf dem Differenzbild resultieren, müssen diese z.B.
  mit einem Gaussfilter mit einer kleinen Kernel-Size eliminiert werden,
  da es sonst bei der Bloberkennung zu Fehlerkennungen kommt.
  Jetzt können die Ecken des Bildschirms sehr genau erkannt werden.
- TODO: was für Lücken meinst du?
 \begin_inset Newline newline
 \end_inset
 
@@ -3631,16 +3639,28 @@ Verzögerung der Darstellung
 
 Gewisse Webcams geben das Bild gespiegelt zurück.
  Deshalb muss dem User die Möglichkeit gegeben werden das Bild zurückzuspiegeln.
- Da Bitmaps in C# sehr inperformant sind, müssen diese am Anfang mit Hilfe
+ 
+\end_layout
+
+\begin_layout Standard
+Da Bitmaps in C# sehr inperformant sind, müssen diese am Anfang mit Hilfe
  von Lock-Bits ausgelesen werden und in eine performantere Datenstruktur
  überführt werden, wie z.B.
  Bytearrays.
  Falls sie nochmals benötigt werden, kann man diese mit dem gleichen Verfahren
  zurückschreiben.
- Da dieser Ablauf nicht erkennen kann, wenn ein Teil der Projektion verdeckt
- sein sollte, wird das Resultat dem Benutzer visualisiert, sodass er allenfalls
- die Kalibration nochmals starten könnte.
- TODO: zu zusammenhangslos formuliert.
+ 
+\end_layout
+
+\begin_layout Standard
+Da das hier beschriebene Verfahren nicht erkennen kann, wenn ein Teil der
+ Projektion verdeckt sein sollte, wird das Resultat dem Benutzer visualisiert,
+ sodass er allenfalls die Kalibration nochmals starten könnte.
+\end_layout
+
+\begin_layout Standard
+TODO: ev.
+ noch besser zusammenfügen
 \end_layout
 
 \begin_layout Paragraph
@@ -4108,18 +4128,12 @@ Es wurden mehr als zwei Blobs gefunden:
 \begin_inset Newline newline
 \end_inset
 
-TODO: Umformulieren, z.B.
- 
-\begin_inset Quotes gld
-\end_inset
-
-Es ist keine sichere Erkennung möglich und alle Resultate werden verworfen.
-\begin_inset Quotes grd
-\end_inset
-
- Ungültig.
- Wird gemüllt.
- Optimierung: Man könnte den hellsten Punkt suchen und als Resultat zurückgeben.
+Es ist hier keine sichere Erkennung möglich und alle Resultate werden verworfen.
+ Als Optimierung in betracht gezogen werden könnte, ob es möglich ist, die
+ genauen Punkthelligkeit besser zu analysieren und den Punkt doch herauszufilter
+n.
+ Dies könnte sich als schwierig erweisen und wurde deshalb vorerst zurückgestell
+t.
 \end_layout
 
 \begin_layout Standard
@@ -4563,8 +4577,7 @@ status open
 \begin_inset Caption
 
 \begin_layout Plain Layout
-Spektrum eines Helium Neon Lasers.
- TODO: +Glühlampe
+Spektrum eines Helium Neon Lasers (rot) und das einer weissen LED (blau).
 \end_layout
 
 \end_inset
@@ -5403,7 +5416,7 @@ reference "sub:Kalibrierung:-Referenzpunkte"
 \end_layout
 
 \begin_layout Subsubsection
-Histogrammanalyse
+Histogramm-Analyse
 \end_layout
 
 \begin_layout Standard
@@ -5428,26 +5441,27 @@ Ablauf
 
 \begin_layout Enumerate
 Es wird eine weisse Fläche projiziert.
- Das Bild wird in 
+ Das Kamerabild wird in 
 \begin_inset Formula $2\times2$
 \end_inset
 
- gleich grosse Teile aufgeteilt, die jeweils nach überdurchschnittlich hellen
- Regionen gefiltert werden und anschliesend wieder zusammengesetzt werden.
- Darauf wird nun der grösste Blob gesucht.
+ gleich grosse Teile aufgeteilt.
+ Auf jedem Teil werden alle Pixel, wechle die Durchschnittshelligkeit unterschre
+iten auf Schwarz gesetzt.
+ Danach werden die Teile wieder zusammengesetzt.
+ Auf dem zusammengesetzten Bild wird nun der grösste Blob gesucht.
  Von diesem können nun die Eckpunkte bestimmt werden, welche den Bildschirmecken
  entsprechen.
- TODO: Gut so?
 \end_layout
 
 \begin_layout Enumerate
 Es werden die grünen und blauen Quadrate aus dem vorherigen Verfahren projiziert.
- Das Bild wird in 
+ Diese Referenzbilder werden in 
 \begin_inset Formula $4\times4$
 \end_inset
 
-, oder mehr Teile aufgeteilt und der blaue oder grüne Farbkanal separat
- analysiert.
+ oder mehr Teile aufgeteilt und der blaue oder grüne Farbkanal separat analysier
+t.
  Dabei wird alles, was nicht ausserordentlich hell ist, entfernt.
  Danach werden die Bildteile wieeder zusammengesetzt.
  In den zwei zusammengesetzten Bildern werden Blobs erkannt und analysiert.
@@ -5474,7 +5488,11 @@ status open
 \begin_inset Caption
 
 \begin_layout Plain Layout
-Erkannte grüne Quadrate
+Zweiter Schritt: Bei der Aufteilung 
+\begin_inset Formula $4\times4$
+\end_inset
+
+ erkannte grüne Quadrate
 \end_layout
 
 \end_inset
@@ -5683,7 +5701,7 @@ Der Algorithmus bestimmt auf jedem Farbkanal denjenigen Blob, der am nächsten
 \begin_inset Formula $\left(1,1\right)$
 \end_inset
 
- als Startwert
+ für blau als Startwert
 \begin_inset Foot
 status open
 
@@ -5760,39 +5778,39 @@ Verbesserungen
 \end_layout
 
 \begin_layout Standard
-TODO: umschreiben nötig?
+Im Folgenden werden einige Verbesserungen aufgelistet, die unabhängig voneinande
+r vorgenommen werden könnten.
 \end_layout
 
 \begin_layout Itemize
-Es wird nicht nur eine erwartete Position gespeichert, sondern mehrere.
+Es könnte nicht nur eine erwartete Blobposition gespeichert werden, sondern
+ mehrere.
  
 \end_layout
 
 \begin_layout Itemize
-Die Position wird nicht bei der Iteration gespeichert, sondern jedes Mal,
- wenn der Blob als Nachbar gefunden wurde.
+Die Blobposition muss nicht bei der Iteration gespeichert weden, sondern
+ jedes Mal, wenn der Blob als Nachbar gefunden wurde.
  
 \end_layout
 
 \begin_layout Itemize
-Es wird nicht nur in der linken oberen Ecke gestartet, sondern in allen
- vier Ecken.
+Es könnte bei allen vier Ecken gestartet werden anstatt nur in der linken
+ oberen Ecke.
+\end_layout
+
+\begin_layout Itemize
+Die finale Blobposition wird festgelegt durch Auswahl der Position, die
+ am häufigsten bestimmt wurde.
  
 \end_layout
 
 \begin_layout Itemize
-Die finale Position wird festgelegt durch Auswahl der Position, die am häufigste
-n bestimmt wurde.
- 
-\end_layout
-
-\begin_layout Itemize
-Man hat die Möglichkeit, die Position eines Quadrates anhand eines folgenden
+Es gibt die Möglichkeit, die Position eines Quadrates anhand eines folgenden
  ähnlichen Bildes zu verifizieren.
  Dabei werden zur Verifikation ausserdem die Daten desjenigen Blobs verwendet,
  der den ähnlichsten Schwerpunkt hat und somit am ehesten demjenigen des
  vorherigen Bildes entspricht.
- TODO: stimmt das so? 
 \end_layout
 
 \begin_layout Itemize
@@ -5958,11 +5976,6 @@ name "sub:Anhang-Lineare-Interpolation"
 \end_inset
 
 
-\end_layout
-
-\begin_layout Standard
-TODO: Skizze zum Strahlensatz.
- Gehört nicht hierhin.
 \end_layout
 
 \begin_layout Standard
@@ -6381,7 +6394,6 @@ Baryzentrische Koordinaten beschreiben in jedem
  Die gängigen Referenzpunkte sind jeweils die Beamerbild-Eckpunkte.
  Die Definition von baryzentrischen Koordinaten wird dem Leser hier nicht
  weiter eingeprügelt.
- TODO: Easteregg ok?
 \end_layout
 
 \begin_layout Paragraph
@@ -7375,7 +7387,6 @@ Wenn nur drei oder vier Referenzpunkte für eine Interpolation verwendet
  Diese hat dann an jedem Übergang eine neue Richtung.
  Das wird von einem Nutzer dadurch wahrgenommen, dass eine über die Mitte
  gezogene Linie nicht gerade ist, sondern Knicke enthält.
- TODO: fehlt das Bild unten
 \end_layout
 
 \begin_layout Standard
@@ -7385,10 +7396,26 @@ sideways false
 status open
 
 \begin_layout Plain Layout
+\begin_inset Graphics
+	filename Bilder/Calibration/Calib-Diagonal-Fail.PNG
+	lyxscale 50
+	width 100col%
+
+\end_inset
+
+
 \begin_inset Caption
 
 \begin_layout Plain Layout
-Knicke in gezeichneten Linien
+Gezeichnete Linien (blau) resultieren in geknickten Linien (rot) über die
+ Diagonale (grün)
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:knicke"
+
+\end_inset
+
+
 \end_layout
 
 \end_inset
@@ -7407,13 +7434,27 @@ Interpolation anhand eines feineren Gitters
 
 \begin_layout Standard
 Die Anzahl berücksichtigter Dreiecke ist hier sehr wichtig.
- 
+ TODO: Vergrösserung der Bilder klar machen
 \end_layout
 
 \begin_layout Standard
 \begin_inset Float figure
 wide false
 sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
 status open
 
 \begin_layout Plain Layout
@@ -7461,6 +7502,11 @@ Mittelung von 15 Resultaten:
 \begin_layout Plain Layout
 Der Rotanteil der Pixel entspricht den interpolierten X-Werten, der Grünanteil
  den Y-Werten
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Plain Layout
@@ -7513,7 +7559,6 @@ reference "tab:Benötigter-Aufwand-fürBary"
  Diese sieht man daran, dass alle Linien eigentlich gerade sein müssten.
  Dies ist jedoch an mehreren Stellen (überall wo es Wellen und Knicke hat)
  nicht gegeben.
- TODO: was bedeuten die Farben? Ist doch beschrieben? 
 \end_layout
 
 \begin_layout Standard
