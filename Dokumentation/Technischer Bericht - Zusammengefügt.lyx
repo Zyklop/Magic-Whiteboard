@@ -124,10 +124,14 @@ thispagestyle{empty}
 
 \end_layout
 
-\begin_layout Section*
+\begin_layout Standard
 \begin_inset Newpage newpage
 \end_inset
 
+
+\end_layout
+
+\begin_layout Section*
 Danksagungen
 \end_layout
 
@@ -1739,39 +1743,97 @@ sideways false
 status open
 
 \begin_layout Plain Layout
-Es wurde zu den bestehenden Gleichungen der Baryzentrischen Dreieckskoordinaten
+Es wurde zu den bestehenden Gleichungen der baryzentrischen Dreieckskoordinaten
  noch eine vierte Gleichung hinzugefügt.
  Diese hat das Ziel, nahe Eckpunkte stärker zu gewichten.
 \end_layout
 
 \begin_layout Plain Layout
-TL := Obere linke Ecke, TR := obere rechte Ecke, BL := untere linke Ecke,
- BR := untere rechte Ecke
-\end_layout
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
 
 \begin_layout Plain Layout
+TL 
+\begin_inset Formula $:=$
+\end_inset
+
+ Obere linke Ecke
+\begin_inset Newline newline
+\end_inset
+
+TR 
+\begin_inset Formula $:=$
+\end_inset
+
+ obere rechte Ecke
+\begin_inset Newline newline
+\end_inset
+
+BL 
+\begin_inset Formula $:=$
+\end_inset
+
+ untere linke Ecke
+\begin_inset Newline newline
+\end_inset
+
+BR 
+\begin_inset Formula $:=$
+\end_inset
+
+untere rechte Ecke
+\begin_inset Newline newline
+\end_inset
+
+
 \begin_inset Formula $P_{X},P_{Y}$
 \end_inset
 
- : zu bestimmender Punkt 
+ : zu bestimmender Punkt
+\begin_inset Newline newline
+\end_inset
+
+
 \begin_inset Formula $T_{X},T_{Y}$
 \end_inset
 
 : Provisorisches Resultat
 \end_layout
 
-\begin_layout Plain Layout
-\begin_inset Formula $T=TL*(1-P_{x})*(1-P_{Y})+BL*P_{Y}*(1-P_{X})+TR*(1-P_{Y})*P_{X}+BR*P_{X}*P_{Y}$
 \end_inset
 
 
 \end_layout
 
 \begin_layout Plain Layout
-Dies ist jedoch erst ein Zwischenresultat, welches eine Transformation vom
- Beamer zum Kamerabild ermöglicht.
- Um die Berechnung in Richtung Kamerabild → Beamer durchführen zu können,
- muss als weiterer Zwischenschritt die Determinante konstruiert werden:
+\begin_inset Formula 
+\begin{equation}
+T=TL*(1-P_{x})*(1-P_{Y})+BL*P_{Y}*(1-P_{X})+TR*(1-P_{Y})*P_{X}+BR*P_{X}*P_{Y}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+Diese Gleichung formuliert eine Transformation vom Beamer zum Kamerabild.
+ Um die Berechnung in Richtung Kamerabild 
+\begin_inset Formula $\rightarrow$
+\end_inset
+
+ Beamerbeamer durchführen zu können, muss zur Umkehrung die Determinante
+ konstruiert werden:
 \end_layout
 
 \begin_layout Plain Layout
@@ -1780,7 +1842,7 @@ Dies ist jedoch erst ein Zwischenresultat, welches eine Transformation vom
 Det\left[\begin{array}{cc}
 (1-X)*TL+X*TR-P & (1-X)*BL+X*BR-P\\
 (1-Y)*TL+Y*TR-P & (1-Y)*BL+Y*BR-P
-\end{array}\right]
+\end{array}\right]\label{eq:bary-detgleichung}
 \end{equation}
 
 \end_inset
@@ -1796,10 +1858,7 @@ Daraus resultieren zwei Gleichungen.
 \begin_layout Plain Layout
 \begin_inset Formula 
 \begin{equation}
-Solve\left(Det\left[\begin{array}{cc}
-(1-X)*TL+X*TR-P & (1-X)*BL+X*BR-P\\
-(1-Y)*TL+Y*TR-P & (1-Y)*BL+Y*BR-P
-\end{array}\right]=0,\{x,y\}\right)
+Solve\left(Formel\:(\ref{eq:bary-detgleichung})=0,\{x,y\}\right)
 \end{equation}
 
 \end_inset
@@ -1810,13 +1869,16 @@ Solve\left(Det\left[\begin{array}{cc}
 \begin_layout Plain Layout
 Daraus resultieren Gleichungen, anhand derer die Beamerkoordinaten aus Kamerakoo
 rdinaten berechnet werden können.
+ Es ist zu beachten, dass diese Berechnung lediglich eine geometrisch gleichmäss
+ige Verzerrung ausgleicht.
+ Perspektivische Verzerrungen bleiben dadurch immernoch bestehen.
 \end_layout
 
 \begin_layout Plain Layout
 \begin_inset Caption
 
 \begin_layout Plain Layout
-Erweiterte baryzentrische Koordinaten
+Auf 4 Dimensionen erweiterte baryzentrische Koordinaten
 \begin_inset CommandInset label
 LatexCommand label
 name "alg:Erweiterte-baryzentrische-Koordi"
@@ -3512,58 +3574,136 @@ Das sind diejenigen Pixelreihen, die von der Kamera auf beiden Bildern als
 \end_inset
 
 
+\end_layout
+
+\begin_layout Enumerate
+Durch die Bedingung, dass alle Bildschirmecken mindestens 5 Pixel Abstand
+ zu jedem Rand haben müssen, können zudem sehr viele Fehlerkennungen herausgefil
+tert werden.
+\end_layout
+
+\begin_layout Standard
 \begin_inset Float figure
 wide false
 sideways false
 status open
 
 \begin_layout Plain Layout
+\begin_inset Tabular
+<lyxtabular version="3" rows="4" columns="2">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0pt">
+<row>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
 \begin_inset Graphics
 	filename Bilder/Calibration/img01-0-0.jpg
 	lyxscale 30
-	width 40col%
+	width 48col%
 
 \end_inset
 
- 
-\begin_inset Formula $-$
-\end_inset
 
- 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
 \begin_inset Graphics
 	filename Bilder/Calibration/img02-0-0.jpg
 	lyxscale 30
-	width 40col%
+	width 48col%
 
 \end_inset
 
- 
-\begin_inset Formula $=$
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1) Frame 
+\begin_inset Formula $x$
 \end_inset
 
- 
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+2) Frame 
+\begin_inset Formula $x+c$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row topspace="0.5em">
+<cell multicolumn="1" alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
 \begin_inset Graphics
-	filename Bilder/Calibration/diff.png
-	width 90col%
+	filename Bilder/Calibration/diff.jpg
+	lyxscale 50
+	width 99col%
 
 \end_inset
 
 
 \end_layout
 
-\begin_layout Plain Layout
-Die Unterschiedlichen Helligkeitswerte sind das Resultat der Belichtungskorrektu
-r.
-\end_layout
+\end_inset
+</cell>
+<cell multicolumn="2" alignment="center" valignment="top" usebox="none">
+\begin_inset Text
 
 \begin_layout Plain Layout
-Gaussfilter mit Radius 3, um die Erkennung zu verbessern:
+
 \end_layout
 
+\end_inset
+</cell>
+</row>
+<row>
+<cell multicolumn="1" alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
 \begin_layout Plain Layout
-\begin_inset Graphics
-	filename Bilder/Calibration/diffblur.png
-	width 90col%
+3) Differenzbild von 1) und 2)
+\end_layout
+
+\end_inset
+</cell>
+<cell multicolumn="2" alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
 
 \end_inset
 
@@ -3574,7 +3714,9 @@ Gaussfilter mit Radius 3, um die Erkennung zu verbessern:
 \begin_inset Caption
 
 \begin_layout Plain Layout
-Erkennung des Bildschirms
+Erkennung des Bildschirms.
+ Dass sich auch im Differenzbild noch ein Schachbrettmuster ergibt liegt
+ an der automatischen Belichtungskorrektur der Kamera.
 \end_layout
 
 \end_inset
@@ -3582,15 +3724,51 @@ Erkennung des Bildschirms
 
 \end_layout
 
+\begin_layout Plain Layout
+
+\end_layout
+
 \end_inset
 
 
 \end_layout
 
-\begin_layout Enumerate
-Durch die Bedingung, dass alle Bildschirmecken mindestens 5 Pixel Abstand
- zu jedem Rand haben müssen, können zudem sehr viele Fehlerkennungen herausgefil
-tert werden.
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Bilder/Calibration/diffblur.jpg
+	lyxscale 50
+	width 100col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Mit Gaussfilter geglättetes Differenzbild (Radius 3)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Paragraph
@@ -3837,23 +4015,15 @@ status open
 \begin_inset Caption
 
 \begin_layout Plain Layout
-1)
-\begin_inset space ~
-\end_inset
-
 Frame 
 \begin_inset Formula $x$
 \end_inset
 
-: Der Laserpoint ist gut sichtbar, 2)
-\begin_inset space ~
-\end_inset
-
-Frame 
+: Der Laserpoint ist gut sichtbar (links), Frame 
 \begin_inset Formula $x+c$
 \end_inset
 
-: Der Laserpointer ist kaum sichtbar
+: Der Laserpointer ist kaum sichtbar (rechts)
 \end_layout
 
 \end_inset
@@ -3913,8 +4083,9 @@ status open
 \begin_inset Caption
 
 \begin_layout Plain Layout
-1) Differenzbild zweier Frames mit Laserpunkten 2) Nachdem die Rotanteile
- zu Graustufen übersetzt wurden, sieht man die gesuchten Laserpunkte besser.
+Differenzbild zweier Frames mit Laserpunkten (links), Nachdem die Rotanteile
+ zu Graustufen übersetzt wurden, sieht man die gesuchten Laserpunkte besser
+ (rechts).
 \end_layout
 
 \end_inset
@@ -4583,6 +4754,7 @@ sideways false
 status open
 
 \begin_layout Plain Layout
+\align center
 \begin_inset Graphics
 	filename Bilder/PenTracking/Helium_neon_laser_spectrum.svg
 	lyxscale 15
@@ -5554,7 +5726,7 @@ reference "sub:Schachbrett-Differenz"
 Ablauf
 \end_layout
 
-\begin_layout Enumerate
+\begin_layout Standard
 Es werden jeweils zwei Bilder projiziert, deren Differenz genau das bekannte
  blau-grüne Muster ergibt.
  So können die Rechtecke auf dem Bild ganz scharf und klar erkannt und identifiz
@@ -5573,37 +5745,121 @@ sideways false
 status open
 
 \begin_layout Plain Layout
+\begin_inset Tabular
+<lyxtabular version="3" rows="4" columns="2">
+<features tabularvalignment="middle">
+<column alignment="left" valignment="top" width="0">
+<column alignment="left" valignment="top" width="0pt">
+<row>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
 \begin_inset Graphics
 	filename Bilder/Calibration/img03-1-0.jpg
-	width 45col%
+	lyxscale 20
+	width 48col%
 
 \end_inset
 
 
-\begin_inset Formula $-$
-\end_inset
+\end_layout
 
- 
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
 \begin_inset Graphics
 	filename Bilder/Calibration/img03-0-0.jpg
-	width 45col%
+	lyxscale 20
+	width 48col%
 
 \end_inset
 
 
 \end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
 
 \begin_layout Plain Layout
-\begin_inset Formula $=$
+1) Frame 
+\begin_inset Formula $x$
 \end_inset
 
 
 \end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+2) Frame 
+\begin_inset Formula $x+t$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row topspace="0.5em">
+<cell multicolumn="1" alignment="left" valignment="top" usebox="none">
+\begin_inset Text
 
 \begin_layout Plain Layout
 \begin_inset Graphics
-	filename Bilder/Calibration/Colordiff.png
-	width 100col%
+	filename Bilder/Calibration/Colordiff.jpg
+	lyxscale 40
+	width 99col%
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell multicolumn="2" alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell multicolumn="1" alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+3) Differenzbild aus 1) und 2)
+\end_layout
+
+\end_inset
+</cell>
+<cell multicolumn="2" alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
 
 \end_inset
 
@@ -5614,10 +5870,8 @@ status open
 \begin_inset Caption
 
 \begin_layout Plain Layout
-\begin_inset Formula $Bild_{1}-Bild_{2}=Schachbrettmuster$
-\end_inset
-
-
+Es wird gezielt ein Muster projiziert, welches ein im Differenzbild ein
+ Schachbrett ergibt.
 \begin_inset CommandInset label
 LatexCommand label
 name "fig:Farbmuster"
