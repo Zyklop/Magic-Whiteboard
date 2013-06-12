@@ -7464,65 +7464,10 @@ sideways false
 status open
 
 \begin_layout Plain Layout
-\begin_inset Box Boxed
-position "t"
-hor_pos "c"
-has_inner_box 1
-inner_pos "t"
-use_parbox 0
-use_makebox 0
-width "100col%"
-special "none"
-height "1in"
-height_special "totalheight"
-status open
-
-\begin_layout Plain Layout
-Mittlung von 3 Resultaten:
-\end_layout
-
-\begin_layout Plain Layout
 \begin_inset Graphics
-	filename Bilder/Calibration/Cluster3.bmp
-	width 70col%
-
-\end_inset
-
-
-\begin_inset Graphics
-	filename Bilder/Calibration/Cluster3Detail.bmp
-	width 30col%
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-Mittelung von 15 Resultaten:
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Graphics
-	filename Bilder/Calibration/Cluster15.bmp
-	width 70col%
-
-\end_inset
-
-
-\begin_inset Graphics
-	filename Bilder/Calibration/Cluster15Detail.bmp
-	width 30col%
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-Der Rotanteil der Pixel entspricht den interpolierten X-Werten, der Grünanteil
- den Y-Werten
-\end_layout
+	filename Diagramme/GenauigkeitKalibrationBary.png
+	lyxscale 10
+	width 100col%
 
 \end_inset
 
