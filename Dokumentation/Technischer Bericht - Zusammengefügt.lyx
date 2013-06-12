@@ -8146,6 +8146,7 @@ Es ist schwierig zu sagen, ob es sinnvoll ist, Touch auf der Leinwand weiter
  mit den Daten, welche in dieser Arbeit aufgenommen wurde.
  Es müsste systematischer untersucht werden, ob die dies für jeden Fall
  zuverlässig gelöst werden könnte.
+ 
 \end_layout
 
 \begin_layout Subsection
@@ -8153,7 +8154,14 @@ Quellenverzeichnis
 \end_layout
 
 \begin_layout Standard
-TODO: blabliblablub
+\begin_inset CommandInset bibtex
+LatexCommand bibtex
+bibfiles "Bibliography"
+options "plain"
+
+\end_inset
+
+
 \end_layout
 
 \end_body
