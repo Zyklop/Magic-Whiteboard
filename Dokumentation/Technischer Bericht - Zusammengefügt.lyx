@@ -2,7 +2,7 @@
 \lyxformat 413
 \begin_document
 \begin_header
-\textclass article
+\textclass scrartcl
 \begin_preamble
 \usepackage[T1]{fontenc}
 \usepackage[ngerman]{babel}
@@ -69,43 +69,66 @@
 
 \begin_body
 
+\begin_layout Titlehead
+\begin_inset Graphics
+	filename Bilder/Branding/IFS_Institute for Software.emf
+	lyxscale 10
+	width 50col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subject
+
+\size largest
+Bachelorarbeit
+\end_layout
+
 \begin_layout Title
+
+\size giant
 Presentation Writer
+\end_layout
+
+\begin_layout Subtitle
+Whiteboard Funktionalität für Beamer
 \end_layout
 
 \begin_layout Author
 Renato Bosshart, Josua Schmid
 \end_layout
 
-\begin_layout Standard
-\begin_inset Float figure
-placement H
-wide false
-sideways false
-status open
+\begin_layout Publishers
+\begin_inset VSpace 7em
+\end_inset
 
-\begin_layout Plain Layout
-\align center
+
 \begin_inset Graphics
-	filename Bilder/Setup/writing.jpg
-	lyxscale 20
-	width 85col%
+	filename Bilder/Branding/HSR_Logo_CMYK.emf
+	lyxscale 8
+	width 25col%
 
 \end_inset
 
 
-\end_layout
-
+\begin_inset VSpace 2em
 \end_inset
 
 
-\end_layout
-
-\begin_layout Standard
-\begin_inset VSpace bigskip
+\begin_inset Newline newline
 \end_inset
 
+Hochschule für Technik Rapperswil
+\begin_inset Newline newline
+\end_inset
 
+Institut für Software
+\begin_inset Newline newline
+\end_inset
+
+Oliver Augenstein
 \end_layout
 
 \begin_layout Standard
@@ -142,7 +165,7 @@ de Betreuung bedanken.
  Spörri für ihre kritischen Kommentare.
 \end_layout
 
-\begin_layout Section*
+\begin_layout Standard
 \begin_inset Newpage newpage
 \end_inset
 
@@ -3823,7 +3846,7 @@ Mit Gaussfilter geglättetes Differenzbild (Radius 3)
 Einschränkungen
 \end_layout
 
-\begin_layout Paragraph
+\begin_layout Standard
 Damit die Kalibrierung erfolgreich abgeschlossen werden kann, müssen ein
  paar technische Limitationen eingehalten werden.
  Die Belichtungskorrektur der Kamera reagiert erst etwa ein bis zwei Frames
@@ -3883,6 +3906,10 @@ Verzögerung der Darstellung
 
 \end_inset
 
+
+\end_layout
+
+\begin_layout Subparagraph
 Bildverarbeitung
 \end_layout
 
