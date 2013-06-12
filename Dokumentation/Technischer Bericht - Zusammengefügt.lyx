@@ -3823,7 +3823,7 @@ Mit Gaussfilter geglättetes Differenzbild (Radius 3)
 Einschränkungen
 \end_layout
 
-\begin_layout Standard
+\begin_layout Paragraph
 Damit die Kalibrierung erfolgreich abgeschlossen werden kann, müssen ein
  paar technische Limitationen eingehalten werden.
  Die Belichtungskorrektur der Kamera reagiert erst etwa ein bis zwei Frames
@@ -3883,30 +3883,28 @@ Verzögerung der Darstellung
 
 \end_inset
 
+Bildverarbeitung
+\end_layout
+
+\begin_layout Standard
 Gewisse Webcams geben das Bild gespiegelt zurück.
- Deshalb muss dem User die Möglichkeit gegeben werden das Bild zurückzuspiegeln.
+ Deshalb muss dem User die Möglichkeit gegeben werden das Bild zu spiegeln.
+ Weiter muss der Benutzer die Möglichkeit haben, die Kalibrierung nochmals
+ zu starten, da keines unserer Verfahren erkennen kann, wenn ein Teil der
+ Projektion verdeckt ist.
+ Dafür ist es nötig, das Resultat der Kalibrierung visuell anzuzeigen.
+ Dies geschieht durch einzeichnen der detektierten Eckpunkte auf dem Kamerabild.
  
 \end_layout
 
 \begin_layout Standard
-Da Bitmaps in C# sehr inperformant sind, müssen diese am Anfang mit Hilfe
- von Lock-Bits ausgelesen werden und in eine performantere Datenstruktur
- überführt werden, wie z.B.
+Weiterhin muss beachtet werden, dass Bitmaps in C# sehr inperformant sind,
+ daher müssen diese am Anfang mit Hilfe von Lock-Bits ausgelesen werden
+ und in eine performantere Datenstruktur überführt werden, wie z.B.
  Bytearrays.
- Falls sie nochmals benötigt werden, kann man diese mit dem gleichen Verfahren
- zurückschreiben.
+ Falls sie nochmals als Bitmap benötigt werden, kann man diese mit dem gleichen
+ Verfahren wieder zurückschreiben.
  
-\end_layout
-
-\begin_layout Standard
-Da das hier beschriebene Verfahren nicht erkennen kann, wenn ein Teil der
- Projektion verdeckt sein sollte, wird das Resultat dem Benutzer visualisiert,
- sodass er allenfalls die Kalibration nochmals starten könnte.
-\end_layout
-
-\begin_layout Standard
-TODO: ev.
- noch besser zusammenfügen
 \end_layout
 
 \begin_layout Paragraph
@@ -7765,7 +7763,6 @@ Interpolation anhand eines feineren Gitters
 
 \begin_layout Standard
 Die Anzahl berücksichtigter Dreiecke ist hier sehr wichtig.
- TODO: Vergrösserung der Bilder klar machen
 \end_layout
 
 \begin_layout Standard
