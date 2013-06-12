@@ -1342,7 +1342,15 @@ status open
 , wenn man Faktoren wie den Algorithmus des Beamers für die Trapezkorrektur
  und dessen Linsenverzerrung ausser Acht lässt und annimmt, dass der Beamer
  das Bild korrekt projiziert, was nicht immer der Fall ist.
- Dies Fällt einem Zuschauer nicht auf, ist aber für die folgenden Algorithmen
+ Dies ist im Paper 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Literatur/ieee_Calibration.pdf"
+
+\end_inset
+
+ beschrieben.
+ Fällt einem Zuschauer nicht auf, ist aber für die folgenden Algorithmen
  ziemlich wichtig.
  Falls zusätzlich noch die Brennweite der Kamera
 \begin_inset Foot
@@ -1380,7 +1388,7 @@ Bei dieser Arbeit wurden folgende Möglichkeiten, Referenzpunkte zu erhalten,
 \end_layout
 
 \begin_layout Subsubsection
-Erkennen der Bildschirmgrenze
+Dies Erkennen der Bildschirmgrenze
 \end_layout
 
 \begin_layout Standard
@@ -1500,6 +1508,13 @@ Hiermit werden auf dem Bildschirm immer feiner aufgeteilte Cluster erstellt.
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sub:Anhang-K-Means-Cluster"
+
+\end_inset
+
+ und ein gutes Paper dazu ist z.B.
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Literatur/ConstrainedKmeans.pdf"
 
 \end_inset
 
@@ -1721,8 +1736,15 @@ reference "sub:Anhang-Baryzentrische-Koordinaten"
 \end_inset
 
  kurz erklärt.
- Ausführliche Literatur zu diesem Thema findet man im Internet oder in einer
- mathematischen Bibliothek
+ Ausführliche Literatur zu diesem Thema findet man im Internet oder in einem
+ der Papers: 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Literatur/Barycentric.pdf,Literatur/general_barycentric_resampeling.pdf,Literatur/Hormann.pdf,Literatur/RiffelmacherSlides.pdf,Literatur/WaScHiDe2007_ACM.pdf"
+
+\end_inset
+
+
 \end_layout
 
 \end_inset
@@ -6742,6 +6764,14 @@ Baryzentrische Koordinaten beschreiben in jedem
  Die gängigen Referenzpunkte sind jeweils die Beamerbild-Eckpunkte.
  Die Definition von baryzentrischen Koordinaten wird dem Leser hier nicht
  weiter eingeprügelt.
+ Diese kann er sich im einem der Papers 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Literatur/Barycentric.pdf,Literatur/general_barycentric_resampeling.pdf,Literatur/Hormann.pdf,Literatur/RiffelmacherSlides.pdf,Literatur/WaScHiDe2007_ACM.pdf"
+
+\end_inset
+
+ nachlesen.
 \end_layout
 
 \begin_layout Paragraph
