@@ -5558,6 +5558,7 @@ sideways false
 status open
 
 \begin_layout Plain Layout
+\align center
 \begin_inset Graphics
 	filename Bilder/Calibration/bgSchachbrett.png
 	width 45text%
@@ -5565,13 +5566,13 @@ status open
 \end_inset
 
 
-\begin_inset Formula $\rightarrow$
+\begin_inset space \enskip{}
 \end_inset
 
 
 \begin_inset Graphics
 	filename Bilder/Calibration/Scahcbrett erkannt.png
-	width 45text%
+	width 46text%
 
 \end_inset
 
@@ -6747,6 +6748,10 @@ status open
 \begin_layout Plain Layout
 \align center
 Y Werte:
+\begin_inset Newline newline
+\end_inset
+
+
 \begin_inset Tabular
 <lyxtabular version="3" rows="10" columns="4">
 <features tabularvalignment="middle">
@@ -7142,7 +7147,7 @@ rechts
 \end_layout
 
 \begin_layout Plain Layout
-\begin_inset VSpace smallskip
+\begin_inset VSpace bigskip
 \end_inset
 
 
@@ -7150,7 +7155,11 @@ rechts
 
 \begin_layout Plain Layout
 \align center
-X Werte: 
+X Werte:
+\begin_inset Newline newline
+\end_inset
+
+
 \begin_inset Tabular
 <lyxtabular version="3" rows="4" columns="12">
 <features tabularvalignment="middle">
@@ -8344,46 +8353,119 @@ sideways false
 status open
 
 \begin_layout Plain Layout
+\align center
+\begin_inset Tabular
+<lyxtabular version="3" rows="2" columns="4">
+<features tabularvalignment="middle" tabularwidth="100col%">
+<column alignment="center" valignment="top" width="0pt">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<row>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
 \begin_inset Graphics
 	filename Bilder/Handtracking/Gestenanalyse/arm-shadow-diff.png
 	lyxscale 50
-	width 23.5col%
+	width 22col%
 
 \end_inset
 
 
-\begin_inset space \enskip{}
+\end_layout
+
 \end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
 
-
+\begin_layout Plain Layout
 \begin_inset Graphics
 	filename Bilder/Handtracking/Gestenanalyse/arm-shadow-thres.png
 	lyxscale 50
-	width 23.5col%
+	width 22col%
 
 \end_inset
 
 
-\begin_inset space \enskip{}
+\end_layout
+
 \end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
 
-
+\begin_layout Plain Layout
 \begin_inset Graphics
 	filename Bilder/Handtracking/Gestenanalyse/shadow-base.png
 	lyxscale 50
-	width 23.5col%
+	width 22col%
 
 \end_inset
 
 
-\begin_inset space \enskip{}
+\end_layout
+
 \end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
 
-
+\begin_layout Plain Layout
 \begin_inset Graphics
 	filename Bilder/Handtracking/Gestenanalyse/just-the-arm.png
 	lyxscale 50
-	width 23.5col%
+	width 22col%
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1)
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+2)
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+3)
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+4)
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
 
 \end_inset
 
