@@ -138,8 +138,8 @@ Danksagungen
 \begin_layout Standard
 Die Autoren möchten sich bei Oliver Augenstein für die kompetente und wohlwollen
 de Betreuung bedanken.
- Weiteren Dank geht an Benjamin Hug und Stefan Kienzel für ihre kritischen
- Kommentare.
+ Weiteren Dank geht an Benjamin Hug, Stefan Kienzel, Edith Schmid und Pascal
+ Spörri für ihre kritischen Kommentare.
 \end_layout
 
 \begin_layout Section*
@@ -263,18 +263,39 @@ re kalibriert werden.
  Dazu werden folgende Schritte vorgenommen:
 \end_layout
 
-\begin_layout Itemize
-Laptopkamera so ausrichten, dass der ganze Bereich der Leinwand gefilmt
- werden kann
+\begin_layout Enumerate
+Die Software 
+\begin_inset Quotes gld
+\end_inset
+
+Presentation Writer
+\begin_inset Quotes grd
+\end_inset
+
+ starten
 \end_layout
 
-\begin_layout Itemize
-Lichtverhältnisse anpassen falls nötig
+\begin_layout Enumerate
+Den Laptop so ausrichten, dass die ganze Leinwand im Blickfeld der integrierten
+ Webcam ist.
 \end_layout
 
-\begin_layout Itemize
-Projiziertes Bild erkennen und ein Mapping von Kamerakoordinaten zu Bildschirmko
-ordinaten berechnen
+\begin_layout Enumerate
+Auf den Kalibrierungsknopf drücken.
+ Wichtig ist hier, dass die Kamera die Leinwand sieht.
+\end_layout
+
+\begin_layout Enumerate
+Kameraoptionen wie automatische Belichtungskorrektur einstellen
+\end_layout
+
+\begin_layout Enumerate
+Pen Tracking aktivieren
+\end_layout
+
+\begin_layout Standard
+Nun sollte das projiziertes Bild erkannt werden.
+ Alle Kamerabildkoordinaten sollten nun auf das Beamerbild umgerechnet werden.
 \end_layout
 
 \begin_layout Paragraph
@@ -314,7 +335,8 @@ ers gefunden und erkannt werden können.
  Beschränkungen zu vermeiden, gibt es doch verschiedene Grenzen, die von
  Anfang an definiert sind und als nicht überwindbar gelten.
  Grundsätzlich sind sie physischer und physikalischer Art.
- Im Folgenden werden die Probleme kurz diskutiert.
+ Im Folgenden werden die Probleme kurz diskutiert um zu zeigen, welche Themengeb
+iete überhaupt einer detaillierten Analyse bedürfen.
  Für einen besseren Überblick wird zum Teil kurz angeschnitten wie das jeweilige
  Problem gelöst werden soll.
 \end_layout
@@ -325,7 +347,7 @@ Aufnahmegerät
 
 \begin_layout Standard
 Das in dieser Arbeit verwendete Aufnahmegerät ist eine integrierte Laptopkamera
- eines Thinkpad T430s mit einer Auflösung von 640x480 Pixel à 30 Bilder
+ eines Thinkpad T430s mit einer Auflösung von 640x480 Pixel und 30 Bildern
  pro Sekunde.
  Sie übertreibt es völlig mit der automatischen Belichtungskorrektur, hat
  aber einen in den Treiber integrierten Konfigurationsdialog, mit welchem
@@ -335,8 +357,8 @@ Das in dieser Arbeit verwendete Aufnahmegerät ist eine integrierte Laptopkamera
  Das liegt daran, dass die präsentierende Person immer in Bewegung ist,
  mal mehr beleuchtet, mal weniger, und somit ein irritierendes Ungleichgewicht
  für die Kamera schafft.
- Übertriebene Änderungen der Beleuchtung seitens der Kamera übertönen den
- Stift.
+ Übertriebene Änderungen der Beleuchtung seitens der Kamera verrauschen
+ den Stift.
  Folglich ist er nicht mehr der hellste Punkte der Aufnahme und wird nicht
  mehr erkannt, bzw.
  gefunden.
@@ -397,8 +419,17 @@ Fazit:
 
 \begin_layout Standard
 Die automatische Belichtungskorrektur kann über den Hardwaretreiber abgestellt
- werden, erfordert aber einiges an Arbeit (bei Windows schwierig, bei Linux
- einfacher).
+ werden
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+in dieser Arbeit geschieht dies manuell über ein DirectShow Konfiguraitonsdialog
+\end_layout
+
+\end_inset
+
+, erfordert aber einiges an Arbeit (bei Windows schwierig, bei Linux einfacher).
  Die verwendeten Geräte müssten genau bekannt sein, um ihre Treiber konfiguriere
 n zu können.
  Wahrscheinlich stellt dieser Aufwand ein Hindernis dar, welches man eher
@@ -538,10 +569,21 @@ reference "fig:leinwand-verzerrungen"
 \end_layout
 
 \begin_layout Itemize
-Die linke Abbildung zeigt den angenäherten Normalfall: Beamerbild und Laptopkame
-ra liegen auf zwei parallelen Ebenen.
+Die linke Abbildung zeigt den angenäherten Normalfall
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+In dieser Arbeit wird angenommen, dass sich Beamer und Laptop auf gleicher
+ Höhe befinden.
+ Dies ist das Setup in einem üblichen kleineren Sitzungsraum.
+\end_layout
+
+\end_inset
+
+: Beamerbild und Laptopkamera liegen auf zwei parallelen Ebenen.
  Es wird nur in X-Richtung verzerrt.
- Das Bild ist weder Winkel- noch Flächentreu.
+ Das Bild ist weder winkel- noch flächentreu.
 \end_layout
 
 \begin_layout Itemize
@@ -567,6 +609,8 @@ Die Kalibrierung kann die perspektivische Verzerrung nur begrenzt ausgleichen.
  Messungen zur Genauigkeit unseres verwendeten Abbildungsverfahrens (s.u.)
  zeigen, dass die Verzerrung auf der Vertikalen (Y-Achse) vernachlässigt
  werden kann.
+ Die Dokumentation der Messresultate wird weiter unten für jedes wichtige
+ Verfahren erbracht.
 \end_layout
 
 \begin_layout Subsubsection
@@ -601,6 +645,43 @@ Präsentationsweise
 \end_layout
 
 \begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Bilder/Setup/IMGP0366.JPG
+	lyxscale 20
+	width 100col%
+	BoundingBox 500bp 0bp 3008bp 1700bp
+	clip
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Gute Präsentationsweise - Die zeigende Hand ist von Laptopkamera (links
+ unten) und Publikum aus (rechts unten) sichtbar.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
 Da der Stift immer von der Laptopkamera gesehen werden muss, ist es am Präsentat
 or, die richtige Haltung beim Schreiben anzunehmen.
  Eine gute Art zu präsentieren ist, wenn das Publikum sieht, wo der Präsentator
@@ -613,48 +694,12 @@ or, die richtige Haltung beim Schreiben anzunehmen.
  Einschränkung ohne weiteren Diskurs in Kauf genommen.
 \end_layout
 
-\begin_layout Standard
-\begin_inset Float figure
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
-\begin_inset Graphics
-	filename Bilder/Setup/IMGP0366.JPG
-	lyxscale 20
-	width 100col%
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Caption
-
-\begin_layout Plain Layout
-Gute Präsentationsweise - Die zeigende Hand ist von Laptopkamera (links)
- und Publikum aus (rechts) sichtbar.
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
 \begin_layout Subsection
 Ergebnis
 \end_layout
 
 \begin_layout Standard
-Das Resultat erstaunt.
- Die in dieser Arbeit entwickelte Software 
+Die in dieser Arbeit entwickelte Software 
 \begin_inset Quotes gld
 \end_inset
 
@@ -663,8 +708,9 @@ Presentation Writer
 \end_inset
 
  kann gewinnbringend für Vorträge eingesetzt werden.
- Die tiefe Auflösung der Kamera von 640x480 Pixel und die schlechten Lichteigens
-chaften haben wenig Einfluss auf die Genauigkeit des Resultates.
+ Die tiefe Auflösung der Kamera von 640x480 Pixel und ihre Sensibilität
+ gegenüber Helligkeitsveränderungen haben schlussendlich wenig Einfluss
+ auf die Genauigkeit des Resultates.
  Eine erfolgreiche Kalibrierung der Kamera, gute Einstellungen der Bildfilter
  und genügend gute Abbildungsalgorithmen mit Interpolation machen dies möglich.
  Optimierungen wie eine hochauflösende Kamera würden noch genauere und bessere
@@ -788,7 +834,7 @@ Begriffe
 \end_layout
 
 \begin_layout Standard
-Im folgenden wird jeweils von Beamerbild und Kamerabild gesprochen.
+Folgend wird Beamerbild und Kamerabild definiert.
  Das Beamerbild beschreibt das ursprüngliche Bild, welches projiziert wird.
  Es besitzt die Auflösung des Beamers.
  Das Kamerabild ist das von der Kamera aufgenommene Bild.
@@ -856,6 +902,8 @@ status open
 	filename Bilder/Camera/Transformation/camera-grid.png
 	lyxscale 20
 	width 85col%
+	BoundingBox 200bp 150bp 640bp 480bp
+	clip
 
 \end_inset
 
@@ -933,8 +981,8 @@ Die Lichtverhältnisse sind entscheidend für eine erfolgreiche Messungen.
  automatische Belichtungskorrektur der Kamera.
  Grosse Helligkeitswerte im projizierten Bild verursachen schnelles Abdunkeln
  des Kamerabildes, tiefe Helligkeitswerte das Gegenteil.
- Es kann nicht genau vorausgesagt werden, wie die Kamera auf Helligkeitsuntersch
-iede reagiert.
+ Es ist schwierig, vorauszusagen, wie die Kamera auf Helligkeitsunterschiede
+ reagiert.
  In jedem Fall hat dies Einfluss auf in der Kalibrierung verwendete Differenzbil
 der.
  Der hier beschriebene Effekt kann minimiert werden, wenn nur Bilder mit
