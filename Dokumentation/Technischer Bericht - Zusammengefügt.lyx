@@ -938,15 +938,19 @@ status open
 \begin_inset Graphics
 	filename Bilder/Calibration/WhitebalanceFail/frame1.jpg
 	lyxscale 20
-	width 50col%
+	width 49.25col%
 
+\end_inset
+
+
+\begin_inset space \enskip{}
 \end_inset
 
 
 \begin_inset Graphics
 	filename Bilder/Calibration/WhitebalanceFail/frame2.jpg
 	lyxscale 20
-	width 50col%
+	width 49.25col%
 
 \end_inset
 
@@ -1061,15 +1065,16 @@ name "sub:Analyse-Differenzbild"
 \end_layout
 
 \begin_layout Standard
-Bei einem Differnzbild werden auf zwei Bildern auf jedem Pixel die Differnz
+Bei einem Differnzbild wird auf zwei Bildern für jeden Pixel die Differnz
  gebildet.
- Somit entsteht ein Bild auf dem alle statischen Regionen entfernt wurden.
- Das ist zum Beisiel der Hintergrund eines Bildes.
- Damit werden nur Regionen berücksichtigt, die sich geändert haben.
+ Somit entsteht ein Bild auf dem alle statischen Regionen entfernt sind.
+ Dazu gehört zum Beispiel der Hintergrund eines Bildes.
+ Er ist eine Region, die sich auf zwei Bilder nicht ändert und darum verschwinde
+t.
 \end_layout
 
 \begin_layout Paragraph
-Selbstimplementierte Eckdetektion mit Differenzbildern
+Eckdetektion mit Differenzbildern
 \begin_inset CommandInset label
 LatexCommand label
 name "par:Analyse-Eigenbau"
@@ -1080,9 +1085,9 @@ name "par:Analyse-Eigenbau"
 \end_layout
 
 \begin_layout Standard
-Hierbei werden auf Differenzbildern entlang von Scanlinien Eckpunkte gesucht
- und so Rechtecke gefunden.
- Der detailierte Ablauf dieses Verfahrens ist im Anhang im Kapitel: 
+Bei diesem Verfahren werden auf Differenzbildern entlang von diagonalen
+ Scanlinien Eckpunkte gesucht und so Rechtecke gefunden.
+ Der detaillierte Ablauf ist im Anhang im Kapitel 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sub:Anhang-Eigenbau"
@@ -1091,15 +1096,11 @@ reference "sub:Anhang-Eigenbau"
 
  genau beschrieben.
  Dieses Verfahren kann auch auf Farbkanäle erweitert werden.
- Dieses Verfahren funktioniert relativ gut auf Billdern mit konstanter Belichtun
-gskorrektur und stark unterschiedlichen Helligkeitsverteilungen.
- Diese zwei Faktoren sind in unserer Problemstellung nicht gegeben, was
- die Erkennung erschwert.
- Zudem müssen gewisse Parameter angepasst werden, wenn sich die Raumhelligkeit
- oder die Kamera zu stark unterscheidet.
- Das ist nicht realistisch.
- Eine Weiterentwicklung dieses Lösung haben wir verworfen aufgrund des Verhältni
-sses von Aufwand und Ertrag.
+ Es funktioniert relativ gut auf Bildern mit konstanter Belichtungskorrektur
+ und stark unterschiedlichen Helligkeitsverteilungen.
+ Diese zwei Faktoren sind in der Problemstellung dieser Arbeit nicht positiv
+ zu beantworten.
+ Deshalb wurde eine Weiterentwicklung dieser Lösung verworfen.
 \end_layout
 
 \begin_layout Paragraph
@@ -1117,13 +1118,14 @@ name "par:Analyse-Einfacher-Differenzbildansatz"
 Bei diesen Verfahren wird ein universeller Differenzbild-Hintergrund verwendet.
  Damit kann der statische Hintergrund des Bildes gut entfernt werden und
  es muss nur ein zusätzliches Bild projiziert werden.
- Somit wird nur wenig zusätzliche Zeit für die Kalibration benötigt.
+ Somit wird nur wenig zusätzliche Zeit für die Kalibrierung benötigt.
  Dieser Ansatzt hat dafür Probleme, wenn die Kamera die Belichtungskorrektur
  ändert.
- Dies kommt leider sehr häufig vor, wenn sich die Projektion ändert.
- Da dies genau unser Kalibrationsansatz ist, können wir leider auch diese
- Lösung nicht verwenden.
- Der genaue Ablauf dieses Verfahrens ist unter 
+ Dies kommt leider sehr häufig vor, wenn sich die Projektion auf der Leinwand
+ selbst ändert.
+ Da die Änderung der Folie der Sinn jeder Präsentationssoftware ist, wurde
+ dieser Ansatz verworfen.
+ Der genaue Ablauf des Verfahrens ist im Anhang 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sub:Anhang-Einfacher-Differenzbild-Kalibrat"
@@ -1145,16 +1147,24 @@ name "par:Individuelle-Differenzbilder"
 \end_layout
 
 \begin_layout Standard
-Zu jedem Bild, das angezeigt werden soll, werden zwei Bilder generiert,
- deren Differenzbild genau dem gesuchten Bild entspricht.
- Diese Teilbilder müssen eine identische Helligkeitsverteilung aufweisen.
- Das verdoppelt zwar die Kalibrationszeit dadurch, dass die Zahl der anzuzeigend
-en Bilder verdoppelt wird.
- Dafür erhalten wir sehr gute Differenzbilder, deren Kanten sehr genau sind.
- Wir haben uns für diesen Ansatzt entschieden, da man sehr gute Resulate
- erhält und die Kalibrationszeit immer noch im Rahmen liegt und von den
- Nutzern sicherlich akzeptiert werden wird.
- Man erhält dadurch weniger Daten, dafür ist deren Qualität dafür umso besser.
+Zu jedem Referenzbild, das mit der Kamera gemessen werden soll, werden zwei
+ Bilder generiert, deren Differenzbild genau dem gesuchten Bild entspricht.
+ Diese Teilbilder müssen eine ähnliche Helligkeitsverteilung aufweisen.
+ Das verdoppelt die Kalibrierungszeit dadurch, dass die Zahl der anzuzeigenden
+ Bilder verdoppelt wird.
+ Das Resultat davon sind sehr gute Differenzbilder, deren Kanten sehr genau
+ sind.
+ Die Kalibrierungsszeit liegt dabei immer noch im Rahmen des zumutbaren.
+ Es entspricht insofern der Philosophie 
+\begin_inset Quotes gld
+\end_inset
+
+Qualität vor Quantität
+\begin_inset Quotes grd
+\end_inset
+
+ als dass eventuell zusätzlich noch nutzbare Information auf das Wesentliche
+ reduziert wird.
 \end_layout
 
 \begin_layout Subsubsection
@@ -1169,17 +1179,17 @@ name "sub:Histogramm-Analyse"
 \end_layout
 
 \begin_layout Standard
-Hierbei werden keine Differenzbilder verwendet sondern mit den Aktuellen
- Kamerabildern gearbeitet.
- Darauf analysieren wir die Durchschnittlich Helligkeitsverteilung und die
- Standartabweichung.
- Alles was heller ist, akzeptieren wir.
+Bei der Histogramm-Analyse werden keine Differenzbilder verwendet.
+ Stattdessen wird mit den aktuellen Kamerabildern gearbeitet.
+ Darauf wird die durchschnittliche Helligkeitsverteilung und die Standartabweich
+ung analysiert.
+ Alles was heller ist wird akzeptiert.
  Dadurch müssen bei der Kalibration keine zusätzlichen Bilder angezeigt
  werden.
  Analysen haben jedoch gezeigt, dass der Helligkeitsunterschied zwischen
- verschiedenen Bildteilen (z.B: obere und untere Bildhälfte) viel grösser
- ist als der Projektionsrand.
- Daraus ist die Idee entstanden, das Bild aufzuteilen für die Analyse:
+ verschiedenen Bildteilen (z.B.
+ oberer und unterer Bildhälfte) viel grösser ist als der Projektionsrand.
+ Daraus ist die Idee entstanden, das Bild für die Analyse aufzuteilen.
 \end_layout
 
 \begin_layout Paragraph
@@ -1187,18 +1197,18 @@ Optimierung: Histogramm-Analyse auf Bildausschnitten
 \end_layout
 
 \begin_layout Standard
-Hierbei wird das Bild am Anfang in kleine Ausschnitte aufgeteilt und anschliesse
-nd das obige Verfahren angewandt.
- So können wir den Hauptnachteil des obigen Verfahrens eliminieren.
- Die Resultate sind relativ gut, mit dem Nachteil, dass wir keine klaren
- Kanten erhalten, wie dies bei Differenzbildern der Fall ist.
+Wenn das Bild am Anfang in kleine Ausschnitte aufgeteilt wird, kann der
+ Hauptnachteil des obigen Verfahrens eliminiert werden.
+ Die Resultate sind relativ gut, mit dem Nachteil, dass keine klaren Kanten
+ resultieren, wie dies bei Differenzbildern der Fall ist.
  Eine weitere Konsequenz sind uneinheitliche Übergänge an den Bildausschnitten,
- die jedoch für unsere Eckdetektion keine Rolle spielen.
- Das Rauschen, das mit diesem Verfahren relativ stark ist, befindet sich
- zum grösten Teil ausserhalb der Leinwand und kann so gut herausgefiltert
+ die jedoch für die Eckdetektion keine Rolle spielen.
+ Das Rauschen, welches bei diesem Verfahren relativ stark ist, befindet
+ sich zum grössten Teil ausserhalb der Leinwand und kann gut herausgefiltert
  werden.
  Dieses Verfahren funktioniert ziemlich gut, aber die Einschränkung der
- ungenauen Kanten stört uns relativ stark, da wir von diesen abhängig sind.
+ ungenauen Kanten stört relativ stark.
+ Genaue Kanten wären wichtig für die Kalibrierung.
 \end_layout
 
 \begin_layout Subsection
@@ -1264,18 +1274,17 @@ Erkennen der Bildschirmgrenze
 Mit dem nachfolgend beschriebenen Verfahren werden lediglich die Ecken des
  Bildschirms erkannt.
  Dafür gibt es mehrere Verfahren, die im nächsten Punkt evaluiert werden.
- Anhand dieser vier Punkte können schon viele verschiede Berechnungen gemacht
- werden und auch die perspektivische Verzerrung kann schon korrigiert werden.
- Aufgrund der Einfachheit dieses Verfahren, ist es sehr stabil aund Fehlertolera
-nt.
- Ein weiterer Vorteil esteht darin, dass der Benutzter selber verifizieren
- kann anhand des Kamerabildes, ob die Ecken richtig erkannt wurden.
- Der Nachteil dieses Verfahrens besteht darin, dass man keine zusätzlichen
- Refernezpunkte hat, um die Erkennung zu verbessern.
- Wir haben dieses Verfahren angewandt, da wir mit der Genauigkeit und der
- Fehlertoleranz sehr zufrieden waren.
- Zudem hatten wir zu wenig Zeit, ein Verfahren zu implementieren, das zusätzlich
-e Refernzpunkte gut ausgenutzt hätte.
+ Anhand dieser vier Punkte kann die perspektivische Verzerrung schon korrigiert
+ werden.
+ Aufgrund der Einfachheit, ist dieses Verfahren sehr stabil aund fehlertolerant.
+ Ein weiterer Vorteil besteht darin, dass der Benutzter selber verifizieren
+ kann, anhand des Kamerabildes, ob die Ecken richtig erkannt wurden.
+ Ein Nachteil dieses Verfahrens besteht darin, dass es keine zusätzlichen
+ Referenzpunkte gibt, um die Erkennung zu verbessern.
+ Dieses Verfahren wurde im Protoryp eingesetzt, da es gute Genauigkeit und
+ Fehlertoleranz mitbringt.
+ Weitere Refernzpunkte auszunutzen wäre denkbar.
+ TODO: gibt es nun mehr Referenzpunkte oder nicht?
 \end_layout
 
 \begin_layout Subsubsection
@@ -1283,10 +1292,10 @@ Ordnung kleiner Vierecke
 \end_layout
 
 \begin_layout Standard
-In den folgenden Algorithmen werden mehrfarbige Schachbrettmuster analysiert
- dies hat den Vorteil, dass man die Farbkanäle trennen kann, und so ein
- Gitter mit Quadraten erhält, die nue einen direkten Nachbar haben.
- Dieser Ansatz ist Anhang bei 
+In den folgenden Algorithmen werden mehrfarbige Schachbrettmuster analysiert.
+ Dies hat den Vorteil, dass die Farbkanäle getrennt sind, und so ein Gitter
+ mit Quadraten resultiert, die nur einen direkten Nachbarn haben.
+ Dieser Ansatz ist im Anhang bei 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "fig:Farbmuster"
@@ -1294,18 +1303,18 @@ reference "fig:Farbmuster"
 \end_inset
 
  noch genauer beschrieben.
- Dises Verfahren hat keine Gemeinsamkeiten mit dem Schachmuster für die
- Bildschirmdetektion.
+ Dieses Verfahren hat keine Gemeinsamkeiten mit dem Schachbrettmuster für
+ die Bildschirmdetektion.
 \end_layout
 
 \begin_layout Paragraph
-Rekursives traversieren von Vierecken
+Rekursives Traversieren von Vierecken
 \end_layout
 
 \begin_layout Standard
 Auf einem mehrfarbigen Schachbrettmuster werden Quadrate erkannt.
  Danach können alle Quadrate rekursiv iteriert werden.
- Die Itaration erhält die Struktur eines Baumes.
+ Die Iteration erhält die Struktur eines Baumes.
  Das Verfahren ist in der Theorie sehr stabil und und kann sehr weit angepasst
  werden.
  Der genaue Ablauf dieses Verfahrens ist im Anhang 
@@ -1317,14 +1326,16 @@ reference "sub:Anhang-Rekursiv"
 
  beschrieben.
  Bei fehlenden Erkennungen kann der Algortihmus sogar um eine Lücke herumgehen.
- Bei Versuchen haben wir jedoch gesehen,dass dieses Verfahren sehr Fehleranfälli
-g ist.
- Man erhält bis zu 90% Korrektheit, jedoch ist das zu wenig für uns.
+ Bei Versuchen haben wurde jedoch festgestellt, dass dieses Verfahren sehr
+ fehleranfällig ist.
+ Es sind nur 90% Korrektheit möglich.
  Verbesserungen lassen sich zwar umsetzten, jedoch führen diese zu einer
- stark erhöhten Kopmlexität und tragen nur sehr wenig zur Verbesserung bei.
- Weitere Proble bereiten diesem Algorithmus fehlende Blobs, da dann die
- Diagolale als direkter Nachbar erkannt wird, was verheerende Folgen hat.
+ stark erhöhten Komplexität und tragen nur sehr wenig zur Verbesserung bei.
+ Weitere Probleme bereiten diesem Algorithmus nicht erkannte Quadrate, da
+ dann die Diagolale als direkter Nachbar erkannt wird, was verheerende Folgen
+ hat.
  Zudem ist keine Fehlerdetektion möglich.
+ TODO: wieso ist keine Fehlerdetektion möglich?
 \end_layout
 
 \begin_layout Paragraph
@@ -1352,8 +1363,7 @@ reference "sub:Anhang-Nutzung-der-Interpolation"
 \end_inset
 
  und es können Fehler mit einer Abweichung einer halben Seitenlänge eines
- Rechteks korrigiert werden und zusätzlich eine ganze Seitenlänge detektiert
- werden.
+ Rechtecks korrigiert und zusätzlich eine ganze Seitenlänge detektiert werden.
  Zudem ist dieser Algorithmus sehr performant.
  Er ist allerdings auch auch von einem guten Interpolationsverfahren abhängig,
  was wiederum Referenzpunkte erübrigt.
@@ -1361,6 +1371,8 @@ reference "sub:Anhang-Nutzung-der-Interpolation"
  werden, was wiederum zu weniger Referenzpunkten führt.
  Mit einem schlechten Interpolationsverfahren kann es zu gravierenden Fehlerkenn
 ungen kommen.
+ TODO: Wieso referenzpunkte erübrigt? wieso durch Vergrösserung der rechtecke
+ stabilisiert?
 \end_layout
 
 \begin_layout Subsubsection
@@ -1379,13 +1391,15 @@ reference "sub:Anhang-K-Means-Cluster"
 \end_inset
 
 .
- Mit der Fehlerdetektion kann man alle üblichen Fehlerkennungen ausschliessen.
+ Mit der Fehlerdetektion können alle üblichen Fehlerkennungen ausgeschlossen
+ werden.
  Allerdings ist es ziemlich intolerant gegenüber Fehlerkennungen und stellt
- ziemlich hohe anforderungen an das Kamerabild.
- Ebenso ist die Anzahl der Nutzbaren referenzpunkte von der Kameraauflösung
+ ziemlich hohe Anforderungen an das Kamerabild.
+ Ebenso ist die Anzahl der nutzbaren Referenzpunkte von der Kameraauflösung
  abhängig.
  Dieses Verfahren ist sehr genau und stabil, jdoch stellt es erhöhte Anforderung
 en, die dazu führen, dass die Kalibhration nicht immer klappt.
+ TODO: Widersprüchlich: kann es jetzt Fehler erkennen oder nicht?!
 \end_layout
 
 \begin_layout Subsubsection
@@ -1394,22 +1408,22 @@ OpenCV
 
 \begin_layout Standard
 OpenCV bietet die Möglichkeit, anhand verschiedener Aufnahmen eines Referenzbild
-es einen ganzen Dreidimensionalen Raum zu rekonstruieren.
- Dafür wird für jede erkannte Ebene eine Transformationsmatrix erstellt,
- die anschliesend kombiniert werden und eine Rücktransformation auf den
- Raum erlauben.
- Da wir jedoch nur auf eine einzelne Ebene abbilden können, hätten wir diesen
- Algorithmus stark anpassen müssen.
+es einen ganzen dreidimensionalen Raum zu rekonstruieren.
+ Dafür wird für jede erkannte Ebene eine Transformationsmatrix erstellt.
+ Jene werden anschliessend so kombiniert dass die resultierende Martix eine
+ Rücktransformation auf den Raum erlaubt.
+ Da Abbildungen sich in dieser Arbeit jeweils auf eine einzelne Ebene beziehen,
+ hätte der OpenCV-Algorithmus stark angepasst werden müssen.
  Dies war uns jedoch aufgrund der enormen Komplexität dieses Codes nicht
- möglich.
- In einem weiten versuch haben wir mit verschieden Testbildern versucht,
- einzelne Transformationsmatrizen zu erhalten.
+ einfach möglich.
+ In einem weiteren Versuch wurde mit verschieden Testbildern versucht, einzelne
+ Transformationsmatrizen zu erhalten.
  OpenCV hat jedoch zu keinem einzigen Testbild ein Resultat geliefert, obwohl
- wir die spezifizierten Refernzbilder verwendet haben.
- Zudem liefert OpenCV keine Fehlerbeschreibungen, was uns Anpassungen erlaubt
- hätte.
+ die spezifizierten Referenzbilder verwendet wurden.
+ Zudem liefert OpenCV keine Fehlerbeschreibungen, die auf die Möglichkeit
+ von Anpassungen hingewiesen hätten.
  Ein weiterer Nachteil besteht darin, dass das komplette 600 MB grosse Framework
- mitgeliefert werden müsste, auch wenn man nur einen Teil davon verwendet.
+ mitgeliefert werden müsste, auch wenn nur einen Teil davon verwendet wird.
 \end_layout
 
 \begin_layout Subsection
@@ -2607,9 +2621,8 @@ Fast Pattern Recognition Using Gradient-Descent Search in an Image Pyramid
  Es wäre möglich, Form, Farbe, Helligkeit, Farbtemperatur, Geschwindigkeit,
  Bewegung, Puls, etc.
  auf einem oder mehreren Kamerabilder zu analysieren.
- Der Einfachheit halber reduzieren wir den Stift auf seine Helligkeit.
- Wir gehen noch weiter und sagen, der Stift ist der hellste Punkt in einem
- Bild.
+ Der Einfachheit halber wird der Stift auf seine Helligkeit reduziert.
+ Er ist der hellste Punkt in einem Bild.
  Zur Umsetzung könnte ein optisches Licht (ev.
  Infrarot) als Stift verwendet werden.
 \end_layout
@@ -2861,7 +2874,7 @@ Asymptotisch wird angenommen, dass das Kamerabild quadratisch ist.
 \end_inset
 
  der Faktor der Vergrösserung ist.
- Wir denken, dass es reicht, 
+ Es sollte reichen, 
 \begin_inset Formula $y:=x$
 \end_inset
 
@@ -3041,7 +3054,14 @@ AForge funktioniert weniger mathematisch als OpenCV.
  Der pragmatische und einfache Ansatz steht hier vor der akademischen und
  schnellen Lösung.
  AForge bietet leicht benutzbare Filter und eine stabile Blob-Detektion.
- Die Konfiguration der verwendeten Module ist einfach gehalten und intuitiv.
+ Blobs sind zusammenhängende Pixelhaufen.
+ Die Blob-Detektion kann diese über verschiedenen Kriterien in einem Bild
+ finden.
+ Ein häufig benutztes Kriterium ist die Maximalhelligkeit.
+\end_layout
+
+\begin_layout Standard
+Die Konfiguration der verwendeten Module ist einfach gehalten und intuitiv.
  Performance und Möglichkeiten sind begrenzt.
  Für einen Prototypen ist die Nutzung von AForge jedoch ideal, da es einfach
  zu benutzen und gut dokumentiert ist.
@@ -3365,9 +3385,9 @@ name "sub:ablauf-kalibrierung"
 \end_layout
 
 \begin_layout Standard
-Für die Kalibration wird in dieser Umsetzung der Ansatz mit den individuellen
+Für die Kalibrierung wird in dieser Umsetzung der Ansatz mit den individuellen
  Differenzbildern verwendet.
- Wir detektieren damit nur die Ecken des Bildschirms, welche für unseren
+ Es werden damit nur die Ecken des Bildschirms detektiert, welche für den
  gewählten Interpolationsansatz reichen.
 \end_layout
 
@@ -3377,26 +3397,35 @@ Ablauf
 
 \begin_layout Enumerate
 Im ersten Bild der Kamera wird die Auflösung erkannt.
- Damit lassen sich nun gewisse Komponenten initialisiert werden.
+ Damit lassen sich nun gewisse Komponenten initialisieren.
  Zudem wird ein Schachbrett mit 
 \begin_inset Formula $n\times m$
 \end_inset
 
  Quadraten projiziert.
- Das Verhältnis von n zu m sollte dem Bildschirmverhältnis entsprechen und
- die Quadrate sollten noch gut auf dem Kamerabild sichtbar sein (15-30 Pixel
- Seitenlänge) Diese Werte können aber problemlos statisch hinterlegt werden.
+ Das Verhältnis von 
+\begin_inset Formula $n$
+\end_inset
+
+ zu 
+\begin_inset Formula $m$
+\end_inset
+
+ sollte dem Bildschirmverhältnis entsprechen und die Quadrate sollten noch
+ gut auf dem Kamerabild sichtbar sein (15-30 Pixel Seitenlänge).
+ Diese Werte können problemlos statisch hinterlegt werden.
 \end_layout
 
 \begin_layout Enumerate
 Das Schachbrett wird erneut projiziert, diesmal mit invertierten Farben.
  Auf dem Differenzbild sollte jetzt die Leinwand klar zu erkennen sein.
- Da es an den Kanten der Quadrate Lücken haben wird (diejenigen Pixelreihen,
- die von der Kamera auf beiden Bildern als Beleuchtet erkannt hat), müssen
- wir diese z.B.
- mit einem Gaussfilter mit einer kleinen Kernel-Size eliminieren, da es
- sonst bei der Bloberkennung zu Fehlerkennungen kommt.
+ Da an den Kanten der Quadrate Lücken resultieren (diejenigen Pixelreihen,
+ die von der Kamera auf beiden Bildern als beleuchtet erkannt hat), müssen
+ diese z.B.
+ mit einem Gaussfilter mit einer kleinen Kernel-Size eliminiert werden,
+ da es sonst bei der Bloberkennung zu Fehlerkennungen kommt.
  Jetzt können die Ecken des Bildschirms sehr genau erkannt werden.
+ TODO: was für Lücken meinst du?
 \begin_inset Newline newline
 \end_inset
 
@@ -3414,7 +3443,11 @@ status open
 
 \end_inset
 
- - 
+ 
+\begin_inset Formula $-$
+\end_inset
+
+ 
 \begin_inset Graphics
 	filename Bilder/Calibration/img02-0-0.jpg
 	lyxscale 30
@@ -3422,7 +3455,11 @@ status open
 
 \end_inset
 
- = 
+ 
+\begin_inset Formula $=$
+\end_inset
+
+ 
 \begin_inset Graphics
 	filename Bilder/Calibration/diff.png
 	width 90col%
@@ -3465,8 +3502,8 @@ Erkennung des Bildschirms
 
 \begin_layout Enumerate
 Durch die Bedingung, dass alle Bildschirmecken mindestens 5 Pixel Abstand
- zu jedem Rand haben müssen, können wir zudem sehr viele Fehlerkennungen
- herausfiltern.
+ zu jedem Rand haben müssen, können zudem sehr viele Fehlerkennungen herausgefil
+tert werden.
 \end_layout
 
 \begin_layout Paragraph
@@ -3474,16 +3511,26 @@ Einschränkungen
 \end_layout
 
 \begin_layout Standard
-Damot die Kalibration erfolgreich abgeschlossen werden kann, müssen folgende
- technische Limitationen eingehalten werden: Die Belichtungskorrektur reagiert
- erst etwa ein bis zwei Frames später.
- Das muss beachtet werden, kann aber nicht ausgenutzt werden, da die Darstellung
- länger dauert.
- Bis das Bild genau so dargestellt ist auf der Projektion, muss eine gewisse
- Zeit gewartet werden.
- Diese Umsetztung wartet 500ms, damit die Darstellung sicherlich gewährleistet
- ist.
- 
+Damit die Kalibrierung erfolgreich abgeschlossen werden kann, müssen ein
+ paar technische Limitationen eingehalten werden.
+ Die Belichtungskorrektur der Kamera reagiert erst etwa ein bis zwei Frames
+ später.
+ Die zu messende Referenzbilder müssen also länger angezeigt werden.
+ In diesem Ansatz wird 500ms
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+empirisch gewählter Wert - ist vom eingesetzten Visualisierer abhängig
+\end_layout
+
+\end_inset
+
+ gewartet damit die Darstellung sicherlich gewährleistet ist.
+\begin_inset Newline newline
+\end_inset
+
+
 \begin_inset Float figure
 wide false
 sideways false
@@ -3523,18 +3570,18 @@ Verzögerung der Darstellung
 
 \end_inset
 
-Diese Zeitdauer ist jedoch vom gewählten Visualisierer abhängig.
- Gewisse Webcams geben das Biöd gespiegelt zurück.
- dafür muss dem User die Möglichkeit gegeben werden, das Bild zurückzuspiegeln.
+Gewisse Webcams geben das Bild gespiegelt zurück.
+ Deshalb muss dem User die Möglichkeit gegeben werden das Bild zurückzuspiegeln.
  Da Bitmaps in C# sehr inperformant sind, müssen diese am Anfang mit Hilfe
  von Lock-Bits ausgelesen werden und in eine performantere Datenstruktur
  überführt werden, wie z.B.
  Bytearrays.
- Falls sie nochmals benötigt werden, kann man fiese mit dem gleichen Verfahren
+ Falls sie nochmals benötigt werden, kann man diese mit dem gleichen Verfahren
  zurückschreiben.
  Da dieser Ablauf nicht erkennen kann, wenn ein Teil der Prohektion verdeckt
  sein sollte, wird das Resultat dem Benutzer visualisiert, sodass er allenfalls
  die Kalibration nochmals starten könnte.
+ TODO: zu zusammenhangslos formuliert.
 \end_layout
 
 \begin_layout Paragraph
@@ -3542,35 +3589,36 @@ Parallelität
 \end_layout
 
 \begin_layout Standard
-Die Bilder von der Kamera kommen immer in gleichen Abstand von der Kamera,
- die in einem eigenen Thread abläuft.
- Unsere Bildverarbeitung benötigt jedoch unterschidlich lange.Dies kann zu
- grossen Problemen führen:
+Die Kamera produziert regelmässig alle 40ms ein Bild.
+ Die Bildverarbeitung für die Kalibrierung benötigt unterschiedlich lange
+ Rechenzeit.
+ Dies kann zu grossen Problemen führen:
 \end_layout
 
 \begin_layout Itemize
-Eine sequentielle Bearbeitung der Daten führt dazu, dass man mit veralteten
- (und somit falschen) Daten arbeitet.
+Eine sequentielle Bearbeitung der Daten führt dazu, dass mit veralteten
+ (und somit falschen) Daten gearbeitet wird.
 \end_layout
 
 \begin_layout Itemize
-Eine parallele Bearbeitung der führt meistens zum unkontrollierten Spawnen
- von Tasks, die das System verlangsamen und schliesslich ein Ablaufen verunmögli
-chen.
- Falls das Auftritt, hat man im besten Fall Probleme mit alten Daten, im
+Eine parallele Bearbeitung der jeweils eingehenden Bilder kann zu unkontrolliert
+em Spawnen von Tasks führen, die das System verlangsamen und schliesslich
+ ein Ablaufen verunmöglichen.
+ Falls das Auftritt, gibt es im besten Fall Probleme mit alten Daten, im
  Worst-Case reagiert das System nicht mehr.
 \end_layout
 
 \begin_layout Standard
-Deshalb haben wurde entschieden, einen Supervisor einzusetzen, der die Arbeit
+Deshalb wurde entschieden, einen Supervisor einzusetzen, der die Arbeit
  überwacht.
- Dieser entscheidet bei jedem ankommenden Bild, ib ein Worker aus dem Pool
+ Dieser entscheidet bei jedem ankommenden Bild, ob ein Worker aus dem Pool
  frei ist.
  Da sich die Kalibrierung nicht kalibrieren lässt, ist in diesem Pool jedoch
  nur ein Worker vorhanden.
  Falls er keinen freien Worker findet, verwirft er das Bild.
  Somit ist sichergestellt dass alle Threads aktuelle Daten erhalten und
  das System nicht überlastet werden kann.
+ TODO: Kalibrierer lässt sich nicht kalibrieren? Hä?
 \end_layout
 
 \begin_layout Subsubsection
@@ -3585,14 +3633,23 @@ name "sub:Schachbrett-Differenz"
 \end_layout
 
 \begin_layout Standard
-Um Differenzbilder nutzen zu können, aber sich nicht durch die Belichtungskorrek
+Um Differenzbilder nutzen zu können, sich aber nicht durch die Belichtungskorrek
 tur beeinflussen zu lassen, muss darauf geachtet werden, dass jedes projizierte
  Bild eine identische Helligkeitsverteilung zum Referenzbild besitzt.
- Das bedeutet, dass für jedes Bild, das man analysieren möchte, zwei Bilder
+ Das bedeutet, dass für jedes Bild, das analysiert werden soll, zwei Bilder
  projiziert werden müssen.
- Da diese Art der Erkennung viel genauer ist, nehmen wir diesen Overhead
- in Kauf und verzichten allenfalls auf ein paar Referenzbilder.
- „Lieber wenig gute Daten, als viel schlechte“ 
+ Da diese Art der Erkennung viel genauer ist, wird dieser Overhead in Kauf
+ genommen.
+ Es wird dabei allenfalls auf ein paar Referenzbilder verzichtet.
+ „Lieber wenig gute Daten, als viel schlechte“ TODO: Streichen.
+ Wird das nicht schon mal in 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "par:Individuelle-Differenzbilder"
+
+\end_inset
+
+ beschrieben?
 \end_layout
 
 \begin_layout Subsection
@@ -3611,8 +3668,8 @@ Verfahren
 \end_layout
 
 \begin_layout Standard
-Wie oben beschrieben, haben wir uns auf den Ansatz beschränkt, dass der
- Stift das hellste sichtbare Licht auf dem Kamerabild darstellt.
+Wie oben beschrieben gilt der Ansatz, dass der Stift das hellste sichtbare
+ Licht auf dem Kamerabild darstellt.
  Der hellste Punkt sollte also die aktuelle Stiftposition sein.
  Es gibt zwei naheliegende Ansätze um diesen Punkt zu finden.
 \end_layout
@@ -3628,9 +3685,17 @@ Finde den hellsten Punkt der sich bewegt.
 \end_layout
 
 \begin_layout Standard
-In unserer Software verwenden wird für guten Input den Ansatz ohne Differenzbild
-er und für schlechten Input (wenig Licht, viel Rauschen) den stabileren
- Ansatz mit Differenzbildern.
+In der Software 
+\begin_inset Quotes gld
+\end_inset
+
+Presentation Writer
+\begin_inset Quotes grd
+\end_inset
+
+ wird für guten Input den Ansatz ohne Differenzbilder und für schlechten
+ Input (wenig Licht, viel Rauschen) den stabileren Ansatz mit Differenzbildern
+ verwendet.
 \end_layout
 
 \begin_layout Paragraph
@@ -4454,35 +4519,33 @@ Input Emulation
 \end_layout
 
 \begin_layout Standard
-Gemäss Aufgabenstellung war in unserem Fall lediglich eine PowerPoint-Integratio
-n gefordert.
- Wir haben uns jedoch überlegt, dass wir mit einer Mausemulation weit mehr
- machen könnten.
- Ausserdem kann man auch PowerPoint mit einer emulierten Maus gut bedienen.
- Zudem haben wir schon Erfahrungen gesammelt, wie man mit C# Mausbefehle
- auf Driver-Level injizieren kann.
+Gemäss Aufgabenstellung war lediglich eine PowerPoint-Integration gefordert.
+ Eine komplette Mausemulation kann PowerPoint auch bedienen und bietet noch
+ viel mehr Möglichkeiten.
+ Zudem haben wurd schon Erfahrungen gesammelt, wie mit C# Mausbefehle auf
+ Driver-Level injiziert werden können.
  Diesen Weg benutzten ebenfalls Devices anderer Hersteller, wie z.B.
  Logitec Presenter.
- Diese emulieren jedoch eine Tastatur, was für uns nicht sinnvoll, aber
- optional auch möglich ist.
+ Diese emulieren jedoch eine Tastatur, was für diese Arbeit nicht sinnvoll,
+ aber optional auch möglich wäre.
  Unter Windows 8 ist es zudem möglich, Touch-Events zu generieren.
- Damit müssten wir uns nicht mehr um die Analyse der Gesten kümmern, da
- uns das vom Betriebssystem abgenommen wird.
- Da wir jedoch auch ältere Systeme unterstützen wollen, haben wir einen
- Teil der Windows 8 Touch-funktionalität nachgebildet, die wir mit Mausbefehlen
- nachbauen.
- Dies ist z.B.
- ein Rechtsklick durch warten an einem Ort.
+ Damit müsste keine Gestenanalyse mehr gemacht werden, da dies dann vom
+ Betriebssystem abgenommen wird.
+ Da jedoch auch ältere Systeme unterstützt werden sollen, wurde ein Teil
+ der Windows 8 Touch-Funktionalität mit Mausbefehlen nachgebildet.
+ dazu gehört z.B.
+ ein Rechtsklick durch Warten an einem Ort für eine gewisse Zeit.
 \end_layout
 
 \begin_layout Standard
-Um die erkannten Pixel zu glätten, mitteln wir jeweils die letzten 6 Punkte,
- die wir interpoliert haben.
- So können wir einen grossen Teil des Rauschens ausgleichen und erhalten
- eine Genauigkeit, die höher ist, als wir überhaupt aus dem Kamerabild extrahier
-en können.
- Die Verzögerung wird für den User erst ab einer Mittelung mit 15 Punkten
- bemerkbar.
+Um den Mausinput zu glätten, wurde jeweils über die letzten 6 gefundenen
+ Stiftpositionen gemittelt.
+ So kann ein grosser Teil des niederfrequenten Rauschens (max.
+ 4 Pixel um die durchschnittliche Bildschirmposition) beseitigt werden.
+ Die resultierende Genauigkeit wirkt dadurch höher als die im Kamerabild
+ gemessene.
+ Ein Verzögerung durch die Mittelwertbildung wird für den User erst ab einer
+ Mittelung über 15 Punkte bemerkbar.
 \end_layout
 
 \begin_layout Subsection
@@ -5019,7 +5082,7 @@ reference "par:Analyse-Eigenbau"
  Damit können nur Matrizenberechnungen und -Analysen durchgeführt werden.
 \end_layout
 
-\begin_layout Subparagraph
+\begin_layout Paragraph
 Ablauf
 \end_layout
 
@@ -5077,8 +5140,8 @@ status open
 \begin_layout Plain Layout
 \begin_inset Graphics
 	filename Diagramme/Scanlinien.emf
-	lyxscale 30
-	width 100col%
+	lyxscale 20
+	width 85col%
 
 \end_inset
 
@@ -5089,7 +5152,7 @@ status open
 \begin_inset Caption
 
 \begin_layout Plain Layout
-Scanlinien
+Diagonale Scanlinien finden Eckpunkte
 \end_layout
 
 \end_inset
@@ -5107,11 +5170,16 @@ Verwendung des AForge-Blob-Detctors
 \end_layout
 
 \begin_layout Standard
+TODO: was ist hier AForge? Was spielt AForge für eine Rolle? Wird nirgends
+ erwähnt.
+\end_layout
+
+\begin_layout Standard
 Das nun beschriebene Verfahren wird in den folgend beschriebenen Lösungen
  immer eingesetzt.
  Dabei werden bei jeder Lösung nur geänderte und wichtige Aspekte erwähnt.
  Funktionierende Teile wurden jeweils in die Hauptlösung übernommen.
- Die verschiedenen Kalibrierer die Im Code existieren sind keine 1:1 Umsetzungen
+ Die verschiedenen Kalibrierungsmethoden im Code sind keine 1:1 Umsetzungen
  der hier beschriebenen Ansätze, sondern Kombinationen davon.
  Der Code von verworfenen Umsetzungen wurde in anderen Umsetzungen teilweise
  übernommen und aktualisiert.
@@ -5159,7 +5227,7 @@ Ablauf
 
 \begin_layout Enumerate
 Als erstes Bild wird der Bildschirm schwarz gefärbt.
- Dieses Bild dient als Grundbild für alle folgenden Differenzbilder 
+ Dieses Bild dient als Grundbild für alle folgenden Differenzbilder.
 \end_layout
 
 \begin_layout Enumerate
@@ -5182,7 +5250,7 @@ reference "sub:Analyse-Differenzbild"
 \end_inset
 
  wird der grösste Blob gesucht.
- Das sind dann die Ecken des Bildschirms.
+ Dieser umfasst dann genau die Ecken des Bildschirms.
  
 \end_layout
 
@@ -5190,12 +5258,26 @@ reference "sub:Analyse-Differenzbild"
 Es werden grüne und blaue Quadrate jeweils versetzt auf den Bildschirm projizier
 t, die bei jedem Frame leicht verschoben werden um mehr Referenzpunkte zu
  bekommen.
- Die Erkennung des roten Farbkanals ist am schlechtesten, deshalb wird blau
- und grün verwendet.
+ Die Erkennung des roten Farbkanals ist am schlechtesten
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+Wurde empirisch gemessen.
+ Wissenschaftliche Messungen über das Erkennen von Farben mit Webcams fehlen
+ noch.
+\end_layout
+
+\end_inset
+
+, deshalb wird blau und grün verwendet.
  Zwei Farben sind ausreichend, wenn sie mit einem Feld Abstand projiziert
  werden.
- So gibt es keine Nachbarschaftskonflikte.
- 
+ So gibt es keine Nachbarschaftskonflikte bei ihrer Erkennung.
+\begin_inset Newline newline
+\end_inset
+
+
 \begin_inset Float figure
 wide false
 sideways false
@@ -5249,27 +5331,27 @@ reference "sub:Kalibrierung:-Referenzpunkte"
 \end_inset
 
  evaluiert.
- 
+ TODO: genauerer Verweis: worauf wird genau verwiesen?
 \end_layout
 
 \begin_layout Subsubsection
-Histogramm-analyse
+Histogrammanalyse
 \end_layout
 
 \begin_layout Standard
-Im folgend Beschriebenen Verfahren werden keine Differenzbilder gebildet,
- sondern Helligkeitswerte des Bildes analysiert.
+Im folgend beschriebenen Verfahren werden keine Differenzbilder generiert,
+ sondern Helligkeitswerte des Bildes direkt analysiert.
  So können überdurchschnittlich helle Flächen (Projektionen) gefunden werden.
  Die restlichen Bildinformationen werden entfernt um eine Blob-Erkennung
  zu ermöglichen.
- Dieser Algorithmus enthält bereits die im Analyseteil 
+ Dieser Algorithmus enthält bereits die im Analyseteil erwähnte Optimierung
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sub:Histogramm-Analyse"
 
 \end_inset
 
- erwähnte Optimierung, da er andernfalls ziemlig unbrauchbar ist.
+, da er andernfalls ziemlig unbrauchbar ist.
 \end_layout
 
 \begin_layout Paragraph
@@ -5278,18 +5360,36 @@ Ablauf
 
 \begin_layout Enumerate
 Es wird eine weisse Fläche projiziert.
- Das Bild wird in 2x2 Teile aufgeteilt und nach dem zusammensetzten der
- grösste Blob gesucht.
- Das führt zu den Eckepunkten.
- 
+ Das Bild wird in 
+\begin_inset Formula $2\times2$
+\end_inset
+
+ Teile aufgeteilt und nach dem zusammensetzten der grösste Blob gesucht.
+ Daraus resultieren die Eckpunkten.
+ TODO: Was wird gemacht? das mit den 
+\begin_inset Formula $2\times2$
+\end_inset
+
+ vertehe ich nicht.
+ Wie resultieren die Eckpunkte daraus?
 \end_layout
 
 \begin_layout Enumerate
-Es werden die grünen und blauen Quadrate aus dem Vorherigen Verfahren projiziert.
- Das Bild wird in 4 x 4, oder mehr Teile aufgeteilt und der blaue oder grüne
- Farbkanal separat analysiert.
+Es werden die grünen und blauen Quadrate aus dem vorherigen Verfahren projiziert.
+ Das Bild wird in 
+\begin_inset Formula $4\times4$
+\end_inset
+
+, oder mehr Teile aufgeteilt und der blaue oder grüne Farbkanal separat
+ analysiert.
  In den zwei zusammengesetzten Bildern werden Blobs erkannt und analysiert.
- 
+ TODO: was heisst zusammengesetzt? Das mit der Aufteilung verstehe ich immernoch
+ nicht.
+ für mich sieht das aus wie eine 9x7 Aufteilung
+\begin_inset Newline newline
+\end_inset
+
+
 \begin_inset Float figure
 wide false
 sideways false
@@ -5327,10 +5427,9 @@ Erweitertes Differenzbild
 \end_layout
 
 \begin_layout Standard
-Dieses Verfahren projiziert pro gesuchtem Bild zwei Bilder, deren Differenz
- das gesuchte Bild liefert und jeweils eine identische Helligkeitsverteilung
- zueinander haben.
- Die Analyse wurde unter 
+Das nun beschriebene Verfahren setzt das gesuchte Referenzbild aus zwei
+ projizierten Bildern mit ähnlicher Helligkeitsverteilung zusammen.
+ Seine Analyse wurde unter 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "par:Individuelle-Differenzbilder"
@@ -5355,12 +5454,16 @@ Ablauf
 \begin_layout Enumerate
 Es werden jeweils zwei Bilder projiziert, deren Differenz genau das bekannte
  blau-grüne Muster ergibt.
- Bild So können die Recktecke auf dem Bild ganz scharf und klar erkannt
- werden und identifiziert werden.
+ So können die Recktecke auf dem Bild ganz scharf und klar erkannt und identifiz
+iert werden.
  Durch das Bilden eines weiteren Differenzbildes mit den beiden erwünschten
  Farbkanälen kann das meiste Bildrauschen und allfällige Unsicherheiten
  entfernt werden.
  
+\begin_inset Newline newline
+\end_inset
+
+
 \begin_inset Float figure
 wide false
 sideways false
@@ -5373,7 +5476,11 @@ status open
 
 \end_inset
 
-- - 
+
+\begin_inset Formula $-$
+\end_inset
+
+ 
 \begin_inset Graphics
 	filename Bilder/Calibration/img03-0-0.jpg
 	width 45col%
@@ -5384,7 +5491,10 @@ status open
 \end_layout
 
 \begin_layout Plain Layout
-=
+\begin_inset Formula $=$
+\end_inset
+
+
 \end_layout
 
 \begin_layout Plain Layout
@@ -5401,7 +5511,10 @@ status open
 \begin_inset Caption
 
 \begin_layout Plain Layout
-Farbmuster
+\begin_inset Formula $Bild_{1}-Bild_{2}=Schachbrettmuster$
+\end_inset
+
+
 \begin_inset CommandInset label
 LatexCommand label
 name "fig:Farbmuster"
@@ -5418,9 +5531,9 @@ name "fig:Farbmuster"
 
 \end_inset
 
-Störungen wie sie hier in der oberen linken Ecke Vorhanden sind können entfernt
- werden, dadurch, dass sie nicht innerhalb der erkannten Bildschirmecken
- liegen.
+Störungen wie sie hier in der oberen linken Ecke vorhanden sind (Kopf einer
+ Person) können dadurch entfernt werden, dass sie nicht innerhalb der erkannten
+ Bildschirmecken liegen.
 \end_layout
 
 \begin_layout Subsection
@@ -5428,32 +5541,39 @@ Kalibrierung: Zuordnung von Punkten
 \end_layout
 
 \begin_layout Standard
-Vom AForge BlobCounter erhalten wir genau alle Blobs die auf dem Kamerabild
- gefunden wurden.
- Diese Daten beinhalten: Schwerpunkt, Umfassungsrechteck, Fläche, Breite,
- Höhe.
- Diese Detektion könnte aber auch mit einem belibigen anderen Framework
- durchgeführt werden, das uns diese Daten liefert.
- Eine Zuordnung zu machen, welcher Blob zu welchen pojizietem Quadrat gehört.
+Der AForge BlobCounter gibt alle auf einem Kamerabild gefundenen Blobs zurück.
+ Diese Daten beinhalten Schwerpunkt, Umfassungsrechteck, Fläche, Breite
+ und Höhe.
+ Diese Detektion könnte aber auch mit einem beliebigen anderen Framework
+ durchgeführt werden.
+ Anhand dieser gewonnen Positionsdaten wird die Zuordnung gemacht, welcher
+ Blob zu welchem projizierten Quadrat gehört.
  Durch eine Filterung mit einer vordefinierten minimalen und maximalen Höhe/Brei
-te können wir die Blobs filtern und Rauschen entfernen.
- Da wir die Ecken des Bildschirms mit Sicherheit kennen, können wir anhand
- des konstruierten Vierecks bestimmen ob ein Blob innerhalb der Projektion
- liegt und andernfalls entfernen.
- Somit können wir jetzt 99% der Fehlerkennungen eliminieren.
- Die Schwerpunkte der Blobs sind jedoch mit Koordinaten des Kamerabildes
- beschrieben, was es für uns schwierig macht, deren Position auf dem Bildschirm
- zu bestimmen, da diese relativ komplex voneinander abhängen.
+te können die Blobs gefiltert und Rauschen damit entfernt werden.
+ Da die Ecken des Bildschirms bekannt sind, kann bestimmt werden, ob ein
+ Blob im gültigen Bereich innerhalb liegt, und falls nicht entfernen.
+ Somit können 99% der Fehlerkennungen eliminiert werden
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+Empirischer Wert - Eine wissenschaftliche Auswertung liegt nicht vor.
+\end_layout
+
+\end_inset
+
+.
+ Die Schwerpunkte der Blobs sind mit Koordinaten des Kamerabildes beschrieben,
+ was es schwierig macht, deren Position auf dem ursprünglichen Beamerbild
+ zu bestimmen.
+ Die Verzerrung macht dies schwierig.
  So kann z.B.
  die kleinste X-Koordinate zuunterst liegen und die grösste Y-Koordinate
  rechts oben.
- Je nach Verzerrung ist es so schon sehr schwierig nur schon die obere linke
- Ecke zu finden.
- 
-\end_layout
-
-\begin_layout Paragraph
-Mögliche Ansätze
+ Je nach Verzerrung ist es so schon sehr schwierig die obere linke Ecke
+ zu finden.
+ Im Folgenden werden verschiedene Ansätze beschrieben, wie dies trotzdem
+ möglich wäre.
 \end_layout
 
 \begin_layout Subsubsection
@@ -5468,11 +5588,11 @@ name "sub:Anhang-Rekursiv"
 \end_layout
 
 \begin_layout Standard
-Hierbei nehmen wir an, dass die Nachbarn eines Blobs eindeutig bestimmt
- werden können.
- Dies ist möglich Anhand der Distanz bereitet aber Probleme, wenn gewisse
+Beim rekursiven Ansatz wird angenommen, dass die Nachbarn eines Blobs eindeutig
+ bestimmt werden können.
+ Dies ist möglich anhand ihrer Distanzen, bereitet aber Probleme, wenn gewisse
  Blobs fehlen, da sie nicht erkannt wurden.
- Folglich wird dann ein anderer Blob als Nachbar detektiert, der eignetlich
+ Folglich wird dann ein anderer Blob als Nachbar detektiert, der eigentlich
  keiner ist.
  
 \end_layout
@@ -5482,40 +5602,51 @@ Ablauf
 \end_layout
 
 \begin_layout Standard
-Hier wird der Grundalgorithmus beschrieben.
- Im Analyseteil wird noch auf die Verbesserungen eingegangen, die weiter
+Nun wird der Grundalgorithmus beschrieben.
+ Im Analyseteil wurde bereits auf Verbesserungen eingegangen, die auch weiter
  unten erwähnt sind.
 \end_layout
 
 \begin_layout Enumerate
 Der Algorithmus bestimmt auf jedem Farbkanal denjenigen Blob, der am nächsten
  bei der oberen linken Ecke liegt.
- Durch die Positionsangabe 0|0 für grün oder 1|1 ist bekannt, dass es sich
- um einen Eckpunkt handeln muss.
+ Durch die Positionsangabe 
+\begin_inset Formula $\left(0,0\right)$
+\end_inset
+
+ für grün oder 
+\begin_inset Formula $\left(1,1\right)$
+\end_inset
+
+ ist bekannt, dass es sich um einen Eckpunkt handelt.
  Der Punkt wird markiert, dass er nicht nochmals bearbeitet werden muss.
- 
+ TODO: umformulieren was heisst 1,1?
 \end_layout
 
 \begin_layout Enumerate
 Es werden also die zwei nächsten Nachbarn gesucht.
- Anhand der Differenz der der Koordinaten kann bestimmt werden, ob der Punkt
+ Anhand der Differenz der Koordinaten kann bestimmt werden, ob der Punkt
  oberhalb (Y-Differenz ist grösser als die Differenz der X-Achse und negativ),
  rechts (X-Differenz ist grösser und positiv), unten oder links liegt.
  
 \end_layout
 
 \begin_layout Enumerate
-Die Funktion berechnet die Koordinaten die der gefundene Blob haben muss
- (zwei in die entsprechende Achse verschoben) und startet einen Rekursiven
+Eine Funktion berechnet die Koordinaten die der gefundene Blob haben muss
+ (zwei in die entsprechende Achse verschoben) und startet einen rekursiven
  Aufruf auf jedem unmarkierten Nachbar, nachdem der Ausgangspunkt als erledigt
  markiert wurde.
- 
+ TODO: weleche Koordinaten werden berechnet?
 \end_layout
 
 \begin_layout Enumerate
 Der rekursive Aufruf prüft zudem, ob die übergebenen Koordinaten plausibel
  erscheinen und bestimmt anhand deren, wie viele Nachbarn zu erwarten sind.
- 
+ TODO: im Text auf Schritte der Abbildung referenzieren
+\begin_inset Newline newline
+\end_inset
+
+
 \begin_inset Float figure
 wide false
 sideways false
@@ -5536,7 +5667,7 @@ status open
 \begin_inset Caption
 
 \begin_layout Plain Layout
-Vorgehen Rekursion
+Vorgehen beim rekursiven Ansatz
 \end_layout
 
 \end_inset
@@ -5577,17 +5708,18 @@ n bestimmt wurde.
 \end_layout
 
 \begin_layout Itemize
-Man hat die Möglichkeit, die Position anhand eines folgenden ähnlichen Bildes
- zu verifizieren.
+Man hat die Möglichkeit, die Position eines Quadrates anhand eines folgenden
+ ähnlichen Bildes zu verifizieren.
  Dabei werden zur Verifikation ausserdem die Daten desjenigen Blobs verwendet,
- der den ähnlichsten Schwerpunkt hat und die sich somit entsprechen sollten.
- 
+ der den ähnlichsten Schwerpunkt hat und somit am ehesten demjenigen des
+ vorherigen Bildes entspricht.
+ TODO: stimmt das so? 
 \end_layout
 
 \begin_layout Itemize
 Es werden nicht mehr die nächsten Nachbarn gesucht, sondern es wird analysiert,
- auf welcher Achse die Blobs liegen und gezielt dort der nächste Blob gesucht.
- So können Diagonal liegende Punkte nicht mehr die Erkennung stören.
+ auf welcher Achse die Blobs liegen und dort gezielt der nächste Blob gesucht.
+ So können diagonal liegende Punkte die Erkennung nicht mehr stören.
  
 \end_layout
 
@@ -5603,8 +5735,8 @@ name "sub:Anhang-Nutzung-der-Interpolation"
 \end_layout
 
 \begin_layout Standard
-Hierbei wird ausgenutzt, dass man anhand der Interpolation mit den Eckpunkten
- die Bildschirmkoordinaten ungefähr voraussagen kann.
+Mit einer Interpolation anhand der bereits gefundenen Eckpunkten des verzerrten
+ Beamerbildes können die Positionen der Quadrate besser geschätzt werden.
  Es gibt dazu mehrere Möglichkeiten, die im Abschnitt 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -5645,8 +5777,9 @@ name "sub:Anhang-K-Means-Cluster"
 \end_layout
 
 \begin_layout Standard
-Hier wird kein mehrfarbiges Schachbrettmuster projiziert, sondern nur diejenigen
- Rechtecke, welche im aktuellen Schritt für die Analyse benötigt werden.
+Bei dem nun folgenden Verfahren wird kein mehrfarbiges Schachbrettmuster
+ projiziert, sondern nur diejenigen Rechtecke, welche im aktuellen Schritt
+ für die Analyse benötigt werden.
 \end_layout
 
 \begin_layout Paragraph
@@ -5654,8 +5787,8 @@ Ablauf
 \end_layout
 
 \begin_layout Standard
-Dieses Verfahren ist ein mehrstufiges Verfahren, das abhängig von der Erkennung
- des letzten Schrittes ist.
+Dieses Verfahren ist ein mehrstufiges Verfahren, das vom jeweils letzten
+ Erkennungsschritt abhängt.
  Dies führt zu einer geringeren Fehlertoleranz.
 \end_layout
 
@@ -5665,7 +5798,8 @@ Es werden die Eckpunkte des Bildschirms erkannt.
 \end_layout
 
 \begin_layout Enumerate
-Alle Kanten werden in der Mitte geteilt und deren Mittelpunkte visualisiert.
+Alle Kanten werden in der Mitte geteilt und deren Mittelpunkte als Quadrat
+ visualisiert.
  
 \end_layout
 
@@ -5728,11 +5862,11 @@ Interpolation
 \end_layout
 
 \begin_layout Standard
-Hierbei geht es darum, wie man anhand der gefundenen Referenzpunkte die
- genauste Interpolation für ein mapping eines Kamerapixels auf eine Bildschirmko
-ordinate erhält.
- Diese Verfahren haben wir testweise auch auf die Ecken des erkannten Bildschirm
-s angewandt, um die Genauigkeit zu überprüfen.
+Interpolationsansätze beschreiben, wie anhand der gefundenen Referenzpunkte
+ die genauste Interpolation für ein Mapping eines Kamerapixels auf eine
+ Bildschirmkoordinate resultiert.
+ Diese Verfahren wurden testweise auch auf die Ecken des erkannten Bildschirms
+ angewandt, um die Genauigkeit zu überprüfen.
  
 \end_layout
 
@@ -5748,30 +5882,37 @@ name "sub:Anhang-Lineare-Interpolation"
 \end_layout
 
 \begin_layout Standard
-TODO: Skizze 
+TODO: Skizze zum Strahlensatz
 \end_layout
 
 \begin_layout Standard
-Hierbei wird ausgenutzt, dass die Verhältnisse der Strecken auf der Abbildung
- identisch bleiben.
- Dies ist in unserem Fall nicht ganz korrekt, da es die perspektivische
- Verzerrung nicht berücksichtigt, was sich nicht schwerwiegend auswirkt,
- jedoch zu einer gewissen Ungenauigkeit führt.
+Bei der Umsetzung mittels linearer Interpolation wird ausgenutzt, dass die
+ Verhältnisse der Strecken in der Abbildung identisch bleiben.
+ Dies ist in unserem Fall nicht ganz korrekt, da die perspektivische Verzerrung
+ nicht berücksichtigt wird, was sich nicht schwerwiegend auswirkt, jedoch
+ zu einer gewissen Ungenauigkeit führt.
  Nachteile dieses Verfahrens sind zudem, dass in jedem Quadranten des gesuchten
- Punktes ein Punkt gefunden werden muss, die zusammen auf dem Bildschirm
- ein Rechteck bilden.
+ Punktes ein Punkt gefunden werden muss, der mit anderen zusammen auf dem
+ Bildschirm ein Rechteck bildet.
  Diese Voraussetzung ist für die Eckpunkte gegeben, jedoch ein erschwerender
  Faktor wenn eine unregelmässige Verteilung von Referenzpunkten gegeben
  ist.
  Ausserdem kann dieses Verfahren nur in eine Richtung angewandt werden,
  nämlich von Bildschirmkoordinaten zu Kamerapixeln.
- Dies ist für uns die falsche Richtung, sodass wir alle Werte vorberechnen
- und speichern müssen.
- 
+ Dies ist die falsche Richtung.
+ Bei diesem Vorgehen müssten alle Abbildungswerte vorberechnet und bei Bedarf
+ nachgeschaut werden.
+ In Algorithmus 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "alg:linearer-ansatz"
+
+\end_inset
+
+ wird das mathematische Vorgehen beschrieben.
 \end_layout
 
 \begin_layout Standard
-Formel: 
 \begin_inset Float algorithm
 wide false
 sideways false
@@ -5887,7 +6028,7 @@ Die Berechnung der anderen Koefizienten läuft identisch.
 
 \begin_layout Plain Layout
 Wenn die Determinante gleich null ist, sind die Linien parallel.
- Diesen Fall können wir aber ausschliessen.
+ Dieser Fall kann ausgeschlossen werden.
 \end_layout
 
 \begin_layout Plain Layout
@@ -5923,6 +6064,13 @@ Wenn die Determinante gleich null ist, sind die Linien parallel.
 
 \begin_layout Plain Layout
 Berechnung der linearen Interpolation
+\begin_inset CommandInset label
+LatexCommand label
+name "alg:linearer-ansatz"
+
+\end_inset
+
+
 \end_layout
 
 \end_inset
@@ -6099,6 +6247,17 @@ name "fig:messung-linearer-ansatz-30grad"
 
 \begin_layout Subsubsection
 Baryzentrische Koordinaten
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+Für eine detailliertere Erklärung siehe http://en.wikipedia.org/wiki/Barycentric_c
+oordinate_system
+\end_layout
+
+\end_inset
+
+
 \begin_inset CommandInset label
 LatexCommand label
 name "sub:Anhang-Baryzentrische-Koordinaten"
@@ -6113,45 +6272,58 @@ Funktionsweise
 \end_layout
 
 \begin_layout Standard
-Baryzentrische Koordinaten beschreiben in jedem n-Eck n Faktoren, die das
- Flächenverhältnis zwischen den Flächen zwischen den Kanten und einem Punkt
- beschreiben.
+Baryzentrische Koordinaten beschreiben in jedem 
+\begin_inset Formula $n$
+\end_inset
+
+-Eck 
+\begin_inset Formula $n$
+\end_inset
+
+ Faktoren, die das Verhältnis zwischen den Flächen zwischen den Kanten und
+ einem Punkt beschreiben.
  Deren Summe ist immer 1.
  Anhand dieser Faktoren lässt sich sehr einfach ein Rebasing durchführen.
- Das heisst, wenn man Die Punkte in einem anderen System hat, die den Eckpunkten
- im Ursprungssystem entsprechen, kann man die Position des Punktes im Zielsystem
- analysieren.
- Dies ist in unserem Fall bei allen Referenzpunkten gegeben.
- Ein Punkt kann sogar bestimmt werden, wenn er nicht innerhalb des Dreiecks
- liegt.
- Wir werden hier dieses Thema nicht weiter behandeln, es gibt viele andere
- Papers, die dieses Thema sehr ausführlich behandeln.
- 
+ Das heisst, wenn die den Koordinatenursprüngen ensprechenden Eckpunkte
+ in einem anderen System bekannt sind, kann die Position des Punktes ins
+ Zielsystem übertragen werden.
+ Dies ist in dieser Arbeit jeweils der fall.
+ Die gängigen Referenzpunkte sind jeweils die Beamerbild-Eckpunkte.
+ Die Definition von baryzentrischen Koordinaten wird dem Leser hier nicht
+ weiter eingeprügelt.
+ TODO: Easteregg ok?
 \end_layout
 
 \begin_layout Paragraph
-Unsere Anwendung
+Anwendung
 \end_layout
 
 \begin_layout Standard
-Byzantinische Koordinaten berücksichtigen leider keine perspektivischen
- Verzerrungen, wie sie bei uns vorkommen, was deren Funktionalität leider
- etwas einschränkt.
- Somit können wir sie nur verwenden, wenn ein Punkt innerhalb oder zumindest
- in der Nähe liegt.
+Baryzentrische Koordinaten berücksichtigen leider keine perspektivischen
+ Verzerrungen, wie sie in dieser Arbeit vorkommen, was deren Funktionalität
+ leider etwas einschränkt.
+ Somit können sie nur direkt verwendet werden, wenn ein Punkt innerhalb
+ oder zumindest in der Nähe eines schon perspektivisch korrigierten liegt.
  Andernfalls gibt es extreme Ungenauigkeiten, die ein Resultat unbrauchbar
  machen.
- Wir definieren die Nähe dadurch, dass alle Faktoren kleiner als 1.5 sein
- müssen.
+ Nähe wird dadurch definiert, dass alle Faktoren kleiner als 1.5 sein müssen.
  Wenn sie kleiner als 1 sind ist der Punkt innerhalb.
  Mit 1.5 darf er zu einer Kante eine Fläche gegen aussen aufspannen, die
  maximal der Hälfte der ganzen Fläche entspricht.
- Das entspricht einen maximalen Abstand der halben Dreieckshöhe zur Kante.
- Da die Nutzung von n-Ecken weder zusätzliche Genauigkeit noch sonstige
- Vorteile bringt, nutzen wir Baryzentrische Koordinaten nur in Dreiecken.
- Durch eine Mittelung der resultierenden Koordinaten anhand mehrerer Dreiecke
- können wir die Störungen der Verzerrung etwas minimieren.
- Wenn wir genügend Referenzpunkte haben, fällt das nicht mehr ins Gewicht.
+ Das entspricht einem maximalen Abstand der halben Dreieckshöhe zur Kante.
+ Da die Nutzung von 
+\begin_inset Formula $n$
+\end_inset
+
+-Ecken weder zusätzliche Genauigkeit noch sonstige Vorteile bringt, werden
+ baryzentrische Koordinaten hier nur im Dreieck benutzt.
+ TODO: stimmt nicht!!! machen wird doch genau! 
+\end_layout
+
+\begin_layout Standard
+Durch eine Mittelung der resultierenden Koordinaten anhand mehrerer Dreiecke
+ können die Störungen der Verzerrung etwas minimiert werden.
+ Wenn genügend Referenzpunkte vorhanden sind, fällt das nicht mehr ins Gewicht.
  
 \end_layout
 
@@ -6162,22 +6334,31 @@ Ergebnisse
 \begin_layout Standard
 Wenn der Beamer und das Notebook nebeneinander stehen, funktioniert die
  Interpolation anhand der Eckepunkte ziemlich gut.
- Wir haben jedoch hauptsächlich unter erschwerenden Umständen getestet.
+ Die Implementation wurde jedoch meist unter erschwerten Umständen (flacheren
+ Winkeln) getestet.
  Hier gab es bei der linearen Interpolation gewisse Verschiebungen in horizontal
 er Richtung.
- Es entspricht nicht unserer erwünschten Genauigkeit.
- Mit den baryzentrischen Koordinaten anhand der Eckpunkte hatten wir anfangs
- sehr viele Ungenauigkeiten.
- Zudem waren Knicke in den Linien sichtbar über die Diagonale.
+ Dies entspricht nicht der erwünschten Genauigkeit.
+ Mit den baryzentrischen Koordinaten anhand der Eckpunkte hatten gab es
+ anfangs sehr viele Ungenauigkeiten.
+ Zudem waren Knicke in den Linien über die Diagonale sichtbar.
  
 \end_layout
 
 \begin_layout Standard
 Eine Mittelung der Ergebnisse aller vier Dreiecke hat jedoch geholfen, die
  Knicke zu eliminieren und die vertikalen Fehlerfaktoren zu eliminieren.
- Dafür haben wir damit Probleme an den Rändern, da dort unrealistische Werte
+ Dafür gab es damit Probleme an den Rändern, da dort unrealistische Werte
  entstehen.
- Zudem sieht man, wie stark sich die Perspektivische Verzerrung auswirkt.
+ In Abb.
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "tab:genauigkeit-bary-interpol"
+
+\end_inset
+
+ ist sichtbar, wie stark sich die Perspektivische Verzerrung auswirkt.
 \end_layout
 
 \begin_layout Standard
@@ -6187,6 +6368,7 @@ sideways false
 status open
 
 \begin_layout Plain Layout
+\align center
 Y Werte:
 \begin_inset Tabular
 <lyxtabular version="3" rows="10" columns="4">
@@ -6583,6 +6765,14 @@ rechts
 \end_layout
 
 \begin_layout Plain Layout
+\begin_inset VSpace smallskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
 X Werte: 
 \begin_inset Tabular
 <lyxtabular version="3" rows="4" columns="12">
@@ -7051,6 +7241,13 @@ unten
 
 \begin_layout Plain Layout
 Genauigkeit baryzentrische Interpolation
+\begin_inset CommandInset label
+LatexCommand label
+name "tab:genauigkeit-bary-interpol"
+
+\end_inset
+
+
 \end_layout
 
 \end_inset
@@ -7070,7 +7267,8 @@ Genauigkeit baryzentrische Interpolation
 \begin_layout Standard
 Die horizontale Verschiebung ist je nach Versuchsaufbau ähnlich zum linearen
  Ansatz.
- Mir mehr Referenzpunkten lässt sich dieses Problem aber sicher lösen.
+ Mir mehr Referenzpunkten lässt sich dieses Problem aber u.U.
+ lösen.
  
 \end_layout
 
@@ -7084,7 +7282,11 @@ Wenn nur drei oder vier Referenzpunkte für eine Interpolation verwendet
  keine Störungen beinhalten.
  Wenn mit diesem Verfahren jedoch eine Linie über mehrere Dreiecke gezogen
  wird, hat diese an jedem Übergang eine neue Richtung.
- 
+ Das wird von einem Nutzer dadurch wahrgenommen, dass eine über die Mitte
+ gezogene Linie nicht gerade ist, sondern Knicke enthält.
+ TODO: Wieso sind jetzt 3 Punkte doch korrekt? Vorher hiess es dass es ungenau
+ sei.
+ Zudem fehlt das Bild unten
 \end_layout
 
 \begin_layout Standard
@@ -7092,10 +7294,6 @@ Wenn nur drei oder vier Referenzpunkte für eine Interpolation verwendet
 wide false
 sideways false
 status open
-
-\begin_layout Plain Layout
-
-\end_layout
 
 \begin_layout Plain Layout
 \begin_inset Caption
@@ -7118,32 +7316,31 @@ Knicke in gezeichneten Linien
 
 \end_layout
 
-\begin_layout Standard
-Das wird von einem Nutzer dadurch wahrgenommen, dass seine gezogene Linie
- nicht gerade ist, sondern Knicke enthält.
- Das wird als störend empfunden.
- 
-\end_layout
-
 \begin_layout Paragraph
 Lösung
 \end_layout
 
 \begin_layout Standard
-Es wird nicht nur das Resultat eines Vierecks analysiert, sondern direkte
- Nachbarn werden ebenfalls berücksichtigt.
- Durch eine entsprechende Gewichtung sollte das Resultat nicht verfälscht
- werden, aber die Knicke soweit geglättet werden, dass sie den Nutzer nicht
- mehr auffallen.
- Da Baryzentrische Koordinaten leider keine Abstandsfunktion definieren,
- gewichten wir Resultate, die innerhalb liegen doppelt, solche in der Nähe(siehe
- Oben) einfach.
+Um dieses Problem zu umgehen wird nicht nur das Resultat eines Vierecks
+ analysiert, sondern die direkten Nachbarn.
+ Durch eine entsprechende Gewichtung der Nachbar-Vierecke sollte das Resultat
+ nicht verfälscht werden, aber die Knicke soweit geglättet werden, dass
+ sie dem Nutzer nicht mehr auffallen.
+ Da baryzentrische Koordinaten leider keine Abstandsfunktion definieren,
+ werden Resultate, die innerhalb liegen doppelt, solche in der Nähe(siehe
+ Oben) einfach gewichtet.
  Anschliessend werden die Werte linear gemittelt.
- So können wir dennoch eine leichte Gewichtung einfügen.
+ So kommt dann doch eine leichte Gewichtung hinzu.
  Erkenntnisse: Interpolation anhand der Eckpunkte: Hierbei ist die Genauigkeit
  identisch mit dem linearen Ansatz, wenn man die vier möglichen Dreiecke
  berücksichtigt und entsprechend gewichtet.
- 
+\end_layout
+
+\begin_layout Standard
+TODO: hier sind es auf einmal wieder Vierecke.
+ Was jetzt? Erkenntnisse ist ein Kapitel? Ausformulieren.
+ Doppelpunkte sind schlecht für den Lesefluss.
+ Was bedeuten die Farben in der Abbildung unten?
 \end_layout
 
 \begin_layout Standard
@@ -7251,6 +7448,13 @@ Der Rotanteil der Pixel entspricht den interpolierten X-Werten, der Grünanteil
 
 \begin_layout Plain Layout
 Interpolation anhand eines feinen Gitters mit baryzentrischen Dreiecken
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:komisches-farbiges-bild-mit-farben"
+
+\end_inset
+
+
 \end_layout
 
 \end_inset
@@ -7264,10 +7468,19 @@ Interpolation anhand eines feinen Gitters mit baryzentrischen Dreiecken
 \end_layout
 
 \begin_layout Standard
-Hier sieht man, dass man mit der Mittelung von mehreren Resultaten lokale
- unstimmigkeiten beheben kann.
- Es hat jedoch viele globale Unstimmigkeiten, die nicht korrigiert werden
+In Abb.
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:komisches-farbiges-bild-mit-farben"
+
+\end_inset
+
+ ist sichtbar, dass mit der Mittelung von mehreren Resultaten lokale Unstimmigke
+iten behoben werden.
+ Es gibt jedoch viele globale Unstimmigkeiten, die nicht korrigiert werden
  können.
+ TODO: was bedeuten die Farben? Was sind die Unstimmigkeiten?
 \end_layout
 
 \begin_layout Standard
