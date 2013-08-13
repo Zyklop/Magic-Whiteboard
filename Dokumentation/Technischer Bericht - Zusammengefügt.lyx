@@ -490,7 +490,7 @@ Die automatische Belichtungskorrektur kann über den Hardwaretreiber abgestellt
 status open
 
 \begin_layout Plain Layout
-in dieser Arbeit geschieht dies manuell über ein DirectShow Konfiguraitonsdialog
+in dieser Arbeit geschieht dies manuell über ein DirectShow Konfigurationsdialog
 \end_layout
 
 \end_inset
@@ -528,7 +528,7 @@ Ein weniger wichtige Rolle als die Kamera spielt das Präsentationsgerät.
 \begin_inset Quotes gld
 \end_inset
 
-für eine üblich Präsentation
+für eine Präsentation üblich
 \begin_inset Quotes grd
 \end_inset
 
@@ -664,7 +664,7 @@ In der Mitte ist der Optimalfall dargestellt: Die Kamera sieht direkt von
 \begin_layout Itemize
 Rechts ist das Bild in alle Richtungen verzerrt und stellt somit die grössten
  Anforderungen an die Kalibrierung.
- Hierbei ist weder Winkeltreue noch Fläche gegeben.
+ Hierbei ist weder Winkel- noch Flächentreue gegeben.
 \end_layout
 
 \begin_layout Standard
@@ -800,14 +800,14 @@ Presentation Writer
  Optimierungen, wie eine hochauflösende Kamera, würden noch genauere und
  bessere Resultate liefern.
  Aus Zeitgründen wurde in der Software zum Teil auf Optimierungen verzichtet.
- Jene die erschlossen wurden, sind jedoch in der schriftlichen Arbeit jeweils
+ Jene die erschlossen wurden, sind in der schriftlichen Arbeit trotzdem
  kurz erwähnt.
 \end_layout
 
 \begin_layout Standard
 Im Folgenden dieser Arbeit wird genauer darauf eingegangen, wie alle diese
  Zwischenschritte, vom Kamerabild bis zum gezeichneten Bildpunkt, auf dem
- Beamer analysiert und gelöst wurden.
+ Beamer analysiert und umgesetzt wurden.
  Zum einen werden Ideen zum Finden eines Stiftes in einem Kamerabild diskutiert,
  zum anderen werden verschiedene Ansätze erarbeitet, die eine näherungsweise
  korrekte Abbildung von Kamera- zu Beamerkoordinaten ermöglichen.
