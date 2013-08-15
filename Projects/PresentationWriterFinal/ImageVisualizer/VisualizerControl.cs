@@ -115,11 +115,13 @@ namespace HSR.PresWriter.ImageVisualizer
         /// <summary>
         /// Screen width
         /// </summary>
-        public int Width { get { return (int) _cw.ActualWidth; } }
+        //public int Width { get { return (int) _cw.ActualWidth; } }
+        public int Width { get { return (int)SystemParameters.VirtualScreenWidth; } }
 
         /// <summary>
         /// Screen Height
         /// </summary>
-        public int Height { get { return (int) _cw.ActualHeight; } }
+        //public int Height { get { return (int) _cw.ActualHeight; } }
+        public int Height { get { return (int)SystemParameters.VirtualScreenHeight; } }
     }
 }

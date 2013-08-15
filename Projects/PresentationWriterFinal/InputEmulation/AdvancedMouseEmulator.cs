@@ -89,7 +89,7 @@ namespace HSR.PresWriter.InputEmulation
                 // left from screen
                 if (!_leftCicked && !_rightCicked && CurrentMillis.Millis - _lastKeyPressed > KeyboardReleaseTimeout)
                 {
-                    VirtualKeys.SendKeyAsInput(Keys.P, 7);
+                    VirtualKeys.SendKeyAsInput(Keys.Left);
                     _lastKeyPressed = CurrentMillis.Millis;
                 }
             }
@@ -98,7 +98,15 @@ namespace HSR.PresWriter.InputEmulation
                 // right from screen
                 if (!_leftCicked && !_rightCicked && CurrentMillis.Millis - _lastKeyPressed > KeyboardReleaseTimeout)
                 {
-                    VirtualKeys.SendKeyAsInput(Keys.N, 7);
+                    // Lower part besides the right
+                    if (p.Y > _screenHeight / 2)
+                    {
+                        VirtualKeys.SendKeyAsInput(Keys.Right);
+                    }
+                    else
+                    {
+                        VirtualKeys.SendKeyAsInput(Keys.Left);
+                    }
                     _lastKeyPressed = CurrentMillis.Millis;
                 }
             }
